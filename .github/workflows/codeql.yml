@@ -1,0 +1,44 @@
+name: CodeQL
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  schedule:
+    # Somebody else's query is written every week, and it can find something in
+    # code nobody touched. Run on a fixed day so the signal arrives in one piece
+    # rather than as a trickle.
+    - cron: '27 4 * * 1'
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  analyze:
+    name: analyze
+    runs-on: ubuntu-latest
+    permissions:
+      # Needed to publish the results to the code scanning tab.
+      security-events: write
+      actions: read
+      contents: read
+    steps:
+      - uses: actions/checkout@v7
+
+      # No build step: CodeQL reads JavaScript and TypeScript without one, so
+      # there is nothing here that can drift from how the packages are compiled.
+      - uses: github/codeql-action/init@v4
+        with:
+          languages: javascript-typescript
+          # security-and-quality trades a few more findings for a few more
+          # false positives. Worth it for a public repository with no telemetry
+          # and no server to notice a problem instead.
+          queries: security-and-quality
+
+      - uses: github/codeql-action/analyze@v4
+        with:
+          category: '/language:javascript-typescript'

@@ -1,0 +1,21 @@
+# One set of basics for every editor, so a contributor does not have to guess
+# and a pull request does not arrive full of whitespace noise.
+root = true
+
+[*]
+charset = utf-8
+end_of_line = lf
+insert_final_newline = true
+trim_trailing_whitespace = true
+indent_style = space
+indent_size = 2
+
+[*.md]
+# Trailing spaces are meaningful in Markdown: they are a line break.
+trim_trailing_whitespace = false
+
+[*.{yml,yaml}]
+indent_size = 2
+
+[Makefile]
+indent_style = tab

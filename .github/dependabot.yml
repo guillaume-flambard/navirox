@@ -1,0 +1,59 @@
+version: 2
+updates:
+  # One npm entry at the root is enough: the workspace has a single lockfile and
+  # every package in it is resolved from there.
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
+    open-pull-requests-limit: 5
+    groups:
+      # Types and the lint stack move together. Reviewing them one by one is
+      # noise, and they are safe to land as a single pull request.
+      types:
+        patterns:
+          - '@types/*'
+      lint-and-format:
+        patterns:
+          - 'eslint*'
+          - 'typescript-eslint'
+          - 'prettier'
+          - '@changesets/*'
+    ignore:
+      # The Symbiote packages are pinned exactly on purpose, see AGENTS.md. Their
+      # version lines move independently and a floating range once produced a pod
+      # install failure. Bumping them is a deliberate act, not a bot's.
+      - dependency-name: '@symbiote-native/*'
+      # TypeScript is pinned to ~6.0.3 because typescript-eslint@8 declares a
+      # peer of <6.1.0. A minor bump is as likely to break the lint stack as a
+      # major one, so both are held back.
+      - dependency-name: typescript
+        update-types:
+          - version-update:semver-minor
+          - version-update:semver-major
+      # One reconciler, one renderer. These are pinned exactly by the workspace
+      # overrides and a major bump has to be a coordinated change.
+      - dependency-name: react
+        update-types:
+          - version-update:semver-major
+      - dependency-name: react-native
+        update-types:
+          - version-update:semver-major
+    labels:
+      - dependencies
+    commit-message:
+      prefix: 'chore(deps)'
+
+  # The actions in .github/workflows. Nothing was watching them until the Node 20
+  # deprecation warning showed up, which is exactly what this entry prevents.
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
+    labels:
+      - dependencies
+      - ci
+    commit-message:
+      prefix: 'ci(deps)'

@@ -1,0 +1,42 @@
+name: Actions audit
+
+# zizmor reads the workflow files the way an attacker would: which step can be
+# tricked into running someone else's code, which token is wider than the job
+# needs, which action is pinned to a moving target. Supabase and n8n both run
+# it, which is where the idea came from.
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/**'
+  pull_request:
+    paths:
+      - '.github/**'
+  schedule:
+    - cron: '41 4 * * 1'
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  zizmor:
+    name: zizmor
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      actions: read
+      # Needed because the action publishes SARIF to the code scanning tab
+      # rather than printing a log nobody reads.
+      security-events: write
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+
+      - uses: zizmorcore/zizmor-action@v0.6.4
+        with:
+          advanced-security: true

@@ -1,0 +1,6 @@
+# Reviews are requested automatically from the people who own the code.
+#
+# One owner for now, so one line. This file exists while the project is small
+# precisely so that adding a second maintainer later is an edit to a line rather
+# than a decision about whether the file should exist.
+* @guillaume-flambard

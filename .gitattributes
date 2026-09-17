@@ -1,0 +1,16 @@
+# Normalise line endings on the way in. A contributor on Windows should not be
+# able to turn every file in a pull request into a whole-file diff.
+* text=auto eol=lf
+
+# Binary, and never to be touched by a text filter.
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
+*.keystore binary
+*.pbxproj binary
+
+# Generated, so keep them out of diffs and out of language stats.
+pnpm-lock.yaml linguist-generated=true -diff
+*.pbxproj linguist-generated=true
