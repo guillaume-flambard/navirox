@@ -1,5 +1,5 @@
 import { readFileSync } from 'node:fs'
-import { join, resolve } from 'node:path'
+import { dirname, join, resolve } from 'node:path'
 import type { TPlatform } from './args.js'
 import {
   checkToolchain,
@@ -29,8 +29,13 @@ import {
 
 export interface IPackageManager {
   readonly name: 'pnpm' | 'npm' | 'yarn'
-  /** The argv that runs one of the app's own scripts. */
-  readonly run: (script: string) => readonly string[]
+  /**
+   * The argv that runs one of the app's own scripts: the binary first, then its
+   * arguments. Typed as a non-empty tuple because `ICommand` spawns the binary
+   * and the arguments separately, so the two have to be split somewhere, and a
+   * tuple is what lets that split happen without an assertion.
+   */
+  readonly run: (script: string) => readonly [string, ...string[]]
 }
 
 export interface IDevContext {
@@ -64,19 +69,48 @@ export function createDevContext(): IDevContext {
 
 /**
  * The lockfile decides, because that is the file the app's own install wrote.
- * Falling back to npm is what a directory with no lockfile at all would use.
+ * The search walks up from the app rather than looking only beside it, because a
+ * workspace member's install writes its lockfile at the workspace root: an app
+ * inside a pnpm workspace has no `pnpm-lock.yaml` of its own, and reading that
+ * absence as "npm" runs the wrong package manager over a tree pnpm installed.
+ * Falling back to npm is what a directory with no lockfile anywhere above it
+ * uses.
  */
 export function detectPackageManager(
   appDir: string,
   exists: (path: string) => boolean,
 ): IPackageManager {
-  if (exists(join(appDir, 'pnpm-lock.yaml'))) {
-    return { name: 'pnpm', run: (script) => ['pnpm', 'run', script] }
+  const managers: readonly (readonly [string, IPackageManager['name']])[] = [
+    ['pnpm-lock.yaml', 'pnpm'],
+    ['yarn.lock', 'yarn'],
+    ['package-lock.json', 'npm'],
+  ]
+
+  for (let directory = appDir; ; directory = dirname(directory)) {
+    for (const [lockfile, name] of managers) {
+      if (exists(join(directory, lockfile))) {
+        return { name, run: (script) => [name, 'run', script] }
+      }
+    }
+
+    if (dirname(directory) === directory) {
+      return { name: 'npm', run: (script) => ['npm', 'run', script] }
+    }
   }
-  if (exists(join(appDir, 'yarn.lock'))) {
-    return { name: 'yarn', run: (script) => ['yarn', 'run', script] }
-  }
-  return { name: 'npm', run: (script) => ['npm', 'run', script] }
+}
+
+/**
+ * The command the runner spawns for one of the app's scripts.
+ *
+ * `IPackageManager.run` returns a whole argv with the binary first, while
+ * `ICommand` takes the binary and its arguments apart. Handing the argv over as
+ * `args` spawns the binary twice, which is what `pnpm pnpm run dev` was: the dev
+ * server never started, and the failure named a command nobody asked for.
+ */
+function commandFor(packageManager: IPackageManager, script: string, cwd: string): ICommand {
+  const [binary, ...args] = packageManager.run(script)
+
+  return { command: binary, args, cwd }
 }
 
 export async function runDev(
@@ -129,16 +163,8 @@ export async function runDev(
     }
   }
 
-  const devCommand: ICommand = {
-    command: packageManager.name,
-    args: packageManager.run(metroScript),
-    cwd: appDir,
-  }
-  const launchCommand: ICommand = {
-    command: packageManager.name,
-    args: packageManager.run(launchScript),
-    cwd: appDir,
-  }
+  const devCommand = commandFor(packageManager, metroScript, appDir)
+  const launchCommand = commandFor(packageManager, launchScript, appDir)
 
   if (options.json) {
     io.out(

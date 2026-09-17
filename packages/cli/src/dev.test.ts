@@ -112,6 +112,15 @@ describe('detectPackageManager', () => {
     expect(pnpm.run('dev')).toEqual(['pnpm', 'run', 'dev'])
     expect(yarn.run('dev')).toEqual(['yarn', 'run', 'dev'])
   })
+
+  it('finds the lockfile a workspace member does not have of its own', () => {
+    const manager = detectPackageManager(
+      '/repo/examples/my-app',
+      (path) => path === '/repo/pnpm-lock.yaml',
+    )
+
+    expect(manager.name).toBe('pnpm')
+  })
 })
 
 describe('runDev', () => {
@@ -136,12 +145,35 @@ describe('runDev', () => {
     expect(context.started).toHaveLength(1)
     expect(context.started[0]).toEqual({
       command: 'pnpm',
-      args: ['pnpm', 'run', 'dev'],
+      args: ['run', 'dev'],
       cwd: '/app',
     })
-    expect(context.ran).toEqual([{ command: 'pnpm', args: ['pnpm', 'run', 'ios'], cwd: '/app' }])
+    expect(context.ran).toEqual([{ command: 'pnpm', args: ['run', 'ios'], cwd: '/app' }])
     expect(io.errors).toEqual([])
     expect(io.lines).toContain('Navirox dev: ios, dev server on port 8081.')
+  })
+
+  it('names the package manager once, as the command and not also as an argument', async () => {
+    const context = fakeContext()
+    const io = capture()
+
+    await runDev(
+      {
+        cwd: '/app',
+        directory: undefined,
+        platform: 'ios',
+        port: 8081,
+        json: false,
+        skipPreflight: false,
+      },
+      io.io,
+      context,
+    )
+
+    for (const command of [...context.started, ...context.ran]) {
+      expect(command.command).toBe('pnpm')
+      expect(command.args).not.toContain('pnpm')
+    }
   })
 
   it('resolves the directory against the working directory', async () => {
@@ -183,7 +215,7 @@ describe('runDev', () => {
       context,
     )
 
-    expect(context.started[0]?.args).toEqual(['pnpm', 'run', 'start'])
+    expect(context.started[0]?.args).toEqual(['run', 'start'])
   })
 
   it('launches android with the Android toolchain checked', async () => {
@@ -204,7 +236,7 @@ describe('runDev', () => {
     )
 
     expect(exitCode).toBe(0)
-    expect(context.ran[0]?.args).toEqual(['npm', 'run', 'android'])
+    expect(context.ran[0]?.args).toEqual(['run', 'android'])
   })
 
   it('reports the plan as one json line', async () => {
