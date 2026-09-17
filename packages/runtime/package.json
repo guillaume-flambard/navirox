@@ -13,6 +13,10 @@
     ".": {
       "types": "./dist/index.d.ts",
       "default": "./dist/index.js"
+    },
+    "./stub": {
+      "types": "./dist/stub.d.ts",
+      "default": "./dist/stub.js"
     }
   },
   "files": [
@@ -24,7 +28,9 @@
     "test": "vitest run",
     "clean": "rm -rf dist"
   },
-  "dependencies": {},
+  "dependencies": {
+    "vue": "^3.5.43"
+  },
   "devDependencies": {
     "@types/node": "^26.6.1",
     "typescript": "~6.0.3",
