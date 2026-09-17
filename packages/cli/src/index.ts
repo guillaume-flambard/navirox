@@ -25,7 +25,7 @@ export {
   type ICheckResult,
   type IProbe,
   type IToolRequirement,
-} from './preflight.js'
+} from '@navirox/doctor'
 export {
   createNodeRunner,
   METRO_READY_TIMEOUT_MS,

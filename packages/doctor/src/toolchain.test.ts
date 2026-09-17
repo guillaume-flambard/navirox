@@ -9,12 +9,12 @@ import {
   PreflightError,
   requiredTools,
   type IProbe,
-} from './preflight'
+} from './toolchain'
 
 const temporaryRoots: string[] = []
 
 function temporaryRoot(): string {
-  const root = mkdtempSync(join(tmpdir(), 'navirox-preflight-'))
+  const root = mkdtempSync(join(tmpdir(), 'navirox-doctor-toolchain-'))
   temporaryRoots.push(root)
   return root
 }

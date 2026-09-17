@@ -7,7 +7,7 @@ import {
   missingRemedies,
   PreflightError,
   type IProbe,
-} from './preflight.js'
+} from '@navirox/doctor'
 import {
   createNodeRunner,
   METRO_READY_TIMEOUT_MS,

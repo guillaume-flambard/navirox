@@ -1,15 +1,25 @@
 import { accessSync, constants, existsSync } from 'node:fs'
 import { delimiter, join } from 'node:path'
-import type { TPlatform } from './args.js'
 
 /**
- * The native toolchain checks behind `navirox dev`.
+ * The native toolchain checks behind `navirox dev` and `navirox doctor`.
  *
  * Every failure here is something a person can fix in a minute if they are told
  * which thing is missing. That is the whole point: a missing simulator or a
  * missing SDK otherwise surfaces as a stack trace from a build tool that Navirox
  * called, which tells the user nothing about what to install.
+ *
+ * They live in the doctor rather than in the CLI because `navirox dev` refuses
+ * to start without them and `navirox doctor` reports them, and two copies of the
+ * same question would drift the moment one of them learned a new tool.
  */
+
+/**
+ * The platforms a Navirox build targets. Declared here rather than imported from
+ * the CLI, because the doctor is what owns the tool knowledge and importing the
+ * command-line parser into it would point the dependency the wrong way.
+ */
+export type TPlatform = 'ios' | 'android'
 
 export interface IProbe {
   /** Resolves an executable the way a shell would, or undefined when it is not there. */

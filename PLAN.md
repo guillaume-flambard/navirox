@@ -641,7 +641,7 @@ If E1–E4 fail (expected), **V1's ship backend is the raw native toolchain**, o
     and that transform has to coexist with the `react-refresh` layer React
     Native already injects.
 - [x] `navirox dev` works
-- [ ] `navirox doctor` works and is honest (reports `unknown` where unknown)
+- [x] `navirox doctor` works and is honest (reports `unknown` where unknown)
 - [ ] Docs: README + architecture + getting-started
 - [ ] Tests: unit (Vitest), contract (seam), one Detox journey per platform
 - [x] CI: lint, typecheck, test, and a **2-cell** iOS/Android build smoke

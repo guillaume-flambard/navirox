@@ -1,4 +1,6 @@
-import { parseArguments, UsageError, HELP } from './args.js'
+import { resolve } from 'node:path'
+import type { IDoctorDeps } from '@navirox/doctor'
+import { parseArguments, HELP } from './args.js'
 import { createDevContext, runDev, type IDevContext } from './dev.js'
 import type { IDevIo } from './runner.js'
 
@@ -15,11 +17,23 @@ import type { IDevIo } from './runner.js'
  */
 export type ICliIo = IDevIo
 
+/**
+ * What a command needs from the world, per command.
+ *
+ * Both members are optional and the real ones are built on demand, so running
+ * `navirox doctor` neither starts nor needs anything the dev server owns, and a
+ * test supplies only the half it is exercising.
+ */
+export interface ICliContext {
+  readonly dev?: IDevContext
+  readonly doctor?: IDoctorDeps
+}
+
 export async function runCli(
   argv: readonly string[],
   io: ICliIo,
   cwd: string = process.cwd(),
-  context?: IDevContext,
+  context: ICliContext = {},
 ): Promise<number> {
   let parsed
   try {
@@ -32,11 +46,33 @@ export async function runCli(
     io.out(HELP)
     return 0
   }
-  if (parsed.command !== 'dev') {
-    return reportFailure(
-      new UsageError('A command is required. The only command today is dev.'),
-      io,
-    )
+
+  const directory = parsed.directory === undefined ? cwd : resolve(cwd, parsed.directory)
+
+  if (parsed.command === 'doctor') {
+    try {
+      // Imported here rather than at the top so the report pays for nothing the
+      // dev server needs, which is what keeps `navirox doctor` quick on a machine
+      // where something is already wrong.
+      const { createDoctorDeps, exitCodeFor, renderReport, reportToJson, runDoctor } =
+        await import('@navirox/doctor')
+      const report = runDoctor(
+        { directory, platform: parsed.platform },
+        context.doctor ?? createDoctorDeps(),
+      )
+
+      if (parsed.json) {
+        io.out(reportToJson(report).trimEnd())
+      } else {
+        for (const line of renderReport(report).split('\n')) {
+          io.out(line)
+        }
+      }
+
+      return exitCodeFor(report)
+    } catch (error) {
+      return reportFailure(error, io)
+    }
   }
 
   try {
@@ -50,7 +86,7 @@ export async function runCli(
         skipPreflight: parsed.skipPreflight,
       },
       io,
-      context ?? createDevContext(),
+      context.dev ?? createDevContext(),
     )
   } catch (error) {
     return reportFailure(error, io)
