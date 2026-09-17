@@ -4,6 +4,7 @@ on:
   pull_request:
   push:
     branches: [main]
+  workflow_dispatch:
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -48,3 +49,63 @@ jobs:
       - run: pnpm lint
       - run: pnpm format:check
       - run: pnpm deps:check
+
+  e2e:
+    name: scaffold, install and build for Android
+    runs-on: ubuntu-latest
+    steps:
+      # Same pins as the job above, for the same reason: a tag is a moving target.
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6.1.0
+
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: 24.x
+          cache: pnpm
+
+      # The scaffolded app is a React Native project, so its Android build wants
+      # the JDK that framework documents rather than whichever one the image
+      # happens to ship.
+      - uses: actions/setup-java@de7274f081f381c8f8158605e0321c36c376e2e6 # v6.0.1
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm build
+
+      # Scaffolds into a temporary directory, installs the app there, checks the
+      # linked packages and the help text, then builds the Android app. This is
+      # the only check that runs a scaffolded app for real, and it exists because
+      # three scaffolder faults were invisible until an app was installed.
+      - run: node scripts/e2e-scaffold.mjs --build android
+
+  e2e-ios:
+    name: scaffold, install and build for iOS
+    # A macOS runner costs several times a Linux one and the build takes minutes,
+    # so iOS is verified on main and on demand rather than on every pull request.
+    if: github.event_name != 'pull_request'
+    runs-on: macos-latest
+    steps:
+      # Same pins as the verify job, for the same reason.
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6.1.0
+
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: 24.x
+          cache: pnpm
+
+      # CocoaPods turns the app's Podfile into the workspace the build needs, and
+      # the runner images do not always ship a usable one.
+      - run: pod --version || sudo gem install cocoapods --no-document
+
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm build
+      - run: node scripts/e2e-scaffold.mjs --build ios
