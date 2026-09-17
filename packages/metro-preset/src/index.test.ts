@@ -1,4 +1,4 @@
-import { mkdtempSync, readFileSync } from 'node:fs'
+import { mkdirSync, mkdtempSync, readFileSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { describe, expect, it } from 'vitest'
@@ -101,11 +101,45 @@ describe('withNavirox', () => {
   })
 })
 
+/**
+ * Builds a throwaway app root with its own copy of the Metro helper.
+ *
+ * A real `<root>/node_modules` entry is what makes these tests hermetic. Node
+ * consults the local `node_modules` chain before any global fallback, and the
+ * runner exposes pnpm's hoisted store as one of those globals, so a bare temp
+ * directory would silently resolve the workspace's own copy of the helper and
+ * both cases below would take the wrong branch.
+ */
+function appRootWithMetroHelper(source: string): string {
+  const root = mkdtempSync(join(tmpdir(), 'navirox-metro-'))
+  writeFileSync(join(root, 'package.json'), JSON.stringify({ name: 'fake-app', private: true }))
+  const helper = join(root, 'node_modules', '@react-native', 'metro-config')
+  mkdirSync(helper, { recursive: true })
+  writeFileSync(
+    join(helper, 'package.json'),
+    JSON.stringify({ name: '@react-native/metro-config', main: 'index.js' }),
+  )
+  writeFileSync(join(helper, 'index.js'), source)
+  return root
+}
+
 describe('createNaviroxConfig', () => {
+  it("loads the app's own Metro helper, and layers the preset on top of it", () => {
+    const root = appRootWithMetroHelper(
+      "module.exports = { getDefaultConfig: (root) => ({ projectRoot: root, watchFolders: ['/app'] }) }\n",
+    )
+    const config = createNaviroxConfig({ projectRoot: root })
+    expect(config.projectRoot).toBe(root)
+    expect(config.watchFolders).toEqual(['/app'])
+    expect(config.transformer?.babelTransformerPath).toBe(symbioteVueTransformerPath())
+    expect(config.resolver?.sourceExts).toContain('vue')
+  })
+
   it('fails with an actionable message when the app has no Metro helper', () => {
-    const emptyRoot = mkdtempSync(join(tmpdir(), 'navirox-metro-'))
-    expect(() => createNaviroxConfig({ projectRoot: emptyRoot })).toThrow(
+    const root = appRootWithMetroHelper('module.exports = {}\n')
+    expect(() => createNaviroxConfig({ projectRoot: root })).toThrow(
       /could not load @react-native\/metro-config from/,
     )
+    expect(() => createNaviroxConfig({ projectRoot: root })).toThrow(/withNavirox/)
   })
 })
