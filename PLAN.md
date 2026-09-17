@@ -620,7 +620,7 @@ If E1–E4 fail (expected), **V1's ship backend is the raw native toolchain**, o
 
 - [x] `npm create navirox` scaffolds a runnable project
 - [x] Vue 3 + SFC + `<script setup>` + TypeScript
-- [ ] Pinia works; a store shared across screens
+- [x] Pinia works; a store shared across screens
 - [x] Native primitives render: `view`, `text`, `pressable`, `text-input`, `scroll-view`, plus `Image`, `FlatList`
 - [ ] `@navirox/native`: haptics + secure storage (both platforms)
 - [x] **iOS** and **Android** both run the canary

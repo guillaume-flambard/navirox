@@ -3,10 +3,14 @@
 
   1. Proof A. A Vue 3 single file component with real reactivity renders as
      native views on iOS and Android through the Navirox runtime.
-  2. The NX-005 acceptance criterion. The <style scoped> block at the bottom is
+   2. The NX-005 acceptance criterion. The <style scoped> block at the bottom is
      ordinary CSS. Metro compiles it through the Vue SFC transformer and the CSS
      parser into native style objects, so if the card below is laid out and
      coloured correctly then the preset is wired.
+  3. The Pinia proof. The counter is no longer this component's state: it lives in
+     `stores/canary.ts`, and the two sibling components below share that one
+     instance, one writing and one reading. Pinia reaches the app through the
+     runtime's `configure` seam, so nothing here imports the renderer.
 
   Most of the tags are renderer intrinsics. `<view>`, `<text>`, `<pressable>`,
   `<text-input>`, `<scroll-view>` and `<image>` are lowercase because they are
@@ -18,12 +22,8 @@
 -->
 <script setup lang="ts">
 import { FlatList } from '@navirox/ui';
-import { computed, ref } from 'vue';
-
-const count = ref(0);
-const doubled = computed(() => count.value * 2);
-const history = ref<number[]>([]);
-const name = ref('');
+import CounterControls from './components/CounterControls.vue';
+import CounterReadout from './components/CounterReadout.vue';
 
 /** The primitives this app promises to render, shown as a scrollable strip. */
 const primitives = [
@@ -54,16 +54,6 @@ function keyOf(row: { id: string }): string {
  */
 const PIXEL =
   'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8DwHwAFAAH/q842iQAAAABJRU5ErkJggg==';
-
-function increment(): void {
-  count.value += 1;
-  history.value = [...history.value, count.value].slice(-5);
-}
-
-function reset(): void {
-  count.value = 0;
-  history.value = [];
-}
 </script>
 
 <template>
@@ -72,31 +62,12 @@ function reset(): void {
       <text class="eyebrow">NAVIROX BASIC</text>
       <text class="title">Reactive Vue, native views</text>
       <text class="body">
-        A ref, a computed and a list, all driving native views. No web layer in
-        between.
+        A store, a computed and a list, all driving native views. No web layer
+        in between.
       </text>
 
-      <view class="counter">
-        <text class="count">{{ count }}</text>
-        <text class="caption">presses</text>
-      </view>
-
-      <view class="row">
-        <pressable class="button" @press="increment">
-          <text class="button-label">Press me</text>
-        </pressable>
-        <pressable class="button ghost" @press="reset">
-          <text class="button-label ghost-label">Reset</text>
-        </pressable>
-      </view>
-
-      <text class="computed">doubled: {{ doubled }}</text>
-      <text v-if="history.length" class="computed"
-        >recent: {{ history.join(', ') }}</text
-      >
-
-      <text-input v-model="name" class="input" placeholder="Type a name" />
-      <text class="computed">hello {{ name === '' ? 'nobody' : name }}</text>
+      <CounterReadout />
+      <CounterControls />
 
       <horizontal-scroll-view class="strip">
         <view v-for="primitive in primitives" :key="primitive" class="chip">
@@ -151,71 +122,6 @@ function reset(): void {
   font-size: 14;
   color: #aab4cc;
   margin-bottom: 14;
-}
-
-.counter {
-  align-items: center;
-  margin-bottom: 14;
-}
-
-.count {
-  font-size: 44;
-  font-weight: 800;
-  color: #5b8cff;
-}
-
-.caption {
-  font-size: 12;
-  letter-spacing: 1;
-  color: #7c8db5;
-}
-
-.row {
-  flex-direction: row;
-  margin-bottom: 12;
-}
-
-.button {
-  flex: 1;
-  padding: 12;
-  border-radius: 10;
-  align-items: center;
-  background-color: #5b8cff;
-  margin-right: 8;
-}
-
-.ghost {
-  background-color: transparent;
-  border-width: 1;
-  border-color: #38425e;
-  margin-right: 0;
-}
-
-.button-label {
-  font-size: 15;
-  font-weight: 600;
-  color: #ffffff;
-}
-
-.ghost-label {
-  color: #aab4cc;
-}
-
-.computed {
-  font-size: 13;
-  color: #7c8db5;
-  margin-bottom: 4;
-}
-
-.input {
-  padding: 10;
-  border-radius: 10;
-  border-width: 1;
-  border-color: #38425e;
-  background-color: #0f1526;
-  color: #ffffff;
-  margin-top: 8;
-  margin-bottom: 6;
 }
 
 .strip {

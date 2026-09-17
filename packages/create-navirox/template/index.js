@@ -12,11 +12,20 @@
  * `mount` registers the root component under the app key the native shell
  * already knows about, which is the same `name` the iOS and Android projects
  * pass to React Native.
+ *
+ * `configure` is the one place an app is handed the Vue app the renderer creates,
+ * before it mounts, and Pinia is installed there. Pinia has to be installed on the
+ * app rather than imported where it is used, so this is the only entry point it
+ * has. The alternative, a global, would tie the app to a single store instance
+ * and break the moment two apps run in one process.
  */
 import { createSymbioteRuntime } from '@navirox/runtime-symbiote/bootstrap';
+import { createPinia } from 'pinia';
 import App from './App';
 import { name as appName } from './app.json';
 
-const runtime = createSymbioteRuntime();
+const runtime = createSymbioteRuntime({
+  configure: app => app.use(createPinia()),
+});
 
 runtime.mount(App, { name: appName });

@@ -21,7 +21,9 @@
     "@symbiote-native/css-parser": "0.5.0",
     "@symbiote-native/engine": "0.5.0",
     "@symbiote-native/vue": "2.0.0",
+    "@vue/devtools-api": "^8.2.1",
     "@vue/runtime-core": "^3.5.43",
+    "pinia": "^4.0.3",
     "react": "19.2.3",
     "react-native": "0.86.0"
   },
