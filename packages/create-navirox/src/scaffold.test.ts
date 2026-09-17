@@ -79,6 +79,8 @@ describe('scaffoldApp', () => {
     expect(existsSync(join(targetDir, 'ios/MyApp.xcworkspace'))).toBe(true)
     expect(existsSync(join(targetDir, 'ios/MyApp'))).toBe(true)
     expect(existsSync(join(targetDir, 'ios/MyApp.xcodeproj/project.pbxproj'))).toBe(true)
+    expect(existsSync(join(targetDir, 'ios/MyApp/MyApp-Bridging-Header.h'))).toBe(true)
+    expect(existsSync(join(targetDir, 'ios/MyApp/VueBasic-Bridging-Header.h'))).toBe(false)
     expect(existsSync(join(targetDir, 'ios/VueBasic.xcodeproj'))).toBe(false)
     expect(existsSync(join(targetDir, 'android/app/src/main/java/dev/navirox/myapp'))).toBe(true)
     expect(existsSync(join(targetDir, 'android/app/src/main/java/dev/navirox/vuebasic'))).toBe(

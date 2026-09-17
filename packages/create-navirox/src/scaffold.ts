@@ -182,11 +182,22 @@ function countFiles(directory: string): number {
 /**
  * Renames the paths that carry the identity, deepest first so a rename never
  * invalidates a path that has not been visited yet.
+ *
+ * Files carry the identity too, not only directories. The bridging header is
+ * named after the target, and the rewrite above points the Xcode project at the
+ * new name, so leaving the file behind produces a build that fails on a missing
+ * input rather than anything that reads like a naming problem. Each file is
+ * renamed where it sits, inside the directory that still carries the template
+ * name, and the directory rename below carries it to its final home.
  */
 function renameIdentityPaths(targetDir: string, names: IAppNames): void {
   const slug = packageSlug(names)
 
   const renames: readonly (readonly [string, string])[] = [
+    [
+      join('ios', TEMPLATE_PASCAL_NAME, `${TEMPLATE_PASCAL_NAME}-Bridging-Header.h`),
+      join('ios', TEMPLATE_PASCAL_NAME, `${names.pascalName}-Bridging-Header.h`),
+    ],
     [
       join('ios', 'VueBasic.xcodeproj', 'xcshareddata', 'xcschemes', 'VueBasic.xcscheme'),
       join(
