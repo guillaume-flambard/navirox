@@ -1,0 +1,9 @@
+# Navirox workspace members.
+#
+# Only `packages/*` are members. Mirroring upstream SymbioteNative's deliberate
+# choice, everything under `examples/` is a STANDALONE npm project: it installs
+# published versions from the real registry and is never linked into the
+# workspace. That keeps our canaries on the consumer path we actually ship, and
+# keeps pnpm's dependency guards from rewiring them.
+packages:
+  - 'packages/*'

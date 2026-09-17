@@ -1,0 +1,20 @@
+{
+  "$schema": "https://json.schemastore.org/tsconfig",
+  "files": [],
+  "references": [
+    { "path": "./packages/runtime" },
+    { "path": "./packages/runtime-symbiote" },
+    { "path": "./packages/ui" },
+    { "path": "./packages/native" },
+    { "path": "./packages/router" },
+    { "path": "./packages/config" },
+    { "path": "./packages/metro-preset" },
+    { "path": "./packages/compat" },
+    { "path": "./packages/doctor" },
+    { "path": "./packages/inspect" },
+    { "path": "./packages/migrate" },
+    { "path": "./packages/build" },
+    { "path": "./packages/cli" },
+    { "path": "./packages/create-navirox" }
+  ]
+}

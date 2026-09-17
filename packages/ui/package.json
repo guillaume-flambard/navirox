@@ -1,0 +1,38 @@
+{
+  "name": "@navirox/ui",
+  "version": "0.0.0",
+  "description": "Curated native component facade: View, Text, Pressable, ScrollView, TextInput, FlatList.",
+  "license": "MIT",
+  "type": "module",
+  "engines": {
+    "node": ">=22.13.0"
+  },
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc --build",
+    "typecheck": "tsc --build",
+    "test": "vitest run",
+    "clean": "rm -rf dist"
+  },
+  "dependencies": {
+    "@navirox/runtime": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/node": "^26.6.1",
+    "typescript": "~6.0.3",
+    "vitest": "^5.0.1"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}

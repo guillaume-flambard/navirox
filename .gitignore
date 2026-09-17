@@ -1,0 +1,21 @@
+node_modules/
+dist/
+*.tsbuildinfo
+.turbo/
+
+coverage/
+*.log
+.DS_Store
+
+.env
+.env.*
+!.env.example
+
+# Native build output. The generated projects themselves are committed once an
+# app exists; their build products never are.
+**/ios/Pods/
+**/ios/build/
+**/android/.gradle/
+**/android/build/
+**/android/app/build/
+**/android/local.properties

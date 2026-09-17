@@ -1,0 +1,19 @@
+{
+  "semverGroups": [
+    {
+      "label": "Symbiote packages are pinned exactly. Their version lines move independently and a floating range has already been shown to break pod install upstream.",
+      "range": "",
+      "dependencies": ["@symbiote-native/**"]
+    },
+    {
+      "label": "TypeScript stays on the 6.x line: typescript-eslint@8 peers a version below 6.1.0, so the TypeScript 7 line is not usable yet.",
+      "range": "~",
+      "dependencies": ["typescript"]
+    },
+    {
+      "label": "Caret ranges for everything else. Must stay last: syncpack applies the first matching group, so a catch-all placed first would shadow the rules above.",
+      "range": "^",
+      "dependencies": ["**"]
+    }
+  ]
+}
