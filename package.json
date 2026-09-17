@@ -14,7 +14,7 @@
     "build": "turbo run build",
     "typecheck": "turbo run typecheck",
     "test": "turbo run test",
-    "test:e2e": "node scripts/e2e-scaffold.mjs",
+    "test:e2e": "node scripts/e2e-scaffold.mjs --bundle",
     "lint": "eslint \"packages/*/src/**/*.ts\"",
     "format": "prettier --write .",
     "format:check": "prettier --check .",

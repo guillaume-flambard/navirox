@@ -78,10 +78,14 @@ jobs:
       - run: pnpm build
 
       # Scaffolds into a temporary directory, installs the app there, checks the
-      # linked packages and the help text, then builds the Android app. This is
-      # the only check that runs a scaffolded app for real, and it exists because
-      # three scaffolder faults were invisible until an app was installed.
-      - run: node scripts/e2e-scaffold.mjs --build android
+      # linked packages and the help text, bundles both platforms with Metro, then
+      # builds the Android app. This is the only check that runs a scaffolded app
+      # for real, and it exists because four scaffolder faults were invisible
+      # until an app was installed. The bundle runs first and is the cheap half of
+      # it: Metro needs no native toolchain and takes seconds, while compiling
+      # native code never runs Metro at all, which is how the template once shipped
+      # without the package the SFC transform writes into every component.
+      - run: node scripts/e2e-scaffold.mjs --bundle --build android
 
   e2e-ios:
     name: scaffold, install and build for iOS

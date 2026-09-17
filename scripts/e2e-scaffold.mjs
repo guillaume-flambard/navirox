@@ -8,22 +8,34 @@
  * platform build takes minutes with a native toolchain, so it runs as its own
  * job instead of slowing down the suite a contributor runs on every save.
  *
- * It exists because three real bugs in the scaffolder were invisible to unit
+ * It exists because four real bugs in the scaffolder were invisible to unit
  * tests: a `file:` range computed lexically while a package manager resolves it
  * physically, a `file:` link dragging the linked package's own workspace ranges
- * along with it, and pnpm refusing to install an app that never declared
- * `allowBuilds`. All three only appeared once a scaffolded app was actually
- * installed. So this script scaffolds a real app and installs it.
+ * along with it, pnpm refusing to install an app that never declared
+ * `allowBuilds`, and an app that could not bundle because it never declared a
+ * package the SFC transform writes into a component. The first three only
+ * appeared once a scaffolded app was actually installed. The fourth only appears
+ * once Metro runs, which compiling native code never does.
  *
  * Usage:
- *   node scripts/e2e-scaffold.mjs [--build android] [--build ios] [--keep]
+ *   node scripts/e2e-scaffold.mjs [--bundle] [--build android] [--build ios] [--keep]
  *
- * `--build` may be repeated. `--keep` leaves the temporary app in place so it
- * can be inspected after a failure.
+ * `--build` may be repeated. `--bundle` bundles both platforms with Metro, which
+ * needs no native toolchain and takes seconds, so it is the cheap half of this
+ * check. `--keep` leaves the temporary app in place so it can be inspected after
+ * a failure.
  */
 
 import { spawnSync } from 'node:child_process'
-import { existsSync, lstatSync, mkdtempSync, readFileSync, rmSync } from 'node:fs'
+import {
+  existsSync,
+  lstatSync,
+  mkdtempSync,
+  readFileSync,
+  rmSync,
+  statSync,
+  writeFileSync,
+} from 'node:fs'
 import { tmpdir } from 'node:os'
 import { dirname, join, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
@@ -34,13 +46,15 @@ const APP_NAME = 'E2E App'
 const LINKED_PACKAGES = ['cli', 'metro-preset', 'runtime-symbiote']
 
 function parseArguments(argv) {
-  const options = { builds: [], keep: false }
+  const options = { builds: [], bundle: false, keep: false }
 
   for (let index = 0; index < argv.length; index += 1) {
     const argument = argv[index]
 
     if (argument === '--keep') {
       options.keep = true
+    } else if (argument === '--bundle') {
+      options.bundle = true
     } else if (argument === '--build') {
       const platform = argv[index + 1]
       index += 1
@@ -59,8 +73,12 @@ function parseArguments(argv) {
 }
 
 /** Runs a command and lets its output through, for steps a human wants to read. */
-function run(command, args, cwd) {
-  const result = spawnSync(command, args, { cwd, stdio: 'inherit' })
+function run(command, args, cwd, env) {
+  const result = spawnSync(command, args, {
+    cwd,
+    stdio: 'inherit',
+    env: { ...process.env, ...env },
+  })
 
   if (result.error !== undefined && result.error !== null) {
     throw new Error(`Could not run ${command}: ${result.error.message}`)
@@ -204,6 +222,71 @@ function buildIos(appDir) {
   assert(status === 0, `The iOS build exited ${status}.`)
 }
 
+/**
+ * Bundles the app with Metro, which is the only step here that runs the
+ * JavaScript pipeline. It catches what nothing else does: a component that type
+ * checks, builds on both platforms, and still cannot bundle.
+ *
+ * The wrapper config exists because `@navirox/*` is not published yet, so the
+ * scaffolder links those packages into the app with `file:` ranges and their
+ * sources sit in this checkout instead of in the app. Metro watches and searches
+ * only the project root, so it cannot follow a link that leaves the app, and
+ * transforming those out-of-app files then needs `@babel/runtime` reachable from
+ * them, because the React Native Babel preset turns on transform-runtime for
+ * every module it compiles. The wrapper requires the app's own config and adds
+ * the two roots, so the transformer, the source extensions and the Vue pipeline
+ * are all still the ones the template ships. A published app installs everything
+ * inside its own root and needs none of this, which is why the template carries
+ * no such file.
+ */
+function bundle(appDir, workspace, platform) {
+  step(`Bundling ${platform}`)
+
+  writeFileSync(
+    join(appDir, 'metro.e2e.config.js'),
+    [
+      "const { join } = require('node:path');",
+      "const config = require('./metro.config.js');",
+      'const repoRoot = process.env.NAVIROX_E2E_REPO;',
+      'config.watchFolders = [__dirname, repoRoot];',
+      "config.resolver.nodeModulesPaths = [join(__dirname, 'node_modules'), join(repoRoot, 'node_modules')];",
+      'module.exports = config;',
+      '',
+    ].join('\n'),
+  )
+
+  const output = join(workspace, `index.${platform}.bundle`)
+  const status = run(
+    join(appDir, 'node_modules', '.bin', 'react-native'),
+    [
+      'bundle',
+      '--platform',
+      platform,
+      '--dev',
+      'true',
+      '--entry-file',
+      'index.js',
+      '--bundle-output',
+      output,
+      '--config',
+      'metro.e2e.config.js',
+    ],
+    appDir,
+    { NAVIROX_E2E_REPO: REPO_ROOT },
+  )
+
+  assert(status === 0, `Bundling for ${platform} exited ${status}, so the app does not bundle.`)
+  assert(existsSync(output), `Metro exited cleanly but wrote no ${platform} bundle.`)
+
+  const { size } = statSync(output)
+  assert(
+    size > 1_000_000,
+    `The ${platform} bundle is ${size} bytes, which is too small to be real.`,
+  )
+
+  process.stdout.write(`   ${platform}: ${Math.round(size / 1000)} kB\n`)
+}
+
 function main() {
   const options = parseArguments(process.argv.slice(2))
 
@@ -219,6 +302,12 @@ function main() {
     install(appDir)
     assertLinkedPackages(appDir)
     assertHelp(appDir)
+
+    if (options.bundle) {
+      for (const platform of ['ios', 'android']) {
+        bundle(appDir, workspace, platform)
+      }
+    }
 
     for (const platform of options.builds) {
       if (platform === 'android') {
