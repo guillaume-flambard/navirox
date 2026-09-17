@@ -625,6 +625,21 @@ If E1–E4 fail (expected), **V1's ship backend is the raw native toolchain**, o
 - [ ] `@navirox/native`: haptics + secure storage (both platforms)
 - [x] **iOS** and **Android** both run the canary
 - [ ] Fast Refresh / HMR for SFC and stores
+  - Measured with the app running, not assumed: a one-word edit in `App.vue`
+    reaches the device, but the app reloads whole. The counter read `3` presses,
+    `doubled: 6` and `recent: 1, 2, 3` before the edit, and `0`, `0` with no
+    `recent` line after it, so the store was rebuilt. Metro logs no
+    `hmr`/`accept`/`reload` line, only a second full `BUNDLE ./index.js`: nothing
+    in the bundle accepts the update, so Metro falls back to a reload.
+  - Nothing wires it today. The upstream Vue adapter only survives React
+    Native's Fast Refresh (one Vue app per surface, re-mounted on
+    `RN$stopSurface`) and never touches `__VUE_HMR_RUNTIME__` or
+    `import.meta.hot`, while Metro's generic API (`module.hot.accept` and
+    `dispose`, in `metro-runtime`'s `require` polyfill) is never called. Wiring
+    it means a dev-only transform in `@navirox/metro-preset` that registers each
+    SFC and its `<style>` block with Vue's HMR runtime and accepts the update,
+    and that transform has to coexist with the `react-refresh` layer React
+    Native already injects.
 - [x] `navirox dev` works
 - [ ] `navirox doctor` works and is honest (reports `unknown` where unknown)
 - [ ] Docs: README + architecture + getting-started
