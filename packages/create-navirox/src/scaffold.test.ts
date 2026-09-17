@@ -215,3 +215,32 @@ describe('scaffoldApp', () => {
     )
   })
 })
+
+/**
+ * The Vue SFC transform reads every `.vue` file in an app, and it does not only
+ * rewrite what that file already imports. It builds a preamble and injects
+ * `import { ... } from '@symbiote-native/engine'` into the module it generates,
+ * and it retargets the app's own `from 'vue'` to
+ * `@symbiote-native/vue/runtime-helpers`. Both specifiers are then resolved from
+ * the app's file, so the app is the one that has to declare them.
+ *
+ * Nothing else in the repo notices when one is missing. Type checking sees a
+ * `.vue` file whose imports are all accounted for, the unit tests never compile
+ * a component, and the e2e installs the app and builds both platforms without
+ * ever running Metro, which is all that a bundle needs. The only thing that
+ * fails is a bundle, the only place a bundle runs is a device or a simulator,
+ * and the failure reads as a missing package rather than a missing declaration.
+ */
+describe('the template manifest', () => {
+  const manifest = JSON.parse(readFileSync(join(TEMPLATE_DIRECTORY, 'package.json'), 'utf8')) as {
+    dependencies?: Record<string, string>
+  }
+
+  it('declares the Symbiote packages the SFC transform writes into a component', () => {
+    // Both are pinned exactly, like the rest of the Symbiote packages here. The
+    // engine pin has to agree with `@navirox/runtime-symbiote`'s manifest of
+    // record, which is one more reason a range would be the wrong choice.
+    expect(manifest.dependencies?.['@symbiote-native/engine']).toBe('0.5.0')
+    expect(manifest.dependencies?.['@symbiote-native/vue']).toBeDefined()
+  })
+})
