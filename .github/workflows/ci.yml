@@ -31,7 +31,7 @@ jobs:
 
       # Reads `packageManager` from package.json, so CI uses the same pnpm
       # version as every developer and the lockfile stays stable.
-      - uses: pnpm/action-setup@0977fd99725f1db4007ccb2928dbb4e90d06cc86 # v6.0.10
+      - uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6.1.0
 
       # Node 24 is what this project is developed and verified against. The
       # `engines` floor in package.json stays where upstream puts it, because
