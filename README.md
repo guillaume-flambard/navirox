@@ -68,8 +68,8 @@ back into the renderer is the failure mode this layout exists to prevent.
 | `@navirox/native`           | Vue-first native API surface (haptics, storage, camera, location) over a pluggable provider.             | Surface declared |
 | `@navirox/router`           | File-based routing plus a generated, fully typed route manifest.                                         | Surface declared |
 | `@navirox/config`           | `defineNaviroxConfig` and its schema.                                                                    | Declared         |
-| `@navirox/cli`              | The `navirox` command line interface.                                                                    | Declared         |
-| `create-navirox`            | Scaffolder invoked by `npm create navirox`.                                                              | Declared         |
+| `@navirox/cli`              | The `navirox` command line interface.                                                                    | `dev` works      |
+| `create-navirox`            | Scaffolder invoked by `npm create navirox`.                                                              | Implemented      |
 | `@navirox/doctor`           | Environment and dependency diagnostics behind `navirox doctor`.                                          | Declared         |
 | `@navirox/inspect`          | Native-readiness detection and classification behind `navirox inspect`.                                  | Declared         |
 | `@navirox/migrate`          | AST-based codemods that move Vue and Nuxt code onto the native stack.                                    | Declared         |
@@ -98,12 +98,14 @@ review comments come back to one of them.
 
 ## Roadmap
 
-`PLAN.md` holds the task list. The renderer, the runtime seam and the Metro
-preset are done; the scaffolder and `navirox dev` are next, because the upstream
-project this wraps once documented that the quickest way to try it was to run an
-example rather than a published scaffolder, and no scaffolder exists. Everything
-after that, from `navirox doctor` to the compatibility registry and the migration
-codemods, is ordered in `PLAN.md` with its dependencies.
+`PLAN.md` holds the task list. The renderer, the runtime seam, the Metro preset,
+the scaffolder and `navirox dev` are done: a generated app installs from package
+artifacts and boots on a simulator from its own install. Upstream once documented
+that the quickest way to try it was to run an example rather than a published
+scaffolder, and that gap is why the scaffolder was Navirox's first deliverable
+rather than a wrapper. Everything after that, from `navirox doctor` to the
+compatibility registry and the migration codemods, is ordered in `PLAN.md` with
+its dependencies.
 
 ## Documentation
 
