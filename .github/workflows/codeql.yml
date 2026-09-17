@@ -27,11 +27,18 @@ jobs:
       actions: read
       contents: read
     steps:
-      - uses: actions/checkout@v7
+      # Pinned to a commit, with the version as a comment for the reader. A tag
+      # is a moving target, and this job holds a token that can write to the
+      # security tab. `persist-credentials: false` keeps the checkout token out
+      # of the workspace, where a later step could pick it up.
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
 
       # No build step: CodeQL reads JavaScript and TypeScript without one, so
       # there is nothing here that can drift from how the packages are compiled.
-      - uses: github/codeql-action/init@v4
+      # Both steps come from the same release and move together.
+      - uses: github/codeql-action/init@b96794f015dfd88f77b49b1c93e0fa7110f94c63 # v4.38.0
         with:
           languages: javascript-typescript
           # security-and-quality trades a few more findings for a few more
@@ -39,6 +46,6 @@ jobs:
           # and no server to notice a problem instead.
           queries: security-and-quality
 
-      - uses: github/codeql-action/analyze@v4
+      - uses: github/codeql-action/analyze@b96794f015dfd88f77b49b1c93e0fa7110f94c63 # v4.38.0
         with:
           category: '/language:javascript-typescript'

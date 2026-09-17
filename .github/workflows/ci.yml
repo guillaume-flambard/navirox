@@ -9,21 +9,34 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
+# Nothing here writes to the repository, so the token should not be able to.
+# Without this the job inherits whatever the repository default is, which is
+# wider than this workflow needs.
+permissions:
+  contents: read
+
 jobs:
   verify:
     name: install / build / typecheck / test
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v7
+      # Actions are pinned to a commit rather than a tag, with the version kept
+      # beside it as a comment so a reader still knows what they are looking at.
+      # A tag is a moving target: whoever controls the action can point it at new
+      # code, and the next run executes it unreviewed. Dependabot understands
+      # this form and opens a pull request to move the pin.
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
 
       # Reads `packageManager` from package.json, so CI uses the same pnpm
       # version as every developer and the lockfile stays stable.
-      - uses: pnpm/action-setup@v6
+      - uses: pnpm/action-setup@0977fd99725f1db4007ccb2928dbb4e90d06cc86 # v6.0.10
 
       # Node 24 is what this project is developed and verified against. The
       # `engines` floor in package.json stays where upstream puts it, because
       # that floor is a promise to consumers rather than a target for us.
-      - uses: actions/setup-node@v7
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
           node-version: 24.x
           cache: pnpm
