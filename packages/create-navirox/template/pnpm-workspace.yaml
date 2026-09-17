@@ -1,0 +1,11 @@
+# Package manager settings for this app. This file is not a monorepo marker:
+# with no `packages` field, only this app is in the workspace. It exists because
+# pnpm keeps its non-auth settings here and one of them has to be declared.
+#
+# Metro can pull in a native file watcher, and pnpm will not run a build script
+# it has not been told about. Left unset, pnpm writes its own placeholder into
+# this file and the install then fails, because a placeholder is not a boolean.
+# The native watcher is declined on purpose: `navirox dev` checks for watchman,
+# which watches files just as well and compiles nothing.
+allowBuilds:
+  '@parcel/watcher': false

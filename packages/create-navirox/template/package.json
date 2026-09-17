@@ -1,0 +1,54 @@
+{
+  "name": "vue-basic",
+  "version": "0.0.0",
+  "private": true,
+  "description": "The Navirox basic example: a Vue 3 single file component rendering native views through @navirox/*.",
+  "scripts": {
+    "android": "react-native run-android",
+    "android:release": "react-native run-android --mode Release",
+    "ios": "react-native run-ios",
+    "ios:release": "react-native run-ios --mode Release",
+    "start": "react-native start",
+    "dev": "react-native start --reset-cache",
+    "lint": "eslint .",
+    "pretypecheck": "css-dts .",
+    "typecheck": "vue-tsc --noEmit -p tsconfig.typecheck.json"
+  },
+  "dependencies": {
+    "@navirox/metro-preset": "workspace:*",
+    "@navirox/runtime-symbiote": "workspace:*",
+    "@symbiote-native/css-parser": "0.5.0",
+    "@symbiote-native/vue": "2.0.0",
+    "@vue/runtime-core": "^3.5.43",
+    "react": "19.2.3",
+    "react-native": "0.86.0"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.25.2",
+    "@babel/preset-env": "^7.25.3",
+    "@babel/runtime": "^7.25.0",
+    "@navirox/cli": "workspace:*",
+    "@react-native-community/cli": "20.1.0",
+    "@react-native-community/cli-platform-android": "20.1.0",
+    "@react-native-community/cli-platform-ios": "20.1.0",
+    "@react-native/babel-preset": "0.86.0",
+    "@react-native/codegen": "0.86.0",
+    "@react-native/gradle-plugin": "0.86.0",
+    "@react-native/metro-config": "0.86.0",
+    "@react-native/typescript-config": "0.86.0",
+    "@types/node": "^26.6.1",
+    "@types/react": "^19.2.0",
+    "eslint": "^10.10.0",
+    "eslint-plugin-vue": "^10.11.0",
+    "less": "^4.6.7",
+    "prettier": "^3.9.7",
+    "sass": "^1.101.0",
+    "stylus": "^0.64.0",
+    "typescript": "~6.0.3",
+    "vue": "^3.5.43",
+    "vue-tsc": "^2.2.12"
+  },
+  "engines": {
+    "node": ">= 22.13.0"
+  }
+}
