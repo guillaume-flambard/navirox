@@ -13,7 +13,12 @@
     ".": {
       "types": "./dist/index.d.ts",
       "default": "./dist/index.js"
-    }
+    },
+    "./bootstrap": {
+      "types": "./dist/bootstrap.d.ts",
+      "default": "./dist/bootstrap.js"
+    },
+    "./runtime.json": "./dist/runtime.json"
   },
   "files": [
     "dist"
@@ -25,7 +30,20 @@
     "clean": "rm -rf dist"
   },
   "dependencies": {
-    "@navirox/runtime": "workspace:*"
+    "@navirox/runtime": "workspace:*",
+    "@symbiote-native/components": "2.0.0",
+    "@symbiote-native/engine": "0.5.0",
+    "@symbiote-native/navigation": "4.0.1",
+    "@symbiote-native/vue": "2.0.0"
+  },
+  "peerDependencies": {
+    "react-native": ">=0.86",
+    "vue": ">=3.5.0"
+  },
+  "peerDependenciesMeta": {
+    "react-native": {
+      "optional": true
+    }
   },
   "devDependencies": {
     "@types/node": "^26.6.1",

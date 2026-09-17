@@ -15,5 +15,13 @@
       "range": "^",
       "dependencies": ["**"]
     }
+  ],
+  "versionGroups": [
+    {
+      "label": "The renderer and framework peers are floors, not caret ranges. A caret on a 0.x version is bounded to that minor, so `^0.86` would exclude react-native 0.87 and put the adapter back in the floating-range failure mode the exact-pin rule exists to prevent. Both spellings match upstream's own peer declarations.",
+      "dependencies": ["react-native", "vue"],
+      "dependencyTypes": ["peer"],
+      "isIgnored": true
+    }
   ]
 }

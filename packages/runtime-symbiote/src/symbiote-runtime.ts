@@ -1,0 +1,173 @@
+import type {
+  MountOptions,
+  NativeRuntime,
+  NaviroxComponent,
+  Platform,
+  RuntimeHandle,
+} from '@navirox/runtime'
+import {
+  DEFAULT_PLATFORMS,
+  hostComponentsFrom,
+  type HostPrimitiveTable,
+} from './host-components.js'
+import { createNativeModuleRegistry } from './native-modules.js'
+import { createSymbioteNavigation } from './navigation.js'
+
+export const RUNTIME_ID = 'symbiote'
+
+/** The AppRegistry key used when the caller does not name one. */
+export const DEFAULT_APP_KEY = 'NaviroxRoot'
+
+/**
+ * Handed the live Vue app after the default error handler is installed and before
+ * it mounts, so an app can `use()` a plugin (Pinia), `provide()` a value, or swap
+ * `config.errorHandler` and still catch its own first render.
+ *
+ * Deliberately typed `unknown`: the seam must not put a renderer's app type into a
+ * `@navirox/*` signature, or the engine stops being swappable.
+ */
+export type ConfigureApp = (app: unknown) => void
+
+/**
+ * Everything this runtime needs from the renderer, as data and functions.
+ *
+ * It is an interface rather than a direct import because the published
+ * `@symbiote-native/*` builds cannot be loaded by plain Node. Their compiled ESM
+ * uses extensionless relative directory imports, which Metro and Vite resolve and
+ * Node's ESM resolver rejects outright, so importing the renderer here would make
+ * this module untestable everywhere except inside a bundler.
+ *
+ * Injecting it puts the untestable part in one short shell (`./bootstrap.ts`, the
+ * only file in Navirox that imports the renderer) and keeps every decision in this
+ * file — mounting, capability reporting, screen registration, module reporting —
+ * under an ordinary Node test.
+ */
+export interface SymbioteHost {
+  /** Upstream's authoritative tag table, `HOST_PRIMITIVES` from the components package. */
+  readonly primitives: HostPrimitiveTable
+  /** Registers an app key with the renderer's registry. Returns the app key. */
+  registerComponent(appKey: string, componentProvider: () => NaviroxComponent): unknown
+  /** Installs the configurator the renderer applies to the next mount. */
+  setAppConfigurator(configure: ConfigureApp): void
+  /** The renderer core version, reported as this runtime's `version`. */
+  readonly engineVersion: string
+}
+
+export interface SymbioteRuntimeOptions {
+  /** Override the runtime id. Useful only in tests that simulate another engine. */
+  readonly id?: string
+  /** Platforms this runtime claims. Defaults to iOS and Android. */
+  readonly platforms?: readonly Platform[]
+  /** AppRegistry key. Defaults to `NaviroxRoot`. */
+  readonly appKey?: string
+  /** The native modules the application installed. */
+  readonly modules?: Readonly<Record<string, unknown>>
+  /** Sets the app configurator for the next mount. This is the Pinia seam. */
+  readonly configure?: ConfigureApp
+  /**
+   * Present so this factory satisfies `RuntimeFactory` from `@navirox/runtime`.
+   * `appKey` and `modules` are read from here when the named options are absent.
+   */
+  readonly config?: Readonly<Record<string, unknown>>
+}
+
+/**
+ * The Symbiote-backed runtime, built from an injected renderer host.
+ *
+ * Every other Navirox package talks to the seam in `@navirox/runtime`, so a
+ * Symbiote major bump (there were two in three months) cannot break the toolchain,
+ * the router or the component surface.
+ */
+export function createRuntimeFromHost(
+  host: SymbioteHost,
+  options: SymbioteRuntimeOptions = {},
+): NativeRuntime {
+  const platforms = options.platforms ?? DEFAULT_PLATFORMS
+  const appKey = options.appKey ?? readString(options.config, 'appKey') ?? DEFAULT_APP_KEY
+  const configure = options.configure
+  const nativeModules = createNativeModuleRegistry(
+    options.modules ?? readRecord(options.config, 'modules'),
+  )
+
+  // `setAppConfigurator` is process-global state that applies to the next surface
+  // mount. An app builds the runtime before it mounts, so install it here rather
+  // than inside `mount`, where a second surface would silently replace it.
+  if (configure !== undefined) host.setAppConfigurator(configure)
+
+  const hostComponents = hostComponentsFrom(host.primitives, platforms)
+  const navigation = createSymbioteNavigation()
+
+  return {
+    id: options.id ?? RUNTIME_ID,
+    // A single string cannot express four independently moving version lines, so
+    // this reports the renderer core and the full matrix lives in `runtime.json`.
+    version: host.engineVersion,
+
+    mount(root: NaviroxComponent, mountOptions: MountOptions = {}): RuntimeHandle {
+      // Mount is REGISTRATION, not rendering. The registry stores a component
+      // provider; the native host later calls it with `{ rootTag, initialProps }`
+      // and the real imperative mount happens then.
+      host.registerComponent(mountOptions.name ?? appKey, () => root)
+
+      let mounted = true
+      return {
+        unmount(): void {
+          // Honest limitation: upstream's registry has no `unregisterComponent`.
+          // A surface is torn down by the native host through `RN$stopSurface`,
+          // which the renderer installs as a global. All Navirox can do here is stop
+          // claiming the handle is live. Reported rather than papered over.
+          mounted = false
+        },
+        get mounted(): boolean {
+          return mounted
+        },
+      }
+    },
+
+    hostComponents,
+
+    registerNativeComponent(spec): void {
+      hostComponents[spec.tag] = {
+        tag: spec.tag,
+        platforms: spec.platforms ?? platforms,
+        ...(spec.props === undefined ? {} : { props: spec.props }),
+        ...(spec.events === undefined ? {} : { events: spec.events }),
+      }
+      // No call into the engine's `registerComponent` here, deliberately. That
+      // function is an escape hatch for views with no codegen ViewConfig, and the
+      // engine derives a codegen'd Fabric view's events and prop processors from
+      // React Native's own registry on first commit. A second, hand-written copy
+      // would duplicate that metadata and could contradict it. Registering the tag
+      // on our side is what makes it visible to Navirox tooling.
+    },
+
+    nativeModules,
+
+    navigation,
+
+    capabilities: {
+      newArch: true,
+      fabric: true,
+      legacyFallback: false,
+      platforms,
+      modules: nativeModules.ids,
+    },
+  }
+}
+
+function readString(
+  config: Readonly<Record<string, unknown>> | undefined,
+  key: string,
+): string | undefined {
+  const value = config?.[key]
+  return typeof value === 'string' ? value : undefined
+}
+
+function readRecord(
+  config: Readonly<Record<string, unknown>> | undefined,
+  key: string,
+): Readonly<Record<string, unknown>> | undefined {
+  const value = config?.[key]
+  if (value === null || typeof value !== 'object' || Array.isArray(value)) return undefined
+  return value as Readonly<Record<string, unknown>>
+}

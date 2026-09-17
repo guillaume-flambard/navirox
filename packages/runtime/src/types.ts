@@ -38,6 +38,13 @@ export interface HostComponent {
   readonly tag: string
   /** Platforms this primitive is implemented on. */
   readonly platforms: readonly Platform[]
+  /**
+   * Declared prop metadata, when a runtime or a caller supplies it. Absent for
+   * derived primitives whose metadata the renderer reads from its own registry.
+   */
+  readonly props?: Readonly<Record<string, string>>
+  /** Declared event names, when a runtime or a caller supplies them. */
+  readonly events?: readonly string[]
 }
 
 /** A custom native view registered with the runtime (native-view wrappers). */

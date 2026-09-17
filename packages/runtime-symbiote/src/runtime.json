@@ -1,0 +1,26 @@
+{
+  "id": "symbiote",
+  "packages": {
+    "@symbiote-native/vue": "2.0.0",
+    "@symbiote-native/engine": "0.5.0",
+    "@symbiote-native/components": "2.0.0",
+    "@symbiote-native/navigation": "4.0.1"
+  },
+  "versionRange": {
+    "@symbiote-native/vue": "^2.0.0",
+    "@symbiote-native/engine": "^0.5.0",
+    "@symbiote-native/components": "^2.0.0",
+    "@symbiote-native/navigation": "^4.0.1",
+    "react-native": ">=0.86"
+  },
+  "verified": {
+    "ios": null,
+    "android": null
+  },
+  "capabilities": {
+    "newArch": true,
+    "fabric": true,
+    "legacyFallback": false
+  },
+  "notes": "Pinned exactly, never ranged: the version lines move independently (vue 2.x while navigation 4.x) and upstream documents a concrete failure caused by a floating range. A newer react-native-screens than @symbiote-native/navigation's vendored codegen specs produced `error: no type named RNSSplitHostColorScheme` at pod install. `verified` stays null until examples/vue-basic renders on that platform; it is evidence, not intent."
+}
