@@ -43,6 +43,16 @@ export type ConfigureApp = (app: unknown) => void
  * under an ordinary Node test.
  */
 export interface SymbioteHost {
+  /**
+   * Wires the host seams the renderer needs before anything can mount: the colour
+   * processor, the asset resolver, the device event source, and the native view
+   * config source. Called once, before any registration.
+   *
+   * Required rather than optional on purpose. A host that forgot it would fail at
+   * the first commit with no useful error, and the failure would look like a
+   * renderer bug rather than a missing step.
+   */
+  prepare(): void
   /** Upstream's authoritative tag table, `HOST_PRIMITIVES` from the components package. */
   readonly primitives: HostPrimitiveTable
   /** Registers an app key with the renderer's registry. Returns the app key. */
@@ -88,6 +98,11 @@ export function createRuntimeFromHost(
   const nativeModules = createNativeModuleRegistry(
     options.modules ?? readRecord(options.config, 'modules'),
   )
+
+  // Before anything else: the host seams (colour processor, asset resolver, device
+  // events, native view configs) must be wired before the first component commits,
+  // and `setAppConfigurator` below is only meaningful once the host is prepared.
+  host.prepare()
 
   // `setAppConfigurator` is process-global state that applies to the next surface
   // mount. An app builds the runtime before it mounts, so install it here rather

@@ -70,13 +70,19 @@ function fakeHost(engineVersion = '0.5.0'): {
   host: SymbioteHost
   mounts: IMount[]
   configurators: ConfigureApp[]
+  prepared: number[]
 } {
   const mounts: IMount[] = []
   const configurators: ConfigureApp[] = []
+  const prepared: number[] = []
   return {
     mounts,
     configurators,
+    prepared,
     host: {
+      prepare() {
+        prepared.push(prepared.length + 1)
+      },
       primitives: HOST_PRIMITIVES as HostPrimitiveTable,
       registerComponent(appKey, provider) {
         mounts.push({ appKey, provider })
@@ -194,6 +200,22 @@ describe('createRuntimeFromHost', () => {
 
   it('reports the renderer version it was handed', () => {
     expect(createRuntimeFromHost(fakeHost('0.5.0').host).version).toBe('0.5.0')
+  })
+
+  it('prepares the host once, at construction, before anything registers', () => {
+    const { host, prepared, configurators, mounts } = fakeHost()
+    const runtime = createRuntimeFromHost(host, { configure: () => {} })
+
+    // The host seams (colour processor, asset resolver, device events, native view
+    // configs) must be wired before the first commit, so preparation happens while
+    // the runtime is built rather than at mount.
+    expect(prepared).toEqual([1])
+    expect(configurators).toHaveLength(1)
+    expect(mounts).toHaveLength(0)
+
+    runtime.mount({} as NaviroxComponent)
+    expect(prepared).toEqual([1])
+    expect(mounts).toHaveLength(1)
   })
 
   it('claims the capabilities the manifest records', () => {
