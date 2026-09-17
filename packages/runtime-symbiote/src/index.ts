@@ -43,3 +43,8 @@ export {
   type SymbioteHost,
   type SymbioteRuntimeOptions,
 } from './symbiote-runtime.js'
+export {
+  SYMBIOTE_SOURCE_EXTENSIONS,
+  SYMBIOTE_VUE_TRANSFORMER,
+  symbioteVueTransformerPath,
+} from './build-integration.js'

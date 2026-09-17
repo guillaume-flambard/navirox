@@ -24,7 +24,9 @@
     "test": "vitest run",
     "clean": "rm -rf dist"
   },
-  "dependencies": {},
+  "dependencies": {
+    "@navirox/runtime-symbiote": "workspace:*"
+  },
   "devDependencies": {
     "@types/node": "^26.6.1",
     "typescript": "~6.0.3",

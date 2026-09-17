@@ -6,6 +6,7 @@
     "module": "ESNext",
     "moduleResolution": "bundler",
     "moduleDetection": "force",
+    "types": ["node"],
 
     "strict": true,
     "noUncheckedIndexedAccess": true,
