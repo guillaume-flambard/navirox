@@ -37,6 +37,13 @@ pnpm deps:check    # syncpack, the version drift guard
 
 `pnpm build && pnpm test` green is the baseline. Do not leave the workspace red.
 
+`pnpm install` installs a git hook that runs that same list on every commit, so
+a slip is caught at the commit instead of on the runners. It is the same list
+rather than a similar one, and it scans the whole repository the way CI does, so
+an unrelated dirty file can block a commit. The platform builds are deliberately
+not in it: they need a native toolchain and several minutes, so a green hook is
+not a promise that CI is green.
+
 ## The architectural rules
 
 `AGENTS.md` is the full contract. Two of its rules account for most review
