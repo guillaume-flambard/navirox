@@ -2,11 +2,19 @@
 /**
  * The NX-006 end to end check.
  *
- * Scaffolds an app into a temporary directory, installs it, and optionally
- * builds a platform. This is the test PLAN.md asks for under NX-006, and it is
- * deliberately not part of `pnpm test`: it reaches the network to install, and a
- * platform build takes minutes with a native toolchain, so it runs as its own
- * job instead of slowing down the suite a contributor runs on every save.
+ * It reproduces the consumer installation model, not the workspace one. The
+ * Navirox packages are packed into artifacts, the app is scaffolded into a
+ * temporary directory outside this repository, and it then installs those
+ * artifacts the way it would install published packages. Nothing about the app
+ * points back at this checkout, so what runs here is what a user will get.
+ *
+ * That difference is the whole point. An app that consumes the packages through
+ * `link:` (what the scaffolder writes while the packages are unpublished) has
+ * `@navirox/*` living in this repository and its own dependencies living in its
+ * own store, and Metro resolves React Native from whichever tree the importing
+ * file sits in. Two stores means two copies of React Native, two module
+ * registries, and a red screen on launch. Packing and installing into the app
+ * gives it one tree, which is the shape a published install has.
  *
  * It exists because four real bugs in the scaffolder were invisible to unit
  * tests: a `file:` range computed lexically while a package manager resolves it
@@ -29,21 +37,36 @@
 import { spawnSync } from 'node:child_process'
 import {
   existsSync,
-  lstatSync,
   mkdtempSync,
+  readdirSync,
   readFileSync,
+  realpathSync,
   rmSync,
   statSync,
   writeFileSync,
 } from 'node:fs'
 import { tmpdir } from 'node:os'
-import { dirname, join, resolve } from 'node:path'
+import { dirname, join, resolve, sep } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
 const REPO_ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..')
-const SCAFFOLDER = join(REPO_ROOT, 'packages', 'create-navirox', 'dist', 'bin.js')
+const PACKAGES_DIRECTORY = join(REPO_ROOT, 'packages')
+const SCAFFOLDER = join(PACKAGES_DIRECTORY, 'create-navirox', 'dist', 'bin.js')
 const APP_NAME = 'E2E App'
-const LINKED_PACKAGES = ['cli', 'metro-preset', 'runtime-symbiote']
+
+/**
+ * The runtime packages the app and the linked packages both load. Two physical
+ * copies of any of these is the failure this check was written for: two module
+ * registries, and a red screen that says a JavaScript module method was never
+ * registered.
+ */
+const SINGLE_COPY_PACKAGES = [
+  'react',
+  'react-native',
+  'vue',
+  '@symbiote-native/vue',
+  '@symbiote-native/engine',
+]
 
 function parseArguments(argv) {
   const options = { builds: [], bundle: false, keep: false }
@@ -117,10 +140,10 @@ function requireBuild() {
 }
 
 /** Scaffolds the app and returns what the scaffolder reported, plus its directory. */
-function scaffold(workspace) {
-  step(`Scaffolding "${APP_NAME}" into ${workspace}`)
+function scaffold(targetDir) {
+  step(`Scaffolding "${APP_NAME}" into ${targetDir}`)
 
-  const result = capture(process.execPath, [SCAFFOLDER, APP_NAME, '-d', workspace, '--json'])
+  const result = capture(process.execPath, [SCAFFOLDER, APP_NAME, '-d', targetDir, '--json'])
   assert(result.status === 0, `The scaffolder exited ${result.status}.\n${result.stderr}`)
 
   const report = JSON.parse(result.stdout.trim())
@@ -136,6 +159,96 @@ function scaffold(workspace) {
   return report
 }
 
+/** Every workspace package a registry would serve, which is what the app consumes. */
+function publishablePackages() {
+  return readdirSync(PACKAGES_DIRECTORY, { withFileTypes: true })
+    .filter((entry) => entry.isDirectory())
+    .map((entry) => join(PACKAGES_DIRECTORY, entry.name, 'package.json'))
+    .filter((manifest) => existsSync(manifest))
+    .map((manifest) => JSON.parse(readFileSync(manifest, 'utf8')))
+    .filter((manifest) => manifest.private !== true)
+    .map((manifest) => ({
+      directory: join(PACKAGES_DIRECTORY, manifest.name.replace('@navirox/', '')),
+      name: manifest.name,
+      version: manifest.version,
+    }))
+}
+
+/**
+ * Packs every publishable package, which is the step that turns this checkout
+ * into something installable. A tarball is not a symlink: installing one gives
+ * the app a copy of its own, so nothing it loads resolves back here.
+ */
+function pack(destination, packages) {
+  step(`Packing ${packages.length} Navirox packages`)
+
+  const artifacts = new Map()
+
+  for (const entry of packages) {
+    // Captured rather than inherited: `pnpm pack` prints the whole tarball
+    // listing, and only a failure is worth reading.
+    const result = capture('pnpm', ['pack', '--pack-destination', destination], entry.directory)
+
+    assert(
+      result.status === 0,
+      `pnpm pack exited ${result.status} for ${entry.name}.\n${result.stdout}${result.stderr}`,
+    )
+
+    const artifact = join(
+      destination,
+      `${entry.name.replace('@navirox/', 'navirox-')}-${entry.version}.tgz`,
+    )
+
+    assert(existsSync(artifact), `pnpm pack wrote no artifact for ${entry.name}.`)
+    artifacts.set(entry.name, artifact)
+  }
+
+  process.stdout.write(`   ${artifacts.size} artifacts\n`)
+
+  return artifacts
+}
+
+/**
+ * Points the app at the artifacts instead of the checkout, standing in for the
+ * registry a published app would use.
+ *
+ * The overrides are the other half of that: the packed manifests ask for the
+ * Navirox packages by version, and a registry would resolve those requirements
+ * itself. Here nothing is published, so every Navirox name in the graph is
+ * pinned to its tarball. pnpm keeps those in `pnpm-workspace.yaml`, not in the
+ * `pnpm` field of `package.json`, which it no longer reads.
+ */
+function consumeFromArtifacts(appDir, artifacts) {
+  step('Pointing the app at the artifacts')
+
+  const manifestPath = join(appDir, 'package.json')
+  const manifest = JSON.parse(readFileSync(manifestPath, 'utf8'))
+  let direct = 0
+
+  for (const group of ['dependencies', 'devDependencies']) {
+    for (const [name] of Object.entries(manifest[group] ?? {})) {
+      const artifact = artifacts.get(name)
+
+      if (artifact !== undefined) {
+        manifest[group][name] = `file:${artifact}`
+        direct += 1
+      }
+    }
+  }
+
+  assert(direct > 0, 'The app depends on no Navirox package, so there is nothing to install.')
+  writeFileSync(manifestPath, `${JSON.stringify(manifest, null, 2)}\n`)
+
+  const settingsPath = join(appDir, 'pnpm-workspace.yaml')
+  const overrides = [...artifacts]
+    .map(([name, artifact]) => `  '${name}': file:${artifact}`)
+    .join('\n')
+
+  writeFileSync(settingsPath, `${readFileSync(settingsPath, 'utf8')}\noverrides:\n${overrides}\n`)
+
+  process.stdout.write(`   ${direct} direct, ${artifacts.size} overridden\n`)
+}
+
 function install(appDir) {
   step('Installing the app')
 
@@ -144,21 +257,90 @@ function install(appDir) {
   assert(status === 0, `pnpm install exited ${status}. The app a user gets does not install.`)
 }
 
-/** Checks the three Navirox packages are linked at this checkout, not copied from a registry. */
-function assertLinkedPackages(appDir) {
-  step('Checking the linked packages')
+/**
+ * Checks the Navirox packages resolved inside the app rather than back at this
+ * checkout. A `link:` or a symlink into the repository means the app is testing
+ * this machine's tree, not the artifact a user would install.
+ */
+function assertInstalledFromArtifacts(appDir, packages) {
+  step('Checking the packages came from the artifacts')
 
-  for (const name of LINKED_PACKAGES) {
-    const path = join(appDir, 'node_modules', '@navirox', name)
+  const root = realpathSync(appDir)
+  let checked = 0
 
-    assert(existsSync(path), `${path} is missing, so the app cannot use @navirox/${name}.`)
+  for (const entry of packages) {
+    const installed = join(appDir, 'node_modules', entry.name)
+
+    if (!existsSync(installed)) {
+      continue
+    }
+
+    const real = realpathSync(installed)
+
     assert(
-      lstatSync(path).isSymbolicLink(),
-      `${path} is not a symlink. An unpublished package has to be linked from the checkout.`,
+      real.startsWith(`${root}${sep}`),
+      `${entry.name} resolves to ${real}, which is outside the app. The app has to install it, not reach into the checkout.`,
+    )
+    checked += 1
+  }
+
+  assert(checked > 0, 'No Navirox package was installed, so nothing was verified.')
+  process.stdout.write(`   ${checked} packages resolve inside the app\n`)
+}
+
+/** Every physical copy of `name` installed under `directory`, symlinks resolved. */
+function installedCopies(directory, name) {
+  const wanted = `${sep}node_modules${sep}${name.split('/').join(sep)}`
+  const found = new Set()
+
+  const walk = (current, depth) => {
+    if (depth > 6) {
+      return
+    }
+
+    for (const entry of readdirSync(current, { withFileTypes: true })) {
+      // Only real directories: the links pnpm writes at the top of
+      // `node_modules` are not directories, and resolving them would count the
+      // same copy twice.
+      if (!entry.isDirectory()) {
+        continue
+      }
+
+      const path = join(current, entry.name)
+
+      if (path.endsWith(wanted)) {
+        found.add(realpathSync(path))
+      } else {
+        walk(path, depth + 1)
+      }
+    }
+  }
+
+  walk(directory, 0)
+
+  return [...found]
+}
+
+/**
+ * Checks the app and the packages it loads share one copy of each runtime. Two
+ * copies is the failure this check exists for: Metro resolves each import from
+ * the tree the importing file sits in, so React Native ends up loaded twice,
+ * `HMRClient.setup` is called on a module registry that never saw it, and the
+ * app dies on a red screen that names neither the package nor the cause.
+ */
+function assertSingleRuntime(appDir) {
+  step('Checking one copy of each runtime package')
+
+  for (const name of SINGLE_COPY_PACKAGES) {
+    const copies = installedCopies(join(appDir, 'node_modules'), name)
+
+    assert(
+      copies.length === 1,
+      `${copies.length} copies of ${name} are installed:\n  ${copies.join('\n  ')}\nA package that loads the runtime must share the app's copy, not bring its own.`,
     )
   }
 
-  process.stdout.write(`   ${LINKED_PACKAGES.length} packages linked\n`)
+  process.stdout.write(`   ${SINGLE_COPY_PACKAGES.length} packages, one copy each\n`)
 }
 
 function assertHelp(appDir) {
@@ -227,33 +409,14 @@ function buildIos(appDir) {
  * JavaScript pipeline. It catches what nothing else does: a component that type
  * checks, builds on both platforms, and still cannot bundle.
  *
- * The wrapper config exists because `@navirox/*` is not published yet, so the
- * scaffolder links those packages into the app with `file:` ranges and their
- * sources sit in this checkout instead of in the app. Metro watches and searches
- * only the project root, so it cannot follow a link that leaves the app, and
- * transforming those out-of-app files then needs `@babel/runtime` reachable from
- * them, because the React Native Babel preset turns on transform-runtime for
- * every module it compiles. The wrapper requires the app's own config and adds
- * the two roots, so the transformer, the source extensions and the Vue pipeline
- * are all still the ones the template ships. A published app installs everything
- * inside its own root and needs none of this, which is why the template carries
- * no such file.
+ * It runs through the app's own `metro.config.js`, with no help from this
+ * script. That is only possible because the app installed the Navirox packages
+ * instead of linking them, so nothing Metro has to read lives outside the app.
+ * A template that dropped the preset, lost the Vue transform, or forgot to
+ * declare a package the SFC transform injects fails here.
  */
 function bundle(appDir, workspace, platform) {
   step(`Bundling ${platform}`)
-
-  writeFileSync(
-    join(appDir, 'metro.e2e.config.js'),
-    [
-      "const { join } = require('node:path');",
-      "const config = require('./metro.config.js');",
-      'const repoRoot = process.env.NAVIROX_E2E_REPO;',
-      'config.watchFolders = [__dirname, repoRoot];',
-      "config.resolver.nodeModulesPaths = [join(__dirname, 'node_modules'), join(repoRoot, 'node_modules')];",
-      'module.exports = config;',
-      '',
-    ].join('\n'),
-  )
 
   const output = join(workspace, `index.${platform}.bundle`)
   const status = run(
@@ -268,11 +431,8 @@ function bundle(appDir, workspace, platform) {
       'index.js',
       '--bundle-output',
       output,
-      '--config',
-      'metro.e2e.config.js',
     ],
     appDir,
-    { NAVIROX_E2E_REPO: REPO_ROOT },
   )
 
   assert(status === 0, `Bundling for ${platform} exited ${status}, so the app does not bundle.`)
@@ -293,14 +453,22 @@ function main() {
   requireBuild()
 
   const workspace = mkdtempSync(join(tmpdir(), 'navirox-e2e-'))
+  // The app goes in its own directory beside the artifacts. The scaffolder
+  // refuses a target that already holds something, and packing has to happen
+  // before scaffolding because the app installs what came out of it.
+  const appTarget = join(workspace, 'app')
+  const packages = publishablePackages()
   let appDir
 
   try {
-    const report = scaffold(workspace)
+    const artifacts = pack(join(workspace, 'artifacts'), packages)
+    const report = scaffold(appTarget)
     appDir = report.directory
 
+    consumeFromArtifacts(appDir, artifacts)
     install(appDir)
-    assertLinkedPackages(appDir)
+    assertInstalledFromArtifacts(appDir, packages)
+    assertSingleRuntime(appDir)
     assertHelp(appDir)
 
     if (options.bundle) {
