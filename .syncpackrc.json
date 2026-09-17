@@ -11,6 +11,11 @@
       "dependencies": ["typescript"]
     },
     {
+      "label": "React Native and its own tooling are pinned exactly. Autolinking resolves native modules by walking node_modules, so a floating range can pair the JS side with a different native side than the one it was compiled against, which is the same class of failure as the Symbiote range.",
+      "range": "",
+      "dependencies": ["react", "react-native", "@react-native/**", "@react-native-community/**"]
+    },
+    {
       "label": "Caret ranges for everything else. Must stay last: syncpack applies the first matching group, so a catch-all placed first would shadow the rules above.",
       "range": "^",
       "dependencies": ["**"]

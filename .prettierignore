@@ -9,3 +9,9 @@ pnpm-lock.yaml
 PLAN.md
 blueprint.md
 docs/evidence/
+
+# Generated, not authored. Asset catalogs are written by Xcode and a tool cache
+# is rewritten on every run, so formatting them either fights a generator or
+# produces a diff that reappears.
+**/*.xcassets/
+**/.impeccable/

@@ -1,12 +1,26 @@
 # Navirox workspace members.
 #
-# Only `packages/*` are members. Mirroring upstream SymbioteNative's deliberate
-# choice, everything under `examples/` is a STANDALONE npm project: it installs
-# published versions from the real registry and is never linked into the
-# workspace. That keeps our canaries on the consumer path we actually ship, and
-# keeps pnpm's dependency guards from rewiring them.
+# `packages/*` are ours. `examples/*` are members too, and that is a deliberate
+# departure from the note this file used to carry: the examples consume
+# `@navirox/*` through `workspace:*`, because those packages are not published
+# yet and a `workspace:` range is what makes an example resolve the code in this
+# repo rather than a registry that has nothing to give. Upstream SymbioteNative
+# can keep its examples standalone precisely because its packages ARE published.
+# Once Navirox publishes, the examples move back onto the consumer path.
 packages:
   - 'packages/*'
+  - 'examples/*'
+
+# One React and one React Native for the whole tree. Metro bundles whatever it
+# finds on disk, so a second copy of either means two reconcilers and a native
+# module registry that does not match the loaded runtime. The renderer adapter
+# also declares `react-native` as an optional peer, and pnpm is happy to satisfy
+# that with a different minor than the apps use, which is exactly how the second
+# copy appeared the first time.
+overrides:
+  react: 19.2.3
+  react-native: 0.86.0
+
 minimumReleaseAgeExclude:
   - '@vue/compiler-core@3.5.43'
   - '@vue/compiler-dom@3.5.43'
@@ -18,3 +32,10 @@ minimumReleaseAgeExclude:
   - '@vue/server-renderer@3.5.43'
   - '@vue/shared@3.5.43'
   - vue@3.5.43
+
+# Metro's file-watching fallback can compile a native watcher, but this machine
+# already runs watchman, so the compile is dead weight. Declaring it explicitly
+# settled is also what stops pnpm from writing its own placeholder value here and
+# then failing every install, because a placeholder is not a boolean.
+allowBuilds:
+  '@parcel/watcher': false

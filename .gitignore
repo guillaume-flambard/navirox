@@ -3,10 +3,12 @@ dist/
 *.tsbuildinfo
 .turbo/
 
+# Design-hook cache. Rewritten on every run, never authored.
+**/.impeccable/
+
 coverage/
 *.log
 .DS_Store
-
 .env
 .env.*
 !.env.example
