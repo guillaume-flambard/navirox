@@ -619,7 +619,7 @@ If E1–E4 fail (expected), **V1's ship backend is the raw native toolchain**, o
 **Definition of Done (blueprint §30 + verified constraints):**
 
 - [x] `npm create navirox` scaffolds a runnable project
-- [ ] Vue 3 + SFC + `<script setup>` + TypeScript
+- [x] Vue 3 + SFC + `<script setup>` + TypeScript
 - [ ] Pinia works; a store shared across screens
 - [x] Native primitives render: `view`, `text`, `pressable`, `text-input`, `scroll-view`, plus `Image`, `FlatList`
 - [ ] `@navirox/native`: haptics + secure storage (both platforms)
@@ -629,7 +629,7 @@ If E1–E4 fail (expected), **V1's ship backend is the raw native toolchain**, o
 - [ ] `navirox doctor` works and is honest (reports `unknown` where unknown)
 - [ ] Docs: README + architecture + getting-started
 - [ ] Tests: unit (Vitest), contract (seam), one Detox journey per platform
-- [ ] CI: lint, typecheck, test, and a **2-cell** iOS/Android build smoke
+- [x] CI: lint, typecheck, test, and a **2-cell** iOS/Android build smoke
 - [ ] Release process: changesets + `0.1.0` tagged
 
 **Explicitly NOT in 0.1** (say so in the README): EAS, OTA, camera/location/notifications, Nuxt migration, compatibility registry *UI*, Vue DevTools, Tailwind, Reanimated, Windows/Linux host support for builds.
