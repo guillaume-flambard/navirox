@@ -21,3 +21,11 @@ docs/evidence/
 # .gitignore: without this line, anyone who has built Android locally fails the
 # format check on files no one wrote.
 **/android/app/.cxx/
+
+# And once more, for watchman. It drops a short-lived cookie into a directory
+# while it scans it, so the format check can list a file that is already gone by
+# the time prettier reads it, and the commit fails on that race rather than on a
+# format. The repository's .gitignore keeps the cookies out of a diff, but
+# prettier does not read .gitignore, so it needs the line. The commit that added
+# this failed its own gate on exactly that file.
+**/.watchman-cookie-*
