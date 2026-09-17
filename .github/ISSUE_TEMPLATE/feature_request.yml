@@ -1,0 +1,42 @@
+name: Feature request
+description: Propose something Navirox should do.
+labels: [enhancement]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        `PLAN.md` is the plan of record, and much of what you might want is
+        already in its task list with a dependency order. Worth checking before
+        you write this up, because the useful question is usually not "should we
+        build this" but "where does this belong in the order".
+  - type: textarea
+    id: problem
+    attributes:
+      label: The problem
+      description: Describe the situation you are in, not the solution you have in mind.
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: What you would like
+      description: The shape of the change. A sketch of the API is welcome.
+    validations:
+      required: false
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: What you tried instead
+      description: Workarounds, other tools, or the thing you are doing by hand today.
+    validations:
+      required: false
+  - type: checkboxes
+    id: constraints
+    attributes:
+      label: Constraints
+      description: Two rules decide a lot of design here. Please confirm your proposal respects them.
+      options:
+        - label: It does not require application code to import anything outside `@navirox/*`.
+          required: false
+        - label: It does not require a public `@navirox/*` package other than `runtime-symbiote` to touch Symbiote or React Native.
+          required: false

@@ -1,0 +1,63 @@
+name: Bug report
+description: Something Navirox ships does not work the way it says it does.
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Navirox is pre-alpha, so a lot of things are simply not built yet. If
+        your report is really "this does not exist", it belongs in the roadmap
+        conversation instead. `PLAN.md` lists what is planned and in what order.
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened
+      description: What you did, what you expected, and what you got instead.
+      placeholder: |
+        1. Ran ...
+        2. Expected ...
+        3. Got ...
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Smallest reproduction
+      description: A repository, a branch, or the few lines that show the problem.
+    validations:
+      required: false
+  - type: input
+    id: package
+    attributes:
+      label: Which package
+      description: For example @navirox/metro-preset, @navirox/runtime-symbiote, or navirox (CLI).
+    validations:
+      required: false
+  - type: input
+    id: versions
+    attributes:
+      label: Versions
+      description: Navirox commit, Node version, and pnpm version.
+      placeholder: main @ abc1234, Node 22.13.0, pnpm 11.27.0
+    validations:
+      required: false
+  - type: dropdown
+    id: platform
+    attributes:
+      label: Platform
+      multiple: true
+      options:
+        - iOS
+        - Android
+        - Node only (no app)
+        - Not platform specific
+    validations:
+      required: false
+  - type: textarea
+    id: logs
+    attributes:
+      label: Output
+      description: Paste the error. It will be rendered as code, so no backticks needed.
+      render: shell
+    validations:
+      required: false

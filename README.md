@@ -1,5 +1,7 @@
 # Navirox
 
+[![CI](https://github.com/guillaume-flambard/navirox/actions/workflows/ci.yml/badge.svg)](https://github.com/guillaume-flambard/navirox/actions/workflows/ci.yml)
+
 **The native mobile stack for Vue teams.**
 
 Build real iOS and Android apps without leaving Vue. Keep your Vue 3 components,
@@ -51,6 +53,9 @@ for and section 7 fixes the allowed dependency direction.
 
 ## Working on Navirox
 
+Node 22.13 or newer, and pnpm 11. Run `corepack enable` once and the version
+pinned in `package.json` does the rest.
+
 ```bash
 pnpm install
 pnpm build
@@ -59,3 +64,16 @@ pnpm test
 
 Read `AGENTS.md` before changing anything. It lists the architectural rules that
 the test suite enforces.
+
+## Contributing
+
+`CONTRIBUTING.md` has the setup, the full gate suite and the architectural rules
+that account for most review comments. Participation is covered by
+`CODE_OF_CONDUCT.md`.
+
+Please send security problems through private reporting rather than a public
+issue. `SECURITY.md` has the link.
+
+## License
+
+MIT. See `LICENSE`.
