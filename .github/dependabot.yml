@@ -7,6 +7,12 @@ updates:
     schedule:
       interval: weekly
       day: monday
+    # A release is not trustworthy the hour it lands. A compromised version gets
+    # noticed and yanked quickly, so the window right after a publish is when an
+    # automated bump is most dangerous, and it is also when nobody has run the
+    # version yet. Waiting a week costs nothing and closes both windows.
+    cooldown:
+      default-days: 7
     open-pull-requests-limit: 5
     groups:
       # Types and the lint stack move together. Reviewing them one by one is
@@ -32,14 +38,21 @@ updates:
         update-types:
           - version-update:semver-minor
           - version-update:semver-major
-      # One reconciler, one renderer. These are pinned exactly by the workspace
-      # overrides and a major bump has to be a coordinated change.
+      # React Native's own internals have to match the react-native version
+      # exactly. A codegen newer than the vendored react-native is the failure
+      # AGENTS.md records, and it surfaces at pod install rather than in CI.
+      - dependency-name: '@react-native/*'
+      - dependency-name: '@react-native-community/*'
+      # The Babel line moves with React Native, so a major here is a coordinated
+      # change rather than a pull request to merge on a Monday.
+      - dependency-name: '@babel/*'
+        update-types:
+          - version-update:semver-major
+      # One reconciler, one renderer. Both versions live in the workspace
+      # overrides, which is not a file Dependabot can edit, so a pull request
+      # that raised only the declaration would be a change the lockfile ignores.
       - dependency-name: react
-        update-types:
-          - version-update:semver-major
       - dependency-name: react-native
-        update-types:
-          - version-update:semver-major
     labels:
       - dependencies
     commit-message:
@@ -52,6 +65,8 @@ updates:
     schedule:
       interval: weekly
       day: monday
+    cooldown:
+      default-days: 7
     labels:
       - dependencies
       - ci

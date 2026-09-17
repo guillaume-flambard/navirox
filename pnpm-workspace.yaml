@@ -20,6 +20,13 @@ packages:
 overrides:
   react: 19.2.3
   react-native: 0.86.0
+  # A medium advisory sits on fast-xml-parser below 5.7.0, and the React Native
+  # CLI declares ^4.4.1, so the only place the fix can come from is here. The
+  # declaration is only the Android build tooling reading the app's own
+  # AndroidManifest.xml, the vulnerable code is in XMLBuilder which that path
+  # never calls, and 5.x still exports the XMLParser it does call. Checked by
+  # running the CLI config command after the bump, not by reading a changelog.
+  fast-xml-parser: ^5.7.0
 
 minimumReleaseAgeExclude:
   - '@vue/compiler-core@3.5.43'
