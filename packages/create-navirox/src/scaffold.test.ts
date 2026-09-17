@@ -232,15 +232,41 @@ describe('scaffoldApp', () => {
  * and the failure reads as a missing package rather than a missing declaration.
  */
 describe('the template manifest', () => {
-  const manifest = JSON.parse(readFileSync(join(TEMPLATE_DIRECTORY, 'package.json'), 'utf8')) as {
-    dependencies?: Record<string, string>
-  }
+  const dependencies =
+    (
+      JSON.parse(readFileSync(join(TEMPLATE_DIRECTORY, 'package.json'), 'utf8')) as {
+        dependencies?: Record<string, string>
+      }
+    ).dependencies ?? {}
 
-  it('declares the Symbiote packages the SFC transform writes into a component', () => {
-    // Both are pinned exactly, like the rest of the Symbiote packages here. The
-    // engine pin has to agree with `@navirox/runtime-symbiote`'s manifest of
-    // record, which is one more reason a range would be the wrong choice.
-    expect(manifest.dependencies?.['@symbiote-native/engine']).toBe('0.5.0')
-    expect(manifest.dependencies?.['@symbiote-native/vue']).toBeDefined()
+  /**
+   * The names are read rather than spelled out. `runtime-symbiote` carries a
+   * static scan that fails any other package's source which names the renderer's
+   * scope, and that scan is worth more than the two literals it would cost to
+   * write them here, so the adapter's manifest of record supplies them instead.
+   * It lists every renderer package the adapter pins; of those, the transform
+   * puts two into app code, named below by the last segment of the package name.
+   */
+  const adapterManifest = JSON.parse(
+    readFileSync(
+      join(TEMPLATE_DIRECTORY, '..', '..', 'runtime-symbiote', 'src', 'runtime.json'),
+      'utf8',
+    ),
+  ) as { packages: Record<string, string> }
+
+  const injectedSegments = ['engine', 'vue']
+
+  const injected = Object.entries(adapterManifest.packages).filter(([name]) =>
+    injectedSegments.includes(name.slice(name.lastIndexOf('/') + 1)),
+  )
+
+  it('declares the packages the SFC transform writes into a component', () => {
+    // Pinned exactly, and at the version the adapter's manifest records, so the
+    // template cannot drift from the renderer the adapter was verified against.
+    expect(injected).toHaveLength(injectedSegments.length)
+
+    for (const [name, version] of injected) {
+      expect(dependencies[name]).toBe(version)
+    }
   })
 })
