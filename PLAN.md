@@ -618,7 +618,7 @@ If E1–E4 fail (expected), **V1's ship backend is the raw native toolchain**, o
 
 **Definition of Done (blueprint §30 + verified constraints):**
 
-- [ ] `npm create navirox` scaffolds a runnable project
+- [x] `npm create navirox` scaffolds a runnable project
 - [ ] Vue 3 + SFC + `<script setup>` + TypeScript
 - [ ] Pinia works; a store shared across screens
 - [ ] Native primitives render: `view`, `text`, `pressable`, `text-input`, `scroll-view`, plus `Image`, `FlatList`
