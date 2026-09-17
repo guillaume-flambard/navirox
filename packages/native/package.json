@@ -27,10 +27,14 @@
   "dependencies": {
     "@navirox/runtime": "workspace:*"
   },
+  "peerDependencies": {
+    "vue": ">=3.5.0"
+  },
   "devDependencies": {
     "@types/node": "^26.6.1",
     "typescript": "~6.0.3",
-    "vitest": "^5.0.1"
+    "vitest": "^5.0.1",
+    "vue": "^3.5.43"
   },
   "publishConfig": {
     "access": "public"

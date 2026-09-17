@@ -87,6 +87,7 @@ const IDENTITY_FILES = [
  */
 const NAVIROX_PACKAGES = [
   { name: '@navirox/metro-preset', directory: 'metro-preset', field: 'dependencies' },
+  { name: '@navirox/native', directory: 'native', field: 'dependencies' },
   { name: '@navirox/runtime-symbiote', directory: 'runtime-symbiote', field: 'dependencies' },
   { name: '@navirox/ui', directory: 'ui', field: 'dependencies' },
   { name: '@navirox/cli', directory: 'cli', field: 'devDependencies' },

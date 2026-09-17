@@ -34,7 +34,9 @@
     "@symbiote-native/components": "2.0.0",
     "@symbiote-native/engine": "0.5.0",
     "@symbiote-native/navigation": "4.0.1",
-    "@symbiote-native/vue": "2.0.0"
+    "@symbiote-native/vue": "2.0.0",
+    "react-native-haptic-feedback": "^3.0.0",
+    "react-native-keychain": "^10.0.0"
   },
   "peerDependencies": {
     "react-native": ">=0.86",

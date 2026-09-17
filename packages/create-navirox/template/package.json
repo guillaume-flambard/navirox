@@ -16,6 +16,7 @@
   },
   "dependencies": {
     "@navirox/metro-preset": "workspace:*",
+    "@navirox/native": "workspace:*",
     "@navirox/runtime-symbiote": "workspace:*",
     "@navirox/ui": "workspace:*",
     "@symbiote-native/css-parser": "0.5.0",
@@ -25,7 +26,9 @@
     "@vue/runtime-core": "^3.5.43",
     "pinia": "^4.0.3",
     "react": "19.2.3",
-    "react-native": "0.86.0"
+    "react-native": "0.86.0",
+    "react-native-haptic-feedback": "^3.0.0",
+    "react-native-keychain": "^10.0.0"
   },
   "devDependencies": {
     "@babel/core": "^7.25.2",

@@ -11,6 +11,10 @@
      `stores/canary.ts`, and the two sibling components below share that one
      instance, one writing and one reading. Pinia reaches the app through the
      runtime's `configure` seam, so nothing here imports the renderer.
+  4. The native API proof. `NativePanel` calls haptics and the secure store
+     through @navirox/native, which resolves both from the runtime, so the panel
+     names no provider and no renderer either. The providers themselves are
+     declared in this app's manifest, which is what autolinking reads.
 
   Most of the tags are renderer intrinsics. `<view>`, `<text>`, `<pressable>`,
   `<text-input>`, `<scroll-view>` and `<image>` are lowercase because they are
@@ -24,6 +28,7 @@
 import { FlatList } from '@navirox/ui';
 import CounterControls from './components/CounterControls.vue';
 import CounterReadout from './components/CounterReadout.vue';
+import NativePanel from './components/NativePanel.vue';
 
 /** The primitives this app promises to render, shown as a scrollable strip. */
 const primitives = [
@@ -68,6 +73,7 @@ const PIXEL =
 
       <CounterReadout />
       <CounterControls />
+      <NativePanel />
 
       <horizontal-scroll-view class="strip">
         <view v-for="primitive in primitives" :key="primitive" class="chip">

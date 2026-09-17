@@ -1,10 +1,19 @@
+import { HAPTICS_MODULE_ID, SECURE_STORE_MODULE_ID } from '@navirox/runtime'
 import type { NativeRuntime } from '@navirox/runtime'
 import { bootstrapHost } from '@symbiote-native/components/bootstrap'
 import { HOST_PRIMITIVES } from '@symbiote-native/components/host-primitives'
 import { AppRegistry, FlatList, setAppConfigurator, setHostRegistrar } from '@symbiote-native/vue'
 import { AppRegistry as RNAppRegistry } from 'react-native'
+import ReactNativeHapticFeedback from 'react-native-haptic-feedback'
+import * as Keychain from 'react-native-keychain'
 import type { HostPrimitiveTable } from './host-components.js'
 import { RUNTIME_MANIFEST } from './manifest.js'
+import {
+  createHapticsModule,
+  createSecureStoreModule,
+  type IHapticsProvider,
+  type ISecureStoreProvider,
+} from './standard-modules.js'
 import { createRuntimeFromHost, type SymbioteRuntimeOptions } from './symbiote-runtime.js'
 
 /**
@@ -63,8 +72,37 @@ export function createSymbioteRuntime(options: SymbioteRuntimeOptions = {}): Nat
       },
       engineVersion: RUNTIME_MANIFEST.packages['@symbiote-native/engine'] ?? '0.0.0',
     },
-    options,
+    {
+      ...options,
+      modules: { ...standardNativeModules(), ...options.modules },
+    },
   )
+}
+
+/**
+ * The native modules this adapter ships, built from the two provider packages.
+ *
+ * They are imported here rather than in `./symbiote-runtime.ts` for the same
+ * reason the renderer is: this is the file that is allowed to touch the host.
+ * The packages themselves are the application's to declare, because React
+ * Native's autolinking only sees a native module that the application's own
+ * manifest names. That was measured rather than assumed: with the two packages
+ * declared by this adapter alone, the generated `autolinking.json` listed no
+ * dependencies at all. The app's own code still imports neither of them.
+ *
+ * An app replaces either module by passing `modules` with the same id.
+ */
+function standardNativeModules(): Readonly<Record<string, unknown>> {
+  // The casts are the same kind as the one on `setHostRegistrar`: these
+  // providers type their method names as literal unions while the seam's
+  // contracts take strings, so every value passed is compatible but the
+  // declarations are not.
+  return {
+    [HAPTICS_MODULE_ID]: createHapticsModule(
+      ReactNativeHapticFeedback as unknown as IHapticsProvider,
+    ),
+    [SECURE_STORE_MODULE_ID]: createSecureStoreModule(Keychain as unknown as ISecureStoreProvider),
+  }
 }
 
 export { createRuntimeFromHost }

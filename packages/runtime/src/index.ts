@@ -25,6 +25,19 @@ export type {
 export { assertNativeRuntime, createRuntime } from './create-runtime.js'
 
 /**
+ * The module contracts a provider implements and a façade consumes. Exported as
+ * values as well as types, because the ids are what an app's provider registers
+ * under and what a façade looks one up by.
+ */
+export { HAPTICS_MODULE_ID, SECURE_STORE_MODULE_ID } from './native-modules.js'
+export type {
+  HapticImpactStyle,
+  HapticNotificationType,
+  HapticsModule,
+  SecureStoreModule,
+} from './native-modules.js'
+
+/**
  * The key a runtime hands itself to the Vue tree under.
  *
  * A façade above the seam reaches a component the runtime supplies, a list for

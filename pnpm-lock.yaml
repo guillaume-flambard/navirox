@@ -49,6 +49,9 @@ importers:
       '@navirox/metro-preset':
         specifier: workspace:*
         version: link:../../packages/metro-preset
+      '@navirox/native':
+        specifier: workspace:*
+        version: link:../../packages/native
       '@navirox/runtime-symbiote':
         specifier: workspace:*
         version: link:../../packages/runtime-symbiote
@@ -79,6 +82,12 @@ importers:
       react-native:
         specifier: 0.86.0
         version: 0.86.0(@babel/core@7.29.7(supports-color@8.1.1))(@react-native-community/cli@20.1.0(supports-color@8.1.1)(typescript@6.0.3))(@react-native/metro-config@0.86.0(@babel/core@7.29.7(supports-color@8.1.1))(supports-color@8.1.1))(@types/react@19.3.0)(react@19.2.3)(supports-color@8.1.1)
+      react-native-haptic-feedback:
+        specifier: ^3.0.0
+        version: 3.0.0(react-native@0.86.0(@babel/core@7.29.7(supports-color@8.1.1))(@react-native-community/cli@20.1.0(supports-color@8.1.1)(typescript@6.0.3))(@react-native/metro-config@0.86.0(@babel/core@7.29.7(supports-color@8.1.1))(supports-color@8.1.1))(@types/react@19.3.0)(react@19.2.3)(supports-color@8.1.1))(react@19.2.3)
+      react-native-keychain:
+        specifier: ^10.0.0
+        version: 10.0.0
     devDependencies:
       '@babel/core':
         specifier: ^7.25.2
@@ -274,6 +283,9 @@ importers:
       vitest:
         specifier: ^5.0.1
         version: 5.0.1(@types/node@26.6.1)(vite@8.3.0(@types/node@26.6.1)(less@4.9.1(supports-color@8.1.1))(sass@1.104.1)(stylus@0.64.0(supports-color@8.1.1))(terser@5.51.2)(yaml@2.9.1))
+      vue:
+        specifier: ^3.5.43
+        version: 3.5.43(typescript@6.0.3)
 
   packages/router:
     dependencies:
@@ -327,6 +339,12 @@ importers:
       react-native:
         specifier: 0.86.0
         version: 0.86.0(@babel/core@7.29.7(supports-color@8.1.1))(@react-native-community/cli@20.1.0(supports-color@8.1.1)(typescript@6.0.3))(@react-native/metro-config@0.86.0(@babel/core@7.29.7(supports-color@8.1.1))(supports-color@8.1.1))(@types/react@19.3.0)(react@19.2.3)(supports-color@8.1.1)
+      react-native-haptic-feedback:
+        specifier: ^3.0.0
+        version: 3.0.0(react-native@0.86.0(@babel/core@7.29.7(supports-color@8.1.1))(@react-native-community/cli@20.1.0(supports-color@8.1.1)(typescript@6.0.3))(@react-native/metro-config@0.86.0(@babel/core@7.29.7(supports-color@8.1.1))(supports-color@8.1.1))(@types/react@19.3.0)(react@19.2.3)(supports-color@8.1.1))(react@19.2.3)
+      react-native-keychain:
+        specifier: ^10.0.0
+        version: 10.0.0
       vue:
         specifier: '>=3.5.0'
         version: 3.5.43(typescript@6.0.3)
@@ -3212,6 +3230,19 @@ packages:
 
   react-is@18.3.1:
     resolution: {integrity: sha512-/LLMVyas0ljjAtoYiPqYiL8VWXzUUdThrmU5+n20DZv+a+ClRoevUzw5JxU+Ieh5/c87ytoTBV9G1FiKfNJdmg==}
+
+  react-native-haptic-feedback@3.0.0:
+    resolution: {integrity: sha512-yxBQFHhXU8S0xupGtzDRToGw5yMWezUdLzxtlx2Oi9YpjPwprWZWCw8foPt0S2t84B0ZikzZYyOHiMSXIelUxg==}
+    peerDependencies:
+      react: 19.2.3
+      react-native: 0.86.0
+    peerDependenciesMeta:
+      react:
+        optional: true
+
+  react-native-keychain@10.0.0:
+    resolution: {integrity: sha512-YzPKSAnSzGEJ12IK6CctNLU79T1W15WDrElRQ+1/FsOazGX9ucFPTQwgYe8Dy8jiSEDJKM4wkVa3g4lD2Z+Pnw==}
+    engines: {node: '>=16'}
 
   react-native-screens@4.26.0:
     resolution: {integrity: sha512-8DkONnr4496K6ECMfprqyYM4ya1IQO5mA3ROOAJ1P6OVvNL6rVtjD2Elikd/INC7CrePdFTOHUEahOMSHmWgUA==}
@@ -7113,6 +7144,14 @@ snapshots:
       react: 19.2.3
 
   react-is@18.3.1: {}
+
+  react-native-haptic-feedback@3.0.0(react-native@0.86.0(@babel/core@7.29.7(supports-color@8.1.1))(@react-native-community/cli@20.1.0(supports-color@8.1.1)(typescript@6.0.3))(@react-native/metro-config@0.86.0(@babel/core@7.29.7(supports-color@8.1.1))(supports-color@8.1.1))(@types/react@19.3.0)(react@19.2.3)(supports-color@8.1.1))(react@19.2.3):
+    dependencies:
+      react-native: 0.86.0(@babel/core@7.29.7(supports-color@8.1.1))(@react-native-community/cli@20.1.0(supports-color@8.1.1)(typescript@6.0.3))(@react-native/metro-config@0.86.0(@babel/core@7.29.7(supports-color@8.1.1))(supports-color@8.1.1))(@types/react@19.3.0)(react@19.2.3)(supports-color@8.1.1)
+    optionalDependencies:
+      react: 19.2.3
+
+  react-native-keychain@10.0.0: {}
 
   react-native-screens@4.26.0(react-native@0.86.0(@babel/core@7.29.7(supports-color@8.1.1))(@react-native-community/cli@20.1.0(supports-color@8.1.1)(typescript@6.0.3))(@react-native/metro-config@0.86.0(@babel/core@7.29.7(supports-color@8.1.1))(supports-color@8.1.1))(@types/react@19.3.0)(react@19.2.3)(supports-color@8.1.1))(react@19.2.3):
     dependencies:
