@@ -18,7 +18,10 @@ function bareDeps(): IDoctorDeps {
 
 function report(): IDoctorReport {
   return runDoctor(
-    { directory: '/app' },
+    // Pinned, because the default follows the host: the assertions below read the
+    // header and the tool one platform needs, and on Linux the same call reports
+    // Android's instead.
+    { directory: '/app', platform: 'ios' },
     {
       ...bareDeps(),
       readFile: (path) =>

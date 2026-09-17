@@ -6,6 +6,7 @@ import {
   runDoctor,
   type IDoctorDeps,
   type IDoctorReport,
+  type IRunDoctorOptions,
 } from './doctor.js'
 
 /**
@@ -100,9 +101,21 @@ function check(report: IDoctorReport, id: string) {
   return found
 }
 
+/**
+ * Runs the doctor against the fake machine, with the platform pinned.
+ *
+ * Pinned rather than left to the host, because the default follows the machine
+ * the suite runs on: on Linux the same call correctly reports Android's tools,
+ * and most of these assertions are about the tools one platform needs. The
+ * Android case below asks for its platform instead.
+ */
+function run(deps: IDoctorDeps, options: Partial<IRunDoctorOptions> = {}): IDoctorReport {
+  return runDoctor({ directory: '/app', platform: 'ios', ...options }, deps)
+}
+
 describe('runDoctor', () => {
   it('reports the versions it can read from the machine and the app', () => {
-    const report = runDoctor({ directory: '/app' }, fakeDeps(workingMachine(appFiles())))
+    const report = run(fakeDeps(workingMachine(appFiles())))
 
     expect(report.platform).toBe('ios')
     expect(check(report, 'node').status).toBe('ok')
@@ -120,7 +133,7 @@ describe('runDoctor', () => {
       ...workingMachine(appFiles()),
       onPath: ['watchman', 'xcodebuild', 'pnpm'],
     })
-    const report = runDoctor({ directory: '/app' }, deps)
+    const report = run(deps)
 
     expect(check(report, 'pod').status).toBe('fail')
     expect(check(report, 'pod').remedy).toContain('brew install cocoapods')
@@ -128,7 +141,7 @@ describe('runDoctor', () => {
   })
 
   it('says unknown for a package this app does not install', () => {
-    const report = runDoctor({ directory: '/app' }, fakeDeps(workingMachine(appFiles())))
+    const report = run(fakeDeps(workingMachine(appFiles())))
     const navigation = check(report, '@symbiote-native/navigation')
 
     expect(navigation.status).toBe('unknown')
@@ -138,7 +151,7 @@ describe('runDoctor', () => {
 
   it('asks for an install instead of guessing versions when there is no node_modules', () => {
     const files = { '/app/package.json': JSON.stringify({ name: 'demo' }) }
-    const report = runDoctor({ directory: '/app' }, fakeDeps(workingMachine(files)))
+    const report = run(fakeDeps(workingMachine(files)))
 
     expect(report.sections.find((section) => section.id === 'runtime')?.checks).toHaveLength(1)
     expect(check(report, 'node_modules').status).toBe('unknown')
@@ -149,7 +162,7 @@ describe('runDoctor', () => {
     const files = appFiles({
       '/app/node_modules/expo/package.json': JSON.stringify({ version: '57.0.0' }),
     })
-    const report = runDoctor({ directory: '/app' }, fakeDeps(workingMachine(files)))
+    const report = run(fakeDeps(workingMachine(files)))
 
     expect(check(report, 'expo').status).toBe('fail')
     expect(check(report, 'expo').detail).toBe('present in node_modules')
@@ -161,26 +174,26 @@ describe('runDoctor', () => {
     const files = appFiles({
       '/app/package.json': JSON.stringify({ name: 'demo', dependencies: { expo: '^57.0.0' } }),
     })
-    const report = runDoctor({ directory: '/app' }, fakeDeps(workingMachine(files)))
+    const report = run(fakeDeps(workingMachine(files)))
 
     expect(check(report, 'expo').status).toBe('fail')
     expect(check(report, 'expo').detail).toContain('package.json')
   })
 
   it('reads the New Architecture when the app sets it, and never reads a default', () => {
-    const on = runDoctor({ directory: '/app' }, fakeDeps(workingMachine(appFiles())))
+    const on = run(fakeDeps(workingMachine(appFiles())))
     expect(check(on, 'new-architecture').status).toBe('ok')
     expect(check(on, 'new-architecture').detail).toContain('android/gradle.properties')
 
     const silent = appFiles({ '/app/android/gradle.properties': '# nothing here\n' })
-    const unknown = runDoctor({ directory: '/app' }, fakeDeps(workingMachine(silent)))
+    const unknown = run(fakeDeps(workingMachine(silent)))
     expect(check(unknown, 'new-architecture').status).toBe('unknown')
     expect(check(unknown, 'new-architecture').detail).toContain('nothing to read')
   })
 
   it('fails on a legacy build, because that is the one thing it must never wave through', () => {
     const legacy = appFiles({ '/app/android/gradle.properties': 'newArchEnabled=false\n' })
-    const report = runDoctor({ directory: '/app' }, fakeDeps(workingMachine(legacy)))
+    const report = run(fakeDeps(workingMachine(legacy)))
 
     expect(check(report, 'new-architecture').status).toBe('fail')
     expect(check(report, 'new-architecture').remedy).toContain('New Architecture only')
@@ -188,10 +201,7 @@ describe('runDoctor', () => {
   })
 
   it('fails when Node is older than the floor the app declares', () => {
-    const report = runDoctor(
-      { directory: '/app' },
-      fakeDeps({ ...workingMachine(appFiles()), nodeVersion: 'v20.11.0' }),
-    )
+    const report = run(fakeDeps({ ...workingMachine(appFiles()), nodeVersion: 'v20.11.0' }))
 
     expect(check(report, 'node').status).toBe('fail')
     expect(check(report, 'node').detail).toContain('22.13.0')
@@ -205,7 +215,7 @@ describe('runDoctor', () => {
         packageManager: 'pnpm@12.4.1',
       }),
     })
-    const report = runDoctor({ directory: '/app' }, fakeDeps(workingMachine(files)))
+    const report = run(fakeDeps(workingMachine(files)))
 
     expect(check(report, 'pnpm').status).toBe('warn')
     expect(exitCodeFor(report)).toBe(0)
@@ -219,7 +229,7 @@ describe('runDoctor', () => {
       env: { ANDROID_HOME: '/sdk' },
       commands: { pnpm: { status: 0, stdout: '11.27.0\n', stderr: '' } },
     })
-    const report = runDoctor({ directory: '/app', platform: 'android' }, deps)
+    const report = run(deps, { platform: 'android' })
 
     expect(check(report, 'adb').status).toBe('ok')
     expect(check(report, 'ANDROID_HOME').status).toBe('ok')
@@ -229,7 +239,7 @@ describe('runDoctor', () => {
   })
 
   it('counts what it found, so a summary can be printed without walking the report', () => {
-    const report = runDoctor({ directory: '/app' }, fakeDeps(workingMachine(appFiles())))
+    const report = run(fakeDeps(workingMachine(appFiles())))
 
     expect(report.counts.ok).toBeGreaterThan(0)
     expect(report.counts.fail).toBe(0)
@@ -249,7 +259,7 @@ describe('exitCodeFor', () => {
     const files = appFiles({
       '/app/node_modules/expo/package.json': JSON.stringify({ version: '57.0.0' }),
     })
-    const report = runDoctor({ directory: '/app' }, fakeDeps(workingMachine(files)))
+    const report = run(fakeDeps(workingMachine(files)))
 
     expect(check(report, 'pod').status).toBe('ok')
     expect(exitCodeFor(report)).toBe(3)
