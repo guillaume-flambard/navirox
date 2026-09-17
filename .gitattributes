@@ -11,6 +11,10 @@
 *.keystore binary
 *.pbxproj binary
 
-# Generated, so keep them out of diffs and out of language stats.
-pnpm-lock.yaml linguist-generated=true -diff
+# Generated, so keep them out of language stats.
+#
+# The lockfile stays diffable on purpose. Its pins are the supply-chain record,
+# so a `-diff` attribute here would hide the one change a reviewer has to see,
+# which is the change that moved a version.
+pnpm-lock.yaml linguist-generated=true
 *.pbxproj linguist-generated=true
