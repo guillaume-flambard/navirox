@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  The Android launch screen, drawn as the window background of the activity that
+  carries BootTheme. Android keeps a window background behind the content, and the
+  app's root view is opaque and full screen, so this is only ever seen in the
+  moment between the process starting and the first frame being drawn.
+
+  It does the same job as ios/BootSplash.storyboard does on iOS, and with the same
+  two ingredients, so the launch screen looks the same on both platforms. Neither
+  one needs a library: the storyboard is a storyboard, and this is a window
+  background.
+
+  The 288dp box is the size the logo assets are generated at, from 288px in
+  drawable-mdpi to 1152px in drawable-xxxhdpi. Declaring it keeps a device from
+  scaling the logo to whatever it thinks the intrinsic size is.
+-->
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android" android:opacity="opaque">
+    <item android:gravity="fill">
+        <color android:color="@color/bootsplash_background" />
+    </item>
+
+    <item
+        android:drawable="@drawable/bootsplash_logo"
+        android:gravity="center"
+        android:width="288dp"
+        android:height="288dp" />
+</layer-list>

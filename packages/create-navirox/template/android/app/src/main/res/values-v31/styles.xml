@@ -1,0 +1,19 @@
+<resources>
+    <!--
+      Android 12 (API 31) added a splash screen API, and the platform draws that
+      splash before it draws the window background. A BootTheme that only set
+      android:windowBackground would therefore show the platform's default splash
+      first and the intended one after it. These two properties point the
+      platform splash at the same logo and background colour, so there is only
+      ever one splash on screen.
+
+      Distinct from the base file rather than merged with it: a style does not
+      accumulate across resource qualifiers, so this one re-declares the window
+      background to keep the two configurations identical.
+    -->
+    <style name="BootTheme" parent="AppTheme">
+        <item name="android:windowBackground">@drawable/bootsplash_screen</item>
+        <item name="android:windowSplashScreenBackground">@color/bootsplash_background</item>
+        <item name="android:windowSplashScreenAnimatedIcon">@drawable/bootsplash_logo</item>
+    </style>
+</resources>
