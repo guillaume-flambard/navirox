@@ -20,7 +20,7 @@
     "@symbiote-native/css-parser": "0.5.0",
     "@symbiote-native/vue": "2.0.0",
     "@vue/runtime-core": "^3.5.43",
-    "react": "19.2.3",
+    "react": "19.3.0",
     "react-native": "0.86.0"
   },
   "devDependencies": {
