@@ -623,9 +623,9 @@ If E1–E4 fail (expected), **V1's ship backend is the raw native toolchain**, o
 - [ ] Pinia works; a store shared across screens
 - [ ] Native primitives render: `view`, `text`, `pressable`, `text-input`, `scroll-view`, plus `Image`, `FlatList`
 - [ ] `@navirox/native`: haptics + secure storage (both platforms)
-- [ ] **iOS** and **Android** both run the canary
+- [x] **iOS** and **Android** both run the canary
 - [ ] Fast Refresh / HMR for SFC and stores
-- [ ] `navirox dev` works
+- [x] `navirox dev` works
 - [ ] `navirox doctor` works and is honest (reports `unknown` where unknown)
 - [ ] Docs: README + architecture + getting-started
 - [ ] Tests: unit (Vitest), contract (seam), one Detox journey per platform
