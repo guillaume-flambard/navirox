@@ -58,10 +58,14 @@ function appFiles(overrides: Record<string, string> = {}): Record<string, string
     '/app/package.json': JSON.stringify({
       name: 'demo',
       engines: { node: '>= 22.13.0' },
+      dependencies: {
+        '@acme/host-runtime': '0.86.0',
+        '@acme/widgets': '2.0.0',
+        '@acme/missing': '1.0.0',
+      },
     }),
-    '/app/node_modules/react-native/package.json': JSON.stringify({ version: '0.86.0' }),
-    '/app/node_modules/@symbiote-native/vue/package.json': JSON.stringify({ version: '2.0.0' }),
-    '/app/node_modules/@symbiote-native/engine/package.json': JSON.stringify({ version: '0.5.0' }),
+    '/app/node_modules/@acme/host-runtime/package.json': JSON.stringify({ version: '0.86.0' }),
+    '/app/node_modules/@acme/widgets/package.json': JSON.stringify({ version: '2.0.0' }),
     '/app/android/gradle.properties': 'newArchEnabled=true\n',
     ...overrides,
   }
@@ -124,8 +128,8 @@ describe('runDoctor', () => {
       '11.27.0, and this app pins no package manager to compare it against',
     )
     expect(check(report, 'watchman').status).toBe('ok')
-    expect(check(report, 'react-native').detail).toBe('0.86.0')
-    expect(check(report, '@symbiote-native/vue').detail).toBe('2.0.0')
+    expect(check(report, '@acme/host-runtime').detail).toBe('0.86.0')
+    expect(check(report, '@acme/widgets').detail).toBe('2.0.0')
   })
 
   it('fails, and exits 2, when a tool this platform needs is missing', () => {
@@ -142,7 +146,7 @@ describe('runDoctor', () => {
 
   it('says unknown for a package this app does not install', () => {
     const report = run(fakeDeps(workingMachine(appFiles())))
-    const navigation = check(report, '@symbiote-native/navigation')
+    const navigation = check(report, '@acme/missing')
 
     expect(navigation.status).toBe('unknown')
     expect(navigation.detail).toContain('not installed in this app')

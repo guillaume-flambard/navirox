@@ -67,14 +67,6 @@ export interface IDoctorDeps {
   readonly nodeVersion: string
 }
 
-/** The packages whose installed versions the Runtime section reports. */
-const RUNTIME_PACKAGES = [
-  'react-native',
-  '@symbiote-native/vue',
-  '@symbiote-native/engine',
-  '@symbiote-native/navigation',
-] as const
-
 /** The meta-package the plan forbids, because it fights the Navirox pipeline. */
 const FORBIDDEN_PACKAGE = 'expo'
 
@@ -279,7 +271,24 @@ function runtimeChecks(directory: string, deps: IDoctorDeps): readonly IDoctorCh
     ]
   }
 
-  return RUNTIME_PACKAGES.map((name) => {
+  // The forbidden meta-package is the compatibility section's to report. Listing
+  // it here as well would put two checks with the same id in one report, and the
+  // installed version of a package an app must not have is not worth a line.
+  const declared = declaredPackages(directory, deps).filter((name) => name !== FORBIDDEN_PACKAGE)
+
+  if (declared.length === 0) {
+    return [
+      {
+        id: 'dependencies',
+        label: 'The declared dependencies',
+        status: 'unknown',
+        detail: 'this app declares no dependencies, so there is no version to look up',
+        remedy: '',
+      },
+    ]
+  }
+
+  return declared.map((name) => {
     const version = installedVersion(directory, name, deps)
 
     if (version === undefined) {
@@ -294,6 +303,24 @@ function runtimeChecks(directory: string, deps: IDoctorDeps): readonly IDoctorCh
 
     return { id: name, label: name, status: 'ok', detail: version, remedy: '' }
   })
+}
+
+/**
+ * The dependency names the app's own manifest declares, in a stable order.
+ *
+ * Read rather than spelled out, because naming the renderer's packages in this
+ * source would be a Navirox package naming the renderer, which the import
+ * boundary scan refuses everywhere outside the adapter. The app's manifest is
+ * also the more honest source: it is what a build would install.
+ */
+function declaredPackages(directory: string, deps: IDoctorDeps): readonly string[] {
+  const dependencies = readManifest(directory, deps)?.dependencies
+
+  if (typeof dependencies !== 'object' || dependencies === null) {
+    return []
+  }
+
+  return Object.keys(dependencies).sort()
 }
 
 function compatibilityChecks(directory: string, deps: IDoctorDeps): readonly IDoctorCheck[] {
