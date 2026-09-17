@@ -5,6 +5,7 @@ const REQUIRED_VALUES = [
   'id',
   'version',
   'hostComponents',
+  'components',
   'nativeModules',
   'navigation',
   'capabilities',

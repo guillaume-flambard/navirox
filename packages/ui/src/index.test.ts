@@ -4,8 +4,10 @@ import {
   BUILT_ON,
   PACKAGE_NAME,
   PACKAGE_ROLE,
+  REQUIRED_COMPONENTS,
   REQUIRED_HOST_COMPONENTS,
   createComponentSurface,
+  resolveComponents,
   resolveHostComponents,
 } from './index'
 
@@ -40,7 +42,7 @@ describe('@navirox/ui against the runtime seam (Proof B)', () => {
     const runtime = createStubRuntime({ hostComponents: ['view', 'text'] })
 
     expect(() => createComponentSurface(runtime)).toThrow(
-      /The "stub" runtime does not provide "pressable", "text-input", "scroll-view"/,
+      /The "stub" runtime does not provide "pressable", "text-input", "scroll-view", "image"/,
     )
   })
 
@@ -49,5 +51,26 @@ describe('@navirox/ui against the runtime seam (Proof B)', () => {
     runtime.registerNativeComponent({ tag: 'text', nativeName: 'NVText' })
 
     expect(resolveHostComponents(runtime, ['view', 'text'])).toHaveProperty('text')
+  })
+
+  it('resolves the imported components too, and reports them on the surface', () => {
+    const surface = createComponentSurface(createStubRuntime())
+
+    expect(surface.mountable['flat-list']).toBeTypeOf('function')
+    expect(Object.keys(surface.mountable).sort()).toEqual([...REQUIRED_COMPONENTS].sort())
+  })
+
+  it('fails once, naming the tag, when the runtime cannot back a list', () => {
+    const runtime = createStubRuntime({ components: [] })
+
+    expect(() => createComponentSurface(runtime)).toThrow(
+      /The "stub" runtime does not provide "flat-list"/,
+    )
+    expect(() => resolveComponents(runtime)).toThrow(/"flat-list"/)
+  })
+
+  it('promises image among the primitives it renders', () => {
+    // The canary renders one, and a promise nobody checks is not a promise.
+    expect(REQUIRED_HOST_COMPONENTS).toContain('image')
   })
 })

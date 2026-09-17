@@ -2,7 +2,7 @@ import { createRequire } from 'node:module'
 import { readFileSync } from 'node:fs'
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
-import { assertNativeRuntime, type NaviroxComponent } from '@navirox/runtime'
+import { assertNativeRuntime, RUNTIME_INJECTION_KEY, type NaviroxComponent } from '@navirox/runtime'
 import { HOST_PRIMITIVES } from '@symbiote-native/components/host-primitives'
 import { describe, expect, it } from 'vitest'
 import {
@@ -84,6 +84,7 @@ function fakeHost(engineVersion = '0.5.0'): {
         prepared.push(prepared.length + 1)
       },
       primitives: HOST_PRIMITIVES as HostPrimitiveTable,
+      components: { 'flat-list': () => null },
       registerComponent(appKey, provider) {
         mounts.push({ appKey, provider })
         return appKey
@@ -247,17 +248,44 @@ describe('createRuntimeFromHost', () => {
     expect(second.mounts[0]?.appKey).toBe('OtherRoot')
   })
 
-  it('installs the app configurator at build time, not at mount time', () => {
+  it('installs one configurator at build time, which provides the runtime and then lets the app configure', () => {
     const { host, configurators } = fakeHost()
-    const configure: ConfigureApp = () => {}
+    const seen: unknown[] = []
+    const configure: ConfigureApp = (app) => seen.push(app)
     const runtime = createRuntimeFromHost(host, { configure })
-    expect(configurators).toEqual([configure])
+
+    expect(configurators).toHaveLength(1)
     runtime.mount({} as NaviroxComponent)
     expect(configurators).toHaveLength(1)
+
+    // Applying it hands the runtime to the app under the seam key, which is how a
+    // façade reaches the components the runtime supplies, and only then gives the
+    // app its own turn with the same app object.
+    const provided: (readonly [unknown, unknown])[] = []
+    const app = { provide: (key: unknown, value: unknown) => provided.push([key, value]) }
+    configurators[0]?.(app)
+
+    expect(provided).toEqual([[RUNTIME_INJECTION_KEY, runtime]])
+    expect(seen).toEqual([app])
   })
 
-  it('does not install a configurator when none was supplied', () => {
-    expect(fakeHost().configurators).toEqual([])
+  it('still hands the runtime over when the app supplied no configurator of its own', () => {
+    const { host, configurators } = fakeHost()
+    const runtime = createRuntimeFromHost(host)
+
+    expect(configurators).toHaveLength(1)
+
+    const provided: (readonly [unknown, unknown])[] = []
+    configurators[0]?.({ provide: (key: unknown, value: unknown) => provided.push([key, value]) })
+
+    expect(provided).toEqual([[RUNTIME_INJECTION_KEY, runtime]])
+  })
+
+  it('publishes the components the host supplies, keyed by tag', () => {
+    const runtime = createRuntimeFromHost(fakeHost().host)
+
+    expect(runtime.components['flat-list']).toBeTypeOf('function')
+    expect(Object.keys(runtime.components).sort()).toEqual(['flat-list'])
   })
 
   it('reports the modules the application supplied', () => {

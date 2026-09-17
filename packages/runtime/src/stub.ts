@@ -31,6 +31,8 @@ export interface StubRuntimeOptions {
   readonly platforms?: readonly Platform[]
   /** Host primitive tags the stub claims to support. */
   readonly hostComponents?: readonly string[]
+  /** Components the stub claims to supply by import, keyed by tag. */
+  readonly components?: readonly string[]
   /** Modules the stub exposes, keyed by module id. */
   readonly modules?: Readonly<Record<string, unknown>>
   /** Overrides merged over the stub's default navigation capabilities. */
@@ -38,7 +40,25 @@ export interface StubRuntimeOptions {
 }
 
 /** The primitives shipped upstream and required by Navirox 0.1. */
-const DEFAULT_HOST_COMPONENTS = ['view', 'text', 'pressable', 'text-input', 'scroll-view'] as const
+const DEFAULT_HOST_COMPONENTS = [
+  'view',
+  'text',
+  'pressable',
+  'text-input',
+  'scroll-view',
+  'image',
+] as const
+
+/** The imported components required by Navirox 0.1. A list virtualizes, so it is one. */
+const DEFAULT_COMPONENTS = ['flat-list'] as const
+
+/**
+ * Stands in for a component a runtime supplies by import.
+ *
+ * A function component rather than a `vue` value, because this file is importable
+ * by plain Node and the stub renders nothing anyway.
+ */
+const stubComponent: NaviroxComponent = () => null
 
 /**
  * A runtime that renders nothing.
@@ -52,6 +72,7 @@ export function createStubRuntime(options: StubRuntimeOptions = {}): StubRuntime
   const version = options.version ?? '0.0.0'
   const platforms: readonly Platform[] = options.platforms ?? ['ios', 'android']
   const tags = options.hostComponents ?? DEFAULT_HOST_COMPONENTS
+  const componentTags = options.components ?? DEFAULT_COMPONENTS
   const modules = options.modules ?? {}
 
   const log: StubCall[] = []
@@ -60,6 +81,9 @@ export function createStubRuntime(options: StubRuntimeOptions = {}): StubRuntime
 
   const hostComponents: Record<string, HostComponent> = {}
   for (const tag of tags) hostComponents[tag] = { tag, platforms }
+
+  const components: Record<string, NaviroxComponent> = {}
+  for (const tag of componentTags) components[tag] = stubComponent
 
   return {
     id,
@@ -80,6 +104,8 @@ export function createStubRuntime(options: StubRuntimeOptions = {}): StubRuntime
     },
 
     hostComponents,
+
+    components,
 
     registerNativeComponent(spec: NativeComponentSpec): void {
       hostComponents[spec.tag] = { tag: spec.tag, platforms: spec.platforms ?? platforms }

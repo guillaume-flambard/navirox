@@ -1,7 +1,7 @@
 import type { NativeRuntime } from '@navirox/runtime'
 import { bootstrapHost } from '@symbiote-native/components/bootstrap'
 import { HOST_PRIMITIVES } from '@symbiote-native/components/host-primitives'
-import { AppRegistry, setAppConfigurator, setHostRegistrar } from '@symbiote-native/vue'
+import { AppRegistry, FlatList, setAppConfigurator, setHostRegistrar } from '@symbiote-native/vue'
 import { AppRegistry as RNAppRegistry } from 'react-native'
 import type { HostPrimitiveTable } from './host-components.js'
 import { RUNTIME_MANIFEST } from './manifest.js'
@@ -51,6 +51,11 @@ export function createSymbioteRuntime(options: SymbioteRuntimeOptions = {}): Nat
         setHostRegistrar(RNAppRegistry as unknown as Parameters<typeof setHostRegistrar>[0])
       },
       primitives: HOST_PRIMITIVES as HostPrimitiveTable,
+      // A list virtualizes, so the renderer implements it as a component and an
+      // app imports it instead of rendering a tag. Naming it here is the cost of
+      // the host interface: the import lives in this file, and the seam publishes
+      // what it returns so a façade can reach it without one of its own.
+      components: { 'flat-list': FlatList },
       registerComponent: (appKey, componentProvider) =>
         AppRegistry.registerComponent(appKey, componentProvider),
       setAppConfigurator: (configure) => {

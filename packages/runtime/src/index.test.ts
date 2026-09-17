@@ -48,6 +48,16 @@ describe('createRuntime', () => {
     expect(() => assertNativeRuntime(null)).toThrow(/must be an object, received null/)
     expect(() => assertNativeRuntime({ id: 'x' })).toThrow(/missing "nativeModules"/)
   })
+
+  it('requires the components an app imports, not only the tags it renders', () => {
+    // A runtime that lists every primitive but cannot supply a list would render a
+    // screen with no way to render a collection. Refusing it here names the missing
+    // member once, instead of failing inside a template.
+    const runtime = createStubRuntime() as unknown as Record<string, unknown>
+    delete runtime.components
+
+    expect(() => assertNativeRuntime(runtime)).toThrow(/missing "components"/)
+  })
 })
 
 describe('createStubRuntime', () => {
@@ -67,6 +77,7 @@ describe('createStubRuntime', () => {
     const runtime = createStubRuntime()
 
     expect(Object.keys(runtime.hostComponents).sort()).toEqual([
+      'image',
       'pressable',
       'scroll-view',
       'text',
@@ -74,6 +85,19 @@ describe('createStubRuntime', () => {
       'view',
     ])
     expect(runtime.hostComponents.view?.platforms).toEqual(['ios', 'android'])
+  })
+
+  it('exposes the components Navirox 0.1 imports rather than renders as tags', () => {
+    const runtime = createStubRuntime()
+
+    expect(Object.keys(runtime.components).sort()).toEqual(['flat-list'])
+    expect(runtime.components['flat-list']).toBeTypeOf('function')
+  })
+
+  it('lets a caller drop a component to test a failure path', () => {
+    const runtime = createStubRuntime({ components: [] })
+
+    expect(runtime.components['flat-list']).toBeUndefined()
   })
 
   it('lets a caller drop a primitive or a module to test a failure path', () => {

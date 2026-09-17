@@ -23,3 +23,14 @@ export type {
 } from './types.js'
 
 export { assertNativeRuntime, createRuntime } from './create-runtime.js'
+
+/**
+ * The key a runtime hands itself to the Vue tree under.
+ *
+ * A façade above the seam reaches a component the runtime supplies, a list for
+ * instance, by injecting the runtime rather than importing the renderer. The key
+ * is a plain symbol, so the seam declares it without a Vue value import, and it
+ * is registered rather than fresh so two copies of this package still agree on
+ * one key.
+ */
+export const RUNTIME_INJECTION_KEY: symbol = Symbol.for('navirox:runtime')

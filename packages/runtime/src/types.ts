@@ -114,6 +114,20 @@ export interface NativeRuntime {
 
   /** Host primitives the app may render. */
   readonly hostComponents: Readonly<Record<string, HostComponent>>
+  /**
+   * Components the app must import rather than render as a tag, keyed by the
+   * same tag spelling `hostComponents` uses.
+   *
+   * A host primitive is enough for anything the renderer can build from a tag
+   * and props. A list is not: it virtualizes, so it owns state and has to be a
+   * component. Those are the only entries here, and a façade above the seam
+   * reads this map instead of importing the renderer to get them.
+   *
+   * Keyed and typed loosely on purpose. The seam states that a runtime supplies
+   * such a component and how to find it; what its props are is the façade's
+   * business, because that is the surface Navirox owns and versions.
+   */
+  readonly components: Readonly<Record<string, NaviroxComponent>>
   /** Register a custom native view. */
   registerNativeComponent(spec: NativeComponentSpec): void
 

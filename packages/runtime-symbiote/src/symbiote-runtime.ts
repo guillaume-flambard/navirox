@@ -1,3 +1,4 @@
+import { RUNTIME_INJECTION_KEY } from '@navirox/runtime'
 import type {
   MountOptions,
   NativeRuntime,
@@ -55,6 +56,15 @@ export interface SymbioteHost {
   prepare(): void
   /** Upstream's authoritative tag table, `HOST_PRIMITIVES` from the components package. */
   readonly primitives: HostPrimitiveTable
+  /**
+   * Components the renderer supplies that an app imports instead of rendering as
+   * a tag, keyed by the tag spelling the seam uses.
+   *
+   * The host is where these are named because naming one means importing the
+   * renderer, and this file must stay loadable by plain Node. A list virtualizes,
+   * so it owns state and cannot be a tag; that is the whole membership rule.
+   */
+  readonly components: Readonly<Record<string, NaviroxComponent>>
   /** Registers an app key with the renderer's registry. Returns the app key. */
   registerComponent(appKey: string, componentProvider: () => NaviroxComponent): unknown
   /** Installs the configurator the renderer applies to the next mount. */
@@ -104,15 +114,10 @@ export function createRuntimeFromHost(
   // and `setAppConfigurator` below is only meaningful once the host is prepared.
   host.prepare()
 
-  // `setAppConfigurator` is process-global state that applies to the next surface
-  // mount. An app builds the runtime before it mounts, so install it here rather
-  // than inside `mount`, where a second surface would silently replace it.
-  if (configure !== undefined) host.setAppConfigurator(configure)
-
   const hostComponents = hostComponentsFrom(host.primitives, platforms)
   const navigation = createSymbioteNavigation()
 
-  return {
+  const runtime: NativeRuntime = {
     id: options.id ?? RUNTIME_ID,
     // A single string cannot express four independently moving version lines, so
     // this reports the renderer core and the full matrix lives in `runtime.json`.
@@ -141,6 +146,8 @@ export function createRuntimeFromHost(
 
     hostComponents,
 
+    components: host.components,
+
     registerNativeComponent(spec): void {
       hostComponents[spec.tag] = {
         tag: spec.tag,
@@ -168,6 +175,31 @@ export function createRuntimeFromHost(
       modules: nativeModules.ids,
     },
   }
+
+  // `setAppConfigurator` is process-global state that applies to the next surface
+  // mount, and an app builds the runtime before it mounts, so it is installed here
+  // rather than inside `mount`, where a second surface would silently replace it.
+  // Two configurators are composed: the seam's own, which hands the runtime to the
+  // tree, then the app's, which may want to use the runtime it is running on.
+  host.setAppConfigurator((app) => {
+    provideRuntime(app, runtime)
+    configure?.(app)
+  })
+
+  return runtime
+}
+
+/**
+ * Hands the runtime to the app it mounts, under the seam's injection key.
+ *
+ * A façade above the seam reaches a component the runtime supplies by injecting
+ * the runtime, which is what keeps the façade from importing the renderer to get
+ * one. Typed structurally and called optionally: the seam must not name the
+ * renderer's app type, and a host whose app cannot provide should still mount.
+ */
+function provideRuntime(app: unknown, runtime: NativeRuntime): void {
+  const target = app as { provide?: (key: unknown, value: unknown) => void }
+  target.provide?.(RUNTIME_INJECTION_KEY, runtime)
 }
 
 function readString(

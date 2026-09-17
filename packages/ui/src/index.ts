@@ -1,5 +1,5 @@
 import { PACKAGE_NAME as SEAM_PACKAGE_NAME } from '@navirox/runtime'
-import type { HostComponent, NativeRuntime, Platform } from '@navirox/runtime'
+import type { HostComponent, NativeRuntime, NaviroxComponent, Platform } from '@navirox/runtime'
 
 /** Canonical npm name of this package. Kept in code so the import
  *  boundary checks can assert against it without reading package.json. */
@@ -20,7 +20,17 @@ export const REQUIRED_HOST_COMPONENTS: readonly string[] = [
   'pressable',
   'text-input',
   'scroll-view',
+  'image',
 ]
+
+/**
+ * Components Navirox 0.1 promises to render that an app imports rather than
+ * renders as a tag, keyed the way the runtime publishes them.
+ *
+ * A list virtualizes, so it owns state and cannot be a tag, which is the only
+ * reason a component lives here instead of in the list above.
+ */
+export const REQUIRED_COMPONENTS: readonly string[] = ['flat-list']
 
 /** The component surface resolved for one runtime. */
 export interface ComponentSurface {
@@ -28,6 +38,8 @@ export interface ComponentSurface {
   readonly tags: readonly string[]
   /** The runtime's definition for each of those tags. */
   readonly components: Readonly<Record<string, HostComponent>>
+  /** The runtime's component for each imported name the caller asked for. */
+  readonly mountable: Readonly<Record<string, NaviroxComponent>>
   /** Platforms on which every requested primitive exists. */
   readonly platforms: readonly Platform[]
 }
@@ -67,6 +79,39 @@ export function resolveHostComponents(
 }
 
 /**
+ * Resolve the components a runtime supplies by import.
+ *
+ * Same contract as {@link resolveHostComponents}, for the other half of the
+ * surface: a renderer swap that loses the list fails here, once, naming it.
+ */
+export function resolveComponents(
+  runtime: NativeRuntime,
+  tags: readonly string[] = REQUIRED_COMPONENTS,
+): Readonly<Record<string, NaviroxComponent>> {
+  const resolved: Record<string, NaviroxComponent> = {}
+  const missing: string[] = []
+
+  for (const tag of tags) {
+    const component = runtime.components[tag]
+    if (component === undefined) {
+      missing.push(tag)
+    } else {
+      resolved[tag] = component
+    }
+  }
+
+  if (missing.length > 0) {
+    const quote = (names: readonly string[]) => names.map((name) => `"${name}"`).join(', ')
+    throw new Error(
+      `The "${runtime.id}" runtime does not provide ${quote(missing)}. ` +
+        `Navirox 0.1 requires ${quote(tags)}.`,
+    )
+  }
+
+  return resolved
+}
+
+/**
  * The component surface for a runtime, validated once at startup.
  *
  * This is the first layer of the facade. The components themselves land with
@@ -76,11 +121,16 @@ export function resolveHostComponents(
 export function createComponentSurface(
   runtime: NativeRuntime,
   tags: readonly string[] = REQUIRED_HOST_COMPONENTS,
+  componentTags: readonly string[] = REQUIRED_COMPONENTS,
 ): ComponentSurface {
   const components = resolveHostComponents(runtime, tags)
+  const mountable = resolveComponents(runtime, componentTags)
   const platforms = runtime.capabilities.platforms.filter((platform) =>
     tags.every((tag) => components[tag]?.platforms.includes(platform) === true),
   )
 
-  return { tags: [...tags], components, platforms }
+  return { tags: [...tags], components, mountable, platforms }
 }
+
+export { FlatList, type FlatListProps } from './flat-list.js'
+export { useRuntime, useRuntimeComponent } from './runtime.js'
