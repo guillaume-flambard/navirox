@@ -15,3 +15,9 @@ docs/evidence/
 # produces a diff that reappears.
 **/*.xcassets/
 **/.impeccable/
+
+# The same, for the native build. Gradle writes its CMake cache into the app's
+# tree, and the app-level .gitignore covers that path, but prettier does not read
+# .gitignore: without this line, anyone who has built Android locally fails the
+# format check on files no one wrote.
+**/android/app/.cxx/
