@@ -10,6 +10,7 @@
     "node": ">=22.13.0"
   },
   "scripts": {
+    "prepare": "husky",
     "build": "turbo run build",
     "typecheck": "turbo run typecheck",
     "test": "turbo run test",
@@ -28,6 +29,7 @@
     "@changesets/cli": "^3.0.3",
     "@types/node": "^26.6.1",
     "eslint": "^10.10.0",
+    "husky": "^9.1.7",
     "prettier": "^3.9.7",
     "syncpack": "^15.3.3",
     "turbo": "^2.10.13",

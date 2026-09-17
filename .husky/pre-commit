@@ -1,0 +1,18 @@
+# The same six commands the `verify` job in .github/workflows/ci.yml runs, so a
+# commit that passes here is a commit the gate would have accepted.
+#
+# `set -e` is load bearing. Without it a failing command is reported and then
+# forgotten, and the hook's exit status is the last command's, which would let a
+# commit through on a red workspace.
+#
+# The two platform builds are deliberately absent: they need a native toolchain
+# and several minutes, so they stay on the runners. That is also why a passing
+# hook is not a promise that CI is green.
+set -e
+
+pnpm build
+pnpm typecheck
+pnpm test
+pnpm lint
+pnpm format:check
+pnpm deps:check
