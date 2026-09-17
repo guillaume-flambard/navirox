@@ -14,15 +14,18 @@ jobs:
     name: install / build / typecheck / test
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       # Reads `packageManager` from package.json, so CI uses the same pnpm
       # version as every developer and the lockfile stays stable.
-      - uses: pnpm/action-setup@v4
+      - uses: pnpm/action-setup@v6
 
-      - uses: actions/setup-node@v4
+      # Node 24 is what this project is developed and verified against. The
+      # `engines` floor in package.json stays where upstream puts it, because
+      # that floor is a promise to consumers rather than a target for us.
+      - uses: actions/setup-node@v7
         with:
-          node-version: 22.x
+          node-version: 24.x
           cache: pnpm
 
       - run: pnpm install --frozen-lockfile
