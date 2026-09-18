@@ -53,6 +53,15 @@ updates:
       # that raised only the declaration would be a change the lockfile ignores.
       - dependency-name: react
       - dependency-name: react-native
+    # The fixture manifests under a package are inputs to a source adapter, not
+    # projects. They are outside the workspace on purpose, two of them declare
+    # versions an adapter has to report as untested, and a bot that "updated" a
+    # fixture would quietly delete the evidence it exists to provide. Dependabot
+    # also cannot resolve a manifest that no workspace installs, which is how this
+    # was found: it failed on the two fixtures whose frameworks are deliberately
+    # old.
+    exclude-paths:
+      - 'packages/*/fixtures/**'
     labels:
       - dependencies
     commit-message:
