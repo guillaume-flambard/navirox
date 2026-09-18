@@ -2,7 +2,7 @@
   "name": "navirox-monorepo",
   "version": "0.0.0",
   "private": true,
-  "description": "Navirox — the native mobile stack for Vue teams.",
+  "description": "Navirox: the framework-agnostic Web to Native Mobile platform, Vue first.",
   "license": "MIT",
   "type": "module",
   "packageManager": "pnpm@11.27.0",
