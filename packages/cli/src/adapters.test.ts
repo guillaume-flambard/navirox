@@ -56,6 +56,7 @@ describe('the composition root', () => {
       'solid',
       'svelte',
       'sveltekit',
+      'vanilla',
       'vue',
     ])
   })
@@ -203,6 +204,7 @@ describe('the Nuxt adapter through the pipeline', () => {
       'solid',
       'svelte',
       'sveltekit',
+      'vanilla',
       'vue',
     ])
   })
@@ -835,5 +837,99 @@ describe('Lit, the framework where the platform is the runtime', () => {
         outcome.report.graph.findings.some((finding) => finding.code === 'version-untested'),
       ).toBe(true)
     }
+  })
+})
+
+describe('Vanilla, the project that declares no framework at all', () => {
+  it('serves a document at its own address', async () => {
+    const registry = await createAdapterRegistry()
+    const outcome = await runInspection({
+      rootDir: fixture('source-vanilla', 'vanilla-app'),
+      registry,
+      framework: 'vanilla',
+    })
+
+    expect(outcome.ok).toBe(true)
+
+    if (!outcome.ok) {
+      return
+    }
+
+    expect([...outcome.report.graph.routes.map((route) => route.pathPattern)].sort()).toEqual([
+      '/',
+      '/about.html',
+      '/pages/team.html',
+    ])
+    expect(outcome.report.graph.units.every((unit) => unit.id.startsWith('vanilla:'))).toBe(true)
+  })
+
+  /**
+   * Vanilla is read on the same pipeline as Vue, and the fixture mirrors the shared journey, so
+   * the capabilities are the Vue ones plus `dom:unknown`: this is the one source where the
+   * application reaches for the document directly, and that is the difference a migration most
+   * needs to see. The kinds differ by two, because the platform has no component model and no
+   * store module. Both differences are named in both directions rather than smoothed over.
+   */
+  it('produces the Vue report minus two kinds, plus touching the document', async () => {
+    const registry = await createAdapterRegistry()
+    const vanilla = await runInspection({
+      rootDir: fixture('source-vanilla', 'vanilla-app'),
+      registry,
+      framework: 'vanilla',
+    })
+    const vue = await runInspection({
+      rootDir: fixture('source-vue', 'vue-app'),
+      registry,
+      framework: 'vue',
+    })
+
+    expect(vanilla.ok).toBe(true)
+    expect(vue.ok).toBe(true)
+
+    if (!vanilla.ok || !vue.ok) {
+      return
+    }
+
+    const capabilities = (report: typeof vanilla.report): string[] =>
+      report.graph.capabilities.map((node) => `${node.capability}:${node.usage}`).sort()
+    const kinds = (report: typeof vanilla.report): string[] =>
+      [...new Set(report.graph.units.map((node) => node.kind))].sort()
+
+    expect(capabilities(vanilla.report)).toEqual(
+      [...capabilities(vue.report), 'dom:unknown'].sort(),
+    )
+    expect(kinds(vanilla.report)).toEqual(
+      kinds(vue.report).filter((kind) => kind !== 'component' && kind !== 'state-module'),
+    )
+    expect(kinds(vanilla.report).includes('state-module')).toBe(false)
+    expect(vanilla.report.graph.schemaVersion).toBe(1)
+  })
+
+  it('reports the code it cannot read', async () => {
+    const registry = await createAdapterRegistry()
+    const outcome = await runInspection({
+      rootDir: fixture('source-vanilla', 'vanilla-app'),
+      registry,
+      framework: 'vanilla',
+    })
+
+    expect(outcome.ok).toBe(true)
+
+    if (outcome.ok) {
+      const codes = outcome.report.graph.findings.map((finding) => finding.code)
+
+      expect(codes).toContain('vanilla-inline-script')
+      expect(codes).toContain('vanilla-client-routing')
+    }
+  })
+
+  it('claims nothing for a library with no document', async () => {
+    const registry = await createAdapterRegistry()
+    const outcome = await runInspection({
+      rootDir: fixture('source-vanilla', 'vanilla-bad'),
+      registry,
+    })
+
+    expect(outcome.ok).toBe(false)
   })
 })

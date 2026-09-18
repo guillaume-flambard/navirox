@@ -44,6 +44,7 @@
     "@navirox/source-solid": "workspace:*",
     "@navirox/source-svelte": "workspace:*",
     "@navirox/source-sveltekit": "workspace:*",
+    "@navirox/source-vanilla": "workspace:*",
     "@navirox/source-vue": "workspace:*"
   },
   "devDependencies": {
