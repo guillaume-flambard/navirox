@@ -113,3 +113,94 @@ jobs:
       - run: pnpm install --frozen-lockfile
       - run: pnpm build
       - run: node scripts/e2e-scaffold.mjs --build ios
+
+  journey-android:
+    name: run the shared journey on an emulator
+    runs-on: ubuntu-latest
+    steps:
+      # Same pins as the verify job, for the same reason.
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6.1.0
+
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: 24.x
+          cache: pnpm
+
+      - uses: actions/setup-java@de7274f081f381c8f8158605e0321c36c376e2e6 # v6.0.1
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm build
+
+      # The journey drives an app that is already built: `detox test` installs
+      # and runs a binary, it does not compile one. Building here rather than
+      # inside the emulator step also keeps the emulator step to the run itself,
+      # which is the part that can hang.
+      - run: pnpm --filter vue-basic e2e:build:android
+
+      # The emulator is the flaky half of an Android e2e (system image, AVD
+      # creation, hardware acceleration, boot wait), and this action is the
+      # maintained answer to it, pinned by commit like every other action here.
+      #
+      # The profile is load-bearing rather than cosmetic. The canary is a fixed
+      # column whose list takes the height the card leaves, so a small AVD
+      # starves the list to zero height and the list journey fails on the device
+      # profile instead of on the code. A phone-sized AVD is part of the setup.
+      - name: Run the journey against the emulator
+        uses: ReactiveCircus/android-emulator-runner@c9c93e6ba9c4194322e114c40970d5983d9a07cc # v2.38.0
+        with:
+          api-level: 35
+          target: google_apis
+          arch: x86_64
+          profile: pixel_7
+          avd-name: navirox-e2e
+          emulator-options: -no-window -gpu swiftshader_indirect -no-snapshot -noaudio -no-boot-anim
+          disable-animations: true
+          script: pnpm --filter vue-basic e2e:test:android
+        env:
+          NAVIROX_ANDROID_AVD: navirox-e2e
+
+  journey-ios:
+    name: run the shared journey on a simulator
+    # Same reasoning as the iOS build job above: a macOS runner costs several
+    # times a Linux one, so the journey is verified on main and on demand.
+    if: github.event_name != 'pull_request'
+    runs-on: macos-latest
+    steps:
+      # Same pins as the verify job, for the same reason.
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6.1.0
+
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: 24.x
+          cache: pnpm
+
+      # Detox reaches into the simulator through applesimutils, which is not in
+      # the runner image. Without it the suite dies before the first test with a
+      # bare "applesimutils: command not found", which reads like a Detox fault
+      # and is not one. It lives in the Wix tap, which Homebrew refuses to load
+      # until it is trusted.
+      - run: brew tap wix/brew && brew trust wix/brew && brew install applesimutils
+
+      - run: pod --version || sudo gem install cocoapods --no-document
+
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm build
+
+      # Pods are not committed, and adding a devDependency is enough to move the
+      # lock the build checks the manifest against.
+      - run: pod install
+        working-directory: examples/vue-basic/ios
+
+      - run: pnpm --filter vue-basic e2e:build:ios
+      - run: pnpm --filter vue-basic e2e:test:ios
