@@ -61,10 +61,18 @@ updates:
       # of these names still starts an update job on a manifest nothing
       # installs, and the job fails with `dependency_file_not_supported`
       # because Dependabot cannot tell which version is in use without a
-      # lockfile. The run history shows exactly that on next ^13.0.0.
+      # lockfile. The run history shows exactly that on next ^13.0.0 and, after
+      # the Astro adapter landed with its own deliberately old fixture, on
+      # astro ^4.0.0.
+      #
+      # The list names every framework a fixture declares, not only the names
+      # an advisory happens to cover today, because the next advisory picks the
+      # name the scanner finds rather than the one that was reported last time.
       #
       # If one of these names ever becomes a real dependency, remove it from
       # this list rather than leaving a security update switched off.
+      - dependency-name: astro
+      - dependency-name: '@astrojs/*'
       - dependency-name: next
       - dependency-name: react-dom
       - dependency-name: react-router-dom
