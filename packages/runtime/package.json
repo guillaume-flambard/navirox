@@ -1,6 +1,6 @@
 {
   "name": "@navirox/runtime",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "The runtime seam: the single interface every public Navirox package depends on.",
   "license": "MIT",
   "type": "module",

@@ -1,6 +1,6 @@
 {
   "name": "@navirox/native",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "Vue-first native API surface (haptics, storage, camera, location) over a pluggable provider.",
   "license": "MIT",
   "type": "module",

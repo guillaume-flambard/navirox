@@ -1,6 +1,6 @@
 {
   "name": "@navirox/source",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "The source adapter contract, the adapter registry, and the framework import boundary that keeps the core neutral.",
   "license": "MIT",
   "type": "module",

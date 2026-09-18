@@ -1,6 +1,6 @@
 {
   "name": "@navirox/source-next",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "The Next source adapter: detection, both routers, layouts, and the module boundary, on top of the React adapter.",
   "license": "MIT",
   "type": "module",

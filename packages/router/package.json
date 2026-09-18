@@ -1,6 +1,6 @@
 {
   "name": "@navirox/router",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "File-based routing plus a generated, fully typed route manifest.",
   "license": "MIT",
   "type": "module",

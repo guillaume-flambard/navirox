@@ -71,10 +71,30 @@ plan task your change serves when there is one.
 
 ## Changesets
 
-A change that affects what a user sees needs a changeset:
+A change that affects what a user sees needs a changeset. A change to a package
+in `packages/` affects a user: those packages are what get installed. A change
+to the docs, to a workflow or to `PLAN.md` does not, and neither does a change
+to `examples/vue-basic`, which exists to exercise the packages rather than to
+ship with them.
 
 ```bash
-pnpm changeset
+pnpm changeset                       # write one, and commit it with the change
+pnpm changeset status --since=main   # see what is missing before you push
+```
+
+`pnpm changeset status --since=<ref>` compares the packages against the given
+ref and exits non-zero when one of them changed without a changeset, naming the
+remedy in its output (`pnpm changeset add`, or `pnpm changeset add --empty` when
+the change genuinely needs no release). CI runs exactly that on a pull request,
+against the commit the branch forked from, so a pull request that changes a
+package without a changeset fails there rather than at the next release.
+
+The release itself is a maintainer's job:
+
+```bash
+pnpm version-packages          # apply the changesets: bump, then write changelogs
+pnpm exec changeset git-tag    # tag the release commit, one tag per package
+pnpm release                   # build, then publish to npm, which needs credentials
 ```
 
 ## Running the example

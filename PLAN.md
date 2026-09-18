@@ -7,10 +7,10 @@
 > repositioning set for direction, and this plan for what the Vue path actually
 > does.
 >
-> Two items in the 0.1 definition of done (§10) are deferred, not dropped, and
-> neither is claimed as done: **Fast Refresh / HMR for SFCs and stores**, and the
-> **release process** that tags `0.1.0` through changesets. Both now sit below the
-> source seam work in priority.
+> Two items of the 0.1 definition of done (§10) were deferred below the source
+> seam work and have since landed: **Fast Refresh / HMR for SFCs and stores**, and
+> the **release process** that tags `0.1.0` through changesets. Both carry their
+> measurements in §10, including what the release process did not do.
 
 ---
 
@@ -698,7 +698,26 @@ If E1–E4 fail (expected), **V1's ship backend is the raw native toolchain**, o
     `journey-ios` on a macOS runner (which needs `applesimutils` from the Wix
     tap, otherwise the suite dies before its first test).
 - [x] CI: lint, typecheck, test, and a **2-cell** iOS/Android build smoke
-- [ ] Release process: changesets + `0.1.0` tagged
+- [x] Release process: changesets + `0.1.0` tagged
+  - The 25 published packages carry `0.1.0` and a `CHANGELOG.md` each, both
+    written by `changeset version` from a single changeset that is the release
+    note. `pnpm-lock.yaml` did not move, because the internal ranges stay
+    `workspace:*`, and the diff of every manifest is the one `"version"` line.
+  - Tags come in the two shapes the milestone needs. `changeset git-tag` creates
+    one per package (`@navirox/<name>@0.1.0` and `create-navirox@0.1.0`), which is
+    what `changeset publish` would have created, and a `0.1.0` tag marks the
+    release commit itself, which is the string this item asks for. Both are
+    local: this work was committed without a push.
+  - The process is enforced and not only written down. `CONTRIBUTING.md` names the
+    two commands and what happens when a changeset is missing, and the `verify`
+    job runs `changeset status --since` on a pull request against the commit the
+    branch forked from, so a package change without a changeset fails there
+    instead of at the next release. The command was measured in both directions
+    on this repository: exit 1 with the remedy in its message when a package
+    changed without a changeset, exit 0 when none did. The CI step itself has not
+    been seen running, because this work stayed local.
+  - Not done, and not claimed anywhere: `changeset publish` was never run, so
+    nothing is on npm and no tag exists outside this clone.
 
 **Explicitly NOT in 0.1** (say so in the README): EAS, OTA, camera/location/notifications, Nuxt migration, compatibility registry *UI*, Vue DevTools, Tailwind, Reanimated, Windows/Linux host support for builds.
 
@@ -1243,6 +1262,12 @@ Complexity: `S` ≤ half-day · `M` ≤ 2 days · `L` ≤ 5 days.
 - [ ] `doctor` honest, `--json` snapshot-tested, errors on `expo` present
 - [ ] CI: lint + typecheck + unit + contract + import-boundary + Detox (both platforms)
 - [ ] `0.1.0` released via changesets
+  - The local half is done and measured: one changeset became `0.1.0` on all 25
+    published packages with a changelog each, the tags exist (one per package
+    plus a `0.1.0` milestone tag), and a pull request that changes a package
+    without a changeset now fails in `verify`. This item stays unchecked because
+    `changeset publish` was not run: nothing is on npm, so nothing is released in
+    the sense this line means.
 - [ ] Limitations page published
 
 ### 0.2 — Router / native APIs / project system

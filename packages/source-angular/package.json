@@ -1,6 +1,6 @@
 {
   "name": "@navirox/source-angular",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "The Angular source adapter: detection, decorator-driven component and service discovery, routes, and App Graph construction.",
   "license": "MIT",
   "type": "module",

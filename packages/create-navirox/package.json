@@ -1,6 +1,6 @@
 {
   "name": "create-navirox",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "Scaffolder invoked by `npm create navirox`.",
   "license": "MIT",
   "type": "module",

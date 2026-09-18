@@ -1,6 +1,6 @@
 {
   "name": "@navirox/source-astro",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "The Astro source adapter: pages, islands, and the framework components it hands to the adapters that read them.",
   "license": "MIT",
   "type": "module",

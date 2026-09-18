@@ -1,6 +1,6 @@
 {
   "name": "@navirox/graph",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "The framework-neutral App Graph schema and its deterministic node identifiers.",
   "license": "MIT",
   "type": "module",

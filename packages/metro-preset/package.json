@@ -1,6 +1,6 @@
 {
   "name": "@navirox/metro-preset",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "The Navirox Metro preset: the Vue SFC transform and the CSS parser, composed.",
   "license": "MIT",
   "type": "module",

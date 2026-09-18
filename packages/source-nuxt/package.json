@@ -1,6 +1,6 @@
 {
   "name": "@navirox/source-nuxt",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "The Nuxt source adapter: detection, filesystem routes, layouts and composables, on top of the Vue adapter.",
   "license": "MIT",
   "type": "module",

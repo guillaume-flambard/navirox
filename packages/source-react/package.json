@@ -1,6 +1,6 @@
 {
   "name": "@navirox/source-react",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "The React source adapter: detection, function component and state module discovery, router configuration, and App Graph construction.",
   "license": "MIT",
   "type": "module",

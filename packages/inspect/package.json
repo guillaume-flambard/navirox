@@ -1,6 +1,6 @@
 {
   "name": "@navirox/inspect",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "The framework-neutral inspection pipeline: adapter selection, App Graph assembly and the versioned report.",
   "license": "MIT",
   "type": "module",

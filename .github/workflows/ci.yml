@@ -29,6 +29,11 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
+          # The changeset check below compares against the commit this branch
+          # forked from, so the whole history has to be here. The default
+          # shallow clone fetches one commit and the comparison has nothing to
+          # compare against.
+          fetch-depth: 0
 
       # Reads `packageManager` from package.json, so CI uses the same pnpm
       # version as every developer and the lockfile stays stable.
@@ -43,6 +48,22 @@ jobs:
           cache: pnpm
 
       - run: pnpm install --frozen-lockfile
+
+      # `CONTRIBUTING.md` has asked for a changeset since the monorepo existed, and until this
+      # release nothing executed that instruction. The rule is about packages changing, so it is
+      # checked against the commit the pull request targets. `changeset status --since` exits 1
+      # with the remedy in its message when a package changed and no changeset explains it, and
+      # exits 0 when no package changed at all, so a change to docs, workflows or PLAN.md on its
+      # own passes. Pull requests only: on a push to main there is no base to compare against.
+      #
+      # The base travels through `env` rather than being interpolated into the shell, because a
+      # `${{ }}` expression inside `run` is exactly what zizmor's template-injection rule flags.
+      - name: Require a changeset for a change to a package
+        if: github.event_name == 'pull_request'
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+        run: pnpm changeset status --since="$BASE_SHA"
+
       - run: pnpm build
       - run: pnpm typecheck
       - run: pnpm test
