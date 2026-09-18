@@ -264,7 +264,19 @@ jobs:
           done
           [ "$booted" = true ] || fail "the emulator did not finish booting in four minutes"
 
-          adb -s "$SERIAL" shell input keyevent 82
+          # A headless emulator lets its display sleep on the system timeout, and
+          # a window whose screen is off never takes window focus, which is the
+          # one thing Espresso insists on: "Waited for the root of the view
+          # hierarchy to have window focus and not request layout for 10
+          # seconds". The app was mounted and idle when that happened, so focus
+          # was the whole failure and it was timing, not code. Stay awake, wake
+          # the display, drop the keyguard, and push the screen timeout well
+          # past the length of a run.
+          adb -s "$SERIAL" shell svc power stayon true
+          adb -s "$SERIAL" shell input keyevent 224
+          adb -s "$SERIAL" shell wm dismiss-keyguard
+          adb -s "$SERIAL" shell settings put system screen_off_timeout 1800000
+
           adb -s "$SERIAL" shell settings put global window_animation_scale 0
           adb -s "$SERIAL" shell settings put global transition_animation_scale 0
           adb -s "$SERIAL" shell settings put global animator_duration_scale 0
