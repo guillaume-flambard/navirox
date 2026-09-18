@@ -29,13 +29,22 @@ export function createNuxtAdapter(): SourceAdapter {
 export { ADAPTER_ID, COMPOSES, DISPLAY_NAME, FRAMEWORK, TESTED_VERSIONS, detect } from './detect.js'
 export {
   ALT_PAGES_DIR,
+  APP_CONFIG_FILES,
+  APP_DIR,
+  APP_PAGES_DIR,
+  CLIENT_COMPONENT_SUFFIX,
   CONFIG_FILES,
   LAYOUTS_DIRS,
   PAGES_DIR,
+  PAGES_DIRS,
+  SERVER_COMPONENT_SUFFIX,
   SERVER_SURFACE,
   pagePattern,
+  paramsOf,
+  readPageMetadata,
   readRoutes,
   readUnits,
   readUnmodelled,
 } from './conventions.js'
+export type { FindingDraft, PageMetadata, PageReading } from './conventions.js'
 export { buildGraph, inspect } from './inspect.js'

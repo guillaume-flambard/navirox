@@ -172,3 +172,115 @@ describe('the Nuxt adapter against the adapter contract', () => {
     )
   })
 })
+
+describe('the application directory Nuxt 4 documents', () => {
+  const app = createProjectFiles(fixture('nuxt4-app'))
+
+  it('reads pages, layouts and the runtime surface from app/', async () => {
+    const inspection = await adapter.inspect(app)
+    const routes = inspection.routes.map((route) => route.pathPattern).sort()
+    const codes = inspection.findings.map((finding) => finding.code)
+
+    expect(routes).toEqual(['/', '/a/:slug', '/dashboard', '/posts/:slug', '/settings'])
+    expect(inspection.units.some((unit) => unit.kind === 'layout' && unit.name === 'admin')).toBe(
+      true,
+    )
+    expect(codes).toContain('nuxt-middleware')
+    expect(codes).toContain('nuxt-plugin')
+  })
+
+  it('lets definePageMeta decide the path and add aliases', async () => {
+    const inspection = await adapter.inspect(app)
+    const paths = inspection.routes.map((route) => route.pathPattern)
+
+    expect(paths).toContain('/posts/:slug')
+    expect(paths).toContain('/a/:slug')
+    expect(paths).not.toContain('/articles/:slug')
+  })
+
+  it('keeps the page metadata in adapter metadata and not in the model', async () => {
+    const inspection = await adapter.inspect(app)
+    const page = inspection.units.find(
+      (unit) => unit.source.file === 'app/pages/articles/[slug].vue',
+    )
+    const graph = await buildGraph(inspection)
+
+    expect(page?.metadata?.page).toEqual({
+      layout: 'admin',
+      middleware: ['auth'],
+      path: '/posts/:slug',
+      aliases: ['/a/:slug'],
+    })
+    expect(Object.keys(graph).sort()).toEqual(
+      [
+        'actions',
+        'capabilities',
+        'data',
+        'dependencies',
+        'edges',
+        'findings',
+        'routes',
+        'screens',
+        'units',
+      ].sort(),
+    )
+  })
+
+  it('keeps one route when two page roots claim the same path', async () => {
+    const inspection = await adapter.inspect(app)
+    const dashboards = inspection.routes.filter((route) => route.pathPattern === '/dashboard')
+    const collision = inspection.findings.find(
+      (finding) => finding.code === 'nuxt-page-path-collision',
+    )
+
+    expect(dashboards).toHaveLength(1)
+    expect(dashboards[0]?.source.file).toBe('app/pages/dashboard.vue')
+    expect(collision?.message).toContain('pages/dashboard.vue')
+  })
+
+  it('reports a page that names a layout or a middleware that does not exist', async () => {
+    const inspection = await adapter.inspect(app)
+    const missing = inspection.findings.filter((finding) =>
+      ['nuxt-page-layout-missing', 'nuxt-page-middleware-missing'].includes(finding.code),
+    )
+
+    expect(missing.map((finding) => finding.code).sort()).toEqual([
+      'nuxt-page-layout-missing',
+      'nuxt-page-middleware-missing',
+    ])
+    expect(missing.every((finding) => finding.source?.file === 'app/pages/settings.vue')).toBe(true)
+  })
+
+  it('reads the two halves of a component as two runtimes', async () => {
+    const inspection = await adapter.inspect(app)
+    const client = inspection.units.find(
+      (unit) => unit.source.file === 'app/components/Comments.client.vue',
+    )
+    const server = inspection.units.filter(
+      (unit) => unit.source.file === 'app/components/Heavy.server.vue',
+    )
+
+    expect(server).toEqual([])
+    expect(client?.metadata?.rendersOnlyOnClient).toBe(true)
+    expect(inspection.findings.some((finding) => finding.code === 'nuxt-server-component')).toBe(
+      true,
+    )
+  })
+
+  it('names the application config apart from the runtime config', async () => {
+    const inspection = await adapter.inspect(app)
+    const codes = inspection.findings.map((finding) => finding.code)
+
+    expect(codes).toContain('nuxt-app-config')
+    expect(codes).toContain('nuxt-runtime-config')
+  })
+
+  it('produces the same graph twice, all of it named after this adapter', async () => {
+    const first = await adapter.inspect(app)
+    const graph = await buildGraph(first)
+    const ids = [...graph.units.map((node) => node.id), ...graph.routes.map((node) => node.id)]
+
+    expect(JSON.stringify(await buildGraph(await adapter.inspect(app)))).toBe(JSON.stringify(graph))
+    expect(ids.every((id) => id.startsWith('nuxt:'))).toBe(true)
+  })
+})
