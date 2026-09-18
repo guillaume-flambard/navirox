@@ -53,13 +53,36 @@ updates:
       # that raised only the declaration would be a change the lockfile ignores.
       - dependency-name: react
       - dependency-name: react-native
+      # Every name below appears only in a fixture manifest, never in the
+      # workspace. `exclude-paths` below keeps the version updates away from
+      # those manifests, but it does not cover security updates: the options
+      # reference marks each option that also changes how security updates are
+      # handled, and `exclude-paths` carries no such mark. So an advisory on one
+      # of these names still starts an update job on a manifest nothing
+      # installs, and the job fails with `dependency_file_not_supported`
+      # because Dependabot cannot tell which version is in use without a
+      # lockfile. The run history shows exactly that on next ^13.0.0.
+      #
+      # If one of these names ever becomes a real dependency, remove it from
+      # this list rather than leaving a security update switched off.
+      - dependency-name: next
+      - dependency-name: react-dom
+      - dependency-name: react-router-dom
+      - dependency-name: '@angular/*'
+      - dependency-name: svelte
+      - dependency-name: '@sveltejs/*'
+      - dependency-name: svelte-check
+      - dependency-name: nuxt
+      - dependency-name: zustand
+      - dependency-name: rxjs
+      - dependency-name: tslib
+      - dependency-name: vite
     # The fixture manifests under a package are inputs to a source adapter, not
     # projects. They are outside the workspace on purpose, two of them declare
     # versions an adapter has to report as untested, and a bot that "updated" a
-    # fixture would quietly delete the evidence it exists to provide. Dependabot
-    # also cannot resolve a manifest that no workspace installs, which is how this
-    # was found: it failed on the two fixtures whose frameworks are deliberately
-    # old.
+    # fixture would quietly delete the evidence it exists to provide. This list
+    # only reaches version updates, which is why the `ignore` entries above
+    # exist as well.
     exclude-paths:
       - 'packages/*/fixtures/**'
     labels:
