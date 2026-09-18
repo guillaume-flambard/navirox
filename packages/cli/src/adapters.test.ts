@@ -46,6 +46,7 @@ describe('the composition root', () => {
     const registry = await createAdapterRegistry()
 
     expect(registry.list().map((adapter) => adapter.id)).toEqual([
+      'angular',
       'nuxt',
       'svelte',
       'sveltekit',
@@ -167,6 +168,7 @@ describe('the Nuxt adapter through the pipeline', () => {
     const registry = await createAdapterRegistry()
 
     expect(registry.list().map((adapter) => adapter.id)).toEqual([
+      'angular',
       'nuxt',
       'svelte',
       'sveltekit',
@@ -208,5 +210,58 @@ describe('the Nuxt adapter through the pipeline', () => {
         graph.routes.every((route) => route.id.startsWith('nuxt:')),
     ).toBe(true)
     expect(graph.findings.some((finding) => finding.code === 'nuxt-server-code')).toBe(true)
+  })
+})
+
+describe('Angular, the framework that assembles an application differently', () => {
+  it('produces a report with the same shape as the Vue report', async () => {
+    const registry = await createAdapterRegistry()
+    const angular = await runInspection({
+      rootDir: fixture('source-angular', 'angular-app'),
+      registry,
+      framework: 'angular',
+    })
+    const vue = await runInspection({
+      rootDir: fixture('source-vue', 'vue-app'),
+      registry,
+      framework: 'vue',
+    })
+
+    expect(angular.ok).toBe(true)
+    expect(vue.ok).toBe(true)
+    // The gate's question: did the model need anything new for a framework whose
+    // structure comes from decorators, whose state comes from what a class holds,
+    // and whose routing is TypeScript rather than a directory?
+    expect(shape(angular)).toEqual(shape(vue))
+  })
+
+  it('reads the same capabilities, and its own routes', async () => {
+    const registry = await createAdapterRegistry()
+    const outcome = await runInspection({
+      rootDir: fixture('source-angular', 'angular-app'),
+      registry,
+      framework: 'angular',
+    })
+
+    expect(outcome.ok).toBe(true)
+
+    if (!outcome.ok) {
+      return
+    }
+
+    const capabilities = outcome.report.graph.capabilities
+      .map((node) => `${node.capability}:${node.usage}`)
+      .sort()
+    const kinds = [...new Set(outcome.report.graph.units.map((node) => node.kind))].sort()
+
+    expect(capabilities).toContain('local-storage:write')
+    expect(capabilities).toContain('geolocation:invoke')
+    expect(kinds).toEqual(['component', 'state-module', 'utility'])
+    expect(outcome.report.graph.routes.map((route) => route.pathPattern).sort()).toEqual([
+      '/',
+      '/about',
+      '/blog/:slug',
+    ])
+    expect(outcome.report.graph.units.every((unit) => unit.id.startsWith('angular:'))).toBe(true)
   })
 })

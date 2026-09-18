@@ -34,6 +34,7 @@
     "@navirox/migrate": "workspace:*",
     "@navirox/planner": "workspace:*",
     "@navirox/source": "workspace:*",
+    "@navirox/source-angular": "workspace:*",
     "@navirox/source-nuxt": "workspace:*",
     "@navirox/source-svelte": "workspace:*",
     "@navirox/source-sveltekit": "workspace:*",

@@ -37,6 +37,9 @@
     },
     {
       "path": "../migrate"
+    },
+    {
+      "path": "../source-angular"
     }
   ]
 }

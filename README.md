@@ -90,11 +90,11 @@ marketing badge. The four levels are the ones the roadmap defines:
 | Supported    | A migrated application in that framework builds and runs on a target.       |
 | Production   | Supported, plus a release process and a compatibility record with evidence. |
 
-**Four adapters are at Experimental.** Vue 3, Nuxt, Svelte and SvelteKit are
-detected and inspected, and nothing beyond that is claimed: no migration transform
-exists, plain Vue routes are not extracted, and the server side of Nuxt and
-SvelteKit is reported rather than modelled. Every framework below them is still a
-plan. There is no green checkmark on this page for an adapter that does not
+**Five adapters are at Experimental.** Vue 3, Nuxt, Svelte, SvelteKit and Angular
+are detected and inspected, and nothing beyond that is claimed: no migration
+transform exists, plain Vue routes are not extracted, and the server side of Nuxt
+and SvelteKit is reported rather than modelled. Every framework below them is still
+a plan. There is no green checkmark on this page for an adapter that does not
 exist.
 
 | Source                           | Detection   | Inspection  | Migration plan | Level           |
@@ -103,7 +103,7 @@ exist.
 | Nuxt                             | implemented | implemented | planned        | Experimental    |
 | Svelte                           | implemented | implemented | planned        | Experimental    |
 | SvelteKit                        | implemented | implemented | planned        | Experimental    |
-| Angular                          | planned     | planned     | planned        | Not yet claimed |
+| Angular                          | implemented | implemented | planned        | Experimental    |
 | React, Next, React Router, Remix | planned     | planned     | planned        | Not yet claimed |
 | Astro                            | planned     | planned     | planned        | Not yet claimed |
 
