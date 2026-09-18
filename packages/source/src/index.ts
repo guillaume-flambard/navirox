@@ -20,6 +20,20 @@ export { createProjectFiles } from './project.js'
 export type { ProjectFiles } from './project.js'
 
 export {
+  CAPABILITY_PATTERNS,
+  DECLARED_CAPABILITIES,
+  DOM_PATTERNS,
+  scanCapabilities,
+  stripComments,
+} from './capabilities.js'
+export type { CapabilityMatch, CapabilityPattern } from './capabilities.js'
+
+export { buildFragment } from './fragment.js'
+
+export { MANIFEST_FILE, declaredRange, productionDependencies, readManifest } from './manifest.js'
+export type { DeclaredRange, Manifest, TextReader } from './manifest.js'
+
+export {
   ADAPTER_PACKAGE_PREFIX,
   NEUTRAL_PACKAGE_DIRS,
   SOURCE_FRAMEWORK_PATTERNS,

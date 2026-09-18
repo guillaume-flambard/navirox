@@ -37,17 +37,19 @@ export {
   detect,
   testedMajors,
 } from './detect.js'
+// The capability scan is neutral and lives in `@navirox/source`; it is
+// re-exported here because this adapter was its first user and a consumer of this
+// package should not have to know where it moved.
 export {
   CAPABILITY_PATTERNS,
   DECLARED_CAPABILITIES,
   DOM_PATTERNS,
   scanCapabilities,
-} from './capabilities.js'
-export type { CapabilityPattern } from './capabilities.js'
-export { MANIFEST_FILE, declaredRange, productionDependencies, readManifest } from './manifest.js'
-export type { TextReader } from './manifest.js'
+} from '@navirox/source'
+export type { CapabilityPattern } from '@navirox/source'
+export { MANIFEST_FILE, declaredRange, productionDependencies, readManifest } from '@navirox/source'
+export type { DeclaredRange, Manifest, TextReader } from '@navirox/source'
 export { UNMODELLED_PATTERNS, scanUnmodelled } from './unmodelled.js'
 export type { UnmodelledPattern } from './unmodelled.js'
-export type { DeclaredRange, Manifest } from './types.js'
 export { buildGraph } from './graph.js'
 export { inspect } from './inspect.js'

@@ -1,5 +1,5 @@
 import type { DetectionContext, DetectionResult } from '@navirox/source'
-import { declaredRange, readManifest } from './manifest.js'
+import { declaredRange, readManifest } from '@navirox/source'
 
 /**
  * The framework this adapter is for. One constant, because it appears in the

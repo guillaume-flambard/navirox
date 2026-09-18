@@ -1,0 +1,40 @@
+{
+  "name": "@navirox/source-sveltekit",
+  "version": "0.0.0",
+  "description": "The SvelteKit source adapter: detection, filesystem route extraction, and App Graph construction on top of the Svelte adapter.",
+  "license": "MIT",
+  "type": "module",
+  "engines": {
+    "node": ">=22.13.0"
+  },
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc --build",
+    "typecheck": "tsc --build",
+    "test": "vitest run",
+    "clean": "rm -rf dist"
+  },
+  "dependencies": {
+    "@navirox/graph": "workspace:*",
+    "@navirox/source": "workspace:*",
+    "@navirox/source-svelte": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/node": "^26.6.1",
+    "typescript": "~6.0.3",
+    "vitest": "^5.0.1"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}

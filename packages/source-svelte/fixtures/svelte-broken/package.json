@@ -1,0 +1,7 @@
+{
+  "name": "fixture-svelte-broken",
+  "private": true,
+  "dependencies": {
+    "svelte": "^4.2.0"
+  }
+}

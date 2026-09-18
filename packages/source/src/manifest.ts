@@ -1,5 +1,23 @@
-import type { Manifest } from './types.js'
 import type { SourceLocation } from '@navirox/graph'
+
+/**
+ * A parsed manifest, with where it was read from.
+ *
+ * Manifest reading is neutral: every source framework declares itself in the
+ * same file and the same fields. It moved here with the capability scan, for the
+ * same reason and at the same moment.
+ */
+export interface Manifest {
+  readonly json: Record<string, unknown>
+  readonly source: SourceLocation
+  readonly text: string
+}
+
+/** A dependency and the field that declared it. */
+export interface DeclaredRange {
+  readonly field: string
+  readonly range: string
+}
 
 /** The one manifest this adapter reads. */
 export const MANIFEST_FILE = 'package.json'

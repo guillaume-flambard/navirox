@@ -1,3 +1,5 @@
+import { stripComments } from '@navirox/source'
+
 /**
  * Vue constructs this adapter recognizes and does not model.
  *
@@ -38,7 +40,16 @@ export const UNMODELLED_PATTERNS: readonly UnmodelledPattern[] = [
   },
 ]
 
-/** The codes of the unmodelled constructs a text uses, in declaration order. */
+/**
+ * The codes of the unmodelled constructs a text uses, in declaration order.
+ *
+ * Comments are stripped first, for the reason running this scan against a real
+ * project made obvious: a file that documents `<Suspense>` in a comment is not a
+ * file that uses one, and reporting it would be a false claim about a file the
+ * adapter never really read.
+ */
 export function scanUnmodelled(text: string): readonly UnmodelledPattern[] {
-  return UNMODELLED_PATTERNS.filter((pattern) => pattern.match.test(text))
+  const code = stripComments(text)
+
+  return UNMODELLED_PATTERNS.filter((pattern) => pattern.match.test(code))
 }

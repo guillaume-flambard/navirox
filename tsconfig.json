@@ -52,6 +52,12 @@
     },
     {
       "path": "./packages/source-vue"
+    },
+    {
+      "path": "./packages/source-svelte"
+    },
+    {
+      "path": "./packages/source-sveltekit"
     }
   ]
 }

@@ -1,0 +1,12 @@
+{
+  "name": "fixture-svelte-app",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "svelte": "^5.0.30"
+  },
+  "devDependencies": {
+    "svelte-check": "^4.1.0",
+    "vite": "^7.0.0"
+  }
+}

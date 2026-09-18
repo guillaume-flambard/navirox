@@ -31,6 +31,8 @@
     "@navirox/doctor": "workspace:*",
     "@navirox/inspect": "workspace:*",
     "@navirox/source": "workspace:*",
+    "@navirox/source-svelte": "workspace:*",
+    "@navirox/source-sveltekit": "workspace:*",
     "@navirox/source-vue": "workspace:*"
   },
   "devDependencies": {

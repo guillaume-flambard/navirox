@@ -1,7 +1,13 @@
 import type { CapabilityUsage } from '@navirox/graph'
 
 /**
- * The browser capabilities this adapter knows how to look for.
+ * The browser capabilities any adapter can look for.
+ *
+ * This lives in the neutral package because it describes the browser, not a
+ * framework: it was written inside the first adapter and moved here the moment a
+ * second adapter needed it, which is the rule the seam declares for admitting a
+ * concept to the core. Two copies would have let two adapters disagree about the
+ * same file.
  *
  * The set is declared rather than inferred, because a report that says "nothing
  * found" is only honest when the reader can see what was looked for. A pattern
@@ -117,6 +123,12 @@ export const CAPABILITY_PATTERNS: readonly CapabilityPattern[] = [
   },
 
   { capability: 'media-query', usage: 'read', match: /\bmatchMedia\s*\(/ },
+
+  {
+    capability: 'network-request',
+    usage: 'invoke',
+    match: /\bfetch\s*\(|\bXMLHttpRequest\b/,
+  },
 ]
 
 /** Every capability name this adapter can report, in a stable order. */

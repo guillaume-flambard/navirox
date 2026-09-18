@@ -1,6 +1,6 @@
 import { resolve } from 'node:path'
 import type { IDoctorDeps } from '@navirox/doctor'
-import type { SourceAdapterRegistry } from '@navirox/source'
+import type { SourceAdapter, SourceAdapterRegistry } from '@navirox/source'
 import { parseArguments, HELP } from './args.js'
 import { createDevContext, runDev, type IDevContext } from './dev.js'
 import type { IDevIo } from './runner.js'
@@ -38,21 +38,31 @@ export interface ICliContext {
  * This is the composition root, and it is the one place that names an adapter
  * package. A new adapter is a line here and nothing else: the inspection
  * pipeline selects from the registry it is handed, so it never learns what a
- * framework is. The names are imported lazily so a command that does not inspect
- * a project pays for nothing.
+ * framework is. Registration order does not matter, because selection prefers
+ * the adapter that composes another rather than the one registered first. The
+ * packages are imported lazily so a command that does not inspect a project pays
+ * for nothing.
  */
-const SOURCE_ADAPTER_PACKAGES = ['@navirox/source-vue'] as const
+const SOURCE_ADAPTER_PACKAGES: readonly (readonly [string, string])[] = [
+  ['@navirox/source-vue', 'createVueAdapter'],
+  ['@navirox/source-svelte', 'createSvelteAdapter'],
+  ['@navirox/source-sveltekit', 'createSvelteKitAdapter'],
+]
 
-async function createAdapterRegistry(): Promise<SourceAdapterRegistry> {
+/** Builds the registry the inspect command uses, from the list above. */
+export async function createAdapterRegistry(): Promise<SourceAdapterRegistry> {
   const { SourceAdapterRegistry } = await import('@navirox/source')
   const registry = new SourceAdapterRegistry()
 
-  for (const packageName of SOURCE_ADAPTER_PACKAGES) {
-    const adapterPackage = (await import(packageName)) as {
-      createVueAdapter: () => Parameters<SourceAdapterRegistry['register']>[0]
+  for (const [packageName, factoryName] of SOURCE_ADAPTER_PACKAGES) {
+    const loaded = (await import(packageName)) as Record<string, unknown>
+    const factory = loaded[factoryName]
+
+    if (typeof factory !== 'function') {
+      throw new Error(`${packageName} does not export ${factoryName}.`)
     }
 
-    registry.register(adapterPackage.createVueAdapter())
+    registry.register((factory as () => SourceAdapter)())
   }
 
   return registry

@@ -8,8 +8,13 @@ import type {
   InspectContext,
   SourceInspection,
 } from '@navirox/source'
-import { isSourceFile } from '@navirox/source'
-import { scanCapabilities } from './capabilities.js'
+import {
+  declaredRange,
+  isSourceFile,
+  productionDependencies,
+  readManifest,
+  scanCapabilities,
+} from '@navirox/source'
 import {
   ADAPTER_ID,
   DISPLAY_NAME,
@@ -18,7 +23,6 @@ import {
   declaredMajor,
   testedMajors,
 } from './detect.js'
-import { declaredRange, productionDependencies, readManifest } from './manifest.js'
 import { scanUnmodelled } from './unmodelled.js'
 
 /**

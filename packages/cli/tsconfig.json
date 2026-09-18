@@ -19,6 +19,12 @@
     },
     {
       "path": "../source-vue"
+    },
+    {
+      "path": "../source-svelte"
+    },
+    {
+      "path": "../source-sveltekit"
     }
   ]
 }

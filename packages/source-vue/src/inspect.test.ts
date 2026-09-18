@@ -17,7 +17,13 @@ describe('inspecting a Vue project', () => {
     const components = inspection.units.filter((unit) => unit.kind === 'component')
     const files = components.map((unit) => unit.source.file).sort()
 
-    expect(files).toEqual(['src/App.vue', 'src/components/Counter.vue', 'src/views/Profile.vue'])
+    expect(files).toEqual([
+      'src/App.vue',
+      'src/components/Counter.vue',
+      'src/components/List.vue',
+      'src/components/NameInput.vue',
+      'src/views/Profile.vue',
+    ])
     expect(new Set(files).size).toBe(files.length)
   })
 

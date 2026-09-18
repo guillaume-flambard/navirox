@@ -32,7 +32,13 @@ export function isIgnoredPath(path: string): boolean {
   return path.split('/').some((segment) => IGNORED_DIRECTORIES.includes(segment))
 }
 
-/** Extensions an adapter reads as source. */
+/**
+ * Extensions an adapter reads as source.
+ *
+ * Component extensions are included because a component is source: `.vue` was
+ * added by the first adapter and `.svelte` by the second, and the list is data
+ * so a third framework adds a value rather than a branch.
+ */
 export const SOURCE_EXTENSIONS: readonly string[] = [
   '.ts',
   '.tsx',
@@ -41,6 +47,7 @@ export const SOURCE_EXTENSIONS: readonly string[] = [
   '.mjs',
   '.cjs',
   '.vue',
+  '.svelte',
 ]
 
 /** True when the path has a source extension. */
