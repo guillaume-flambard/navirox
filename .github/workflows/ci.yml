@@ -191,6 +191,20 @@ jobs:
           export ANDROID_SDK_ROOT="${ANDROID_SDK_ROOT:-$ANDROID_HOME}"
           export PATH="$ANDROID_SDK_ROOT/emulator:$ANDROID_SDK_ROOT/platform-tools:$ANDROID_SDK_ROOT/cmdline-tools/latest/bin:$PATH"
 
+          # Where the AVD lives is the one thing that has to be pinned here.
+          # `avdmanager` and `emulator` do not resolve the AVD home from the
+          # same variable: the SDK tools read ANDROID_USER_HOME, while the
+          # emulator reads ANDROID_AVD_HOME and only falls back to the SDK
+          # paths. The runner image already sets one of them, and the result is
+          # an AVD that is created without complaint and then does not exist as
+          # far as the emulator is concerned ("Unknown AVD name
+          # [navirox-e2e]"), which is what an earlier version of this step was
+          # really waiting on. Both tools are pointed at one directory we own.
+          export ANDROID_USER_HOME="${RUNNER_TEMP:-/tmp}/android-user"
+          export ANDROID_AVD_HOME="$ANDROID_USER_HOME/avd"
+          unset ANDROID_SDK_HOME || true
+          mkdir -p "$ANDROID_AVD_HOME"
+
           SERIAL=emulator-5554
 
           # The trap is the teardown for every outcome below. Killing qemu and
@@ -211,6 +225,9 @@ jobs:
           # this the diagnosis is the one thing missing.
           fail() {
             echo "::error::$1"
+            echo "--- avd home ---"
+            ls -la "$ANDROID_AVD_HOME" 2>/dev/null || true
+            avdmanager list avd 2>/dev/null || true
             echo "--- adb devices ---"
             adb devices || true
             echo "--- emulator log (tail) ---"
@@ -222,6 +239,11 @@ jobs:
           sdkmanager --install "platform-tools" "emulator" "system-images;android-35;google_apis;x86_64" > /dev/null
           echo no | avdmanager create avd --force -n "$NAVIROX_ANDROID_AVD" \
             --package "system-images;android-35;google_apis;x86_64" --device pixel_7
+          # `avdmanager` writes a `<name>.ini` pointer next to the `<name>.avd`
+          # directory, and that pointer is what the emulator resolves. Checking
+          # it here beats discovering it four minutes into a boot poll.
+          [ -f "$ANDROID_AVD_HOME/$NAVIROX_ANDROID_AVD.ini" ] ||
+            fail "avdmanager did not write the AVD where the emulator looks"
 
           adb start-server
 
