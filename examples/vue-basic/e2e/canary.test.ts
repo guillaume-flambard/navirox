@@ -39,6 +39,18 @@ const TIMEOUT = 20000;
  */
 const SETTLE_TIMEOUT = 120000;
 
+/**
+ * The hook needs a budget of its own. jest applies `testTimeout` to hooks as
+ * well as to tests, so at 120 seconds it ends `beforeAll` mid-wait: measured on
+ * a macOS runner, a cold Metro bundle (about a minute) followed by a first
+ * attempt whose query stalls because the renderer's load re-armed the idling
+ * resource spends exactly the 120 seconds that `SETTLE_TIMEOUT` allows, and jest
+ * kills the hook before the second attempt above can run. That retry is the
+ * whole point of the loop, so the hook is given room for the launch plus three
+ * full attempts.
+ */
+const HOOK_TIMEOUT = 480000;
+
 /** Sync off from the first launch, before the renderer has anything to register. */
 const LAUNCH_OPTS = {
   newInstance: true,
@@ -94,7 +106,7 @@ async function launchAndSettle() {
 }
 
 describe('the canary journey', () => {
-  beforeAll(launchAndSettle);
+  beforeAll(launchAndSettle, HOOK_TIMEOUT);
 
   it('drives one shared store from two sibling components', async () => {
     await expect(element(by.id('count'))).toHaveText('0');
