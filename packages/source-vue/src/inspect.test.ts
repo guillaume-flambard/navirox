@@ -41,7 +41,12 @@ describe('inspecting a Vue project', () => {
       .map((unit) => unit.source.file)
 
     expect(stateModules).toEqual(['src/stores/counter.ts'])
-    expect(inspection.units.some((unit) => unit.source.file === 'src/lib/pinia.ts')).toBe(false)
+
+    // The module that only imports the state library is not a store, and it is
+    // application logic, so it is reported as a utility unit rather than not at all.
+    const pinia = inspection.units.find((unit) => unit.source.file === 'src/lib/pinia.ts')
+
+    expect(pinia?.kind).toBe('utility')
   })
 
   it('reports capability use with its file and usage kind', async () => {

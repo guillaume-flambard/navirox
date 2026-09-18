@@ -29,7 +29,6 @@ export function createNuxtAdapter(): SourceAdapter {
 export { ADAPTER_ID, COMPOSES, DISPLAY_NAME, FRAMEWORK, TESTED_VERSIONS, detect } from './detect.js'
 export {
   ALT_PAGES_DIR,
-  COMPOSABLES_DIRS,
   CONFIG_FILES,
   LAYOUTS_DIRS,
   PAGES_DIR,

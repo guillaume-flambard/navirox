@@ -14,7 +14,19 @@ export type { DetectedSource } from './registry.js'
 export { verifyAdapterContract } from './contract.js'
 export type { AdapterContractViolation } from './contract.js'
 
-export { IGNORED_DIRECTORIES, SOURCE_EXTENSIONS, isIgnoredPath, isSourceFile } from './files.js'
+export {
+  APPLICATION_EXTENSIONS,
+  CONFIG_FILE_NAMES,
+  CONFIG_FILE_PATTERN,
+  ENTRY_FILE_NAMES,
+  IGNORED_DIRECTORIES,
+  SOURCE_EXTENSIONS,
+  TEST_DIRECTORIES,
+  TEST_FILE_PATTERN,
+  isApplicationModule,
+  isIgnoredPath,
+  isSourceFile,
+} from './files.js'
 
 export { createProjectFiles } from './project.js'
 export type { ProjectFiles } from './project.js'

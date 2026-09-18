@@ -21,7 +21,6 @@ export const PAGES_DIR = 'src/pages'
 export const ALT_PAGES_DIR = 'pages'
 
 export const LAYOUTS_DIRS: readonly string[] = ['src/layouts', 'layouts']
-export const COMPOSABLES_DIRS: readonly string[] = ['src/composables', 'composables']
 
 /** Directories whose contents are a different runtime, reported and not modelled. */
 export const SERVER_SURFACE: readonly {
@@ -129,16 +128,10 @@ export function readUnits(files: readonly string[]): readonly DiscoveredUnit[] {
       continue
     }
 
-    const composableDir = underDirectory(file, COMPOSABLES_DIRS)
-
-    if (composableDir !== undefined && /\.(ts|js|mjs|cjs)$/.test(file)) {
-      units.push({
-        key: 'default',
-        kind: 'utility',
-        name: file.slice(composableDir.length + 1).replace(/\.(ts|js|mjs|cjs)$/, ''),
-        source: { file, adapterId: ADAPTER_ID, start: { line: 1, column: 1 } },
-      })
-    }
+    // Composables are application modules, and the neutral predicate the base
+    // adapter applies already reports them. A rule here would report each of them
+    // twice under two identifiers, which is the duplication composition exists to
+    // remove.
   }
 
   return units.sort((left, right) => left.source.file.localeCompare(right.source.file))

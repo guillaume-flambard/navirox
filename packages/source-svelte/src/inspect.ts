@@ -10,6 +10,7 @@ import type {
 import {
   declaredMajor,
   declaredRange,
+  isApplicationModule,
   isSourceFile,
   productionDependencies,
   readManifest,
@@ -89,27 +90,34 @@ function readComponent(file: string, text: string): DiscoveredUnit {
 }
 
 /**
- * Reads a module for a store declaration.
+ * Reads a module.
  *
- * The constructors are the store API itself, so a declaration is a call to one
- * of them. A module that imports the helpers and declares nothing is not a store
- * module, which is the same rule the Vue adapter applies to a store import.
+ * A store declaration wins the more specific kind, and everything else that is
+ * application logic is a utility unit, reported through the same neutral predicate
+ * the Vue adapter asks.
+ *
+ * The constructors are the store API itself, so a declaration is a call to one of
+ * them. A module that imports the helpers and declares nothing is not a store
+ * module, and it is application logic like any other module.
  */
 function readModule(file: string, text: string): DiscoveredUnit | undefined {
+  const name = componentName(file.replace(/\.(ts|js|mjs|cjs)$/, ''))
   const line = text
     .split('\n')
     .findIndex((candidate) => /\b(writable|readable|derived)\s*\(/.test(candidate))
 
-  if (line === -1) {
+  if (line !== -1) {
+    return { key: 'default', kind: 'state-module', name, source: location(file, line + 1) }
+  }
+
+  // A store declaration wins the more specific kind; everything else that is
+  // application logic is a utility unit, asked through the same neutral predicate
+  // the Vue adapter asks so the two cannot disagree.
+  if (!isApplicationModule(file)) {
     return undefined
   }
 
-  return {
-    key: 'default',
-    kind: 'state-module',
-    name: componentName(file.replace(/\.(ts|js|mjs|cjs)$/, '')),
-    source: location(file, line + 1),
-  }
+  return { key: 'default', kind: 'utility', name, source: location(file, 1) }
 }
 
 /** Capability uses in one file, deduplicated per capability and usage. */

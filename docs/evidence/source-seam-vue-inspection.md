@@ -1,5 +1,10 @@
 # The Vue inspection, run against the acceptance app
 
+> **Superseded in part.** This reading predates the change that taught the
+> adapters to report application modules as units (`application-module-units`,
+> see `docs/evidence/application-module-reading.md`). The unit counts below are
+> lower than what the same project reports today; every other conclusion holds.
+
 This records the first time a real project went through the source seam, and what
 the reading was. It is evidence for change `vue-source-adapter`.
 

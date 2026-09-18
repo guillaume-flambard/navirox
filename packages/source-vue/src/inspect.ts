@@ -11,6 +11,7 @@ import type {
 import {
   declaredMajor,
   declaredRange,
+  isApplicationModule,
   isSourceFile,
   productionDependencies,
   readManifest,
@@ -122,22 +123,26 @@ function readComponent(file: string, text: string): ComponentReading {
  * state module count meaningless.
  */
 function readModule(file: string, text: string): DiscoveredUnit | undefined {
+  const name =
+    file
+      .split('/')
+      .at(-1)
+      ?.replace(/\.(ts|js|tsx|jsx|mjs|cjs)$/, '') ?? file
   const line = text.split('\n').findIndex((candidate) => /\bdefineStore\s*\(/.test(candidate))
 
-  if (line === -1) {
+  if (line !== -1) {
+    return { key: 'default', kind: 'state-module', name, source: location(file, line + 1) }
+  }
+
+  // A store declaration wins the more specific kind. Everything else that is
+  // application logic is a utility unit: reporting only the stores left the largest
+  // body of code a migration can keep unchanged invisible, because the engine copies
+  // what the plan calls shared and nothing was ever called shared.
+  if (!isApplicationModule(file)) {
     return undefined
   }
 
-  return {
-    key: 'default',
-    kind: 'state-module',
-    name:
-      file
-        .split('/')
-        .at(-1)
-        ?.replace(/\.(ts|js|tsx|jsx|mjs|cjs)$/, '') ?? file,
-    source: location(file, line + 1),
-  }
+  return { key: 'default', kind: 'utility', name, source: location(file, 1) }
 }
 
 /** Capability uses in one file, deduplicated per capability and usage. */

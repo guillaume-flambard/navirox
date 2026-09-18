@@ -1,5 +1,12 @@
 # The Nuxt reading
 
+> **Superseded in part.** This reading predates the change that taught the
+> adapters to report application modules as units (`application-module-units`,
+> see `docs/evidence/application-module-reading.md`). The unit counts below are
+> lower than what the same project reports today, and Nuxt's own composable rule
+> is gone because the base adapter now reports those modules; every other
+> conclusion holds.
+
 This records what a Nuxt project reports through `navirox inspect`, taken from the
 adapter's own fixture and from the command line.
 

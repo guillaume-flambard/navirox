@@ -49,7 +49,12 @@ describe('inspecting a Svelte project', () => {
       .map((unit) => unit.source.file)
 
     expect(stateModules).toEqual(['src/stores/counter.ts'])
-    expect(inspection.units.some((unit) => unit.source.file === 'src/lib/stores.ts')).toBe(false)
+
+    // The module that only imports the helpers is not a store, and it is
+    // application logic, so it is reported as a utility unit rather than not at all.
+    const helpers = inspection.units.find((unit) => unit.source.file === 'src/lib/stores.ts')
+
+    expect(helpers?.kind).toBe('utility')
   })
 
   it('reports capability use through the shared scan, with file and usage kind', async () => {
@@ -93,8 +98,10 @@ describe('inspecting a project the adapter cannot stand behind', () => {
   it('still reports the components it read', async () => {
     const inspection = await inspect(createProjectFiles(fixture('svelte-broken')))
 
+    // Ordered by file, so api.ts sorts before the components.
     expect(inspection.units.map((unit) => unit.source.file)).toEqual([
       'src/Legacy.svelte',
+      'src/lib/api.ts',
       'src/Raw.svelte',
     ])
   })

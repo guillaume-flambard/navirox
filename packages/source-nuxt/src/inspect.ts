@@ -79,7 +79,13 @@ export async function inspect(context: InspectContext): Promise<SourceInspection
   // about the project. Nuxt's own version check replaces it.
   const inherited = base.findings.filter((finding) => finding.code !== 'framework-not-declared')
 
-  const unmodelled = readUnmodelled(context.files).map((entry) => ({
+  const outsideRuntime = readUnmodelled(context.files)
+  // The base adapter reports plain modules as application logic, and these are not:
+  // they run in a different runtime, which is exactly what the findings below say.
+  // Leaving them in would have the same run call a file both unmodelled and portable.
+  const outsideRuntimeFiles = new Set(outsideRuntime.map((entry) => entry.file))
+
+  const unmodelled = outsideRuntime.map((entry) => ({
     id: findingId({ adapterId: ADAPTER_ID, code: entry.code, key: entry.file }),
     code: entry.code,
     severity: 'info' as const,
@@ -107,9 +113,10 @@ export async function inspect(context: InspectContext): Promise<SourceInspection
       displayName: DISPLAY_NAME,
       ...(range === undefined ? {} : { frameworkVersion: range }),
     },
-    units: [...base.units, ...readUnits(context.files)].sort((left, right) =>
-      left.source.file.localeCompare(right.source.file),
-    ),
+    units: [
+      ...base.units.filter((unit) => !outsideRuntimeFiles.has(unit.source.file)),
+      ...readUnits(context.files),
+    ].sort((left, right) => left.source.file.localeCompare(right.source.file)),
     capabilities: base.capabilities,
     dependencies: base.dependencies,
     routes: readRoutes(context.files),
