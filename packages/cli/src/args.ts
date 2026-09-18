@@ -13,7 +13,7 @@ export type TPlatform = 'ios' | 'android'
 const DEFAULT_PORT = 8081
 
 /** The commands this tool knows. Adding one is a change here and in the dispatch. */
-export type TCommand = 'dev' | 'doctor' | 'inspect' | 'plan'
+export type TCommand = 'dev' | 'doctor' | 'inspect' | 'plan' | 'migrate'
 
 /** Thrown when the command line itself does not make sense. */
 export class UsageError extends Error {
@@ -34,6 +34,10 @@ export interface IParsedArguments {
   readonly skipPreflight: boolean
   /** The source adapter to use, bypassing detection. Only meaningful for inspect. */
   readonly framework: string | undefined
+  /** Where a migration writes. Only meaningful for migrate. */
+  readonly out: string | undefined
+  /** Whether a migration performs its writes. Absent means a dry run. */
+  readonly write: boolean
 }
 
 export const HELP = `navirox
@@ -48,6 +52,7 @@ Commands:
   doctor  Report the environment, the installed runtime, and what to fix.
   inspect Read an existing project and report what moving it to native involves.
   plan    Read a project and report what each part of it can become.
+  migrate Plan a migration, and with --write perform the part that is provably safe.
 
 Options:
   -p, --platform <ios|android>  Platform to target. ios on macOS, android elsewhere.
@@ -59,8 +64,12 @@ dev only:
       --port <number>           Metro port. Defaults to ${DEFAULT_PORT}.
       --skip-preflight          Do not check the native toolchain first.
 
-inspect and plan only:
+inspect, plan and migrate only:
       --framework <id>          Use a named source adapter instead of detecting one.
+
+migrate only:
+      --out <path>              Where to write. Required by --write.
+      --write                   Perform the migration. Without it, nothing is written.
 `
 
 /**
@@ -85,6 +94,10 @@ export function parseArguments(
   let skipPreflightGiven = false
   let frameworkGiven = false
   let platformGiven = false
+  let out: string | undefined
+  let outGiven = false
+  let write = false
+  let writeGiven = false
 
   for (let index = 0; index < argv.length; index += 1) {
     const argument = argv[index]
@@ -110,6 +123,13 @@ export function parseArguments(
     } else if (argument === '-C' || argument === '--directory') {
       directory = valueFor(argv, index, argument)
       index += 1
+    } else if (argument === '--write') {
+      write = true
+      writeGiven = true
+    } else if (argument === '--out') {
+      out = valueFor(argv, index, argument)
+      outGiven = true
+      index += 1
     } else if (argument === '--framework') {
       framework = valueFor(argv, index, argument)
       frameworkGiven = true
@@ -126,10 +146,11 @@ export function parseArguments(
       argument !== 'dev' &&
       argument !== 'doctor' &&
       argument !== 'inspect' &&
-      argument !== 'plan'
+      argument !== 'plan' &&
+      argument !== 'migrate'
     ) {
       throw new UsageError(
-        `Unknown command "${argument}". The commands are dev, doctor, inspect and plan.`,
+        `Unknown command "${argument}". The commands are dev, doctor, inspect, plan and migrate.`,
       )
     } else {
       command = argument
@@ -138,7 +159,36 @@ export function parseArguments(
 
   // A flag that quietly does nothing is the failure this file exists to refuse,
   // so every command refuses the flags that belong to another one.
-  if (command === 'doctor' || command === 'inspect' || command === 'plan') {
+  if (command === 'migrate') {
+    if (writeGiven && !outGiven) {
+      throw new UsageError(
+        'navirox migrate --write needs --out: this engine migrates into a separate directory and never in place.',
+      )
+    }
+  }
+
+  if (outGiven && command !== 'migrate') {
+    throw new UsageError(
+      command === undefined
+        ? '--out belongs to navirox migrate, and no command was given.'
+        : `navirox ${command} writes nothing, so --out does not apply to it.`,
+    )
+  }
+
+  if (writeGiven && command !== 'migrate') {
+    throw new UsageError(
+      command === undefined
+        ? '--write belongs to navirox migrate, and no command was given.'
+        : `navirox ${command} writes nothing, so --write does not apply to it.`,
+    )
+  }
+
+  if (
+    command === 'doctor' ||
+    command === 'inspect' ||
+    command === 'plan' ||
+    command === 'migrate'
+  ) {
     const label = `navirox ${command}`
     if (command !== 'doctor' && platformGiven) {
       throw new UsageError(`${label} reads a project, so --platform does not apply to it.`)
@@ -155,7 +205,7 @@ export function parseArguments(
     }
   }
 
-  if (command !== 'inspect' && command !== 'plan' && frameworkGiven) {
+  if (command !== 'inspect' && command !== 'plan' && command !== 'migrate' && frameworkGiven) {
     throw new UsageError(
       command === undefined
         ? '--framework belongs to navirox inspect and navirox plan, and no command was given.'
@@ -164,10 +214,12 @@ export function parseArguments(
   }
 
   if (command === undefined && !help) {
-    throw new UsageError('A command is required. The commands are dev, doctor, inspect and plan.')
+    throw new UsageError(
+      'A command is required. The commands are dev, doctor, inspect, plan and migrate.',
+    )
   }
 
-  return { command, platform, directory, port, json, help, skipPreflight, framework }
+  return { command, platform, directory, port, json, help, skipPreflight, framework, out, write }
 }
 
 /** Reads the value that belongs to an option, refusing a missing or option-like one. */

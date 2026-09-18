@@ -1,7 +1,7 @@
 {
   "name": "@navirox/migrate",
   "version": "0.0.0",
-  "description": "AST-based codemods that move Vue and Nuxt code onto the native stack.",
+  "description": "The migration engine: a versioned state file, a transform pipeline, and the writes it performs.",
   "license": "MIT",
   "type": "module",
   "engines": {
@@ -24,7 +24,10 @@
     "test": "vitest run",
     "clean": "rm -rf dist"
   },
-  "dependencies": {},
+  "dependencies": {
+    "@navirox/graph": "workspace:*",
+    "@navirox/planner": "workspace:*"
+  },
   "devDependencies": {
     "@types/node": "^26.6.1",
     "typescript": "~6.0.3",

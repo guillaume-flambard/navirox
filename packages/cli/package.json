@@ -31,6 +31,7 @@
     "@navirox/compat": "workspace:*",
     "@navirox/doctor": "workspace:*",
     "@navirox/inspect": "workspace:*",
+    "@navirox/migrate": "workspace:*",
     "@navirox/planner": "workspace:*",
     "@navirox/source": "workspace:*",
     "@navirox/source-nuxt": "workspace:*",

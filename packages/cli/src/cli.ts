@@ -154,6 +154,71 @@ export async function runCli(
     }
   }
 
+  if (parsed.command === 'migrate') {
+    try {
+      const { renderFailure, runInspection } = await import('@navirox/inspect')
+      const { loadSeedRegistry } = await import('@navirox/compat')
+      const { plan } = await import('@navirox/planner')
+      const { migrationToJson, parseState, renderMigration, runMigration } =
+        await import('@navirox/migrate')
+      const { createProjectFiles } = await import('@navirox/source')
+      const { readFileSync } = await import('node:fs')
+      const { join } = await import('node:path')
+      const registry = context.inspect?.registry ?? (await createAdapterRegistry())
+      const outcome = await runInspection({
+        rootDir: directory,
+        registry,
+        ...(parsed.framework === undefined ? {} : { framework: parsed.framework }),
+      })
+
+      if (!outcome.ok) {
+        io.err(renderFailure(outcome, parsed.json))
+        return 1
+      }
+
+      const planned = plan(outcome.report.graph, { compatibility: loadSeedRegistry() })
+      const project = createProjectFiles(directory)
+      const outRoot = parsed.out === undefined ? directory : resolve(cwd, parsed.out)
+
+      // An existing record is read rather than assumed absent, and a record this
+      // tool cannot read stops the run instead of being overwritten.
+      const statePath = join(outRoot, '.navirox', 'migration.json')
+      const state =
+        parsed.out === undefined
+          ? undefined
+          : (() => {
+              try {
+                return parseState(readFileSync(statePath, 'utf8'))
+              } catch {
+                return undefined
+              }
+            })()
+
+      const report = runMigration({
+        graph: outcome.report.graph,
+        plan: planned,
+        adapterId: outcome.report.source.adapterId,
+        sourceRoot: directory,
+        outputRoot: outRoot,
+        write: parsed.write,
+        readText: project.readText,
+        ...(state === undefined ? {} : { state }),
+      })
+
+      if (parsed.json) {
+        io.out(migrationToJson(report))
+      } else {
+        for (const line of renderMigration(report).split('\n')) {
+          io.out(line)
+        }
+      }
+
+      return 0
+    } catch (error) {
+      return reportFailure(error, io)
+    }
+  }
+
   if (parsed.command === 'doctor') {
     try {
       // Imported here rather than at the top so the report pays for nothing the
