@@ -119,6 +119,38 @@ export async function runCli(
     }
   }
 
+  if (parsed.command === 'plan') {
+    try {
+      const { runInspection, renderFailure } = await import('@navirox/inspect')
+      const { plan, planToJson, renderPlan } = await import('@navirox/planner')
+      const registry = context.inspect?.registry ?? (await createAdapterRegistry())
+      const outcome = await runInspection({
+        rootDir: directory,
+        registry,
+        ...(parsed.framework === undefined ? {} : { framework: parsed.framework }),
+      })
+
+      if (!outcome.ok) {
+        io.err(renderFailure(outcome, parsed.json))
+        return 1
+      }
+
+      const planned = plan(outcome.report.graph)
+
+      if (parsed.json) {
+        io.out(planToJson(planned))
+      } else {
+        for (const line of renderPlan(planned).split('\n')) {
+          io.out(line)
+        }
+      }
+
+      return 0
+    } catch (error) {
+      return reportFailure(error, io)
+    }
+  }
+
   if (parsed.command === 'doctor') {
     try {
       // Imported here rather than at the top so the report pays for nothing the

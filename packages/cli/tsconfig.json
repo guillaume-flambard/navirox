@@ -28,6 +28,9 @@
     },
     {
       "path": "../source-nuxt"
+    },
+    {
+      "path": "../planner"
     }
   ]
 }

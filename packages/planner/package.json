@@ -1,7 +1,7 @@
 {
-  "name": "@navirox/cli",
+  "name": "@navirox/planner",
   "version": "0.0.0",
-  "description": "The `navirox` command line interface.",
+  "description": "The migration decision model, the rule engine and the generic rules that turn an App Graph into a plan.",
   "license": "MIT",
   "type": "module",
   "engines": {
@@ -12,11 +12,8 @@
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
-      "default": "./dist/index.js"
+      "import": "./dist/index.js"
     }
-  },
-  "bin": {
-    "navirox": "./dist/bin.js"
   },
   "files": [
     "dist"
@@ -28,14 +25,7 @@
     "clean": "rm -rf dist"
   },
   "dependencies": {
-    "@navirox/doctor": "workspace:*",
-    "@navirox/inspect": "workspace:*",
-    "@navirox/planner": "workspace:*",
-    "@navirox/source": "workspace:*",
-    "@navirox/source-nuxt": "workspace:*",
-    "@navirox/source-svelte": "workspace:*",
-    "@navirox/source-sveltekit": "workspace:*",
-    "@navirox/source-vue": "workspace:*"
+    "@navirox/graph": "workspace:*"
   },
   "devDependencies": {
     "@types/node": "^26.6.1",

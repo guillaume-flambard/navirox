@@ -13,7 +13,7 @@ export type TPlatform = 'ios' | 'android'
 const DEFAULT_PORT = 8081
 
 /** The commands this tool knows. Adding one is a change here and in the dispatch. */
-export type TCommand = 'dev' | 'doctor' | 'inspect'
+export type TCommand = 'dev' | 'doctor' | 'inspect' | 'plan'
 
 /** Thrown when the command line itself does not make sense. */
 export class UsageError extends Error {
@@ -47,6 +47,7 @@ Commands:
   dev     Start an app: Metro first, then the platform build, with hot reload.
   doctor  Report the environment, the installed runtime, and what to fix.
   inspect Read an existing project and report what moving it to native involves.
+  plan    Read a project and report what each part of it can become.
 
 Options:
   -p, --platform <ios|android>  Platform to target. ios on macOS, android elsewhere.
@@ -58,7 +59,7 @@ dev only:
       --port <number>           Metro port. Defaults to ${DEFAULT_PORT}.
       --skip-preflight          Do not check the native toolchain first.
 
-inspect only:
+inspect and plan only:
       --framework <id>          Use a named source adapter instead of detecting one.
 `
 
@@ -121,9 +122,14 @@ export function parseArguments(
       throw new UsageError(`Unknown option "${argument}".`)
     } else if (command !== undefined) {
       throw new UsageError(`Unexpected argument "${argument}". navirox takes one command.`)
-    } else if (argument !== 'dev' && argument !== 'doctor' && argument !== 'inspect') {
+    } else if (
+      argument !== 'dev' &&
+      argument !== 'doctor' &&
+      argument !== 'inspect' &&
+      argument !== 'plan'
+    ) {
       throw new UsageError(
-        `Unknown command "${argument}". The commands are dev, doctor and inspect.`,
+        `Unknown command "${argument}". The commands are dev, doctor, inspect and plan.`,
       )
     } else {
       command = argument
@@ -132,9 +138,9 @@ export function parseArguments(
 
   // A flag that quietly does nothing is the failure this file exists to refuse,
   // so every command refuses the flags that belong to another one.
-  if (command === 'doctor' || command === 'inspect') {
+  if (command === 'doctor' || command === 'inspect' || command === 'plan') {
     const label = `navirox ${command}`
-    if (command === 'inspect' && platformGiven) {
+    if (command !== 'doctor' && platformGiven) {
       throw new UsageError(`${label} reads a project, so --platform does not apply to it.`)
     }
     if (portGiven) {
@@ -149,16 +155,16 @@ export function parseArguments(
     }
   }
 
-  if (command !== 'inspect' && frameworkGiven) {
+  if (command !== 'inspect' && command !== 'plan' && frameworkGiven) {
     throw new UsageError(
       command === undefined
-        ? '--framework belongs to navirox inspect, and no command was given.'
+        ? '--framework belongs to navirox inspect and navirox plan, and no command was given.'
         : `navirox ${command} reads no source project, so --framework does not apply to it.`,
     )
   }
 
   if (command === undefined && !help) {
-    throw new UsageError('A command is required. The commands are dev, doctor and inspect.')
+    throw new UsageError('A command is required. The commands are dev, doctor, inspect and plan.')
   }
 
   return { command, platform, directory, port, json, help, skipPreflight, framework }
