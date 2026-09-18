@@ -85,21 +85,21 @@ onMounted(() => {
 <template>
   <view class="panel">
     <view class="row">
-      <pressable class="button" @press="tap">
+      <pressable class="button" testID="haptics-tap" @press="tap">
         <text class="button-label">Tap</text>
       </pressable>
-      <pressable class="button ghost" @press="save">
+      <pressable class="button ghost" testID="store-save" @press="save">
         <text class="button-label ghost-label">Save</text>
       </pressable>
-      <pressable class="button ghost end" @press="clear">
+      <pressable class="button ghost end" testID="store-clear" @press="clear">
         <text class="button-label ghost-label">Clear</text>
       </pressable>
     </view>
 
-    <text class="stored"
+    <text class="stored" testID="store-stored"
       >stored: {{ stored === null ? 'nothing' : stored }}</text
     >
-    <text class="message">{{ message }}</text>
+    <text class="message" testID="store-message">{{ message }}</text>
   </view>
 </template>
 

@@ -62,7 +62,7 @@ const PIXEL =
 </script>
 
 <template>
-  <view class="root">
+  <view class="root" testID="canary-root">
     <view class="card">
       <text class="eyebrow">NAVIROX BASIC</text>
       <text class="title">Reactive Vue, native views</text>
@@ -87,9 +87,9 @@ const PIXEL =
       </view>
     </view>
 
-    <FlatList class="list" :data="rows" :key-extractor="keyOf">
+    <FlatList class="list" testID="list" :data="rows" :key-extractor="keyOf">
       <template #item="{ item }">
-        <view class="list-row">
+        <view class="list-row" :testID="`list-row-${item.id}`">
           <text class="list-label">{{ item.label }}</text>
         </view>
       </template>

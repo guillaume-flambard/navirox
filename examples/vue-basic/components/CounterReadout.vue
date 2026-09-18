@@ -17,15 +17,15 @@ const { count, doubled, history, greeting } = storeToRefs(useCanary());
 <template>
   <view class="readout">
     <view class="counter">
-      <text class="count">{{ count }}</text>
+      <text class="count" testID="count">{{ count }}</text>
       <text class="caption">presses</text>
     </view>
 
-    <text class="computed">doubled: {{ doubled }}</text>
-    <text v-if="history.length" class="computed"
+    <text class="computed" testID="doubled">doubled: {{ doubled }}</text>
+    <text v-if="history.length" class="computed" testID="history"
       >recent: {{ history.join(', ') }}</text
     >
-    <text class="computed">hello {{ greeting }}</text>
+    <text class="computed" testID="greeting">hello {{ greeting }}</text>
   </view>
 </template>
 

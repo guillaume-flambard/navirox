@@ -46,3 +46,12 @@ minimumReleaseAgeExclude:
 # then failing every install, because a placeholder is not a boolean.
 allowBuilds:
   '@parcel/watcher': false
+  # Detox's postinstall builds the local iOS framework and the XCUITest runner,
+  # then patches its Android build to the app's RN version. The e2e harness needs
+  # both. It is a no-op off darwin, so Linux CI is unaffected.
+  detox: true
+  # bunyan's optional dtrace provider compiles a native node-gyp module that the
+  # logger already treats as optional; skipping the compile loses nothing.
+  dtrace-provider: false
+  # The resolver's postinstall only wires up the prebuilt platform binding.
+  unrs-resolver: true

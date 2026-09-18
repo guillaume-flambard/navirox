@@ -1,4 +1,7 @@
 buildscript {
+    // Detox (e2e): rninfo.gradle exposes the RN version metadata Detox's AAR reads.
+    // `detox` is a direct devDep of this app, so pnpm symlinks it under ./node_modules.
+    apply from: "../node_modules/detox/android/rninfo.gradle"
     ext {
         buildToolsVersion = "36.0.0"
         minSdkVersion = 24
@@ -22,11 +25,9 @@ allprojects {
     repositories {
         google()
         mavenCentral()
+        // Detox's Android AAR, resolved from the pnpm-symlinked ./node_modules/detox.
+        maven { url "$rootDir/../node_modules/detox/Detox-android" }
     }
 }
 
-// The Detox wiring this file used to carry belongs with NX-010, the Detox e2e
-// harness. It applied a Gradle script out of a package the app does not depend
-// on and pointed a Maven repository at an AAR nothing resolves, so a freshly
-// scaffolded app could not build for Android at all.
 apply plugin: "com.facebook.react.rootproject"

@@ -643,7 +643,30 @@ If E1–E4 fail (expected), **V1's ship backend is the raw native toolchain**, o
 - [x] `navirox dev` works
 - [x] `navirox doctor` works and is honest (reports `unknown` where unknown)
 - [x] Docs: README + architecture + getting-started
-- [ ] Tests: unit (Vitest), contract (seam), one Detox journey per platform
+- [x] Tests: unit (Vitest), contract (seam), one Detox journey per platform
+  - One spec (`examples/vue-basic/e2e/canary.test.ts`) and one set of `testID`s,
+    run on both platforms against the built canary: 4/4 on the iOS simulator and
+    4/4 on the Android emulator. The journey taps through the renderer and reads
+    the verdict off the screen, so it exercises the full path (native touch,
+    renderer, runtime provider, Pinia through the `configure` seam, native
+    APIs), which no JS-only test can do.
+  - Two things were measured rather than copied, and both are recorded in the
+    harness itself. First, iOS never settles its visibility matcher on a
+    container: the hierarchy dump of the same run calls `canary-root` visible at
+    402x874, while `toBeVisible()` times out on it every time, so containers are
+    asserted with `toExist()` and only the leaves inside them with
+    `toBeVisible()`. Second, `detoxEnableSynchronization: 0` reaches the app (the
+    defaults log shows it read as 0) and the app still reports itself busy, so
+    synchronization is also disabled once the renderer has loaded, retried up to
+    three times because the load can re-arm the idling resource.
+  - The emulator's screen profile is load-bearing, not cosmetic. The canary is a
+    fixed column whose list takes the height the card leaves, so the 320x640 AVD
+    starves the list to zero height and the list journey fails on the device
+    rather than on the code. CI therefore creates a phone-sized AVD, and
+    `detox.config.js` takes the AVD and simulator names from the environment.
+  - CI runs both journeys: `journey-android` on a phone-profile emulator, and
+    `journey-ios` on a macOS runner (which needs `applesimutils` from the Wix
+    tap, otherwise the suite dies before its first test).
 - [x] CI: lint, typecheck, test, and a **2-cell** iOS/Android build smoke
 - [ ] Release process: changesets + `0.1.0` tagged
 
