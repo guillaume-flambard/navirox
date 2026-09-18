@@ -258,6 +258,21 @@ function install(appDir) {
 }
 
 /**
+ * Lints the app from its own directory, which is the only place the template's
+ * `eslint.config.js` is ever executed. The root `lint` script is a single
+ * `eslint` call scoped to the workspace packages and never reads it, so a config
+ * that cannot load stays invisible until a user runs the lint of the app they
+ * were handed.
+ */
+function lintApp(appDir) {
+  step('Linting the app')
+
+  const status = run('pnpm', ['run', 'lint'], appDir)
+
+  assert(status === 0, `The app's lint exited ${status}. The config a user receives does not run.`)
+}
+
+/**
  * Checks the Navirox packages resolved inside the app rather than back at this
  * checkout. A `link:` or a symlink into the repository means the app is testing
  * this machine's tree, not the artifact a user would install.
@@ -467,6 +482,7 @@ function main() {
 
     consumeFromArtifacts(appDir, artifacts)
     install(appDir)
+    lintApp(appDir)
     assertInstalledFromArtifacts(appDir, packages)
     assertSingleRuntime(appDir)
     assertHelp(appDir)

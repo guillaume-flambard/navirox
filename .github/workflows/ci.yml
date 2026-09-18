@@ -47,6 +47,11 @@ jobs:
       - run: pnpm typecheck
       - run: pnpm test
       - run: pnpm lint
+      # The root `lint` script is a single `eslint "packages/*/src/**/*.ts"` call, so it never
+      # reads the example's own `eslint.config.js`. That config was broken for a long time
+      # without anyone noticing, precisely because nothing executed it. Linting the example
+      # from its own directory makes ESLint find and load that config.
+      - run: pnpm --filter vue-basic lint
       - run: pnpm format:check
       - run: pnpm deps:check
 
