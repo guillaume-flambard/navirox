@@ -117,6 +117,10 @@ jobs:
   journey-android:
     name: run the shared journey on an emulator
     runs-on: ubuntu-latest
+    # The step that boots the emulator has no timeout of its own and the default
+    # job timeout is six hours, so an emulator that hangs mid-boot costs a
+    # runner for the afternoon instead of failing in the time a journey takes.
+    timeout-minutes: 30
     steps:
       # Same pins as the verify job, for the same reason.
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -134,6 +138,18 @@ jobs:
         with:
           distribution: temurin
           java-version: '17'
+
+      # A hosted runner has /dev/kvm but the runner user is not in its group, and
+      # the emulator without acceleration is worse than slow: it never finishes
+      # booting. The action notices, sets `-accel off`, and the run dies on
+      # `Can't find service: package` while adb already lists the device. This is
+      # the recipe from the action's own README, and the reason it recommends an
+      # Ubuntu runner over a macOS one.
+      - name: Enable KVM group perms
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
 
       - run: pnpm install --frozen-lockfile
       - run: pnpm build
@@ -172,6 +188,10 @@ jobs:
     # times a Linux one, so the journey is verified on main and on demand.
     if: github.event_name != 'pull_request'
     runs-on: macos-latest
+    # The first launch on a fresh runner boots a simulator, installs the app and
+    # builds a Metro bundle from an empty cache, which is minutes before the first
+    # assertion. Without a cap, a stuck simulator waits out the six-hour default.
+    timeout-minutes: 45
     steps:
       # Same pins as the verify job, for the same reason.
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1

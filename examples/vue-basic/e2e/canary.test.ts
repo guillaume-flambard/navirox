@@ -20,12 +20,24 @@
  * renderer has finished loading: the load registers an idling resource of its own
  * that re-arms synchronization, which is why a single call right after launch is
  * a coin flip. So the launch disables it up front *and* keeps asking until the
- * app answers, and every assertion then carries its own explicit `waitFor`.
+ * app answers, and every assertion then carries its own explicit `waitFor`. The
+ * asking is patient, too: the wait that sees the root view has to outlast a cold
+ * Metro bundle, not just a slow render, so it gets its own budget below.
  */
 import { by, device, element, expect, waitFor } from 'detox';
 
-/** Long enough for a native mount and a store commit on a cold simulator. */
+/** Long enough for a native mount and a store commit on a warm machine. */
 const TIMEOUT = 20000;
+
+/**
+ * Long enough for the first bundle to arrive on a machine that has never built
+ * one. Metro serves the dev bundle on demand, and the first request walks the
+ * whole graph: measured at about a minute on a macOS runner (829 modules with an
+ * empty cache) against a couple of seconds here, where the cache is warm. The
+ * gate below waits for that bundle, so it is the one wait that has to outlast a
+ * cold machine rather than a slow render.
+ */
+const SETTLE_TIMEOUT = 120000;
 
 /** Sync off from the first launch, before the renderer has anything to register. */
 const LAUNCH_OPTS = {
@@ -48,10 +60,10 @@ async function visible(id: string) {
  * same run lists it as `visibility="visible"`. Existence is the honest claim for
  * a container, and the leaves inside it (text, pressables) are asserted visible.
  */
-async function exists(id: string) {
+async function exists(id: string, timeout = TIMEOUT) {
   await waitFor(element(by.id(id)))
     .toExist()
-    .withTimeout(TIMEOUT);
+    .withTimeout(timeout);
 }
 
 /**
@@ -59,7 +71,9 @@ async function exists(id: string) {
  * resource of its own, which can re-arm synchronization after a disable that
  * lands too early, so a round that times out disables it again and waits once
  * more. Each round is a full wait rather than a short probe on purpose: a query
- * aborted mid-flight leaves the next one answering from a broken state.
+ * aborted mid-flight leaves the next one answering from a broken state. The wait
+ * is `SETTLE_TIMEOUT` rather than `TIMEOUT`, because it is waiting on a bundle
+ * that has never been built on this machine, not on a render that has.
  */
 async function launchAndSettle() {
   await device.launchApp(LAUNCH_OPTS);
@@ -69,7 +83,7 @@ async function launchAndSettle() {
   for (let attempt = 0; attempt < 3; attempt += 1) {
     try {
       await device.disableSynchronization();
-      await exists('canary-root');
+      await exists('canary-root', SETTLE_TIMEOUT);
       return;
     } catch (error) {
       lastError = error;
