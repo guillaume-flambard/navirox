@@ -73,6 +73,9 @@
     },
     {
       "path": "./packages/source-next"
+    },
+    {
+      "path": "./packages/source-astro"
     }
   ]
 }

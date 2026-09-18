@@ -1,0 +1,10 @@
+---
+import Widget from '../../components/Widget.svelte'
+const { slug } = Astro.params
+---
+<html>
+  <body>
+    <h1>{slug}</h1>
+    <Widget client:idle />
+  </body>
+</html>

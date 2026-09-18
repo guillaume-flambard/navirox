@@ -47,6 +47,7 @@ describe('the composition root', () => {
 
     expect(registry.list().map((adapter) => adapter.id)).toEqual([
       'angular',
+      'astro',
       'next',
       'nuxt',
       'react',
@@ -68,6 +69,25 @@ describe('the composition root', () => {
     })
 
     expect(selected?.adapterId).toBe('sveltekit')
+  })
+
+  it('selects Astro over the framework of the components it composes', async () => {
+    const registry = await createAdapterRegistry()
+    const selected = await registry.select({
+      rootDir: '',
+      files: ['package.json'],
+      readText: (path) =>
+        path === 'package.json'
+          ? JSON.stringify({
+              dependencies: { astro: '^7.0.0', '@astrojs/vue': '^5.0.0', vue: '^3.5.43' },
+            })
+          : undefined,
+    })
+
+    // Both adapters match, and the one that composes the other wins. This is the
+    // third meta-framework the selection has to get right, and the first one that
+    // composes more than a single base.
+    expect(selected?.adapterId).toBe('astro')
   })
 })
 
@@ -171,6 +191,7 @@ describe('the Nuxt adapter through the pipeline', () => {
 
     expect(registry.list().map((adapter) => adapter.id)).toEqual([
       'angular',
+      'astro',
       'next',
       'nuxt',
       'react',
@@ -416,6 +437,118 @@ describe('Next, the framework React projects are actually written in', () => {
 
     // The fixture declares an untested major rather than a native dependency, so
     // the reading succeeds and says so; the refusal is asserted in the adapter.
+    expect(outcome.ok).toBe(true)
+
+    if (outcome.ok) {
+      expect(
+        outcome.report.graph.findings.some((finding) => finding.code === 'version-untested'),
+      ).toBe(true)
+    }
+  })
+})
+
+describe('Astro, the framework whose pages belong to several frameworks', () => {
+  it('reads the routes out of src/pages', async () => {
+    const registry = await createAdapterRegistry()
+    const outcome = await runInspection({
+      rootDir: fixture('source-astro', 'astro-app'),
+      registry,
+      framework: 'astro',
+    })
+
+    expect(outcome.ok).toBe(true)
+
+    if (!outcome.ok) {
+      return
+    }
+
+    expect([...outcome.report.graph.routes.map((route) => route.pathPattern)].sort()).toEqual([
+      '/',
+      '/:lang-:version/info',
+      '/about',
+      '/blog/:slug',
+      '/posts/1',
+      '/sequences/:path',
+    ])
+    expect(outcome.report.graph.units.every((unit) => unit.id.startsWith('astro:'))).toBe(true)
+  })
+
+  /**
+   * The comparison is precise rather than strict, and the difference is named.
+   *
+   * The Astro fixture is a component for component twin of the Vue fixture, with
+   * the components it hydrates written in Vue, React and Svelte. The one
+   * difference the model reports is the state module: Vue reads one because the
+   * store declaration is a Vue fact the Vue adapter knows, and this adapter has no
+   * store rule to apply to a `.svelte` or `.tsx` file, so it reads those as the
+   * application modules they are. Nothing is missing from the reading; the rule
+   * that would name a store belongs to the adapter of that framework.
+   *
+   * There is no layout difference here, unlike Next: Astro places a layout in
+   * `src/layouts` by convention and says so in its own documentation, so a
+   * `.astro` component outside `src/pages` is a component and not a framework
+   * concept.
+   */
+  it('produces the Vue report, minus the store only the Vue adapter can read', async () => {
+    const registry = await createAdapterRegistry()
+    const astro = await runInspection({
+      rootDir: fixture('source-astro', 'astro-app'),
+      registry,
+      framework: 'astro',
+    })
+    const vue = await runInspection({
+      rootDir: fixture('source-vue', 'vue-app'),
+      registry,
+      framework: 'vue',
+    })
+
+    expect(astro.ok).toBe(true)
+    expect(vue.ok).toBe(true)
+
+    if (!astro.ok || !vue.ok) {
+      return
+    }
+
+    const capabilities = (report: typeof astro.report): string[] =>
+      report.graph.capabilities.map((node) => `${node.capability}:${node.usage}`).sort()
+    const kinds = (report: typeof astro.report): string[] =>
+      [...new Set(report.graph.units.map((node) => node.kind))].sort()
+
+    expect(capabilities(astro.report)).toEqual(capabilities(vue.report))
+    expect(kinds(astro.report)).toEqual(kinds(vue.report).filter((kind) => kind !== 'state-module'))
+    expect(astro.report.graph.schemaVersion).toBe(1)
+  })
+
+  it('reports the server surface instead of reading it as application code', async () => {
+    const registry = await createAdapterRegistry()
+    const outcome = await runInspection({
+      rootDir: fixture('source-astro', 'astro-app'),
+      registry,
+      framework: 'astro',
+    })
+
+    expect(outcome.ok).toBe(true)
+
+    if (!outcome.ok) {
+      return
+    }
+
+    const codes = outcome.report.graph.findings.map((finding) => finding.code)
+
+    // An endpoint under src/pages, the middleware, and the build configuration.
+    expect(codes.filter((code) => code === 'astro-endpoint')).toHaveLength(1)
+    expect(codes.filter((code) => code === 'astro-middleware')).toHaveLength(1)
+    expect(codes.filter((code) => code === 'astro-config')).toHaveLength(1)
+  })
+
+  it('says so when the Astro major was not tested', async () => {
+    const registry = await createAdapterRegistry()
+    const outcome = await runInspection({
+      rootDir: fixture('source-astro', 'astro-bad'),
+      registry,
+      framework: 'astro',
+    })
+
     expect(outcome.ok).toBe(true)
 
     if (outcome.ok) {

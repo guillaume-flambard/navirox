@@ -1,7 +1,7 @@
 {
-  "name": "@navirox/cli",
+  "name": "@navirox/source-astro",
   "version": "0.0.0",
-  "description": "The `navirox` command line interface.",
+  "description": "The Astro source adapter: pages, islands, and the framework components it hands to the adapters that read them.",
   "license": "MIT",
   "type": "module",
   "engines": {
@@ -12,11 +12,8 @@
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
-      "default": "./dist/index.js"
+      "import": "./dist/index.js"
     }
-  },
-  "bin": {
-    "navirox": "./dist/bin.js"
   },
   "files": [
     "dist"
@@ -28,19 +25,10 @@
     "clean": "rm -rf dist"
   },
   "dependencies": {
-    "@navirox/compat": "workspace:*",
-    "@navirox/doctor": "workspace:*",
-    "@navirox/inspect": "workspace:*",
-    "@navirox/migrate": "workspace:*",
-    "@navirox/planner": "workspace:*",
+    "@navirox/graph": "workspace:*",
     "@navirox/source": "workspace:*",
-    "@navirox/source-angular": "workspace:*",
-    "@navirox/source-astro": "workspace:*",
-    "@navirox/source-nuxt": "workspace:*",
-    "@navirox/source-next": "workspace:*",
     "@navirox/source-react": "workspace:*",
     "@navirox/source-svelte": "workspace:*",
-    "@navirox/source-sveltekit": "workspace:*",
     "@navirox/source-vue": "workspace:*"
   },
   "devDependencies": {

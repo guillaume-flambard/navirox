@@ -37,7 +37,9 @@ export function isIgnoredPath(path: string): boolean {
  *
  * Component extensions are included because a component is source: `.vue` was
  * added by the first adapter and `.svelte` by the second, and the list is data
- * so a third framework adds a value rather than a branch.
+ * so a third framework adds a value rather than a branch. `.astro` was added by
+ * the adapter that reads a page whose interactive parts belong to other
+ * frameworks, which does not make it less of a source file.
  */
 export const SOURCE_EXTENSIONS: readonly string[] = [
   '.ts',
@@ -48,6 +50,7 @@ export const SOURCE_EXTENSIONS: readonly string[] = [
   '.cjs',
   '.vue',
   '.svelte',
+  '.astro',
 ]
 
 /** True when the path has a source extension. */
