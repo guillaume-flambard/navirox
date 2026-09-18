@@ -185,6 +185,9 @@ importers:
 
   packages/cli:
     dependencies:
+      '@navirox/compat':
+        specifier: workspace:*
+        version: link:../compat
       '@navirox/doctor':
         specifier: workspace:*
         version: link:../doctor
@@ -348,6 +351,9 @@ importers:
 
   packages/planner:
     dependencies:
+      '@navirox/compat':
+        specifier: workspace:*
+        version: link:../compat
       '@navirox/graph':
         specifier: workspace:*
         version: link:../graph

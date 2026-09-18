@@ -28,6 +28,7 @@
     "clean": "rm -rf dist"
   },
   "dependencies": {
+    "@navirox/compat": "workspace:*",
     "@navirox/doctor": "workspace:*",
     "@navirox/inspect": "workspace:*",
     "@navirox/planner": "workspace:*",

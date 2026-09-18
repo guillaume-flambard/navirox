@@ -1,5 +1,6 @@
 import type { AppGraph } from '@navirox/graph'
 import { APP_GRAPH_SCHEMA_VERSION } from '@navirox/graph'
+import { CompatibilityRegistry } from '@navirox/compat'
 import { describe, expect, it } from 'vitest'
 import { MIGRATION_CLASSES, plan } from './index'
 
@@ -320,5 +321,104 @@ describe('rules, overrides and precedence', () => {
       'fixture:src/a.ts:utility:default',
       'fixture:src/z.ts:utility:default',
     ])
+  })
+})
+
+describe('planning with compatibility facts', () => {
+  const dependency = (subject: string, name: string) => ({
+    id: subject,
+    name,
+    version: '^1.0.0',
+  })
+
+  it('classifies a recorded package from its record, with the level in the evidence', () => {
+    const subject = 'fixture:package.json:dependency:known'
+    const planned = plan(graph({ dependencies: [dependency(subject, 'known')] }), {
+      compatibility: new CompatibilityRegistry([
+        {
+          subject: { kind: 'package', name: 'known' },
+          status: 'supported',
+          evidence: [{ level: 'android-build-tested', source: 'somewhere real' }],
+          notes: 'it was built',
+        },
+      ]),
+    })
+
+    expect(decisionFor(planned, subject)).toMatchObject({
+      classification: 'portable',
+      reasons: [{ ruleId: 'compatibility-record' }],
+      evidence: [
+        { kind: 'compat-registry', value: 'supported android-build-tested somewhere real' },
+      ],
+    })
+    expect(planned.unknowns).not.toContain(subject)
+  })
+
+  it('never calls a blocked package portable', () => {
+    const subject = 'fixture:package.json:dependency:blocked'
+    const planned = plan(graph({ dependencies: [dependency(subject, 'blocked')] }), {
+      compatibility: new CompatibilityRegistry([
+        {
+          subject: { kind: 'package', name: 'blocked' },
+          status: 'blocked',
+          evidence: [{ level: 'documented', source: 'its own documentation' }],
+          notes: 'no native equivalent',
+        },
+      ]),
+    })
+
+    expect(decisionFor(planned, subject)?.classification).toBe('manual')
+  })
+
+  it('leaves a package with no record unknown, next to the ones that changed', () => {
+    const planned = plan(
+      graph({
+        dependencies: [
+          dependency('fixture:package.json:dependency:known', 'known'),
+          dependency('fixture:package.json:dependency:unknown-one', 'unknown-one'),
+        ],
+      }),
+      {
+        compatibility: new CompatibilityRegistry([
+          {
+            subject: { kind: 'package', name: 'known' },
+            status: 'not-applicable',
+            evidence: [{ level: 'unit-tested', source: 'this repository' }],
+            notes: 'native side',
+          },
+        ]),
+      },
+    )
+
+    expect(decisionFor(planned, 'fixture:package.json:dependency:known')?.classification).toBe(
+      'shared',
+    )
+    expect(decisionFor(planned, 'fixture:package.json:dependency:unknown-one')).toMatchObject({
+      classification: 'unknown',
+      reasons: [{ ruleId: 'dependency-compatibility-unknown' }],
+    })
+  })
+
+  it('does not decide a unit from a record, only a dependency', () => {
+    const subject = 'fixture:src/App.vue:component:default'
+    const planned = plan(
+      graph({
+        units: [
+          { id: subject, kind: 'component', source: location('src/App.vue'), dependencies: [] },
+        ],
+      }),
+      {
+        compatibility: new CompatibilityRegistry([
+          {
+            subject: { kind: 'package', name: 'App.vue' },
+            status: 'supported',
+            evidence: [{ level: 'unit-tested', source: 'nowhere' }],
+            notes: 'not a package',
+          },
+        ]),
+      },
+    )
+
+    expect(decisionFor(planned, subject)?.reasons[0]?.ruleId).toBe('unit-view-layer')
   })
 })

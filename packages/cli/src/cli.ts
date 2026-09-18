@@ -122,6 +122,7 @@ export async function runCli(
   if (parsed.command === 'plan') {
     try {
       const { runInspection, renderFailure } = await import('@navirox/inspect')
+      const { loadSeedRegistry } = await import('@navirox/compat')
       const { plan, planToJson, renderPlan } = await import('@navirox/planner')
       const registry = context.inspect?.registry ?? (await createAdapterRegistry())
       const outcome = await runInspection({
@@ -135,7 +136,9 @@ export async function runCli(
         return 1
       }
 
-      const planned = plan(outcome.report.graph)
+      // The registry is loaded here rather than inside the planner, which reads
+      // only the graph and the inputs it is handed.
+      const planned = plan(outcome.report.graph, { compatibility: loadSeedRegistry() })
 
       if (parsed.json) {
         io.out(planToJson(planned))

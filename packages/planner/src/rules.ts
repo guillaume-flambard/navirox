@@ -17,7 +17,14 @@ import type { Confidence, MigrationClass } from './classes.js'
  * The layers are declared rather than numbered at each call site so that adding a
  * layer is a deliberate act with a name.
  */
-export const RULE_LAYERS = ['override', 'target', 'source', 'generic', 'fallback'] as const
+export const RULE_LAYERS = [
+  'override',
+  'compatibility',
+  'target',
+  'source',
+  'generic',
+  'fallback',
+] as const
 
 export type RuleLayer = (typeof RULE_LAYERS)[number]
 
@@ -33,6 +40,8 @@ export interface RuleContext {
   readonly usage?: string
   /** The unit kind, when the subject is a unit node. */
   readonly unitKind?: string
+  /** The dependency name, when the subject is a dependency node. */
+  readonly dependencyName?: string
 }
 
 /** A decision a rule wants to make, without the parts the engine fills in. */
@@ -195,7 +204,10 @@ export const GENERIC_RULES: readonly MigrationRule[] = [
 export const DEPENDENCY_RULE: MigrationRule = {
   id: 'dependency-compatibility-unknown',
   layer: 'generic',
-  applies: (context) => context.capability === undefined && context.unitKind === undefined,
+  applies: (context) =>
+    context.capability === undefined &&
+    context.unitKind === undefined &&
+    context.dependencyName !== undefined,
   evaluate: () => ({
     classification: 'unknown',
     confidence: 'low',

@@ -137,7 +137,7 @@ back into the renderer is the failure mode this layout exists to prevent.
 | `@navirox/inspect`          | The framework-neutral inspection pipeline: adapter selection, App Graph assembly and the versioned report.        | Implemented                                |
 | `@navirox/planner`          | The migration decision model, the rule engine and the generic rules that turn an App Graph into a plan.           | Implemented                                |
 | `@navirox/migrate`          | Codemods that move web source onto a native target.                                                               | Declared                                   |
-| `@navirox/compat`           | Compatibility registry schema, loading and queries.                                                               | Declared                                   |
+| `@navirox/compat`           | Compatibility records: what Navirox knows works on a native target, and the evidence behind each claim.           | Implemented, seeded                        |
 | `@navirox/build`            | Build, update and submit orchestration through a replaceable provider.                                            | Declared                                   |
 
 `examples/vue-basic` is the acceptance app: a Vue SFC application that imports

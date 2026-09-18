@@ -17,6 +17,7 @@ export {
 } from './rules.js'
 export type { MigrationRule, RuleContext, RuleDecision, RuleLayer } from './rules.js'
 export type { AppGraph, AppGraphFragment } from '@navirox/graph'
+export { compatibilityEvidence, compatibilityRule } from './compatibility.js'
 export { PLAN_SCHEMA_VERSION, plan } from './plan.js'
 export { planToJson, renderPlan } from './render.js'
 export type { ClassificationOverride, MigrationPlan, PlanOptions, PlanSummary } from './plan.js'

@@ -1,4 +1,6 @@
 import type { AppGraph, NodeId } from '@navirox/graph'
+import type { CompatibilityRegistry } from '@navirox/compat'
+import { compatibilityEvidence, compatibilityRule } from './compatibility.js'
 import {
   CONFIDENCES,
   MIGRATION_CLASSES,
@@ -49,6 +51,8 @@ export interface PlanOptions {
   readonly overrides?: readonly ClassificationOverride[]
   /** Extra rules, which a source adapter or a future target provider contributes. */
   readonly rules?: readonly MigrationRule[]
+  /** What is known about compatibility. Loaded by the caller, never read here. */
+  readonly compatibility?: CompatibilityRegistry
 }
 
 /**
@@ -100,6 +104,12 @@ function contextFor(graph: AppGraph, subject: NodeId): RuleContext {
     }
   }
 
+  const dependency = graph.dependencies.find((node) => node.id === subject)
+
+  if (dependency !== undefined) {
+    return { graph, subject, capabilitiesInUnit: [], dependencyName: dependency.name }
+  }
+
   return { graph, subject, capabilitiesInUnit: [] }
 }
 
@@ -112,7 +122,21 @@ function subjects(graph: AppGraph): readonly NodeId[] {
   ].sort()
 }
 
-function evidenceFor(graph: AppGraph, subject: NodeId): MigrationDecision['evidence'] {
+function evidenceFor(
+  graph: AppGraph,
+  subject: NodeId,
+  options: PlanOptions,
+): MigrationDecision['evidence'] {
+  const dependency = graph.dependencies.find((node) => node.id === subject)
+  const record =
+    dependency === undefined
+      ? undefined
+      : options.compatibility?.lookup({ kind: 'package', name: dependency.name })
+
+  if (record !== undefined) {
+    return [...compatibilityEvidence(record)]
+  }
+
   const unit = graph.units.find((node) => node.id === subject)
 
   if (unit !== undefined) {
@@ -130,12 +154,13 @@ function evidenceFor(graph: AppGraph, subject: NodeId): MigrationDecision['evide
     ]
   }
 
-  const dependency = graph.dependencies.find((node) => node.id === subject)
+  const manifestEntry = graph.dependencies.find((node) => node.id === subject)
 
   return [
     {
       kind: 'manifest',
-      value: `package.json ${dependency?.name ?? subject} ${dependency?.version ?? ''}`.trim(),
+      value:
+        `package.json ${manifestEntry?.name ?? subject} ${manifestEntry?.version ?? ''}`.trim(),
     },
   ]
 }
@@ -150,6 +175,7 @@ function evidenceFor(graph: AppGraph, subject: NodeId): MigrationDecision['evide
 export function plan(graph: AppGraph, options: PlanOptions = {}): MigrationPlan {
   const rules = orderedRules([
     ...overrideRule(options.overrides ?? []),
+    ...(options.compatibility === undefined ? [] : [compatibilityRule(options.compatibility)]),
     ...GENERIC_RULES,
     DEPENDENCY_RULE,
     ...(options.rules ?? []),
@@ -172,7 +198,7 @@ export function plan(graph: AppGraph, options: PlanOptions = {}): MigrationPlan 
         classification: decision.classification,
         confidence: decision.confidence,
         reasons: [{ ruleId: rule.id, message: decision.message }],
-        evidence: evidenceFor(graph, subject),
+        evidence: evidenceFor(graph, subject, options),
       } satisfies MigrationDecision,
     ]
   })

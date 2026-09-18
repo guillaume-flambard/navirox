@@ -24,6 +24,34 @@ interface IViolation {
   readonly line: string
 }
 
+/**
+ * The module specifiers a source text imports.
+ *
+ * The rule is about imports, so the check reads imports. Matching on a quoted
+ * substring was precise enough while the only reason to write a renderer name in a
+ * neutral package was a mistake, and it stopped being precise the moment a data
+ * file had to name `react-native` as the subject of a compatibility record rather
+ * than as something to import. A check that forbids naming a thing is a different
+ * check from one that forbids depending on it, and this is the second.
+ */
+function importSpecifiers(source: string): readonly string[] {
+  const found = new Set<string>()
+
+  for (const line of codeLines(source)) {
+    for (const match of line.matchAll(
+      /(?:\bfrom\s*|\bimport\s*\(?\s*|\brequire\s*\(\s*)['"]([^'"]+)['"]/g,
+    )) {
+      const specifier = match[1]
+
+      if (specifier !== undefined) {
+        found.add(specifier)
+      }
+    }
+  }
+
+  return [...found]
+}
+
 function sourceFiles(dir: string): readonly string[] {
   const entries = readdirSync(dir, { recursive: true, withFileTypes: true })
   return entries
@@ -60,13 +88,9 @@ describe('the renderer import boundary', () => {
       const packageName = parts[0]
       if (packageName === undefined || packageName === ALLOWED_PACKAGE) continue
 
-      for (const line of codeLines(readFileSync(file, 'utf8'))) {
-        if (
-          RENDERER_PACKAGES.some(
-            (needle) => line.includes(`'${needle}`) || line.includes(`"${needle}`),
-          )
-        ) {
-          violations.push({ file: relative(packagesDir, file), line: line.trim() })
+      for (const specifier of importSpecifiers(readFileSync(file, 'utf8'))) {
+        if (RENDERER_PACKAGES.some((needle) => specifier.startsWith(needle))) {
+          violations.push({ file: relative(packagesDir, file), line: specifier })
         }
       }
     }
