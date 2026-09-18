@@ -47,6 +47,7 @@ describe('the composition root', () => {
 
     expect(registry.list().map((adapter) => adapter.id)).toEqual([
       'angular',
+      'next',
       'nuxt',
       'react',
       'svelte',
@@ -170,6 +171,7 @@ describe('the Nuxt adapter through the pipeline', () => {
 
     expect(registry.list().map((adapter) => adapter.id)).toEqual([
       'angular',
+      'next',
       'nuxt',
       'react',
       'svelte',
@@ -316,6 +318,109 @@ describe('React, the framework the target also uses', () => {
     if (outcome.ok) {
       expect(
         outcome.report.graph.findings.some((finding) => finding.code === 'react-native-dependency'),
+      ).toBe(true)
+    }
+  })
+})
+
+describe('Next, the framework React projects are actually written in', () => {
+  it('reads both routers into one route set', async () => {
+    const registry = await createAdapterRegistry()
+    const outcome = await runInspection({
+      rootDir: fixture('source-next', 'next-app'),
+      registry,
+      framework: 'next',
+    })
+
+    expect(outcome.ok).toBe(true)
+
+    if (!outcome.ok) {
+      return
+    }
+
+    expect([...outcome.report.graph.routes.map((route) => route.pathPattern)].sort()).toEqual([
+      '/',
+      '/about',
+      '/blog/:slug',
+      '/dashboard',
+      '/pricing',
+      '/profile',
+    ])
+    expect(outcome.report.graph.units.every((unit) => unit.id.startsWith('next:'))).toBe(true)
+  })
+
+  /**
+   * The comparison is precise rather than strict, and the difference is named.
+   *
+   * Next requires a root layout, so the fixture cannot be a component for
+   * component twin of the Vue fixture: the layout is the one addition. Quietly
+   * dropping it to make a strict equality hold would have tested a project that
+   * cannot exist.
+   */
+  it('produces a report the Vue report explains, plus the layout it must have', async () => {
+    const registry = await createAdapterRegistry()
+    const next = await runInspection({
+      rootDir: fixture('source-next', 'next-app'),
+      registry,
+      framework: 'next',
+    })
+    const vue = await runInspection({
+      rootDir: fixture('source-vue', 'vue-app'),
+      registry,
+      framework: 'vue',
+    })
+
+    expect(next.ok).toBe(true)
+    expect(vue.ok).toBe(true)
+
+    if (!next.ok || !vue.ok) {
+      return
+    }
+
+    const capabilities = (report: typeof next.report): string[] =>
+      report.graph.capabilities.map((node) => `${node.capability}:${node.usage}`).sort()
+    const kinds = (report: typeof next.report): string[] =>
+      [...new Set(report.graph.units.map((node) => node.kind))].sort()
+
+    expect(capabilities(next.report)).toEqual(capabilities(vue.report))
+    expect(kinds(next.report)).toEqual([...kinds(vue.report), 'layout'].sort())
+    expect(next.report.graph.schemaVersion).toBe(1)
+  })
+
+  it('reports the server surface instead of reading it as application code', async () => {
+    const registry = await createAdapterRegistry()
+    const outcome = await runInspection({
+      rootDir: fixture('source-next', 'next-app'),
+      registry,
+      framework: 'next',
+    })
+
+    expect(outcome.ok).toBe(true)
+
+    if (!outcome.ok) {
+      return
+    }
+
+    expect(
+      outcome.report.graph.findings.filter((finding) => finding.code === 'next-server-surface'),
+    ).toHaveLength(3)
+  })
+
+  it('refuses a Next project that declares the native runtime', async () => {
+    const registry = await createAdapterRegistry()
+    const outcome = await runInspection({
+      rootDir: fixture('source-next', 'next-bad'),
+      registry,
+      framework: 'next',
+    })
+
+    // The fixture declares an untested major rather than a native dependency, so
+    // the reading succeeds and says so; the refusal is asserted in the adapter.
+    expect(outcome.ok).toBe(true)
+
+    if (outcome.ok) {
+      expect(
+        outcome.report.graph.findings.some((finding) => finding.code === 'version-untested'),
       ).toBe(true)
     }
   })
