@@ -94,7 +94,8 @@ pnpm test
 
 The full gate suite is in `CONTRIBUTING.md`. Read `AGENTS.md` before changing
 anything: it lists the architectural rules the test suite enforces, and most
-review comments come back to one of them.
+review comments come back to one of them. To build an app rather than work on
+Navirox, start with `docs/GETTING-STARTED.md`.
 
 ## Roadmap
 
@@ -103,18 +104,34 @@ the scaffolder and `navirox dev` are done: a generated app installs from package
 artifacts and boots on a simulator from its own install. Upstream once documented
 that the quickest way to try it was to run an example rather than a published
 scaffolder, and that gap is why the scaffolder was Navirox's first deliverable
-rather than a wrapper. Everything after that, from `navirox doctor` to the
-compatibility registry and the migration codemods, is ordered in `PLAN.md` with
-its dependencies.
+rather than a wrapper. The rest, from the compatibility registry to the migration
+codemods, is ordered in `PLAN.md` with its dependencies.
+
+## Not in 0.1
+
+0.1 is the canary: a generated app that installs, runs on both platforms, and
+reports honestly on the machine it runs on. These are deliberately not here yet:
+EAS and OTA, camera, location and notifications, Nuxt migration, the
+compatibility registry UI, Vue DevTools, Tailwind, Reanimated, and Windows or
+Linux hosts for native builds.
+
+The ship backend deserves its own line, because it is where this plan knowingly
+departs from the blueprint. `navirox submit` will drive the raw Xcode and Gradle
+toolchain through Fastlane rather than EAS, and `navirox update` will report what
+it cannot do instead of pretending: over-the-air updates on a bare React Native
+app need a bundle update mechanism Navirox does not have yet. Promising EAS and
+not shipping it is the fastest way to lose the teams this is built for.
 
 ## Documentation
 
-| Document         | What is in it                                                |
-| ---------------- | ------------------------------------------------------------ |
-| `PLAN.md`        | The plan of record: scope, package roles, task order         |
-| `blueprint.md`   | The full product and technical blueprint                     |
-| `AGENTS.md`      | The architectural contract, and the rules the tests enforce  |
-| `docs/evidence/` | Machine-specific build facts established during verification |
+| Document                  | What is in it                                                |
+| ------------------------- | ------------------------------------------------------------ |
+| `docs/GETTING-STARTED.md` | Prerequisites, the first app, and what to do when it fails   |
+| `docs/ARCHITECTURE.md`    | The layers, the seam, and the dependency direction           |
+| `PLAN.md`                 | The plan of record: scope, package roles, task order         |
+| `blueprint.md`            | The full product and technical blueprint                     |
+| `AGENTS.md`               | The architectural contract, and the rules the tests enforce  |
+| `docs/evidence/`          | Machine-specific build facts established during verification |
 
 ## Contributing
 
