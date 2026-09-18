@@ -39,6 +39,7 @@
     "@navirox/source-nuxt": "workspace:*",
     "@navirox/source-next": "workspace:*",
     "@navirox/source-react": "workspace:*",
+    "@navirox/source-solid": "workspace:*",
     "@navirox/source-svelte": "workspace:*",
     "@navirox/source-sveltekit": "workspace:*",
     "@navirox/source-vue": "workspace:*"

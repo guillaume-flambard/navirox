@@ -51,6 +51,7 @@ describe('the composition root', () => {
       'next',
       'nuxt',
       'react',
+      'solid',
       'svelte',
       'sveltekit',
       'vue',
@@ -195,6 +196,7 @@ describe('the Nuxt adapter through the pipeline', () => {
       'next',
       'nuxt',
       'react',
+      'solid',
       'svelte',
       'sveltekit',
       'vue',
@@ -547,6 +549,87 @@ describe('Astro, the framework whose pages belong to several frameworks', () => 
       rootDir: fixture('source-astro', 'astro-bad'),
       registry,
       framework: 'astro',
+    })
+
+    expect(outcome.ok).toBe(true)
+
+    if (outcome.ok) {
+      expect(
+        outcome.report.graph.findings.some((finding) => finding.code === 'version-untested'),
+      ).toBe(true)
+    }
+  })
+})
+
+describe('Solid, the second source read through JSX', () => {
+  it('reads the routes the router declares in either shape', async () => {
+    const registry = await createAdapterRegistry()
+    const outcome = await runInspection({
+      rootDir: fixture('source-solid', 'solid-app'),
+      registry,
+      framework: 'solid',
+    })
+
+    expect(outcome.ok).toBe(true)
+
+    if (!outcome.ok) {
+      return
+    }
+
+    expect([...outcome.report.graph.routes.map((route) => route.pathPattern)].sort()).toEqual([
+      '/',
+      '/profile',
+      '/rows/:id',
+    ])
+    expect(outcome.report.graph.units.every((unit) => unit.id.startsWith('solid:'))).toBe(true)
+  })
+
+  /**
+   * Solid is read through the same lenses as React, and this fixture is the
+   * component for component twin of the Vue one, so the two reports have to
+   * match without a named difference. The state library differs (a Solid store is
+   * a proxy from `solid-js/store`) and the router differs, but neither shows up
+   * in the shape of the model: the kinds of unit, the capabilities and the keys a
+   * node carries are the same, the reading produced no finding at all, and the
+   * schema stayed where it was.
+   */
+  it('produces the report the Vue fixture produces', async () => {
+    const registry = await createAdapterRegistry()
+    const solid = await runInspection({
+      rootDir: fixture('source-solid', 'solid-app'),
+      registry,
+      framework: 'solid',
+    })
+    const vue = await runInspection({
+      rootDir: fixture('source-vue', 'vue-app'),
+      registry,
+      framework: 'vue',
+    })
+
+    expect(solid.ok).toBe(true)
+    expect(vue.ok).toBe(true)
+
+    if (!solid.ok || !vue.ok) {
+      return
+    }
+
+    const capabilities = (report: typeof solid.report): string[] =>
+      report.graph.capabilities.map((node) => `${node.capability}:${node.usage}`).sort()
+    const kinds = (report: typeof solid.report): string[] =>
+      [...new Set(report.graph.units.map((node) => node.kind))].sort()
+
+    expect(capabilities(solid.report)).toEqual(capabilities(vue.report))
+    expect(kinds(solid.report)).toEqual(kinds(vue.report))
+    expect(solid.report.graph.findings).toEqual([])
+    expect(solid.report.graph.schemaVersion).toBe(1)
+  })
+
+  it('says so when the Solid major was not tested', async () => {
+    const registry = await createAdapterRegistry()
+    const outcome = await runInspection({
+      rootDir: fixture('source-solid', 'solid-bad'),
+      registry,
+      framework: 'solid',
     })
 
     expect(outcome.ok).toBe(true)

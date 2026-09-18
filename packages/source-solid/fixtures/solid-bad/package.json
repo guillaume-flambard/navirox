@@ -1,0 +1,8 @@
+{
+  "name": "fixture-solid-bad",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "solid-js": "^0.28.0"
+  }
+}

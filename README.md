@@ -90,8 +90,8 @@ marketing badge. The four levels are the ones the roadmap defines:
 | Supported    | A migrated application in that framework builds and runs on a target.       |
 | Production   | Supported, plus a release process and a compatibility record with evidence. |
 
-**Eight adapters are at Experimental.** Vue 3, Nuxt, Svelte, SvelteKit, Angular,
-React, Next and Astro are detected and inspected, and nothing beyond that is claimed: no
+**Nine adapters are at Experimental.** Vue 3, Nuxt, Svelte, SvelteKit, Angular,
+React, Next, Astro and Solid are detected and inspected, and nothing beyond that is claimed: no
 migration transform exists, and plain Vue routes are not extracted. Nuxt reads the
 application directory Nuxt 4 documents, the `definePageMeta` macro and the two halves of a
 component, and its data calls stay one shared capability rather than a model of their own.
@@ -109,6 +109,7 @@ adapter that does not exist.
 | React               | implemented | implemented | planned        | Experimental    |
 | Next                | implemented | implemented | planned        | Experimental    |
 | Astro               | implemented | implemented | planned        | Experimental    |
+| Solid               | implemented | implemented | planned        | Experimental    |
 | React Router, Remix | planned     | planned     | planned        | Not yet claimed |
 
 What each adapter reports, and what it deliberately does not, is recorded in
@@ -134,6 +135,7 @@ back into the renderer is the failure mode this layout exists to prevent.
 | `@navirox/source-react`     | The React source adapter: components found by what a module exports, stores by declaration, and a native project refused.        | Implemented, experimental                             |
 | `@navirox/source-next`      | The Next source adapter: both routers, layouts and the module boundary, on top of the React adapter.                             | Implemented, experimental                             |
 | `@navirox/source-astro`     | The Astro source adapter: pages, islands, and the framework components handed to the adapters that read them.                    | Implemented, experimental                             |
+| `@navirox/source-solid`     | The Solid source adapter: components read by what a module exports, stores from `solid-js/store`, and the router's two shapes.   | Implemented, experimental                             |
 | `@navirox/metro-preset`     | The Vue SFC transform and the CSS parser, composed into one Metro preset.                                                        | Implemented                                           |
 | `@navirox/ui`               | Curated native component facade: View, Text, Pressable, ScrollView, TextInput, FlatList.                                         | Implemented                                           |
 | `@navirox/native`           | Vue-first native API surface over a pluggable provider. Haptics and secure storage today.                                        | Implemented                                           |

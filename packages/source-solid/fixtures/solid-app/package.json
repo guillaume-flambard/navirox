@@ -1,0 +1,9 @@
+{
+  "name": "fixture-solid-app",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "@solidjs/router": "^1.0.0",
+    "solid-js": "^1.9.0"
+  }
+}

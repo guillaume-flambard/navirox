@@ -81,6 +81,8 @@ updates:
       - dependency-name: '@sveltejs/*'
       - dependency-name: svelte-check
       - dependency-name: nuxt
+      - dependency-name: solid-js
+      - dependency-name: '@solidjs/*'
       - dependency-name: zustand
       - dependency-name: rxjs
       - dependency-name: tslib
