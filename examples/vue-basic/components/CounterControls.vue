@@ -19,15 +19,20 @@ const canary = useCanary();
 <template>
   <view class="controls">
     <view class="row">
-      <pressable class="button" @press="canary.increment">
+      <pressable class="button" testID="increment" @press="canary.increment">
         <text class="button-label">Press me</text>
       </pressable>
-      <pressable class="button ghost" @press="canary.reset">
+      <pressable class="button ghost" testID="reset" @press="canary.reset">
         <text class="button-label ghost-label">Reset</text>
       </pressable>
     </view>
 
-    <text-input v-model="canary.name" class="input" placeholder="Type a name" />
+    <text-input
+      v-model="canary.name"
+      class="input"
+      testID="name-input"
+      placeholder="Type a name"
+    />
   </view>
 </template>
 

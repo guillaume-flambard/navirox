@@ -113,3 +113,215 @@ jobs:
       - run: pnpm install --frozen-lockfile
       - run: pnpm build
       - run: node scripts/e2e-scaffold.mjs --build ios
+
+  journey-android:
+    name: run the shared journey on an emulator
+    runs-on: ubuntu-latest
+    # The step that boots the emulator has no timeout of its own and the default
+    # job timeout is six hours, so an emulator that hangs mid-boot costs a
+    # runner for the afternoon instead of failing in the time a journey takes.
+    timeout-minutes: 30
+    steps:
+      # Same pins as the verify job, for the same reason.
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6.1.0
+
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: 24.x
+          cache: pnpm
+
+      - uses: actions/setup-java@de7274f081f381c8f8158605e0321c36c376e2e6 # v6.0.1
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      # A hosted runner has /dev/kvm but the runner user is not in its group, and
+      # the emulator without acceleration is worse than slow: it never finishes
+      # booting. The action notices, sets `-accel off`, and the run dies on
+      # `Can't find service: package` while adb already lists the device. This is
+      # the recipe from the action's own README, and the reason it recommends an
+      # Ubuntu runner over a macOS one.
+      - name: Enable KVM group perms
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
+
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm build
+
+      # The journey drives an app that is already built: `detox test` installs
+      # and runs a binary, it does not compile one. Building here rather than
+      # inside the emulator step also keeps the emulator step to the run itself,
+      # which is the part that can hang.
+      - run: pnpm --filter vue-basic e2e:build:android
+
+      # This job owns the emulator end to end rather than handing it to the
+      # maintained helper action, which is deliberate. That action deadlocks
+      # after the tests pass: it kills the emulator, then waits on the whole
+      # process tree, and the emulator's own crash-handler children never exit
+      # (ReactiveCircus/android-emulator-runner#385, open since 2024 and still
+      # reproducing as of this writing). The suite goes green and the job hangs
+      # anyway, and no later step can clean up, because the hung step holds the
+      # workflow until the job timeout. Booting the emulator here means nothing
+      # waits on something we do not control, and the teardown below is a trap
+      # that runs whatever the tests did.
+      #
+      # Owning it also means owning every wait in it. The first version of this
+      # step copied the obvious `adb wait-for-device` idiom and then sat silent
+      # for twenty-four minutes when the emulator never came up, because that
+      # command has no timeout and no opinion about an emulator that died on the
+      # way. It is replaced below with a bounded poll on an explicit serial,
+      # which is what the helper action does internally for the same reason.
+      #
+      # The profile is load-bearing rather than cosmetic: the canary is a fixed
+      # column whose list takes the height the card leaves, so a small AVD
+      # starves the list to zero height and the list journey fails on the device
+      # profile instead of on the code. A phone-sized AVD is part of the setup.
+      - name: Run the journey against the emulator
+        env:
+          NAVIROX_ANDROID_AVD: navirox-e2e
+        run: |
+          set -euo pipefail
+
+          export ANDROID_SDK_ROOT="${ANDROID_SDK_ROOT:-$ANDROID_HOME}"
+          export PATH="$ANDROID_SDK_ROOT/emulator:$ANDROID_SDK_ROOT/platform-tools:$ANDROID_SDK_ROOT/cmdline-tools/latest/bin:$PATH"
+
+          # Where the AVD lives is the one thing that has to be pinned here.
+          # `avdmanager` and `emulator` do not resolve the AVD home from the
+          # same variable: the SDK tools read ANDROID_USER_HOME, while the
+          # emulator reads ANDROID_AVD_HOME and only falls back to the SDK
+          # paths. The runner image already sets one of them, and the result is
+          # an AVD that is created without complaint and then does not exist as
+          # far as the emulator is concerned ("Unknown AVD name
+          # [navirox-e2e]"), which is what an earlier version of this step was
+          # really waiting on. Both tools are pointed at one directory we own.
+          export ANDROID_USER_HOME="${RUNNER_TEMP:-/tmp}/android-user"
+          export ANDROID_AVD_HOME="$ANDROID_USER_HOME/avd"
+          unset ANDROID_SDK_HOME || true
+          mkdir -p "$ANDROID_AVD_HOME"
+
+          SERIAL=emulator-5554
+
+          # The trap is the teardown for every outcome below. Killing qemu and
+          # the crash handler with -9 is what makes the step end: a polite
+          # shutdown leaves the handler behind, and this shell is the only
+          # process left to notice. Even the polite attempt is capped, because
+          # it is adb talking to a device that may already be gone.
+          teardown() {
+            timeout 20 adb -s "$SERIAL" emu kill > /dev/null 2>&1 || true
+            sleep 5
+            pkill -9 -f qemu-system || true
+            pkill -9 -f crashpad_handler || true
+          }
+          trap teardown EXIT
+
+          # An emulator that never comes up is the failure worth reading about,
+          # so every failing path prints what the emulator itself said. Without
+          # this the diagnosis is the one thing missing.
+          fail() {
+            echo "::error::$1"
+            echo "--- avd home ---"
+            ls -la "$ANDROID_AVD_HOME" 2>/dev/null || true
+            avdmanager list avd 2>/dev/null || true
+            echo "--- adb devices ---"
+            adb devices || true
+            echo "--- emulator log (tail) ---"
+            tail -n 80 /tmp/emulator.log 2>/dev/null || echo "(no emulator log)"
+            exit 1
+          }
+
+          yes | sdkmanager --licenses > /dev/null 2>&1 || true
+          sdkmanager --install "platform-tools" "emulator" "system-images;android-35;google_apis;x86_64" > /dev/null
+          echo no | avdmanager create avd --force -n "$NAVIROX_ANDROID_AVD" \
+            --package "system-images;android-35;google_apis;x86_64" --device pixel_7
+          # `avdmanager` writes a `<name>.ini` pointer next to the `<name>.avd`
+          # directory, and that pointer is what the emulator resolves. Checking
+          # it here beats discovering it four minutes into a boot poll.
+          [ -f "$ANDROID_AVD_HOME/$NAVIROX_ANDROID_AVD.ini" ] ||
+            fail "avdmanager did not write the AVD where the emulator looks"
+
+          adb start-server
+
+          # Output goes to a file so the emulator does not hold the step's pipe
+          # open, and it outlives this shell only until the trap above. The port
+          # is pinned rather than left to chance, so the serial below is a fact
+          # and not a guess.
+          emulator -avd "$NAVIROX_ANDROID_AVD" -port 5554 -no-window -gpu swiftshader_indirect \
+            -no-snapshot -noaudio -no-boot-anim > /tmp/emulator.log 2>&1 &
+
+          booted=false
+          for _ in $(seq 1 120); do
+            if [ "$(timeout 20 adb -s "$SERIAL" shell getprop sys.boot_completed 2>/dev/null | tr -d '\r')" = "1" ]; then
+              booted=true
+              break
+            fi
+            sleep 2
+          done
+          [ "$booted" = true ] || fail "the emulator did not finish booting in four minutes"
+
+          # A headless emulator lets its display sleep on the system timeout, and
+          # a window whose screen is off never takes window focus, which is the
+          # one thing Espresso insists on: "Waited for the root of the view
+          # hierarchy to have window focus and not request layout for 10
+          # seconds". The app was mounted and idle when that happened, so focus
+          # was the whole failure and it was timing, not code. Stay awake, wake
+          # the display, drop the keyguard, and push the screen timeout well
+          # past the length of a run.
+          adb -s "$SERIAL" shell svc power stayon true
+          adb -s "$SERIAL" shell input keyevent 224
+          adb -s "$SERIAL" shell wm dismiss-keyguard
+          adb -s "$SERIAL" shell settings put system screen_off_timeout 1800000
+
+          adb -s "$SERIAL" shell settings put global window_animation_scale 0
+          adb -s "$SERIAL" shell settings put global transition_animation_scale 0
+          adb -s "$SERIAL" shell settings put global animator_duration_scale 0
+
+          pnpm --filter vue-basic e2e:test:android || fail "the shared journey failed on the emulator"
+
+  journey-ios:
+    name: run the shared journey on a simulator
+    # Same reasoning as the iOS build job above: a macOS runner costs several
+    # times a Linux one, so the journey is verified on main and on demand.
+    if: github.event_name != 'pull_request'
+    runs-on: macos-latest
+    # The first launch on a fresh runner boots a simulator, installs the app and
+    # builds a Metro bundle from an empty cache, which is minutes before the first
+    # assertion. Without a cap, a stuck simulator waits out the six-hour default.
+    timeout-minutes: 45
+    steps:
+      # Same pins as the verify job, for the same reason.
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6.1.0
+
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: 24.x
+          cache: pnpm
+
+      # Detox reaches into the simulator through applesimutils, which is not in
+      # the runner image. Without it the suite dies before the first test with a
+      # bare "applesimutils: command not found", which reads like a Detox fault
+      # and is not one. It lives in the Wix tap, which Homebrew refuses to load
+      # until it is trusted.
+      - run: brew tap wix/brew && brew trust wix/brew && brew install applesimutils
+
+      - run: pod --version || sudo gem install cocoapods --no-document
+
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm build
+
+      # Pods are not committed, and adding a devDependency is enough to move the
+      # lock the build checks the manifest against.
+      - run: pod install
+        working-directory: examples/vue-basic/ios
+
+      - run: pnpm --filter vue-basic e2e:build:ios
+      - run: pnpm --filter vue-basic e2e:test:ios

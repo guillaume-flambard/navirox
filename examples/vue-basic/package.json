@@ -12,7 +12,11 @@
     "dev": "react-native start --reset-cache",
     "lint": "eslint .",
     "pretypecheck": "css-dts .",
-    "typecheck": "vue-tsc --noEmit -p tsconfig.typecheck.json"
+    "typecheck": "vue-tsc --noEmit -p tsconfig.typecheck.json",
+    "e2e:build:ios": "detox build --configuration ios.sim.debug",
+    "e2e:test:ios": "detox test --configuration ios.sim.debug",
+    "e2e:build:android": "detox build --configuration android.emu.debug",
+    "e2e:test:android": "detox test --configuration android.emu.debug"
   },
   "dependencies": {
     "@navirox/metro-preset": "workspace:*",
@@ -42,14 +46,19 @@
     "@react-native/gradle-plugin": "0.86.0",
     "@react-native/metro-config": "0.86.0",
     "@react-native/typescript-config": "0.86.0",
+    "@types/jest": "^30.0.0",
     "@types/node": "^26.6.1",
     "@types/react": "^19.2.0",
+    "detox": "^20.51.4",
     "eslint": "^10.10.0",
     "eslint-plugin-vue": "^10.11.0",
+    "jest": "^30.5.1",
+    "jest-circus": "^30.5.1",
     "less": "^4.6.7",
     "prettier": "^3.9.7",
     "sass": "^1.101.0",
     "stylus": "^0.64.0",
+    "ts-jest": "^29.4.12",
     "typescript": "~6.0.3",
     "vue": "^3.5.43",
     "vue-tsc": "^3.3.11"
