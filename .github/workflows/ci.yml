@@ -160,27 +160,69 @@ jobs:
       # which is the part that can hang.
       - run: pnpm --filter vue-basic e2e:build:android
 
-      # The emulator is the flaky half of an Android e2e (system image, AVD
-      # creation, hardware acceleration, boot wait), and this action is the
-      # maintained answer to it, pinned by commit like every other action here.
+      # This job owns the emulator end to end rather than handing it to the
+      # maintained helper action, which is deliberate. That action deadlocks
+      # after the tests pass: it kills the emulator, then waits on the whole
+      # process tree, and the emulator's own crash-handler children never exit
+      # (ReactiveCircus/android-emulator-runner#385, open since 2024 and still
+      # reproducing as of this writing). The suite goes green and the job hangs
+      # anyway, and no later step can clean up, because the hung step holds the
+      # workflow until the job timeout. Booting the emulator here means nothing
+      # waits on something we do not control, and the teardown below is a trap
+      # that runs whatever the tests did.
       #
-      # The profile is load-bearing rather than cosmetic. The canary is a fixed
+      # The profile is load-bearing rather than cosmetic: the canary is a fixed
       # column whose list takes the height the card leaves, so a small AVD
       # starves the list to zero height and the list journey fails on the device
       # profile instead of on the code. A phone-sized AVD is part of the setup.
       - name: Run the journey against the emulator
-        uses: ReactiveCircus/android-emulator-runner@c9c93e6ba9c4194322e114c40970d5983d9a07cc # v2.38.0
-        with:
-          api-level: 35
-          target: google_apis
-          arch: x86_64
-          profile: pixel_7
-          avd-name: navirox-e2e
-          emulator-options: -no-window -gpu swiftshader_indirect -no-snapshot -noaudio -no-boot-anim
-          disable-animations: true
-          script: pnpm --filter vue-basic e2e:test:android
         env:
           NAVIROX_ANDROID_AVD: navirox-e2e
+        run: |
+          set -euo pipefail
+
+          export ANDROID_SDK_ROOT="${ANDROID_SDK_ROOT:-$ANDROID_HOME}"
+          export PATH="$ANDROID_SDK_ROOT/emulator:$ANDROID_SDK_ROOT/platform-tools:$ANDROID_SDK_ROOT/cmdline-tools/latest/bin:$PATH"
+
+          # The trap is the teardown for every outcome below. Killing qemu and
+          # the crash handler with -9 is what makes the step end: a polite
+          # shutdown leaves the handler behind, and this shell is the only
+          # process left to notice.
+          teardown() {
+            adb emu kill > /dev/null 2>&1 || true
+            sleep 5
+            pkill -9 -f qemu-system || true
+            pkill -9 -f crashpad_handler || true
+          }
+          trap teardown EXIT
+
+          yes | sdkmanager --licenses > /dev/null 2>&1 || true
+          sdkmanager --install "platform-tools" "emulator" "system-images;android-35;google_apis;x86_64" > /dev/null
+          echo no | avdmanager create avd --force -n "$NAVIROX_ANDROID_AVD" \
+            --package "system-images;android-35;google_apis;x86_64" --device pixel_7
+
+          # Output goes to a file so the emulator does not hold the step's pipe
+          # open, and it outlives this shell only until the trap above.
+          emulator -avd "$NAVIROX_ANDROID_AVD" -no-window -gpu swiftshader_indirect \
+            -no-snapshot -noaudio -no-boot-anim > /tmp/emulator.log 2>&1 &
+
+          adb wait-for-device
+          for _ in $(seq 1 150); do
+            if [ "$(adb shell getprop sys.boot_completed 2>/dev/null | tr -d '\r')" = "1" ]; then
+              break
+            fi
+            sleep 2
+          done
+          adb shell getprop sys.boot_completed | tr -d '\r' | grep -q 1
+
+          adb shell settings put global window_animation_scale 0
+          adb shell settings put global transition_animation_scale 0
+          adb shell settings put global animator_duration_scale 0
+
+          pnpm --filter vue-basic e2e:test:android || {
+            tail -n 50 /tmp/emulator.log
+            exit 1
+          }
 
   journey-ios:
     name: run the shared journey on a simulator
