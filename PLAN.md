@@ -1,3 +1,19 @@
+> **Repositioning notice.** `docs/repositioning/` is the canonical statement of
+> product direction: Navirox is the framework-agnostic Web to Native Mobile
+> platform, and Vue 3 is the current execution wedge rather than the identity.
+> This file is not superseded as evidence. It remains the implementation record
+> for the Vue and runtime path, including the upstream facts verified in §2 and
+> the machine-specific constraints recorded in `docs/evidence/`. Read the
+> repositioning set for direction, and this plan for what the Vue path actually
+> does.
+>
+> Two items in the 0.1 definition of done (§10) are deferred, not dropped, and
+> neither is claimed as done: **Fast Refresh / HMR for SFCs and stores**, and the
+> **release process** that tags `0.1.0` through changesets. Both now sit below the
+> source seam work in priority.
+
+---
+
 # Navirox — Implementation Plan
 
 **Blueprint:** `blueprint.md` (50 sections, in-repo). **This plan supersedes it where the two disagree** — §2 lists every disagreement and its evidence.

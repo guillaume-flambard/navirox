@@ -1,0 +1,51 @@
+export const PACKAGE_NAME = '@navirox/source'
+
+export const PACKAGE_ROLE =
+  'The source adapter contract, the adapter registry, and the framework import boundary that keeps the core neutral.'
+
+export {
+  DuplicateAdapterError,
+  UnknownAdapterError,
+  SourceAdapterRegistry,
+  selectAdapter,
+} from './registry.js'
+export type { DetectedSource } from './registry.js'
+
+export { verifyAdapterContract } from './contract.js'
+export type { AdapterContractViolation } from './contract.js'
+
+export { IGNORED_DIRECTORIES, SOURCE_EXTENSIONS, isIgnoredPath, isSourceFile } from './files.js'
+
+export { createProjectFiles } from './project.js'
+export type { ProjectFiles } from './project.js'
+
+export {
+  ADAPTER_PACKAGE_PREFIX,
+  NEUTRAL_PACKAGE_DIRS,
+  SOURCE_FRAMEWORK_PATTERNS,
+  TARGET_PROVIDER_PATTERNS,
+  forbiddenSpecifiers,
+  importSpecifiers,
+  isNeutralPackageDir,
+  isSourceAdapterPackageDir,
+  matchesPattern,
+} from './boundaries.js'
+
+export { DETECTION_CONFIDENCES, SUPPORT_LEVELS } from './types.js'
+export type {
+  AdapterVersionRange,
+  DetectionCandidate,
+  DetectionConfidence,
+  DetectionContext,
+  DetectionResult,
+  DiscoveredCapability,
+  DiscoveredDependency,
+  DiscoveredRoute,
+  DiscoveredUnit,
+  GraphContext,
+  InspectContext,
+  SourceAdapter,
+  SourceInspection,
+  SourceMigrationProvider,
+  SupportLevel,
+} from './types.js'

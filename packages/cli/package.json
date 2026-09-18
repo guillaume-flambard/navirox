@@ -28,7 +28,10 @@
     "clean": "rm -rf dist"
   },
   "dependencies": {
-    "@navirox/doctor": "workspace:*"
+    "@navirox/doctor": "workspace:*",
+    "@navirox/inspect": "workspace:*",
+    "@navirox/source": "workspace:*",
+    "@navirox/source-vue": "workspace:*"
   },
   "devDependencies": {
     "@types/node": "^26.6.1",

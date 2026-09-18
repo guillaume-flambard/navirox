@@ -16,6 +16,28 @@ docs/evidence/
 **/*.xcassets/
 **/.impeccable/
 
+# Overspecified the same way. OpenSpec writes its commands and skills when it is
+# initialised, and the repositioning documents are vendored verbatim: the point
+# of vendoring them is that they stay byte-identical to the pack, which the
+# format check would quietly undo.
+.opencode/
+docs/repositioning/
+
+# And once more, for the negative fixture. It is invalid Vue on purpose: the
+# adapter has to report a component its parser rejects, and a parser that
+# prettier had already fixed would be a test of nothing. Prettier cannot parse
+# it, and an unparseable file aborts the whole format check rather than warning
+# about one file.
+packages/source-vue/fixtures/vue-broken/
+
+# And once more, for the OpenSpec artifacts, archived and live. Prettier has no
+# stable fixed point on a long requirement or task line with continuation lines:
+# writing the file leaves it in a shape the next check still reports, so the gate
+# flips between two answers. These are checked by `openspec validate` instead,
+# which is the check that actually knows what their shape has to be.
+openspec/changes/
+openspec/specs/
+
 # The same, for the native build. Gradle writes its CMake cache into the app's
 # tree, and the app-level .gitignore covers that path, but prettier does not read
 # .gitignore: without this line, anyone who has built Android locally fails the

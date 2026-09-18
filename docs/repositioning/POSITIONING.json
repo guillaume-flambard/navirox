@@ -1,0 +1,49 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-09-18",
+  "product": "Navirox",
+  "positioning": "Framework-agnostic Web to Native Mobile platform",
+  "strategy": {
+    "architecture": "universal-now",
+    "executionWedge": [
+      "vue",
+      "nuxt"
+    ],
+    "secondAdapterProof": [
+      "svelte",
+      "sveltekit"
+    ],
+    "nextExpansion": [
+      "angular",
+      "react",
+      "next",
+      "astro",
+      "solid",
+      "qwik"
+    ]
+  },
+  "identityExclusions": [
+    "vue",
+    "symbiote",
+    "expo",
+    "react-native"
+  ],
+  "corePrinciples": [
+    "brownfield evolution, no restart",
+    "source adapters isolate framework knowledge",
+    "runtime providers are replaceable",
+    "minimal evidence-driven app graph",
+    "truth over magic",
+    "unknown is a valid result",
+    "compatibility claims require evidence"
+  ],
+  "canonicalDocs": [
+    "00-START-HERE.md",
+    "AGENT-GUIDE.md",
+    "ARCHITECTURE.md",
+    "MIGRATION-PLAN.md",
+    "PRD.md",
+    "BLUEPRINT.md",
+    "ROADMAP.md"
+  ]
+}

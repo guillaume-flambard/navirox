@@ -13,6 +13,11 @@ coverage/
 .env.*
 !.env.example
 
+# The repositioning pack is an input, not a deliverable. Its canonical documents
+# are vendored under docs/repositioning/; this is the copy that gets dropped in
+# the working tree when it is handed over, and it is never committed.
+navirox-repositioning-pack/
+
 # Native build output. The generated projects themselves are committed once an
 # app exists; their build products never are.
 **/ios/Pods/

@@ -10,6 +10,15 @@
   "references": [
     {
       "path": "../doctor"
+    },
+    {
+      "path": "../inspect"
+    },
+    {
+      "path": "../source"
+    },
+    {
+      "path": "../source-vue"
     }
   ]
 }

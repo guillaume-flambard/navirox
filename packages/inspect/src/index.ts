@@ -4,4 +4,15 @@ export const PACKAGE_NAME = '@navirox/inspect'
 
 /** One line describing this package's role in the Navirox stack. */
 export const PACKAGE_ROLE =
-  'Native-readiness detection and classification behind `navirox inspect`.'
+  'The framework-neutral inspection pipeline: adapter selection, App Graph assembly and the versioned report.'
+
+export { runInspection } from './inspect.js'
+export type { InspectOptions } from './inspect.js'
+export { renderFailure, renderReport, reportToJson } from './render.js'
+export { INSPECT_REPORT_SCHEMA_VERSION } from './types.js'
+export type {
+  InspectFailureReason,
+  InspectOutcome,
+  InspectReport,
+  InspectionSummary,
+} from './types.js'

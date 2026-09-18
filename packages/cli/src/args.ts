@@ -12,6 +12,9 @@ export type TPlatform = 'ios' | 'android'
 /** The Metro default, and the port every React Native tool assumes. */
 const DEFAULT_PORT = 8081
 
+/** The commands this tool knows. Adding one is a change here and in the dispatch. */
+export type TCommand = 'dev' | 'doctor' | 'inspect'
+
 /** Thrown when the command line itself does not make sense. */
 export class UsageError extends Error {
   constructor(message: string) {
@@ -22,13 +25,15 @@ export class UsageError extends Error {
 
 export interface IParsedArguments {
   /** The command to run, or undefined when the caller only asked for help. */
-  readonly command: 'dev' | 'doctor' | undefined
+  readonly command: TCommand | undefined
   readonly platform: TPlatform
   readonly directory: string | undefined
   readonly port: number
   readonly json: boolean
   readonly help: boolean
   readonly skipPreflight: boolean
+  /** The source adapter to use, bypassing detection. Only meaningful for inspect. */
+  readonly framework: string | undefined
 }
 
 export const HELP = `navirox
@@ -41,16 +46,20 @@ Usage:
 Commands:
   dev     Start an app: Metro first, then the platform build, with hot reload.
   doctor  Report the environment, the installed runtime, and what to fix.
+  inspect Read an existing project and report what moving it to native involves.
 
 Options:
   -p, --platform <ios|android>  Platform to target. ios on macOS, android elsewhere.
-  -C, --directory <path>        The app to work on. Defaults to the current directory.
+  -C, --directory <path>        The project to work on. Defaults to the current directory.
       --json                    Machine readable output.
   -h, --help                    Show this message.
 
 dev only:
       --port <number>           Metro port. Defaults to ${DEFAULT_PORT}.
       --skip-preflight          Do not check the native toolchain first.
+
+inspect only:
+      --framework <id>          Use a named source adapter instead of detecting one.
 `
 
 /**
@@ -61,17 +70,20 @@ export function parseArguments(
   argv: readonly string[],
   hostPlatform: NodeJS.Platform = process.platform,
 ): IParsedArguments {
-  let command: 'dev' | 'doctor' | undefined
+  let command: TCommand | undefined
   let platform: TPlatform = hostPlatform === 'darwin' ? 'ios' : 'android'
   let directory: string | undefined
   let port = DEFAULT_PORT
   let json = false
   let help = false
   let skipPreflight = false
+  let framework: string | undefined
   // Tracked apart from the values, because a command that ignores a flag has to
   // say so, and the defaults are indistinguishable from a flag nobody passed.
   let portGiven = false
   let skipPreflightGiven = false
+  let frameworkGiven = false
+  let platformGiven = false
 
   for (let index = 0; index < argv.length; index += 1) {
     const argument = argv[index]
@@ -93,8 +105,13 @@ export function parseArguments(
         throw new UsageError(`${argument} expects ios or android, not "${value}".`)
       }
       platform = value
+      platformGiven = true
     } else if (argument === '-C' || argument === '--directory') {
       directory = valueFor(argv, index, argument)
+      index += 1
+    } else if (argument === '--framework') {
+      framework = valueFor(argv, index, argument)
+      frameworkGiven = true
       index += 1
     } else if (argument === '--port') {
       port = parsePort(valueFor(argv, index, argument))
@@ -104,31 +121,47 @@ export function parseArguments(
       throw new UsageError(`Unknown option "${argument}".`)
     } else if (command !== undefined) {
       throw new UsageError(`Unexpected argument "${argument}". navirox takes one command.`)
-    } else if (argument !== 'dev' && argument !== 'doctor') {
-      throw new UsageError(`Unknown command "${argument}". The commands are dev and doctor.`)
+    } else if (argument !== 'dev' && argument !== 'doctor' && argument !== 'inspect') {
+      throw new UsageError(
+        `Unknown command "${argument}". The commands are dev, doctor and inspect.`,
+      )
     } else {
       command = argument
     }
   }
 
-  if (command === 'doctor') {
-    // A flag that quietly does nothing is the failure this file exists to
-    // refuse, and these two belong to the dev server rather than to a report.
+  // A flag that quietly does nothing is the failure this file exists to refuse,
+  // so every command refuses the flags that belong to another one.
+  if (command === 'doctor' || command === 'inspect') {
+    const label = `navirox ${command}`
+    if (command === 'inspect' && platformGiven) {
+      throw new UsageError(`${label} reads a project, so --platform does not apply to it.`)
+    }
     if (portGiven) {
-      throw new UsageError('navirox doctor runs no dev server, so --port does not apply to it.')
+      throw new UsageError(`${label} runs no dev server, so --port does not apply to it.`)
     }
     if (skipPreflightGiven) {
       throw new UsageError(
-        'navirox doctor is the preflight, so --skip-preflight does not apply to it.',
+        command === 'doctor'
+          ? `${label} is the preflight, so --skip-preflight does not apply to it.`
+          : `${label} checks nothing before starting, so --skip-preflight does not apply to it.`,
       )
     }
   }
 
-  if (command === undefined && !help) {
-    throw new UsageError('A command is required. The commands are dev and doctor.')
+  if (command !== 'inspect' && frameworkGiven) {
+    throw new UsageError(
+      command === undefined
+        ? '--framework belongs to navirox inspect, and no command was given.'
+        : `navirox ${command} reads no source project, so --framework does not apply to it.`,
+    )
   }
 
-  return { command, platform, directory, port, json, help, skipPreflight }
+  if (command === undefined && !help) {
+    throw new UsageError('A command is required. The commands are dev, doctor and inspect.')
+  }
+
+  return { command, platform, directory, port, json, help, skipPreflight, framework }
 }
 
 /** Reads the value that belongs to an option, refusing a missing or option-like one. */

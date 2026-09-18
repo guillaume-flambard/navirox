@@ -1,5 +1,6 @@
 import { resolve } from 'node:path'
 import type { IDoctorDeps } from '@navirox/doctor'
+import type { SourceAdapterRegistry } from '@navirox/source'
 import { parseArguments, HELP } from './args.js'
 import { createDevContext, runDev, type IDevContext } from './dev.js'
 import type { IDevIo } from './runner.js'
@@ -27,6 +28,34 @@ export type ICliIo = IDevIo
 export interface ICliContext {
   readonly dev?: IDevContext
   readonly doctor?: IDoctorDeps
+  /** The adapter registry, supplied by a test or composed on demand. */
+  readonly inspect?: { readonly registry: SourceAdapterRegistry }
+}
+
+/**
+ * The source adapters this tool knows about.
+ *
+ * This is the composition root, and it is the one place that names an adapter
+ * package. A new adapter is a line here and nothing else: the inspection
+ * pipeline selects from the registry it is handed, so it never learns what a
+ * framework is. The names are imported lazily so a command that does not inspect
+ * a project pays for nothing.
+ */
+const SOURCE_ADAPTER_PACKAGES = ['@navirox/source-vue'] as const
+
+async function createAdapterRegistry(): Promise<SourceAdapterRegistry> {
+  const { SourceAdapterRegistry } = await import('@navirox/source')
+  const registry = new SourceAdapterRegistry()
+
+  for (const packageName of SOURCE_ADAPTER_PACKAGES) {
+    const adapterPackage = (await import(packageName)) as {
+      createVueAdapter: () => Parameters<SourceAdapterRegistry['register']>[0]
+    }
+
+    registry.register(adapterPackage.createVueAdapter())
+  }
+
+  return registry
 }
 
 export async function runCli(
@@ -48,6 +77,36 @@ export async function runCli(
   }
 
   const directory = parsed.directory === undefined ? cwd : resolve(cwd, parsed.directory)
+
+  if (parsed.command === 'inspect') {
+    try {
+      const { renderFailure, renderReport, reportToJson, runInspection } =
+        await import('@navirox/inspect')
+      const registry = context.inspect?.registry ?? (await createAdapterRegistry())
+      const outcome = await runInspection({
+        rootDir: directory,
+        registry,
+        ...(parsed.framework === undefined ? {} : { framework: parsed.framework }),
+      })
+
+      if (!outcome.ok) {
+        io.err(renderFailure(outcome, parsed.json))
+        return 1
+      }
+
+      if (parsed.json) {
+        io.out(reportToJson(outcome.report))
+      } else {
+        for (const line of renderReport(outcome.report).split('\n')) {
+          io.out(line)
+        }
+      }
+
+      return 0
+    } catch (error) {
+      return reportFailure(error, io)
+    }
+  }
 
   if (parsed.command === 'doctor') {
     try {

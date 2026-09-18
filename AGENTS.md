@@ -1,20 +1,29 @@
 # AGENTS.md - Navirox
 
 Instructions for any AI agent working in this repository. This file is the local
-contract. `PLAN.md` is the plan of record for what gets built and in what order.
+contract. `docs/repositioning/` is the canonical statement of product direction,
+and `PLAN.md` remains the implementation evidence for the Vue and runtime path.
 
 ## What this project is
 
-Navirox is the native mobile stack for Vue teams.
+Navirox is the framework-agnostic Web to Native Mobile platform. It analyses an
+existing web application, builds a framework-neutral model of the parts that
+matter for a mobile migration, classifies each part by the strategy that fits it,
+and helps produce a native mobile application that keeps as much of the original
+logic as the platform honestly allows. Said the short way: turn existing web
+applications into native mobile applications. Vue 3 is the current execution
+wedge, not the identity.
 
 Canonical principle. Do not paraphrase it away:
 
 > Symbiote is a runtime provider, React Native/Fabric is infrastructure, and
 > Expo/EAS is an integration. None of them define Navirox's identity.
 
-Everything a user touches is ours: the CLI, routing, the component surface, the
-native API surface, the compatibility registry, the migration tooling and the
-docs. The renderer underneath is replaceable by design.
+No framework and no renderer defines the identity either. A source framework
+reaches Navirox only through a source adapter, and a renderer only through the
+runtime seam. Everything a user touches is ours: the CLI, routing, the component
+surface, the native API surface, the compatibility registry, the migration
+tooling and the docs. Both seams are replaceable by design.
 
 ## Hard architectural rules
 
@@ -37,6 +46,14 @@ docs. The renderer underneath is replaceable by design.
    validation, business rules, stores and composables. The view layer is
    rewritten. Section 9 of `blueprint.md` splits code into shared, adaptable and
    platform-specific, and the tooling must respect that split.
+6. **The source seam is neutral in both directions.** Framework knowledge lives
+   in a source adapter and nowhere else. A framework-neutral package (`graph`,
+   `source` outside the adapters, `compat`, `inspect`, `migrate`, `config`,
+   `build`, `doctor`, `cli`) must never import a source framework or its compiler
+   packages, and a source adapter must never import a target provider. The
+   forbidden list is declared once, in `@navirox/source`, and a static check
+   fails the build when a neutral package reaches across the line. The same
+   reasoning as rule 1, applied to the other seam.
 
 ## Commands
 

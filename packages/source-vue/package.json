@@ -1,0 +1,40 @@
+{
+  "name": "@navirox/source-vue",
+  "version": "0.0.0",
+  "description": "The Vue source adapter: detection, SFC inspection and App Graph construction for an existing Vue application.",
+  "license": "MIT",
+  "type": "module",
+  "engines": {
+    "node": ">=22.13.0"
+  },
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc --build",
+    "typecheck": "tsc --build",
+    "test": "vitest run",
+    "clean": "rm -rf dist"
+  },
+  "dependencies": {
+    "@navirox/graph": "workspace:*",
+    "@navirox/source": "workspace:*",
+    "@vue/compiler-sfc": "^3.5.43"
+  },
+  "devDependencies": {
+    "@types/node": "^26.6.1",
+    "typescript": "~6.0.3",
+    "vitest": "^5.0.1"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}

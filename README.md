@@ -6,80 +6,137 @@
 [![PRs welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
 [![Status: pre-alpha](https://img.shields.io/badge/status-pre--alpha-orange.svg)](#status)
 
-**The native mobile stack for Vue teams.**
+**The framework-agnostic Web to Native Mobile platform. Vue first.**
 
-Build real iOS and Android apps without leaving Vue. Keep your Vue 3 components,
-Composition API, `<script setup>`, Pinia stores, TypeScript types, API clients
-and validation. Ship a genuinely native app.
+Navirox analyses an existing web application, builds a framework-neutral model of
+the parts that matter for a mobile migration, classifies each part by the
+strategy that fits it, and helps produce a native mobile application that keeps
+as much of the original logic as the platform honestly allows.
+
+Said the short way, the way a person would say it: **turn existing web
+applications into native mobile applications.**
 
 ## Status
 
 **Pre-alpha. Nothing here is published, and the product does not work end to
-end yet.** Three packages have real code, the rest are declared surfaces with an
-identity test and no implementation. `PLAN.md` is the plan of record and the
-honest picture of what exists and in what order it gets built. If you are
-looking for something to use today, this is not it yet.
+end yet.**
+
+The native path is real: a generated Vue app installs from published package
+artifacts, boots on both platforms, and drives a shared Detox journey that passes
+in CI. The source path, which is the part that makes Navirox framework-agnostic
+rather than a single-framework tool, is being built now.
+
+Two documents split the truth deliberately. `docs/repositioning/` defines where
+the product is going. `PLAN.md` remains the implementation evidence for the Vue
+and runtime path, and it stays valid as evidence even where it predates the
+repositioning.
 
 ## Why
 
-A Vue or Nuxt team that needs iOS and Android currently picks a bad option:
+A team with a working web application that needs iOS and Android currently picks
+between four bad options:
 
-| Path         | The cost                                                  |
-| ------------ | --------------------------------------------------------- |
-| React Native | A new stack, and React expertise the team does not have   |
-| Flutter      | Dart, and a rewrite of everything                         |
-| Capacitor    | A WebView, with all the native-UI compromise that implies |
-| NativeScript | Another ecosystem to learn and staff                      |
+| Path         | The cost                                                   |
+| ------------ | ---------------------------------------------------------- |
+| React Native | A second stack, and React expertise the team does not have |
+| Flutter      | Dart, and a rewrite of everything                          |
+| Capacitor    | A WebView, with the native-UI compromise that implies      |
+| NativeScript | Another ecosystem to learn and staff                       |
 
-Navirox is the answer to a narrower and more honest question than "can Vue
-render natively". It is: **can a Vue team add mobile without changing its
-stack?** Share the TypeScript types, the API client, the validation, the
-business rules, the Pinia stores and the composables. Write the truly native
-layer twice, because that layer is genuinely different.
+None of them answers the question those teams actually have. It is not "can this
+framework render natively", it is: **what in this codebase can move, what has to
+adapt, and what should become native?** That question is answerable by analysis,
+before a line of mobile code is written, and the answer does not depend on which
+framework the web app happens to use.
 
 ## Architecture
 
+There are two seams, not one.
+
 ```
-Your Vue app
-  -> Navirox            CLI, routing, components, native APIs, compatibility, migration
-  -> Runtime adapter    the seam. Today: Symbiote
+Your web application (Vue, Nuxt, Svelte, Angular, React, Astro, ...)
+  -> source adapters     the source seam. Framework knowledge stops here.
+  -> Navirox core        App Graph, compatibility, planning, migration
+  -> target provider     the native or generated target
+  -> runtime adapter     the runtime seam. Today: Symbiote
   -> React Native Fabric
   -> iOS and Android
 ```
 
-The runtime adapter is an implementation detail. Swapping it must not change the
-CLI, the routing, the public API, the compatibility data or your application
-code. That constraint is enforced by a test, not by good intentions.
+The **runtime seam** is implemented and enforced. `@navirox/runtime` is the one
+interface every public Navirox package depends on, and
+`@navirox/runtime-symbiote` is the only package allowed to import the renderer.
+Swapping the renderer must not change the CLI, the routing, the public API, the
+compatibility data or your application code.
+
+The **source seam** is being introduced. A source adapter owns everything
+specific to one web framework and returns a framework-neutral App Graph. The
+core that consumes that graph must never import a framework, so a second adapter
+is a data change rather than a rewrite. Both boundaries are enforced by a test,
+not by good intentions.
 
 Symbiote is a runtime provider, React Native/Fabric is infrastructure, and
 Expo/EAS is an integration. None of them define Navirox's identity.
+
+## Source support
+
+Support is declared per source framework and per capability, never as a single
+marketing badge. The four levels are the ones the roadmap defines:
+
+| Level        | What it claims                                                              |
+| ------------ | --------------------------------------------------------------------------- |
+| Experimental | Detection exists. Nothing beyond detection is claimed.                      |
+| Preview      | Inspection and a migration plan are produced, with gaps reported honestly.  |
+| Supported    | A migrated application in that framework builds and runs on a target.       |
+| Production   | Supported, plus a release process and a compatibility record with evidence. |
+
+**One adapter is at Experimental.** Vue 3 is detected and inspected, and nothing
+beyond that is claimed: routes are not extracted, plugins are not resolved, and
+no migration transform exists. Every other framework below is still a plan. There
+is no green checkmark on this page for an adapter that does not exist.
+
+| Source                           | Detection   | Inspection  | Migration plan | Level                                       |
+| -------------------------------- | ----------- | ----------- | -------------- | ------------------------------------------- |
+| Vue 3                            | implemented | implemented | planned        | Experimental                                |
+| Nuxt                             | planned     | planned     | planned        | Not yet claimed                             |
+| Svelte and SvelteKit             | planned     | planned     | planned        | Not yet claimed (first architectural proof) |
+| Angular                          | planned     | planned     | planned        | Not yet claimed                             |
+| React, Next, React Router, Remix | planned     | planned     | planned        | Not yet claimed                             |
+| Astro                            | planned     | planned     | planned        | Not yet claimed                             |
+
+What the Vue inspection reports, and what it deliberately does not, is recorded
+in `docs/evidence/source-seam-vue-inspection.md`.
 
 ## Packages
 
 `packages/` holds the stack. The dependency direction is one way, and a cycle
 back into the renderer is the failure mode this layout exists to prevent.
 
-| Package                     | What it is                                                                                               | State            |
-| --------------------------- | -------------------------------------------------------------------------------------------------------- | ---------------- |
-| `@navirox/runtime`          | The runtime seam. The single interface every public Navirox package depends on.                          | Implemented      |
-| `@navirox/runtime-symbiote` | The Symbiote-backed implementation of the seam. The only package allowed to import `@symbiote-native/*`. | Implemented      |
-| `@navirox/metro-preset`     | The Vue SFC transform and the CSS parser, composed into one Metro preset.                                | Implemented      |
-| `@navirox/ui`               | Curated native component facade: View, Text, Pressable, ScrollView, TextInput, FlatList.                 | Surface declared |
-| `@navirox/native`           | Vue-first native API surface (haptics, storage, camera, location) over a pluggable provider.             | Surface declared |
-| `@navirox/router`           | File-based routing plus a generated, fully typed route manifest.                                         | Surface declared |
-| `@navirox/config`           | `defineNaviroxConfig` and its schema.                                                                    | Declared         |
-| `@navirox/cli`              | The `navirox` command line interface.                                                                    | `dev` works      |
-| `create-navirox`            | Scaffolder invoked by `npm create navirox`.                                                              | Implemented      |
-| `@navirox/doctor`           | Environment and dependency diagnostics behind `navirox doctor`.                                          | Declared         |
-| `@navirox/inspect`          | Native-readiness detection and classification behind `navirox inspect`.                                  | Declared         |
-| `@navirox/migrate`          | AST-based codemods that move Vue and Nuxt code onto the native stack.                                    | Declared         |
-| `@navirox/compat`           | Compatibility registry schema, loading and queries.                                                      | Declared         |
-| `@navirox/build`            | Build, update and submit orchestration for iOS and Android.                                              | Declared         |
+| Package                     | What it is                                                                                                        | State                              |
+| --------------------------- | ----------------------------------------------------------------------------------------------------------------- | ---------------------------------- |
+| `@navirox/runtime`          | The runtime seam. The single interface every public Navirox package depends on.                                   | Implemented                        |
+| `@navirox/runtime-symbiote` | The Symbiote-backed implementation of the seam. The only package allowed to import `@symbiote-native/*`.          | Implemented                        |
+| `@navirox/graph`            | The framework-neutral App Graph schema and its deterministic node identifiers.                                    | Implemented                        |
+| `@navirox/source`           | The source adapter contract, the adapter registry, and the framework import boundary that keeps the core neutral. | Implemented                        |
+| `@navirox/source-vue`       | The Vue source adapter: detection, single file component inspection, and App Graph construction.                  | Implemented, experimental          |
+| `@navirox/metro-preset`     | The Vue SFC transform and the CSS parser, composed into one Metro preset.                                         | Implemented                        |
+| `@navirox/ui`               | Curated native component facade: View, Text, Pressable, ScrollView, TextInput, FlatList.                          | Implemented                        |
+| `@navirox/native`           | Vue-first native API surface over a pluggable provider. Haptics and secure storage today.                         | Implemented                        |
+| `@navirox/router`           | File-based routing plus a generated, fully typed route manifest.                                                  | Implemented                        |
+| `@navirox/cli`              | The `navirox` command line interface.                                                                             | `dev`, `doctor` and `inspect` work |
+| `create-navirox`            | Scaffolder invoked by `npm create navirox`.                                                                       | Implemented                        |
+| `@navirox/doctor`           | Environment and dependency diagnostics behind `navirox doctor`.                                                   | Implemented                        |
+| `@navirox/config`           | `defineNaviroxConfig` and its schema.                                                                             | Declared                           |
+| `@navirox/inspect`          | The framework-neutral inspection pipeline: adapter selection, App Graph assembly and the versioned report.        | Implemented                        |
+| `@navirox/migrate`          | Codemods that move web source onto a native target.                                                               | Declared                           |
+| `@navirox/compat`           | Compatibility registry schema, loading and queries.                                                               | Declared                           |
+| `@navirox/build`            | Build, update and submit orchestration through a replaceable provider.                                            | Declared                           |
 
 `examples/vue-basic` is the acceptance app: a Vue SFC application that imports
-only `@navirox/*` and one line of Metro config. It is judged against the
-renderer and the preset, and it resolves this repository's code through
-`workspace:*` rather than a registry that has nothing to publish yet.
+only `@navirox/*` and one line of Metro config. It is judged against the renderer
+and the preset, it carries the shared Detox journey, and it resolves this
+repository's code through `workspace:*` rather than a registry that has nothing
+to publish yet.
 
 ## Quickstart
 
@@ -99,13 +156,17 @@ Navirox, start with `docs/GETTING-STARTED.md`.
 
 ## Roadmap
 
-`PLAN.md` holds the task list. The renderer, the runtime seam, the Metro preset,
-the scaffolder and `navirox dev` are done: a generated app installs from package
-artifacts and boots on a simulator from its own install. Upstream once documented
-that the quickest way to try it was to run an example rather than a published
-scaffolder, and that gap is why the scaffolder was Navirox's first deliverable
-rather than a wrapper. The rest, from the compatibility registry to the migration
-codemods, is ordered in `PLAN.md` with its dependencies.
+The repositioning happens in stages, and each stage has a gate rather than a
+date. Vue becomes the first adapter behind a generic contract; Svelte and
+SvelteKit are the architectural proof that the contract is genuinely
+framework-neutral; Nuxt adds migration depth on top of Vue; Angular, React and
+Astro come later, and only after the proof. `docs/repositioning/ROADMAP.md` has
+the stages and their exit criteria.
+
+The renderer, the runtime seam, the Metro preset, the scaffolder, `navirox dev`
+and `navirox doctor` are done. The compatibility registry, the compatibility
+schema and the migration codemods are ordered in `PLAN.md` with their
+dependencies.
 
 ## Not in 0.1
 
@@ -114,6 +175,11 @@ reports honestly on the machine it runs on. These are deliberately not here yet:
 EAS and OTA, camera, location and notifications, Nuxt migration, the
 compatibility registry UI, Vue DevTools, Tailwind, Reanimated, and Windows or
 Linux hosts for native builds.
+
+Two items that belong to the Vue path are recorded and deferred rather than
+forgotten: Fast Refresh for SFCs and stores, and the release process that tags
+`0.1.0` through changesets. Both sit in `PLAN.md` at the definition of done, and
+neither is claimed as done.
 
 The ship backend deserves its own line, because it is where this plan knowingly
 departs from the blueprint. `navirox submit` will drive the raw Xcode and Gradle
@@ -124,14 +190,20 @@ not shipping it is the fastest way to lose the teams this is built for.
 
 ## Documentation
 
-| Document                  | What is in it                                                |
-| ------------------------- | ------------------------------------------------------------ |
-| `docs/GETTING-STARTED.md` | Prerequisites, the first app, and what to do when it fails   |
-| `docs/ARCHITECTURE.md`    | The layers, the seam, and the dependency direction           |
-| `PLAN.md`                 | The plan of record: scope, package roles, task order         |
-| `blueprint.md`            | The full product and technical blueprint                     |
-| `AGENTS.md`               | The architectural contract, and the rules the tests enforce  |
-| `docs/evidence/`          | Machine-specific build facts established during verification |
+| Document                  | What is in it                                                       |
+| ------------------------- | ------------------------------------------------------------------- |
+| `docs/repositioning/`     | The canonical repositioning set: product, architecture and the plan |
+| `docs/GETTING-STARTED.md` | Prerequisites, the first app, and what to do when it fails          |
+| `docs/ARCHITECTURE.md`    | The layers, the runtime seam, and the dependency direction          |
+| `PLAN.md`                 | Implementation evidence and task order for the Vue and runtime path |
+| `blueprint.md`            | The original product and technical blueprint                        |
+| `AGENTS.md`               | The architectural contract, and the rules the tests enforce         |
+| `docs/evidence/`          | Machine-specific build facts established during verification        |
+
+Inside `docs/repositioning/`, the order that matters is `AGENT-GUIDE.md`,
+`ARCHITECTURE.md`, `MIGRATION-PLAN.md`, then `PRD.md`, `BLUEPRINT.md` and
+`ROADMAP.md`. `POSITIONING.json` is the machine-readable form of the same
+decision.
 
 ## Contributing
 

@@ -1,0 +1,110 @@
+schema: spec-driven
+
+# Project context (optional)
+# This is shown to AI when creating artifacts.
+# Add your tech stack, conventions, style guides, domain knowledge, etc.
+context: |
+  Navirox is a framework-agnostic Web to Native Mobile platform: it analyzes an
+  existing web application, builds a framework-independent model of what matters
+  for a mobile migration, classifies each part by migration strategy, and helps
+  produce a native mobile application. Vue is the execution wedge, not the
+  identity. Symbiote, React Native/Fabric and Expo are infrastructure,
+  providers or integrations, and none of them define the product.
+
+  Product direction, architecture invariants and the layer-classification rules
+  live in docs/repositioning/ (AGENT-GUIDE.md, ARCHITECTURE.md, MIGRATION-PLAN.md,
+  PRD.md, BLUEPRINT.md, ROADMAP.md, 00-START-HERE.md). Read AGENT-GUIDE.md
+  section 4 before deciding which package a change belongs to, and section 17
+  for the intended order of work. The old PLAN.md and blueprint.md remain the
+  implementation evidence for the current Vue/runtime path; they do not override
+  the direction above.
+
+  Two seams, and they are different things:
+  - the source seam, being added now: source frameworks -> source adapters ->
+    the framework-neutral core (graph, planner, compat, inspect, migrate)
+  - the runtime seam, already working and preserved: the public mobile surface ->
+    @navirox/runtime -> @navirox/runtime-symbiote -> Symbiote / Fabric
+
+  Hard architectural rules:
+  - no framework-neutral core package may import a source framework (vue, nuxt,
+    svelte, angular, react, astro or their compiler packages); framework imports
+    belong in source-* adapters
+  - only @navirox/runtime-symbiote may import @symbiote-native/*, react-native
+    or react
+  - a source adapter never imports a target provider
+  - never re-export a provider-specific type, class, component or prop name
+    through a public @navirox/* package
+  - a migration decision is never `portable` merely because the code parses;
+    `unknown` and `manual` are valid results, and a compatibility claim requires
+    evidence
+
+  Stack and toolchain: pnpm 11, pinned in packageManager and used through
+  corepack; Node >= 22.13.0; TypeScript ~6.0.3 (pinned below the typescript-eslint
+  peer ceiling); turbo for build/typecheck/test; vitest; eslint and prettier at
+  the root; syncpack for version drift; changesets for release.
+
+  Package conventions: packages live under packages/<name> and are named
+  @navirox/<name> (create-navirox is the exception). Every package.json carries
+  version 0.0.0, license MIT, type module, engines node >= 22.13.0, main and
+  types pointing into dist, an exports map, files ["dist"], the scripts build /
+  typecheck / test / clean, and publishConfig access public. Dependencies that
+  are internal use workspace:*. Every package has a tsconfig.json extending
+  ../../tsconfig.base.json with rootDir src, outDir dist and a tsBuildInfoFile of
+  dist/.tsbuildinfo, plus a references array for internal packages. A new package
+  must be added to the references list in the root tsconfig.json or tsc --build
+  will not see it. Root lint runs eslint over packages/*/src/**/*.ts, so a new
+  package is covered automatically.
+
+  Repository conventions for agents: commit messages and all repository prose are
+  in English and use no em dashes or en dashes. Evidence over recall: state how
+  something behaves only from a source that was read or a result that was
+  executed, and cite it. Tests prove claims; a claim without an executed check is
+  not finished. Do not add comments unless they explain why, and never restate
+  the code.
+
+# Per-artifact rules (optional)
+# Add custom rules for specific artifacts.
+rules:
+  proposal:
+    - State which architectural layer the change touches and which package it
+      belongs in, following docs/repositioning/AGENT-GUIDE.md section 4.
+    - Never claim support for a framework, capability or target beyond what the
+      tasks in this change actually prove.
+    - List the capabilities as exact kebab-case paths, and only include a
+      Modified Capabilities entry when a requirement really changes.
+  specs:
+    - Every requirement is normative (SHALL or MUST) and carries at least one
+      scenario.
+    - Each scenario has exactly one WHEN and one THEN bullet, and describes
+      observable behaviour rather than an implementation.
+    - A framework-neutral capability must not name a framework. Framework
+      behaviour belongs in a source-<framework> capability.
+    - Keep the shared model minimal. A new graph concept is only justified when a
+      second adapter needs it, a target or migration decision uses it, or the
+      tooling needs it for a user-visible decision.
+  design:
+    - When a shared contract changes, answer the four contract-change questions
+      in docs/repositioning/AGENT-GUIDE.md section 12 (why the current contract
+      is insufficient, which real adapter or target demonstrated the need, why
+      adapter metadata is insufficient, and whether the schema version changes).
+    - Record rejected alternatives, not only the chosen one.
+  tasks:
+    - Every task states how its completion is verified, as a command or an
+      observable result.
+    - Order tasks so the workspace builds and tests after each one, and keep
+      documentation updates next to the behaviour they describe.
+    - Do not include a mass rename or a package reorganisation unless the change
+      itself requires it.
+
+# Per-operation guidance (optional)
+# Add advisory guidance for how apply and archive work should be conducted.
+operations:
+  apply:
+    guidance:
+      - Keep the run report short and put the executed commands with their result
+        next to the task they close.
+      - Stop and ask if a task turns out to require changing a shared contract
+        that this change did not declare.
+  archive:
+    guidance:
+      - Summarize the outcome, including anything the change did not implement.

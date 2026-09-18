@@ -188,6 +188,15 @@ importers:
       '@navirox/doctor':
         specifier: workspace:*
         version: link:../doctor
+      '@navirox/inspect':
+        specifier: workspace:*
+        version: link:../inspect
+      '@navirox/source':
+        specifier: workspace:*
+        version: link:../source
+      '@navirox/source-vue':
+        specifier: workspace:*
+        version: link:../source-vue
     devDependencies:
       '@types/node':
         specifier: ^26.6.1
@@ -247,7 +256,26 @@ importers:
         specifier: ^5.0.1
         version: 5.0.1(@types/node@26.6.1)(vite@8.3.0(@types/node@26.6.1)(less@4.9.1(supports-color@8.1.1))(sass@1.104.1)(stylus@0.64.0(supports-color@8.1.1))(terser@5.51.2)(yaml@2.9.1))
 
+  packages/graph:
+    devDependencies:
+      '@types/node':
+        specifier: ^26.6.1
+        version: 26.6.1
+      typescript:
+        specifier: ~6.0.3
+        version: 6.0.3
+      vitest:
+        specifier: ^5.0.1
+        version: 5.0.1(@types/node@26.6.1)(vite@8.3.0(@types/node@26.6.1)(less@4.9.1(supports-color@8.1.1))(sass@1.104.1)(stylus@0.64.0(supports-color@8.1.1))(terser@5.51.2)(yaml@2.9.1))
+
   packages/inspect:
+    dependencies:
+      '@navirox/graph':
+        specifier: workspace:*
+        version: link:../graph
+      '@navirox/source':
+        specifier: workspace:*
+        version: link:../source
     devDependencies:
       '@types/node':
         specifier: ^26.6.1
@@ -367,6 +395,44 @@ importers:
       vue:
         specifier: '>=3.5.0'
         version: 3.5.43(typescript@6.0.3)
+    devDependencies:
+      '@types/node':
+        specifier: ^26.6.1
+        version: 26.6.1
+      typescript:
+        specifier: ~6.0.3
+        version: 6.0.3
+      vitest:
+        specifier: ^5.0.1
+        version: 5.0.1(@types/node@26.6.1)(vite@8.3.0(@types/node@26.6.1)(less@4.9.1(supports-color@8.1.1))(sass@1.104.1)(stylus@0.64.0(supports-color@8.1.1))(terser@5.51.2)(yaml@2.9.1))
+
+  packages/source:
+    dependencies:
+      '@navirox/graph':
+        specifier: workspace:*
+        version: link:../graph
+    devDependencies:
+      '@types/node':
+        specifier: ^26.6.1
+        version: 26.6.1
+      typescript:
+        specifier: ~6.0.3
+        version: 6.0.3
+      vitest:
+        specifier: ^5.0.1
+        version: 5.0.1(@types/node@26.6.1)(vite@8.3.0(@types/node@26.6.1)(less@4.9.1(supports-color@8.1.1))(sass@1.104.1)(stylus@0.64.0(supports-color@8.1.1))(terser@5.51.2)(yaml@2.9.1))
+
+  packages/source-vue:
+    dependencies:
+      '@navirox/graph':
+        specifier: workspace:*
+        version: link:../graph
+      '@navirox/source':
+        specifier: workspace:*
+        version: link:../source
+      '@vue/compiler-sfc':
+        specifier: ^3.5.43
+        version: 3.5.43
     devDependencies:
       '@types/node':
         specifier: ^26.6.1

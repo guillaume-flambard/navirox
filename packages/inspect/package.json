@@ -1,7 +1,7 @@
 {
   "name": "@navirox/inspect",
   "version": "0.0.0",
-  "description": "Native-readiness detection and classification behind `navirox inspect`.",
+  "description": "The framework-neutral inspection pipeline: adapter selection, App Graph assembly and the versioned report.",
   "license": "MIT",
   "type": "module",
   "engines": {
@@ -24,7 +24,10 @@
     "test": "vitest run",
     "clean": "rm -rf dist"
   },
-  "dependencies": {},
+  "dependencies": {
+    "@navirox/graph": "workspace:*",
+    "@navirox/source": "workspace:*"
+  },
   "devDependencies": {
     "@types/node": "^26.6.1",
     "typescript": "~6.0.3",
