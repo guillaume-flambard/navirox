@@ -1,0 +1,12 @@
+{
+  "name": "fixture-lit-app",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "@lit-labs/router": "^0.1.4",
+    "lit": "^3.3.3"
+  },
+  "devDependencies": {
+    "typescript": "^5.9.0"
+  }
+}

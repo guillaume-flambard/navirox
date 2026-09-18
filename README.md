@@ -90,13 +90,16 @@ marketing badge. The four levels are the ones the roadmap defines:
 | Supported    | A migrated application in that framework builds and runs on a target.       |
 | Production   | Supported, plus a release process and a compatibility record with evidence. |
 
-**Ten adapters are at Experimental.** Vue 3, Nuxt, Svelte, SvelteKit, Angular,
-React, Next, Astro, Solid and Qwik are detected and inspected, and nothing beyond that is claimed: no
+**Eleven adapters are at Experimental.** Vue 3, Nuxt, Svelte, SvelteKit, Angular,
+React, Next, Astro, Solid, Qwik and Lit are detected and inspected, and nothing beyond that is claimed: no
 migration transform exists, and plain Vue routes are not extracted. Nuxt reads the
 application directory Nuxt 4 documents, the `definePageMeta` macro and the two halves of a
 component, and its data calls stay one shared capability rather than a model of their own.
 Qwik reads Qwik City's route conventions, including pathless groups and named layouts,
 and reports the surface it does not model instead of guessing at it.
+Lit reads custom elements in both the shapes the platform documents, keeps reactive
+properties as adapter metadata, and reads routes from the code a project writes because
+Lit ships no router of its own.
 The server side of Nuxt, SvelteKit and Astro is reported rather than modelled. Every
 framework below them is still a plan. There is no green checkmark on this page for an
 adapter that does not exist.
@@ -113,6 +116,7 @@ adapter that does not exist.
 | Astro               | implemented | implemented | planned        | Experimental    |
 | Solid               | implemented | implemented | planned        | Experimental    |
 | Qwik                | implemented | implemented | planned        | Experimental    |
+| Lit                 | implemented | implemented | planned        | Experimental    |
 | React Router, Remix | planned     | planned     | planned        | Not yet claimed |
 
 What each adapter reports, and what it deliberately does not, is recorded in
@@ -124,35 +128,36 @@ gate that puts two frameworks through one pipeline.
 `packages/` holds the stack. The dependency direction is one way, and a cycle
 back into the renderer is the failure mode this layout exists to prevent.
 
-| Package                     | What it is                                                                                                                       | State                                                 |
-| --------------------------- | -------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------- |
-| `@navirox/runtime`          | The runtime seam. The single interface every public Navirox package depends on.                                                  | Implemented                                           |
-| `@navirox/runtime-symbiote` | The Symbiote-backed implementation of the seam. The only package allowed to import `@symbiote-native/*`.                         | Implemented                                           |
-| `@navirox/graph`            | The framework-neutral App Graph schema and its deterministic node identifiers.                                                   | Implemented                                           |
-| `@navirox/source`           | The source adapter contract, the adapter registry, and the framework import boundary that keeps the core neutral.                | Implemented                                           |
-| `@navirox/source-vue`       | The Vue source adapter: detection, single file component inspection, and App Graph construction.                                 | Implemented, experimental                             |
-| `@navirox/source-nuxt`      | The Nuxt source adapter: the Nuxt 4 application directory, filesystem routes, the page macro, and the two halves of a component. | Implemented, experimental                             |
-| `@navirox/source-svelte`    | The Svelte source adapter: detection, component inspection, and App Graph construction.                                          | Implemented, experimental                             |
-| `@navirox/source-sveltekit` | The SvelteKit source adapter: filesystem route extraction on top of the Svelte adapter.                                          | Implemented, experimental                             |
-| `@navirox/source-angular`   | The Angular source adapter: decorator-driven components and services, and routes read from a routes file.                        | Implemented, experimental                             |
-| `@navirox/source-react`     | The React source adapter: components found by what a module exports, stores by declaration, and a native project refused.        | Implemented, experimental                             |
-| `@navirox/source-next`      | The Next source adapter: both routers, layouts and the module boundary, on top of the React adapter.                             | Implemented, experimental                             |
-| `@navirox/source-astro`     | The Astro source adapter: pages, islands, and the framework components handed to the adapters that read them.                    | Implemented, experimental                             |
-| `@navirox/source-solid`     | The Solid source adapter: components read by what a module exports, stores from `solid-js/store`, and the router's two shapes.   | Implemented, experimental                             |
-| `@navirox/source-qwik`      | The Qwik source adapter: `component$` boundaries, Qwik City routes, and the surface it reports rather than reads.                | Implemented, experimental                             |
-| `@navirox/metro-preset`     | The Vue SFC transform and the CSS parser, composed into one Metro preset.                                                        | Implemented                                           |
-| `@navirox/ui`               | Curated native component facade: View, Text, Pressable, ScrollView, TextInput, FlatList.                                         | Implemented                                           |
-| `@navirox/native`           | Vue-first native API surface over a pluggable provider. Haptics and secure storage today.                                        | Implemented                                           |
-| `@navirox/router`           | File-based routing plus a generated, fully typed route manifest.                                                                 | Implemented                                           |
-| `@navirox/cli`              | The `navirox` command line interface.                                                                                            | `dev`, `doctor`, `inspect`, `plan` and `migrate` work |
-| `create-navirox`            | Scaffolder invoked by `npm create navirox`.                                                                                      | Implemented                                           |
-| `@navirox/doctor`           | Environment and dependency diagnostics behind `navirox doctor`.                                                                  | Implemented                                           |
-| `@navirox/config`           | `defineNaviroxConfig` and its schema.                                                                                            | Declared                                              |
-| `@navirox/inspect`          | The framework-neutral inspection pipeline: adapter selection, App Graph assembly and the versioned report.                       | Implemented                                           |
-| `@navirox/planner`          | The migration decision model, the rule engine and the generic rules that turn an App Graph into a plan.                          | Implemented                                           |
-| `@navirox/migrate`          | The migration engine: a versioned state file, a transform pipeline, a dry run by default and a rollback.                         | Implemented, copies shared logic                      |
-| `@navirox/compat`           | Compatibility records: what Navirox knows works on a native target, and the evidence behind each claim.                          | Implemented, seeded                                   |
-| `@navirox/build`            | Build, update and submit orchestration through a replaceable provider.                                                           | Declared                                              |
+| Package                     | What it is                                                                                                                         | State                                                 |
+| --------------------------- | ---------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------- |
+| `@navirox/runtime`          | The runtime seam. The single interface every public Navirox package depends on.                                                    | Implemented                                           |
+| `@navirox/runtime-symbiote` | The Symbiote-backed implementation of the seam. The only package allowed to import `@symbiote-native/*`.                           | Implemented                                           |
+| `@navirox/graph`            | The framework-neutral App Graph schema and its deterministic node identifiers.                                                     | Implemented                                           |
+| `@navirox/source`           | The source adapter contract, the adapter registry, and the framework import boundary that keeps the core neutral.                  | Implemented                                           |
+| `@navirox/source-vue`       | The Vue source adapter: detection, single file component inspection, and App Graph construction.                                   | Implemented, experimental                             |
+| `@navirox/source-nuxt`      | The Nuxt source adapter: the Nuxt 4 application directory, filesystem routes, the page macro, and the two halves of a component.   | Implemented, experimental                             |
+| `@navirox/source-svelte`    | The Svelte source adapter: detection, component inspection, and App Graph construction.                                            | Implemented, experimental                             |
+| `@navirox/source-sveltekit` | The SvelteKit source adapter: filesystem route extraction on top of the Svelte adapter.                                            | Implemented, experimental                             |
+| `@navirox/source-angular`   | The Angular source adapter: decorator-driven components and services, and routes read from a routes file.                          | Implemented, experimental                             |
+| `@navirox/source-react`     | The React source adapter: components found by what a module exports, stores by declaration, and a native project refused.          | Implemented, experimental                             |
+| `@navirox/source-next`      | The Next source adapter: both routers, layouts and the module boundary, on top of the React adapter.                               | Implemented, experimental                             |
+| `@navirox/source-astro`     | The Astro source adapter: pages, islands, and the framework components handed to the adapters that read them.                      | Implemented, experimental                             |
+| `@navirox/source-solid`     | The Solid source adapter: components read by what a module exports, stores from `solid-js/store`, and the router's two shapes.     | Implemented, experimental                             |
+| `@navirox/source-qwik`      | The Qwik source adapter: `component$` boundaries, Qwik City routes, and the surface it reports rather than reads.                  | Implemented, experimental                             |
+| `@navirox/source-lit`       | The Lit source adapter: custom elements in both documented shapes, reactive properties, and the routes a project declares in code. | Implemented, experimental                             |
+| `@navirox/metro-preset`     | The Vue SFC transform and the CSS parser, composed into one Metro preset.                                                          | Implemented                                           |
+| `@navirox/ui`               | Curated native component facade: View, Text, Pressable, ScrollView, TextInput, FlatList.                                           | Implemented                                           |
+| `@navirox/native`           | Vue-first native API surface over a pluggable provider. Haptics and secure storage today.                                          | Implemented                                           |
+| `@navirox/router`           | File-based routing plus a generated, fully typed route manifest.                                                                   | Implemented                                           |
+| `@navirox/cli`              | The `navirox` command line interface.                                                                                              | `dev`, `doctor`, `inspect`, `plan` and `migrate` work |
+| `create-navirox`            | Scaffolder invoked by `npm create navirox`.                                                                                        | Implemented                                           |
+| `@navirox/doctor`           | Environment and dependency diagnostics behind `navirox doctor`.                                                                    | Implemented                                           |
+| `@navirox/config`           | `defineNaviroxConfig` and its schema.                                                                                              | Declared                                              |
+| `@navirox/inspect`          | The framework-neutral inspection pipeline: adapter selection, App Graph assembly and the versioned report.                         | Implemented                                           |
+| `@navirox/planner`          | The migration decision model, the rule engine and the generic rules that turn an App Graph into a plan.                            | Implemented                                           |
+| `@navirox/migrate`          | The migration engine: a versioned state file, a transform pipeline, a dry run by default and a rollback.                           | Implemented, copies shared logic                      |
+| `@navirox/compat`           | Compatibility records: what Navirox knows works on a native target, and the evidence behind each claim.                            | Implemented, seeded                                   |
+| `@navirox/build`            | Build, update and submit orchestration through a replaceable provider.                                                             | Declared                                              |
 
 `examples/vue-basic` is the acceptance app: a Vue SFC application that imports
 only `@navirox/*` and one line of Metro config. It is judged against the renderer

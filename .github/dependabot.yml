@@ -85,6 +85,8 @@ updates:
       - dependency-name: '@solidjs/*'
       - dependency-name: '@builder.io/qwik'
       - dependency-name: '@builder.io/qwik-city'
+      - dependency-name: lit
+      - dependency-name: '@lit-labs/*'
       - dependency-name: zustand
       - dependency-name: rxjs
       - dependency-name: tslib

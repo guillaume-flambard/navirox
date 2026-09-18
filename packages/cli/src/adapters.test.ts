@@ -48,6 +48,7 @@ describe('the composition root', () => {
     expect(registry.list().map((adapter) => adapter.id)).toEqual([
       'angular',
       'astro',
+      'lit',
       'next',
       'nuxt',
       'qwik',
@@ -194,6 +195,7 @@ describe('the Nuxt adapter through the pipeline', () => {
     expect(registry.list().map((adapter) => adapter.id)).toEqual([
       'angular',
       'astro',
+      'lit',
       'next',
       'nuxt',
       'qwik',
@@ -739,6 +741,91 @@ describe('Qwik, the framework whose components are boundaries', () => {
       rootDir: fixture('source-qwik', 'qwik-bad'),
       registry,
       framework: 'qwik',
+    })
+
+    expect(outcome.ok).toBe(true)
+
+    if (outcome.ok) {
+      expect(
+        outcome.report.graph.findings.some((finding) => finding.code === 'version-untested'),
+      ).toBe(true)
+    }
+  })
+})
+
+describe('Lit, the framework where the platform is the runtime', () => {
+  it('reads the routes the labs router declares, and reports what it cannot', async () => {
+    const registry = await createAdapterRegistry()
+    const outcome = await runInspection({
+      rootDir: fixture('source-lit', 'lit-app'),
+      registry,
+      framework: 'lit',
+    })
+
+    expect(outcome.ok).toBe(true)
+
+    if (!outcome.ok) {
+      return
+    }
+
+    expect([...outcome.report.graph.routes.map((route) => route.pathPattern)].sort()).toEqual([
+      '/',
+      '/admin',
+      '/child/*',
+      '/profile/:id',
+    ])
+    expect(outcome.report.graph.units.every((unit) => unit.id.startsWith('lit:'))).toBe(true)
+
+    const codes = outcome.report.graph.findings.map((finding) => finding.code)
+
+    expect(codes).toContain('lit-route-pattern-object')
+    expect(codes).toContain('lit-route-enter')
+  })
+
+  /**
+   * Lit is read on the same pipeline as Vue, and the fixture mirrors the shared
+   * journey, so the capabilities have to match. The kinds cannot: Lit documents
+   * no store module to import, so a reactive property is state inside an element
+   * rather than a unit of its own. The difference is named rather than smoothed
+   * over, and the assertion spells it out in both directions.
+   */
+  it('produces the Vue report minus a store module, with nothing added', async () => {
+    const registry = await createAdapterRegistry()
+    const lit = await runInspection({
+      rootDir: fixture('source-lit', 'lit-app'),
+      registry,
+      framework: 'lit',
+    })
+    const vue = await runInspection({
+      rootDir: fixture('source-vue', 'vue-app'),
+      registry,
+      framework: 'vue',
+    })
+
+    expect(lit.ok).toBe(true)
+    expect(vue.ok).toBe(true)
+
+    if (!lit.ok || !vue.ok) {
+      return
+    }
+
+    const capabilities = (report: typeof lit.report): string[] =>
+      report.graph.capabilities.map((node) => `${node.capability}:${node.usage}`).sort()
+    const kinds = (report: typeof lit.report): string[] =>
+      [...new Set(report.graph.units.map((node) => node.kind))].sort()
+
+    expect(capabilities(lit.report)).toEqual(capabilities(vue.report))
+    expect(kinds(lit.report)).toEqual(kinds(vue.report).filter((kind) => kind !== 'state-module'))
+    expect(kinds(lit.report).includes('state-module')).toBe(false)
+    expect(lit.report.graph.schemaVersion).toBe(1)
+  })
+
+  it('says so when the Lit major was not tested', async () => {
+    const registry = await createAdapterRegistry()
+    const outcome = await runInspection({
+      rootDir: fixture('source-lit', 'lit-bad'),
+      registry,
+      framework: 'lit',
     })
 
     expect(outcome.ok).toBe(true)

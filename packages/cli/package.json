@@ -36,6 +36,7 @@
     "@navirox/source": "workspace:*",
     "@navirox/source-angular": "workspace:*",
     "@navirox/source-astro": "workspace:*",
+    "@navirox/source-lit": "workspace:*",
     "@navirox/source-nuxt": "workspace:*",
     "@navirox/source-next": "workspace:*",
     "@navirox/source-qwik": "workspace:*",

@@ -54,6 +54,7 @@ const SOURCE_ADAPTER_PACKAGES: readonly (readonly [string, string])[] = [
   ['@navirox/source-astro', 'createAstroAdapter'],
   ['@navirox/source-solid', 'createSolidAdapter'],
   ['@navirox/source-qwik', 'createQwikAdapter'],
+  ['@navirox/source-lit', 'createLitAdapter'],
 ]
 
 /** Builds the registry the inspect command uses, from the list above. */

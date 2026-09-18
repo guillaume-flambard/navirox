@@ -82,6 +82,9 @@
     },
     {
       "path": "./packages/source-qwik"
+    },
+    {
+      "path": "./packages/source-lit"
     }
   ]
 }

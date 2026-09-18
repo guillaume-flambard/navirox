@@ -1,0 +1,8 @@
+{
+  "name": "fixture-lit-bad",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "lit": "^2.8.0"
+  }
+}
