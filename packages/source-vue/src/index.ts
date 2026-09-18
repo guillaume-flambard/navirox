@@ -28,15 +28,7 @@ export function createVueAdapter(): SourceAdapter {
   }
 }
 
-export {
-  ADAPTER_ID,
-  DISPLAY_NAME,
-  FRAMEWORK,
-  TESTED_VERSIONS,
-  declaredMajor,
-  detect,
-  testedMajors,
-} from './detect.js'
+export { ADAPTER_ID, DISPLAY_NAME, FRAMEWORK, TESTED_VERSIONS, detect } from './detect.js'
 // The capability scan is neutral and lives in `@navirox/source`; it is
 // re-exported here because this adapter was its first user and a consumer of this
 // package should not have to know where it moved.
@@ -51,5 +43,8 @@ export { MANIFEST_FILE, declaredRange, productionDependencies, readManifest } fr
 export type { DeclaredRange, Manifest, TextReader } from '@navirox/source'
 export { UNMODELLED_PATTERNS, scanUnmodelled } from './unmodelled.js'
 export type { UnmodelledPattern } from './unmodelled.js'
+// The version reading is neutral; it is re-exported so a consumer of this
+// package keeps finding it where it always was.
+export { declaredMajor, testedMajors } from '@navirox/source'
 export { buildGraph } from './graph.js'
 export { inspect } from './inspect.js'

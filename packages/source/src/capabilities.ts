@@ -129,6 +129,15 @@ export const CAPABILITY_PATTERNS: readonly CapabilityPattern[] = [
     usage: 'invoke',
     match: /\bfetch\s*\(|\bXMLHttpRequest\b/,
   },
+  {
+    // The framework spellings of the same thing. A data helper is a network
+    // request, so it is reported through the shared vocabulary rather than as a
+    // capability of its own: two projects that both fetch data should be
+    // comparable, whatever their framework calls it.
+    capability: 'network-request',
+    usage: 'invoke',
+    match: /\buse(Fetch|LazyFetch|AsyncData|LazyAsyncData)\s*\(|\$fetch\s*\(/,
+  },
 ]
 
 /** Every capability name this adapter can report, in a stable order. */

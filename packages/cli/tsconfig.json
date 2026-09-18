@@ -25,6 +25,9 @@
     },
     {
       "path": "../source-sveltekit"
+    },
+    {
+      "path": "../source-nuxt"
     }
   ]
 }

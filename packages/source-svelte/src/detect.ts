@@ -26,18 +26,6 @@ export const DISPLAY_NAME = 'Svelte'
  */
 export const TESTED_VERSIONS: readonly string[] = ['^5.0.0']
 
-export function declaredMajor(range: string): number | undefined {
-  const match = /\d+/.exec(range)
-  return match === null ? undefined : Number(match[0])
-}
-
-/** The majors the tested ranges cover. */
-export function testedMajors(versions: readonly string[]): readonly number[] {
-  return versions
-    .map((version) => declaredMajor(version))
-    .filter((major): major is number => major !== undefined)
-}
-
 export function detect(context: DetectionContext): Promise<DetectionResult> {
   const manifest = readManifest(context, ADAPTER_ID)
 

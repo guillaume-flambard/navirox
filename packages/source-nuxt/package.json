@@ -1,7 +1,7 @@
 {
-  "name": "@navirox/cli",
+  "name": "@navirox/source-nuxt",
   "version": "0.0.0",
-  "description": "The `navirox` command line interface.",
+  "description": "The Nuxt source adapter: detection, filesystem routes, layouts and composables, on top of the Vue adapter.",
   "license": "MIT",
   "type": "module",
   "engines": {
@@ -12,11 +12,8 @@
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
-      "default": "./dist/index.js"
+      "import": "./dist/index.js"
     }
-  },
-  "bin": {
-    "navirox": "./dist/bin.js"
   },
   "files": [
     "dist"
@@ -28,12 +25,8 @@
     "clean": "rm -rf dist"
   },
   "dependencies": {
-    "@navirox/doctor": "workspace:*",
-    "@navirox/inspect": "workspace:*",
+    "@navirox/graph": "workspace:*",
     "@navirox/source": "workspace:*",
-    "@navirox/source-nuxt": "workspace:*",
-    "@navirox/source-svelte": "workspace:*",
-    "@navirox/source-sveltekit": "workspace:*",
     "@navirox/source-vue": "workspace:*"
   },
   "devDependencies": {

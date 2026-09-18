@@ -30,6 +30,8 @@ export type { CapabilityMatch, CapabilityPattern } from './capabilities.js'
 
 export { buildFragment } from './fragment.js'
 
+export { declaredMajor, testedMajors } from './versions.js'
+
 export { MANIFEST_FILE, declaredRange, productionDependencies, readManifest } from './manifest.js'
 export type { DeclaredRange, Manifest, TextReader } from './manifest.js'
 

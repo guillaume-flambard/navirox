@@ -45,7 +45,12 @@ describe('the composition root', () => {
   it('registers every adapter it names', async () => {
     const registry = await createAdapterRegistry()
 
-    expect(registry.list().map((adapter) => adapter.id)).toEqual(['svelte', 'sveltekit', 'vue'])
+    expect(registry.list().map((adapter) => adapter.id)).toEqual([
+      'nuxt',
+      'svelte',
+      'sveltekit',
+      'vue',
+    ])
   })
 
   it('selects the meta-framework for a SvelteKit project', async () => {
@@ -154,5 +159,54 @@ describe('two frameworks through one pipeline', () => {
     expect(vue.report.schemaVersion).toBe(1)
     expect(vue.report.graph.schemaVersion).toBe(1)
     expect(sveltekit.report.graph.schemaVersion).toBe(1)
+  })
+})
+
+describe('the Nuxt adapter through the pipeline', () => {
+  it('is registered and preferred over the Vue adapter', async () => {
+    const registry = await createAdapterRegistry()
+
+    expect(registry.list().map((adapter) => adapter.id)).toEqual([
+      'nuxt',
+      'svelte',
+      'sveltekit',
+      'vue',
+    ])
+  })
+
+  it('reads both what Nuxt adds and what the Vue adapter read', async () => {
+    const registry = await createAdapterRegistry()
+    const outcome = await runInspection({
+      rootDir: fixture('source-nuxt', 'nuxt-app'),
+      registry,
+    })
+
+    expect(outcome.ok).toBe(true)
+
+    if (!outcome.ok) {
+      return
+    }
+
+    const { graph } = outcome.report
+
+    // The composition: routes and layouts come from the Nuxt reading, the
+    // components and the store from the Vue reading, and every identifier names
+    // the adapter that produced the fragment.
+    // Sorted by identifier, which is what makes two runs identical.
+    expect([...graph.routes.map((route) => route.pathPattern)].sort()).toEqual([
+      '/',
+      '/about',
+      '/blog',
+      '/blog/:slug',
+      '/docs/:lang',
+    ])
+    expect(graph.units.map((unit) => unit.kind)).toContain('layout')
+    expect(graph.units.map((unit) => unit.kind)).toContain('utility')
+    expect(graph.units.some((unit) => unit.kind === 'state-module')).toBe(true)
+    expect(
+      graph.units.every((unit) => unit.id.startsWith('nuxt:')) &&
+        graph.routes.every((route) => route.id.startsWith('nuxt:')),
+    ).toBe(true)
+    expect(graph.findings.some((finding) => finding.code === 'nuxt-server-code')).toBe(true)
   })
 })

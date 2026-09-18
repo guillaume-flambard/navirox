@@ -90,16 +90,17 @@ marketing badge. The four levels are the ones the roadmap defines:
 | Supported    | A migrated application in that framework builds and runs on a target.       |
 | Production   | Supported, plus a release process and a compatibility record with evidence. |
 
-**Three adapters are at Experimental.** Vue 3, Svelte and SvelteKit are detected
-and inspected, and nothing beyond that is claimed: no migration transform exists,
-Vue routes are not extracted, and SvelteKit's server side is reported rather than
-modelled. Every framework below them is still a plan. There is no green checkmark
-on this page for an adapter that does not exist.
+**Four adapters are at Experimental.** Vue 3, Nuxt, Svelte and SvelteKit are
+detected and inspected, and nothing beyond that is claimed: no migration transform
+exists, plain Vue routes are not extracted, and the server side of Nuxt and
+SvelteKit is reported rather than modelled. Every framework below them is still a
+plan. There is no green checkmark on this page for an adapter that does not
+exist.
 
 | Source                           | Detection   | Inspection  | Migration plan | Level           |
 | -------------------------------- | ----------- | ----------- | -------------- | --------------- |
 | Vue 3                            | implemented | implemented | planned        | Experimental    |
-| Nuxt                             | planned     | planned     | planned        | Not yet claimed |
+| Nuxt                             | implemented | implemented | planned        | Experimental    |
 | Svelte                           | implemented | implemented | planned        | Experimental    |
 | SvelteKit                        | implemented | implemented | planned        | Experimental    |
 | Angular                          | planned     | planned     | planned        | Not yet claimed |
@@ -122,6 +123,7 @@ back into the renderer is the failure mode this layout exists to prevent.
 | `@navirox/graph`            | The framework-neutral App Graph schema and its deterministic node identifiers.                                    | Implemented                        |
 | `@navirox/source`           | The source adapter contract, the adapter registry, and the framework import boundary that keeps the core neutral. | Implemented                        |
 | `@navirox/source-vue`       | The Vue source adapter: detection, single file component inspection, and App Graph construction.                  | Implemented, experimental          |
+| `@navirox/source-nuxt`      | The Nuxt source adapter: filesystem routes, layouts and composables, on top of the Vue adapter.                   | Implemented, experimental          |
 | `@navirox/source-svelte`    | The Svelte source adapter: detection, component inspection, and App Graph construction.                           | Implemented, experimental          |
 | `@navirox/source-sveltekit` | The SvelteKit source adapter: filesystem route extraction on top of the Svelte adapter.                           | Implemented, experimental          |
 | `@navirox/metro-preset`     | The Vue SFC transform and the CSS parser, composed into one Metro preset.                                         | Implemented                        |

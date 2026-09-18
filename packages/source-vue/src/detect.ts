@@ -21,25 +21,6 @@ export const DISPLAY_NAME = 'Vue'
 export const TESTED_VERSIONS: readonly string[] = ['^3.5.0']
 
 /**
- * The major version a range is asking for, when the range names one.
- *
- * This is a reading of the manifest, not a resolution: without an installed tree
- * there is no resolved version to ask about, so the adapter works with the major
- * the project declared and the finding says as much.
- */
-export function declaredMajor(range: string): number | undefined {
-  const match = /\d+/.exec(range)
-  return match === null ? undefined : Number(match[0])
-}
-
-/** The majors the tested ranges cover. */
-export function testedMajors(versions: readonly string[]): readonly number[] {
-  return versions
-    .map((version) => declaredMajor(version))
-    .filter((major): major is number => major !== undefined)
-}
-
-/**
  * Recognizes a Vue project from what it declares.
  *
  * Detection reads the manifest and nothing else, and it never throws: a project

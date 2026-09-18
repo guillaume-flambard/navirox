@@ -37,6 +37,15 @@ describe('scanning source text', () => {
     ])
   })
 
+  it('reports a framework data helper as the same network request as a plain fetch', () => {
+    expect(scanCapabilities("const { data } = await useFetch('/api/rows')")).toEqual([
+      { capability: 'network-request', usage: 'invoke', line: 1 },
+    ])
+    expect(scanCapabilities("await $fetch('/api/rows')")).toEqual([
+      { capability: 'network-request', usage: 'invoke', line: 1 },
+    ])
+  })
+
   it('reports a use with no direction as unknown rather than guessing', () => {
     expect(scanCapabilities('return localStorage')).toEqual([
       { capability: 'local-storage', usage: 'unknown', line: 1 },

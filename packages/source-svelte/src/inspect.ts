@@ -8,20 +8,15 @@ import type {
   SourceInspection,
 } from '@navirox/source'
 import {
+  declaredMajor,
   declaredRange,
   isSourceFile,
   productionDependencies,
   readManifest,
   scanCapabilities,
-} from '@navirox/source'
-import {
-  ADAPTER_ID,
-  DISPLAY_NAME,
-  FRAMEWORK,
-  TESTED_VERSIONS,
-  declaredMajor,
   testedMajors,
-} from './detect.js'
+} from '@navirox/source'
+import { ADAPTER_ID, DISPLAY_NAME, FRAMEWORK, TESTED_VERSIONS } from './detect.js'
 import { scanUnmodelled } from './unmodelled.js'
 
 /**

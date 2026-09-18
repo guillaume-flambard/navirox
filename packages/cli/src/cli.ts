@@ -47,6 +47,7 @@ const SOURCE_ADAPTER_PACKAGES: readonly (readonly [string, string])[] = [
   ['@navirox/source-vue', 'createVueAdapter'],
   ['@navirox/source-svelte', 'createSvelteAdapter'],
   ['@navirox/source-sveltekit', 'createSvelteKitAdapter'],
+  ['@navirox/source-nuxt', 'createNuxtAdapter'],
 ]
 
 /** Builds the registry the inspect command uses, from the list above. */
