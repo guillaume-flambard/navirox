@@ -1,0 +1,12 @@
+{
+  "name": "fixture-qwik-app",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "@builder.io/qwik": "^1.20.0",
+    "@builder.io/qwik-city": "^1.20.0"
+  },
+  "devDependencies": {
+    "vite": "^7.0.0"
+  }
+}

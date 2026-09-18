@@ -50,6 +50,7 @@ describe('the composition root', () => {
       'astro',
       'next',
       'nuxt',
+      'qwik',
       'react',
       'solid',
       'svelte',
@@ -195,6 +196,7 @@ describe('the Nuxt adapter through the pipeline', () => {
       'astro',
       'next',
       'nuxt',
+      'qwik',
       'react',
       'solid',
       'svelte',
@@ -630,6 +632,113 @@ describe('Solid, the second source read through JSX', () => {
       rootDir: fixture('source-solid', 'solid-bad'),
       registry,
       framework: 'solid',
+    })
+
+    expect(outcome.ok).toBe(true)
+
+    if (outcome.ok) {
+      expect(
+        outcome.report.graph.findings.some((finding) => finding.code === 'version-untested'),
+      ).toBe(true)
+    }
+  })
+})
+
+describe('Qwik, the framework whose components are boundaries', () => {
+  it('reads Qwik City pages and the layouts they select', async () => {
+    const registry = await createAdapterRegistry()
+    const outcome = await runInspection({
+      rootDir: fixture('source-qwik', 'qwik-app'),
+      registry,
+      framework: 'qwik',
+    })
+
+    expect(outcome.ok).toBe(true)
+
+    if (!outcome.ok) {
+      return
+    }
+
+    expect([...outcome.report.graph.routes.map((route) => route.pathPattern)].sort()).toEqual([
+      '/',
+      '/about',
+      '/dashboard',
+      '/docs/:slug',
+      '/posts/:id',
+      '/pricing',
+      '/profile',
+    ])
+    expect(outcome.report.graph.units.every((unit) => unit.id.startsWith('qwik:'))).toBe(true)
+  })
+
+  /**
+   * Qwik is read on the same pipeline as Vue, and the fixture mirrors the shared
+   * journey, so the capabilities have to match. The kinds cannot: Qwik documents
+   * no store module to import, so a `useStore` call is state inside a component
+   * rather than a unit of its own, and `layout.tsx` is a documented contract, so
+   * a layout is a unit here where Vue has none. Both differences are named
+   * rather than smoothed over, and the assertion spells them out in both
+   * directions.
+   */
+  it('produces the Vue report minus a store module, plus a documented layout', async () => {
+    const registry = await createAdapterRegistry()
+    const qwik = await runInspection({
+      rootDir: fixture('source-qwik', 'qwik-app'),
+      registry,
+      framework: 'qwik',
+    })
+    const vue = await runInspection({
+      rootDir: fixture('source-vue', 'vue-app'),
+      registry,
+      framework: 'vue',
+    })
+
+    expect(qwik.ok).toBe(true)
+    expect(vue.ok).toBe(true)
+
+    if (!qwik.ok || !vue.ok) {
+      return
+    }
+
+    const capabilities = (report: typeof qwik.report): string[] =>
+      report.graph.capabilities.map((node) => `${node.capability}:${node.usage}`).sort()
+    const kinds = (report: typeof qwik.report): string[] =>
+      [...new Set(report.graph.units.map((node) => node.kind))].sort()
+
+    expect(capabilities(qwik.report)).toEqual(capabilities(vue.report))
+    expect(kinds(qwik.report)).toEqual(
+      [...kinds(vue.report).filter((kind) => kind !== 'state-module'), 'layout'].sort(),
+    )
+    expect(kinds(qwik.report).includes('state-module')).toBe(false)
+    expect(qwik.report.graph.schemaVersion).toBe(1)
+  })
+
+  it('reports the surface Qwik City documents instead of reading it', async () => {
+    const registry = await createAdapterRegistry()
+    const outcome = await runInspection({
+      rootDir: fixture('source-qwik', 'qwik-app'),
+      registry,
+      framework: 'qwik',
+    })
+
+    expect(outcome.ok).toBe(true)
+
+    if (outcome.ok) {
+      const codes = outcome.report.graph.findings.map((finding) => finding.code)
+
+      expect(codes).toContain('qwik-endpoint')
+      expect(codes).toContain('qwik-not-found-page')
+      expect(codes).toContain('qwik-plugin')
+      expect(codes).toContain('qwik-route-rewrite')
+    }
+  })
+
+  it('says so when the Qwik major was not tested', async () => {
+    const registry = await createAdapterRegistry()
+    const outcome = await runInspection({
+      rootDir: fixture('source-qwik', 'qwik-bad'),
+      registry,
+      framework: 'qwik',
     })
 
     expect(outcome.ok).toBe(true)

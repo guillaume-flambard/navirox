@@ -83,6 +83,8 @@ updates:
       - dependency-name: nuxt
       - dependency-name: solid-js
       - dependency-name: '@solidjs/*'
+      - dependency-name: '@builder.io/qwik'
+      - dependency-name: '@builder.io/qwik-city'
       - dependency-name: zustand
       - dependency-name: rxjs
       - dependency-name: tslib

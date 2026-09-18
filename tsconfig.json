@@ -79,6 +79,9 @@
     },
     {
       "path": "./packages/source-solid"
+    },
+    {
+      "path": "./packages/source-qwik"
     }
   ]
 }

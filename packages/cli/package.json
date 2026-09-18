@@ -38,6 +38,7 @@
     "@navirox/source-astro": "workspace:*",
     "@navirox/source-nuxt": "workspace:*",
     "@navirox/source-next": "workspace:*",
+    "@navirox/source-qwik": "workspace:*",
     "@navirox/source-react": "workspace:*",
     "@navirox/source-solid": "workspace:*",
     "@navirox/source-svelte": "workspace:*",

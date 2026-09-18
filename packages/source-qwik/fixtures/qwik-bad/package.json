@@ -1,0 +1,8 @@
+{
+  "name": "fixture-qwik-bad",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "@builder.io/qwik": "^0.20.0"
+  }
+}
