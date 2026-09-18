@@ -335,6 +335,9 @@ importers:
         specifier: workspace:*
         version: link:../runtime-symbiote
     devDependencies:
+      '@babel/core':
+        specifier: ^7.25.2
+        version: 7.29.7(supports-color@8.1.1)
       '@types/node':
         specifier: ^26.6.1
         version: 26.6.1

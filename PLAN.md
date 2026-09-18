@@ -640,22 +640,36 @@ If E1–E4 fail (expected), **V1's ship backend is the raw native toolchain**, o
 - [x] Native primitives render: `view`, `text`, `pressable`, `text-input`, `scroll-view`, plus `Image`, `FlatList`
 - [x] `@navirox/native`: haptics + secure storage (both platforms)
 - [x] **iOS** and **Android** both run the canary
-- [ ] Fast Refresh / HMR for SFC and stores
-  - Measured with the app running, not assumed: a one-word edit in `App.vue`
-    reaches the device, but the app reloads whole. The counter read `3` presses,
-    `doubled: 6` and `recent: 1, 2, 3` before the edit, and `0`, `0` with no
-    `recent` line after it, so the store was rebuilt. Metro logs no
-    `hmr`/`accept`/`reload` line, only a second full `BUNDLE ./index.js`: nothing
-    in the bundle accepts the update, so Metro falls back to a reload.
-  - Nothing wires it today. The upstream Vue adapter only survives React
-    Native's Fast Refresh (one Vue app per surface, re-mounted on
-    `RN$stopSurface`) and never touches `__VUE_HMR_RUNTIME__` or
-    `import.meta.hot`, while Metro's generic API (`module.hot.accept` and
-    `dispose`, in `metro-runtime`'s `require` polyfill) is never called. Wiring
-    it means a dev-only transform in `@navirox/metro-preset` that registers each
-    SFC and its `<style>` block with Vue's HMR runtime and accepts the update,
-    and that transform has to coexist with the `react-refresh` layer React
-    Native already injects.
+- [x] Fast Refresh / HMR for SFC and stores
+  - Measured with the app running on the emulator, before and after. Before:
+    a one-word edit in `App.vue` reached the device but the app reloaded whole,
+    the counter going from `3` presses, `doubled: 6`, `recent: 1, 2, 3` to `0`,
+    `0` with no `recent` line, so the store was rebuilt; Metro logged no
+    `hmr`/`accept`/`reload` line, only a second full `BUNDLE ./index.js`.
+  - After: the same counter sits at `3` while an edit lands. Editing
+    `components/CounterReadout.vue` to read `taps` instead of `presses` changed
+    the caption on screen with the count still at `3`, `doubled: 6` and
+    `recent: 1, 2, 3`; editing the root `App.vue` changed the eyebrow to
+    `NAVIROX BASIC HMR` with the same three values intact. Metro logged no new
+    `BUNDLE`. Both of Vue's paths were exercised: a child re-renders through
+    `instance.parent.update()`, the root through `appContext.reload`.
+  - The implementation is `withVueFastRefresh`, a Babel plugin exported by
+    `@navirox/metro-preset` and named in the `babel.config.js` of
+    `examples/vue-basic` and of the scaffolder template. Vue already ships the
+    runtime half in its development build (`__VUE_HMR_RUNTIME__` with
+    `createRecord`/`rerender`/`reload`, plus `mountComponent` watching any
+    definition that carries `__hmrId`); what was missing was the compiler half
+    that stamps the id, which is what the plugin does on the module the upstream
+    transformer produces (activated on the relabelled `.vue.tsx` name it emits).
+    The registration is behind two `typeof` guards, so a production bundle
+    evaluates the same module it would have evaluated without it. Confirmed in
+    the real pipeline: a dev bundle of the canary carries four `__hmrId`
+    stampings, one per SFC, each with its own `module.hot.accept` site.
+  - The boundary is the component, not the store module. Editing a SFC keeps the
+    store and its state; editing `stores/canary.ts` itself is a module with no
+    boundary and still reloads the app, which is why the honest claim is that
+    the state survives a component update rather than that every module does.
+    Registering store modules would take a second boundary of their own.
 - [x] `navirox dev` works
 - [x] `navirox doctor` works and is honest (reports `unknown` where unknown)
 - [x] Docs: README + architecture + getting-started

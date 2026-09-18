@@ -18,6 +18,16 @@ export const PACKAGE_ROLE =
  */
 export const NAVIROX_SOURCE_EXTENSIONS: readonly string[] = SYMBIOTE_SOURCE_EXTENSIONS
 
+/**
+ * Fast Refresh for single file components, as a Babel plugin an app names in its
+ * own `babel.config.js`.
+ *
+ * It is not part of `withNavirox`, because it is a Babel plugin and not a Metro
+ * one: the SFC transform is already upstream's, and the plugin runs on what that
+ * transform produced. See `fast-refresh.ts` for what it generates and why.
+ */
+export { VUE_FAST_REFRESH_PLUGIN_NAME, fastRefreshId, withVueFastRefresh } from './fast-refresh.js'
+
 /** The Metro config helper every React Native app already has installed. */
 const RN_METRO_CONFIG_SPECIFIER = '@react-native/metro-config'
 

@@ -5,6 +5,8 @@
 // and baked into every transformed module (the app entry and the shared source).
 const debugFlag = process.env.DEBUG === '1' ? '1' : '0';
 
+const { withVueFastRefresh } = require('@navirox/metro-preset');
+
 function inlineDebugFlag({ types: t }) {
   return {
     name: 'inline-debug-flag',
@@ -20,5 +22,11 @@ function inlineDebugFlag({ types: t }) {
 
 module.exports = {
   presets: ['module:@react-native/babel-preset'],
-  plugins: [inlineDebugFlag],
+  // Fast Refresh for single file components. The plugin runs on the module the
+  // Vue transformer produced, which is why it activates on the `.vue.tsx` name
+  // that transformer re-labels its output with, and not on `.vue`. It adds only
+  // `__hmrId`, the registration with Vue's HMR runtime and a `module.hot.accept`
+  // call, all of them behind `typeof` guards, so a production bundle evaluates
+  // the same module it would have evaluated without it.
+  plugins: [inlineDebugFlag, withVueFastRefresh],
 };
