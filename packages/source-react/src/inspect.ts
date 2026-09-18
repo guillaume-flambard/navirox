@@ -17,17 +17,25 @@ import {
   scanCapabilities,
   testedMajors,
 } from '@navirox/source'
-import { ADAPTER_ID, DISPLAY_NAME, FRAMEWORK, TESTED_VERSIONS } from './detect.js'
-import { readDeclaration } from './decorators.js'
+import {
+  ADAPTER_ID,
+  DISPLAY_NAME,
+  FRAMEWORK,
+  NATIVE_RUNTIME,
+  TESTED_VERSIONS,
+  nativeDeclarations,
+} from './detect.js'
+import { readDeclaration } from './components.js'
 import { isRoutesFile, readRoutes, type FindingDraft } from './routes.js'
 
 /**
- * Reads an Angular project.
+ * Reads a web React project.
  *
- * Three readings decide what a file is, and none of them is its name. A decorator
- * says whether the file declares a component, a service or a pipe; what the class
- * holds says whether a service carries state; and the routes file says which URLs
- * the application serves.
+ * The reading is textual, over comment-stripped source, and it decides what a
+ * module is from what the module exports. The one case this adapter is designed to
+ * catch is the proximity the architecture warns about: a web project that declares
+ * the native runtime is reaching the target, and that is reported rather than read
+ * as an ordinary dependency.
  */
 
 function location(file: string, line?: number): SourceLocation {
@@ -58,41 +66,27 @@ function finding(
 /**
  * Reads one module.
  *
- * The decorator wins over the file name and over the generic application module
- * rule, and the injectable case is the judgement this adapter has to make: a
- * service that holds reactive state is a state module, and one that holds none is a
- * utility. Angular has no store library to look for, so the reading has to be about
- * content, and reporting every service as a utility would have hidden the state a
- * migration has to carry.
+ * A component is a function that returns an element. A class component is a
+ * finding, because this adapter reads the function era and saying nothing about a
+ * class would imply it had been understood. A store is a declaration through a
+ * state library, and everything else that is application logic is a utility.
  */
 function readModule(file: string, text: string): { unit?: DiscoveredUnit; findings: Finding[] } {
   const name =
     file
       .split('/')
       .at(-1)
-      ?.replace(/\.[cm]?ts$/, '') ?? file
+      ?.replace(/\.[cm]?[jt]sx?$/, '') ?? file
   const declaration = readDeclaration(text)
   const findings: Finding[] = []
 
-  if (declaration.module) {
+  if (declaration.classComponent) {
     findings.push(
       finding(
-        'angular-module',
+        'react-class-component',
         'warning',
-        'A module declaration was not modelled',
-        `${file} declares a module. This adapter reads the standalone era, where a component declares its own imports, and it has no reading for what a module assembles.`,
-        location(file, 1),
-      ),
-    )
-  }
-
-  if (declaration.externalTemplate) {
-    findings.push(
-      finding(
-        'angular-external-template',
-        'info',
-        'A template file was not read',
-        `${file} points at a template file rather than declaring its template inline. The component is reported and its template is not read, so anything the template does is not in this reading.`,
+        'A class component was not modelled',
+        `${file} declares a class component. This adapter reads the function era, so the component is reported and its lifecycle is not read.`,
         location(file, 1),
       ),
     )
@@ -105,28 +99,22 @@ function readModule(file: string, text: string): { unit?: DiscoveredUnit; findin
         kind: 'component',
         name,
         source: location(file, 1),
-        metadata: {
-          inlineTemplate: declaration.inlineTemplate,
-          externalTemplate: declaration.externalTemplate,
-        },
+        metadata: { usesHooks: declaration.usesHooks },
       },
       findings,
     }
   }
 
-  if (declaration.pipe) {
-    return { unit: { key: 'default', kind: 'utility', name, source: location(file, 1) }, findings }
+  if (declaration.classComponent) {
+    return {
+      unit: { key: 'default', kind: 'component', name, source: location(file, 1) },
+      findings,
+    }
   }
 
-  if (declaration.injectable) {
+  if (declaration.declaresStore) {
     return {
-      unit: {
-        key: 'default',
-        kind: declaration.holdsState ? 'state-module' : 'utility',
-        name,
-        source: location(file, 1),
-        metadata: { holdsState: declaration.holdsState },
-      },
+      unit: { key: 'default', kind: 'state-module', name, source: location(file, 1) },
       findings,
     }
   }
@@ -181,7 +169,7 @@ export function inspect(context: InspectContext): Promise<SourceInspection> {
         'manifest-unreadable',
         'error',
         'No readable manifest',
-        'No package.json could be read, so the declared Angular version and the dependencies are unknown.',
+        'No package.json could be read, so the declared React version and the dependencies are unknown.',
       ),
     )
   } else {
@@ -194,34 +182,47 @@ export function inspect(context: InspectContext): Promise<SourceInspection> {
       })
     }
 
-    const angular = declaredRange(manifest, FRAMEWORK)
+    for (const native of nativeDeclarations(manifest.json)) {
+      findings.push(
+        finding(
+          'react-native-dependency',
+          'warning',
+          'A native dependency in a web project',
+          `${manifest.source.file} declares ${native}, which belongs to the target side. A project that reaches ${NATIVE_RUNTIME} is a migration question rather than a plain web reading.`,
+          manifest.source,
+          [{ kind: 'manifest', value: `${manifest.source.file} ${native}` }],
+        ),
+      )
+    }
 
-    if (angular === undefined) {
+    const react = declaredRange(manifest, FRAMEWORK)
+
+    if (react === undefined) {
       findings.push(
         finding(
           'framework-not-declared',
           'warning',
-          'Angular is not declared',
+          'React is not declared',
           `The manifest declares no ${FRAMEWORK} dependency, so no version could be checked.`,
           manifest.source,
         ),
       )
     } else {
-      frameworkVersion = angular.range
-      const major = declaredMajor(angular.range)
+      frameworkVersion = react.range
+      const major = declaredMajor(react.range)
 
       if (major !== undefined && !testedMajors(TESTED_VERSIONS).includes(major)) {
         findings.push(
           finding(
             'version-untested',
             'warning',
-            'Untested Angular version',
-            `The project declares ${FRAMEWORK} ${angular.range}. This adapter was tested against ${TESTED_VERSIONS.join(', ')}, so the major ${major} is not covered and no support is claimed for it.`,
+            'Untested React version',
+            `The project declares ${FRAMEWORK} ${react.range}. This adapter was tested against ${TESTED_VERSIONS.join(', ')}, so the major ${major} is not covered and no support is claimed for it.`,
             manifest.source,
             [
               {
                 kind: 'manifest',
-                value: `${manifest.source.file} ${angular.field}.${FRAMEWORK} ${angular.range}`,
+                value: `${manifest.source.file} ${react.field}.${FRAMEWORK} ${react.range}`,
               },
             ],
           ),
@@ -245,6 +246,8 @@ export function inspect(context: InspectContext): Promise<SourceInspection> {
       continue
     }
 
+    // Every module is read, not only the component extensions: a store or a utility
+    // can live in a `.ts` file, and the capability scan runs over anything.
     const { unit, findings: moduleFindings } = readModule(file, text)
 
     findings.push(...moduleFindings)
@@ -253,6 +256,9 @@ export function inspect(context: InspectContext): Promise<SourceInspection> {
       units.push(unit)
     }
 
+    // Capability use is read from the files this reading is about: a build config or
+    // an entry point that touches the document is not a capability the application
+    // uses, and reporting it would put a fact in the report that names no unit.
     if (!isApplicationModule(file)) {
       continue
     }

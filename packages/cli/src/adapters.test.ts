@@ -48,6 +48,7 @@ describe('the composition root', () => {
     expect(registry.list().map((adapter) => adapter.id)).toEqual([
       'angular',
       'nuxt',
+      'react',
       'svelte',
       'sveltekit',
       'vue',
@@ -170,6 +171,7 @@ describe('the Nuxt adapter through the pipeline', () => {
     expect(registry.list().map((adapter) => adapter.id)).toEqual([
       'angular',
       'nuxt',
+      'react',
       'svelte',
       'sveltekit',
       'vue',
@@ -263,5 +265,58 @@ describe('Angular, the framework that assembles an application differently', () 
       '/blog/:slug',
     ])
     expect(outcome.report.graph.units.every((unit) => unit.id.startsWith('angular:'))).toBe(true)
+  })
+})
+
+describe('React, the framework the target also uses', () => {
+  it('produces a report with the same shape as the Vue report', async () => {
+    const registry = await createAdapterRegistry()
+    const react = await runInspection({
+      rootDir: fixture('source-react', 'react-app'),
+      registry,
+      framework: 'react',
+    })
+    const vue = await runInspection({
+      rootDir: fixture('source-vue', 'vue-app'),
+      registry,
+      framework: 'vue',
+    })
+
+    expect(react.ok).toBe(true)
+    expect(vue.ok).toBe(true)
+    // The gate's question for this one: does a framework the target also uses
+    // produce the same report shape, or does proximity to the renderer leak?
+    expect(shape(react)).toEqual(shape(vue))
+  })
+
+  it('refuses a native project rather than reading the target as a source', async () => {
+    const registry = await createAdapterRegistry()
+    const outcome = await runInspection({
+      rootDir: fixture('source-react', 'react-bad'),
+      registry,
+    })
+
+    expect(outcome.ok).toBe(false)
+
+    if (!outcome.ok) {
+      expect(outcome.reason).toBe('no-adapter')
+    }
+  })
+
+  it('names the native dependency when it is chosen by name', async () => {
+    const registry = await createAdapterRegistry()
+    const outcome = await runInspection({
+      rootDir: fixture('source-react', 'react-bad'),
+      registry,
+      framework: 'react',
+    })
+
+    expect(outcome.ok).toBe(true)
+
+    if (outcome.ok) {
+      expect(
+        outcome.report.graph.findings.some((finding) => finding.code === 'react-native-dependency'),
+      ).toBe(true)
+    }
   })
 })

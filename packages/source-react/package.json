@@ -1,0 +1,39 @@
+{
+  "name": "@navirox/source-react",
+  "version": "0.0.0",
+  "description": "The React source adapter: detection, function component and state module discovery, router configuration, and App Graph construction.",
+  "license": "MIT",
+  "type": "module",
+  "engines": {
+    "node": ">=22.13.0"
+  },
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc --build",
+    "typecheck": "tsc --build",
+    "test": "vitest run",
+    "clean": "rm -rf dist"
+  },
+  "dependencies": {
+    "@navirox/graph": "workspace:*",
+    "@navirox/source": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/node": "^26.6.1",
+    "typescript": "~6.0.3",
+    "vitest": "^5.0.1"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}

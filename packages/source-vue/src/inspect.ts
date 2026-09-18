@@ -293,6 +293,10 @@ export function inspect(context: InspectContext): Promise<SourceInspection> {
       units.push(unit)
     }
 
+    if (!file.endsWith('.vue') && !isApplicationModule(file)) {
+      continue
+    }
+
     for (const capability of readCapabilities(file, text)) {
       capabilities.push(unit === undefined ? capability : { ...capability, unitKey: unit.key })
     }

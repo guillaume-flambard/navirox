@@ -40,6 +40,9 @@
     },
     {
       "path": "../source-angular"
+    },
+    {
+      "path": "../source-react"
     }
   ]
 }
