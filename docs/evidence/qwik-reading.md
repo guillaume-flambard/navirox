@@ -86,8 +86,13 @@ the use line. The fixture was written to destructure the idiomatic
 `const { params } = useLocation()` instead, which keeps the documented way to read
 a parameter and does not bind the trap word, and the five expected capabilities
 came back exactly. The trap is in `@navirox/source`, so it is available to every
-adapter; it is recorded here rather than fixed, because a fix would change how
-every framework's `location` is read and that belongs to its own change.
+adapter; it was recorded here rather than fixed at the time, because a fix would
+change how every framework's `location` is read and that belongs to its own change.
+
+Fixed since, by `capability-name-precision`: the fallback for `url-navigation` now
+names the global (`window.location`) instead of the bare word, so this page's
+`const location = useLocation()` would no longer be reported, and the destructuring
+in the fixture is now a style choice rather than a workaround.
 
 ## Proof
 

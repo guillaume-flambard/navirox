@@ -52,6 +52,11 @@ the fact the platform holds.
 | A script with its own body    | code living in a document                                    | finding         |
 | Routing decided at runtime    | `pushState`, `replaceState`, `popstate`, `location.hash`     | finding         |
 
+This adapter also measured the shared scanner's word trap, where a bare `location`
+matched as a URL navigation. It is a finding here rather than a capability, so the
+trap never reached this fixture's numbers, and `capability-name-precision` has since
+narrowed the pattern to the global.
+
 On the mirror fixture: 6 units (all `utility`), 3 routes (`/`, `/about.html`,
 `/pages/team.html`), 6 capabilities (the Vue five plus `dom:unknown`), 2 findings
 (`vanilla-inline-script`, `vanilla-client-routing`), and no dependencies because the

@@ -101,6 +101,11 @@ adapters read a word that is genuinely the browser global in some files and a lo
 variable in others. That decision deserves its own change with its own fixtures
 rather than a quiet edit inside an adapter ticket.
 
+Fixed since, by `capability-name-precision`: the `url-navigation` fallback names the
+global now, so a local called `location` is no longer read as navigation and only
+`window.location` reaches the fallback. The precision its own change asked for is
+what that change wrote down.
+
 ## What was deliberately not done
 
 - No SSR or hydration reading (`@lit-labs/ssr`).

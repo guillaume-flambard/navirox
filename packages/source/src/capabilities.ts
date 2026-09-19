@@ -18,6 +18,14 @@ import type { CapabilityUsage } from '@navirox/graph'
  * Patterns for one capability are ordered. The first match on a line wins, and
  * the deliberately loose pattern sits last as a fallback, so `localStorage` alone
  * is reported as unknown rather than pretending the direction was read.
+ *
+ * A pattern whose platform spelling is a property of a global has to name that
+ * global, or it reads any identifier that shares the name. `location` is the case
+ * that proved it: a line binding a local called `location` from a framework's
+ * router hook was reported as browser navigation, twice per file, in projects that
+ * navigate nowhere. The fallback stays for the platform object, narrower than the
+ * name, because a report that says "nothing found" is only honest where nothing
+ * was looked for.
  */
 export interface CapabilityPattern {
   readonly capability: string
@@ -110,9 +118,14 @@ export const CAPABILITY_PATTERNS: readonly CapabilityPattern[] = [
   {
     capability: 'url-navigation',
     usage: 'write',
+    match: /\bwindow\s*\.\s*location\s*\.\s*(href|assign|replace)/,
+  },
+  {
+    capability: 'url-navigation',
+    usage: 'write',
     match: /\blocation\s*\.\s*(href|assign|replace)/,
   },
-  { capability: 'url-navigation', usage: 'unknown', match: /\blocation\b/ },
+  { capability: 'url-navigation', usage: 'unknown', match: /\bwindow\s*\.\s*location\b/ },
 
   { capability: 'network-state', usage: 'read', match: /\bnavigator\s*\.\s*(onLine|connection)\b/ },
 

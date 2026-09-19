@@ -62,6 +62,29 @@ describe('scanning source text', () => {
     ])
   })
 
+  it('does not report a local named like a browser global', () => {
+    const destructured = scanCapabilities('const { params } = useLocation()')
+    const bound = scanCapabilities('const location = useLocation()')
+
+    expect(destructured).toEqual([])
+    expect(bound).toEqual([])
+  })
+
+  it('still reports navigation through the window global', () => {
+    expect(scanCapabilities('window.location.href = "/next"')).toEqual([
+      { capability: 'url-navigation', usage: 'write', line: 1 },
+    ])
+    expect(scanCapabilities('location.assign("/next")')).toEqual([
+      { capability: 'url-navigation', usage: 'write', line: 1 },
+    ])
+  })
+
+  it('reports the global with no readable direction as unknown', () => {
+    expect(scanCapabilities('return window.location')).toEqual([
+      { capability: 'url-navigation', usage: 'unknown', line: 1 },
+    ])
+  })
+
   it('does not report DOM access for a line a specific capability explained', () => {
     const specific = scanCapabilities("window.localStorage.setItem('a', '1')")
     const generic = scanCapabilities('const node = document.querySelector("#app")')
