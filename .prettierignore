@@ -31,6 +31,14 @@ docs/repositioning/
 # regeneration.
 pilots/
 
+# And once more, for the file the migration wrote. The native pilot keeps the
+# store exactly as `copy-movable-unit` wrote it, and the evidence for that run
+# is that the file is byte identical to its source. Reformatting it would break
+# the property the evidence records, and re-running the migration would put the
+# difference back.
+examples/vue-pilot/src/stores/catalogue.ts
+examples/vue-pilot/.navirox/
+
 # And once more, for the negative fixture. It is invalid Vue on purpose: the
 # adapter has to report a component its parser rejects, and a parser that
 # prettier had already fixed would be a test of nothing. Prettier cannot parse

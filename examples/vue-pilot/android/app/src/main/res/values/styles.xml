@@ -1,0 +1,16 @@
+<resources>
+    <style name="AppTheme" parent="Theme.AppCompat.DayNight.NoActionBar">
+        <!-- Customize your theme here. -->
+        <item name="android:editTextBackground">@drawable/rn_edit_text_material</item>
+    </style>
+
+    <!--
+      The launch theme, carried by the activity that starts the app. It is
+      AppTheme plus a window background, and that background is the launch screen:
+      see values-v31/styles.xml, where Android 12's own splash screen API needs
+      the same two resources declared a second time.
+    -->
+    <style name="BootTheme" parent="AppTheme">
+        <item name="android:windowBackground">@drawable/bootsplash_screen</item>
+    </style>
+</resources>
