@@ -263,11 +263,11 @@ function rewriteManifest(path: string, names: IAppNames, targetDir: string): rea
   const workspaceRoot = findWorkspaceRoot()
   if (workspaceRoot === undefined) {
     warnings.push(
-      'The Navirox packages are not published yet. This app points at version 0.0.0, which will not install until they are, or until you replace those two entries with the path to a Navirox checkout.',
+      'The Navirox packages are not all published yet. This app points at version 0.0.0, which will not install until they are, or until you point those entries at packed tarballs or at the path to a Navirox checkout.',
     )
   } else {
     warnings.push(
-      'The Navirox packages are linked from your checkout instead of installed from a registry, because they are not published yet. Their own dependencies resolve from that checkout, so run `pnpm build` there once before `navirox dev`.',
+      'The Navirox packages are linked from your checkout instead of installed from a registry, because they are not all published yet. Their own dependencies resolve from that checkout, so run `pnpm build` there once before `navirox dev`.',
     )
   }
 

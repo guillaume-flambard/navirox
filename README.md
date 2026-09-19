@@ -18,18 +18,26 @@ applications into native mobile applications.**
 
 ## Status
 
-**Pre-alpha. Nothing here is published, and the product does not work end to
-end yet.**
+**Pre-alpha. The product does not work end to end yet, and a public `npm
+install` is not demonstrated: publication is partial.**
 
-The native path is real: a generated Vue app installs from published package
-artifacts, boots on both platforms, and drives a shared Detox journey that passes
-in CI. The source path, which is the part that makes Navirox framework-agnostic
-rather than a single-framework tool, is being built now.
+The native path is real: a generated Vue app installs from packed tarballs
+outside the workspace, boots on both platforms, and drives a shared Detox journey
+that passes in CI. The source path, which is the part that makes Navirox
+framework-agnostic rather than a single-framework tool, is being built now.
+
+Publication is not finished. The scaffolder and 26 of the 28 scoped packages
+resolve at `0.1.0`; `@memolabs-apps/cli`, `@memolabs-apps/source-lit` and
+`@memolabs-apps/source-solid` are not on the registry yet, so `npx navirox`
+against the public registry does not resolve. The validated pre-publication path
+is the tarball install that `scripts/e2e-scaffold.mjs` performs, which CI runs on
+every push. `docs/evidence/release-candidate-2026-09-19.md` records the exact
+registry state and the verification behind it.
 
 Two documents split the truth deliberately. `docs/repositioning/` defines where
 the product is going. `PLAN.md` remains the implementation evidence for the Vue
 and runtime path, and it stays valid as evidence even where it predates the
-repositioning.
+repositioning; its top note dates the statements that later work superseded.
 
 ## Why
 
@@ -83,16 +91,19 @@ Expo/EAS is an integration. None of them define Navirox's identity.
 Support is declared per source framework and per capability, never as a single
 marketing badge. The four levels are the ones the roadmap defines:
 
-| Level        | What it claims                                                              |
-| ------------ | --------------------------------------------------------------------------- |
-| Experimental | Detection exists. Nothing beyond detection is claimed.                      |
-| Preview      | Inspection and a migration plan are produced, with gaps reported honestly.  |
-| Supported    | A migrated application in that framework builds and runs on a target.       |
-| Production   | Supported, plus a release process and a compatibility record with evidence. |
+| Level        | What it claims                                                                                                                             |
+| ------------ | ------------------------------------------------------------------------------------------------------------------------------------------ |
+| Experimental | Detection, inspection and a generic migration plan exist, but no framework-specific migration transform and no migrated app built from it. |
+| Preview      | A partial migration exists for that framework: at least one transform produces code, with gaps reported honestly.                          |
+| Supported    | A migrated application in that framework builds and runs on a target.                                                                      |
+| Production   | Supported, plus a release process and a compatibility record with evidence.                                                                |
 
 **Twelve adapters are at Experimental.** Vue 3, Nuxt, Svelte, SvelteKit, Angular,
-React, Next, Astro, Solid, Qwik, Lit and vanilla HTML/CSS/JS are detected and inspected, and nothing beyond that is claimed: no
-migration transform exists, and plain Vue routes are not extracted. Nuxt reads the
+React, Next, Astro, Solid, Qwik, Lit and vanilla HTML/CSS/JS are detected,
+inspected, and planned for by one generic planner. Nothing converts a native view:
+the only migration transform that exists copies the units the planner classifies
+`shared` byte for byte, and there is no framework-specific transform yet. Plain Vue
+routes are not extracted either. Nuxt reads the
 application directory Nuxt 4 documents, the `definePageMeta` macro and the two halves of a
 component, and its data calls stay one shared capability rather than a model of their own.
 Qwik reads Qwik City's route conventions, including pathless groups and named layouts,
@@ -109,23 +120,26 @@ adapter that does not exist.
 
 | Source              | Detection   | Inspection  | Migration plan | Level           |
 | ------------------- | ----------- | ----------- | -------------- | --------------- |
-| Vue 3               | implemented | implemented | planned        | Experimental    |
-| Nuxt                | implemented | implemented | planned        | Experimental    |
-| Svelte              | implemented | implemented | planned        | Experimental    |
-| SvelteKit           | implemented | implemented | planned        | Experimental    |
-| Angular             | implemented | implemented | planned        | Experimental    |
-| React               | implemented | implemented | planned        | Experimental    |
-| Next                | implemented | implemented | planned        | Experimental    |
-| Astro               | implemented | implemented | planned        | Experimental    |
-| Solid               | implemented | implemented | planned        | Experimental    |
-| Qwik                | implemented | implemented | planned        | Experimental    |
-| Lit                 | implemented | implemented | planned        | Experimental    |
-| Vanilla HTML/CSS/JS | implemented | implemented | planned        | Experimental    |
+| Vue 3               | implemented | implemented | implemented    | Experimental    |
+| Nuxt                | implemented | implemented | implemented    | Experimental    |
+| Svelte              | implemented | implemented | implemented    | Experimental    |
+| SvelteKit           | implemented | implemented | implemented    | Experimental    |
+| Angular             | implemented | implemented | implemented    | Experimental    |
+| React               | implemented | implemented | implemented    | Experimental    |
+| Next                | implemented | implemented | implemented    | Experimental    |
+| Astro               | implemented | implemented | implemented    | Experimental    |
+| Solid               | implemented | implemented | implemented    | Experimental    |
+| Qwik                | implemented | implemented | implemented    | Experimental    |
+| Lit                 | implemented | implemented | implemented    | Experimental    |
+| Vanilla HTML/CSS/JS | implemented | implemented | implemented    | Experimental    |
 | React Router, Remix | planned     | planned     | planned        | Not yet claimed |
 
 What each adapter reports, and what it deliberately does not, is recorded in
 `docs/evidence/`: the Vue reading of the acceptance app and the cross-adapter
-gate that puts two frameworks through one pipeline.
+gate that puts two frameworks through one pipeline. The `Migration plan` column
+means the generic plan every adapter gets from the shared planner; it is not a
+per-framework transform. Framework-specific transforms are roadmap Stage E, and
+today the only transform is `copy-shared-unit`.
 
 ## Packages
 
@@ -167,8 +181,9 @@ back into the renderer is the failure mode this layout exists to prevent.
 `examples/vue-basic` is the acceptance app: a Vue SFC application that imports
 only `@memolabs-apps/*` and one line of Metro config. It is judged against the renderer
 and the preset, it carries the shared Detox journey, and it resolves this
-repository's code through `workspace:*` rather than a registry that has nothing
-to publish yet.
+repository's code through `workspace:*` rather than through the registry, which
+does not carry every package yet. The tarball path `scripts/e2e-scaffold.mjs`
+exercises is the one that stands in for a public install.
 
 ## Quickstart
 
@@ -208,10 +223,14 @@ EAS and OTA, camera, location and notifications, Nuxt migration, the
 compatibility registry UI, Vue DevTools, Tailwind, Reanimated, and Windows or
 Linux hosts for native builds.
 
-Two items that belong to the Vue path are recorded and deferred rather than
-forgotten: Fast Refresh for SFCs and stores, and the release process that tags
-`0.1.0` through changesets. Both sit in `PLAN.md` at the definition of done, and
-neither is claimed as done.
+Two items that belong to the Vue path have since landed. Fast Refresh ships for
+`<script setup>` SFCs: editing a component hot-updates it in place and the shared
+store keeps its state across that update. The boundary is the component, so a
+store-module edit, or a style-block-only change, still reloads the app whole.
+The release process also exists: `0.1.0` is tagged and the packages carry a
+changeset-generated changelog. Publication itself is partial, as the top of this
+file says, and `docs/evidence/release-candidate-2026-09-19.md` records what the
+release did and did not do.
 
 The ship backend deserves its own line, because it is where this plan knowingly
 departs from the blueprint. `navirox submit` will drive the raw Xcode and Gradle

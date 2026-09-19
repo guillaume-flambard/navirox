@@ -11,6 +11,18 @@
 > seam work and have since landed: **Fast Refresh / HMR for SFCs and stores**, and
 > the **release process** that tags `0.1.0` through changesets. Both carry their
 > measurements in §10, including what the release process did not do.
+>
+> **Current status (2026-09-19).** The release candidate is committed, tagged and
+> pushed: 28 scoped packages plus `create-navirox` are publishable at `0.1.0`, and
+> the packed tarballs install outside the workspace and boot on both platforms
+> (`docs/evidence/release-candidate-2026-09-19.md`, issue #15). Publication is
+> partial: `@memolabs-apps/cli`, `source-lit` and `source-solid` are still absent
+> from the registry, so a public `npm install` is not demonstrated end to end
+> (issue #17). Two statements below are kept as history and superseded: the §10
+> release note that "nothing is on npm and no tag exists outside this clone", and
+> the §19 HMR shorthand that a store edit hot-updates. The accurate boundary is
+> that a SFC edit hot-updates in place with store state intact, while a
+> store-module edit still full-reloads.
 
 ---
 
@@ -640,7 +652,7 @@ If E1–E4 fail (expected), **V1's ship backend is the raw native toolchain**, o
 - [x] Native primitives render: `view`, `text`, `pressable`, `text-input`, `scroll-view`, plus `Image`, `FlatList`
 - [x] `@memolabs-apps/native`: haptics + secure storage (both platforms)
 - [x] **iOS** and **Android** both run the canary
-- [x] Fast Refresh / HMR for SFC and stores
+- [x] Fast Refresh / HMR for SFCs, with store state surviving the update
   - Measured with the app running on the emulator, before and after. Before:
     a one-word edit in `App.vue` reached the device but the app reloaded whole,
     the counter going from `3` presses, `doubled: 6`, `recent: 1, 2, 3` to `0`,
@@ -718,6 +730,12 @@ If E1–E4 fail (expected), **V1's ship backend is the raw native toolchain**, o
     been seen running, because this work stayed local.
   - Not done, and not claimed anywhere: `changeset publish` was never run, so
     nothing is on npm and no tag exists outside this clone.
+  - **Superseded (2026-09-19):** the release was committed, tagged, pushed and
+    packed. 26 of the 29 publishable workspaces resolve on npm at `0.1.0`;
+    `@memolabs-apps/cli`, `source-lit` and `source-solid` are still unpublished,
+    so a public `npm install` is not demonstrated end to end. See
+    `docs/evidence/release-candidate-2026-09-19.md` and issue #17. The sentences
+    above are kept as the record of the state at the time.
 
 **Explicitly NOT in 0.1** (say so in the README): EAS, OTA, camera/location/notifications, Nuxt migration, compatibility registry *UI*, Vue DevTools, Tailwind, Reanimated, Windows/Linux host support for builds.
 
@@ -1019,7 +1037,7 @@ Vue (3.4/3.5/3.6) · React Native (`>=0.86` floor + latest) · `@symbiote-native
 | **Import boundary** | dep-cruiser + custom rule | app code has zero Symbiote imports; toolchain plane never imports Symbiote | ✅ |
 | Tooling | Node built-in runner | CLI / `*.test.mjs` against the shipped module format | ✅ |
 | E2E | Detox, iOS + Android | Real native build; **shared spec + shared `testID`s** (upstream's proven trick) | ✅ (1 journey/platform) |
-| HMR | Manual script + e2e assertion | SFC edit and store edit both hot-update | ✅ |
+| HMR | Manual script + e2e assertion | SFC edit hot-updates in place with store state intact; a store-module edit full-reloads | ✅ |
 | Compatibility | Generated CI matrix | Registry evidence | 0.3 |
 | Migration fixtures | Vitest | input repo → expected diff + expected TODOs | 0.4 |
 | Regression | Detox + Vitest | Every fixed bug gets a test | ongoing |

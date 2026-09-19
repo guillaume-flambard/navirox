@@ -32,6 +32,12 @@ what you get is the same tree the repository's own example is. The name you pass
 becomes the directory, the package name, the iOS target and the Android package
 id, so `my-app`, `MyApp` and `"my app"` all work and produce the same identifiers.
 
+Run from the public registry today, this step does scaffold, but `create-navirox`
+is published before the packages it points at: outside this repository the
+generated app's Navirox dependencies are written as `0.0.0`, and `pnpm install`
+will not resolve them. The setup that works before publication is the tarball
+install `scripts/e2e-scaffold.mjs` performs, described in the next section.
+
 ## 2. Check the machine before you build
 
 ```bash
@@ -71,15 +77,20 @@ when you want to exercise the interaction.
 
 ## Two things that will surprise you
 
-**An edit reloads the app.** Editing a `.vue` file or a store updates the bundle
-Metro serves, and the app reloads from scratch, which resets any state you had
-built up. Component-level Fast Refresh is not wired yet; `PLAN.md` records what it
-would take.
+**An edit usually hot-updates in place.** Editing a `.vue` single-file component
+hands the new component to Vue's HMR runtime, so the app keeps running and the
+shared Pinia store keeps its state. The boundary is the component: editing a store
+module, any other non-component module, or a style block on its own still reloads
+the whole app and resets that state. `PLAN.md` section 10 records the measured
+before and after, and `openspec/specs/vue-fast-refresh/spec.md` states the limits.
 
-**The Navirox packages are not published yet.** This is the one that costs you
-time if nobody says it, so here it is plainly. Until they are on a registry, an
-app gets them by being pointed at a checkout or at packed tarballs, and those
-three states behave differently:
+**Some Navirox packages are not on a registry yet.** This is the one that costs
+you time if nobody says it, so here it is plainly. The scaffolder and most
+`@memolabs-apps/*` packages resolve at `0.1.0`, but `@memolabs-apps/cli`,
+`@memolabs-apps/source-lit` and `@memolabs-apps/source-solid` are not on the
+public registry, so `npx navirox` does not resolve against it today. Until the set
+is complete, an app gets the packages by being pointed at a checkout or at packed
+tarballs, and those states behave differently:
 
 | State                      | Installs | Builds | Runs   |
 | -------------------------- | -------- | ------ | ------ |
@@ -95,6 +106,11 @@ is what CI runs on every push: it packs the publishable packages, scaffolds an
 app outside the workspace, points that app at the tarballs, installs, checks that
 every runtime package resolves to exactly one copy, then bundles and builds both
 platforms. Run it with `pnpm test:e2e` if you want to see the whole path.
+
+An app installed from tarballs still gets a `navirox` binary, because
+`@memolabs-apps/cli` lands in the app's own `node_modules`. `npx navirox doctor`
+and `npx navirox dev` resolve against that local copy, so steps 2 and 3 work in a
+tarball app even though the package is not on the public registry.
 
 ## When something fails
 
