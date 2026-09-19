@@ -39,16 +39,18 @@ export interface Transform {
 /**
  * The first transform, and deliberately the only one.
  *
- * It copies the units the plan classified as shared, byte for byte. Logic with no
- * platform capability use is the one thing that can move without any chance of
- * changing behaviour, and it exercises the whole machine: selection, output paths,
+ * It copies the units the plan classified as shared or portable, byte for byte.
+ * Those are the two classes the plan reserves for code that moves without a
+ * rewrite: logic with no platform capability use, and a state module the runtime
+ * seam gives a home. It exercises the whole machine: selection, output paths,
  * state, idempotence and rollback. A rewrite would have needed a proof this
  * repository does not have yet.
  */
-export const copySharedUnit: Transform = {
-  id: 'copy-shared-unit',
+export const copyMovableUnit: Transform = {
+  id: 'copy-movable-unit',
   family: 'generic',
-  applies: (context) => context.decision.classification === 'shared',
+  applies: (context) =>
+    context.decision.classification === 'shared' || context.decision.classification === 'portable',
   write: (context) => {
     const content = context.readText(context.unit.source.file)
 
@@ -66,4 +68,4 @@ export const copySharedUnit: Transform = {
   },
 }
 
-export const GENERIC_TRANSFORMS: readonly Transform[] = [copySharedUnit]
+export const GENERIC_TRANSFORMS: readonly Transform[] = [copyMovableUnit]

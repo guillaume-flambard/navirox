@@ -11,6 +11,7 @@ import {
   MigrationStateError,
   fingerprintOf,
   parseState,
+  renderMigration,
   runMigration,
   serializeState,
 } from './index'
@@ -21,7 +22,10 @@ function workspace(): { readonly root: string; readonly out: string } {
   return { root, out }
 }
 
-function fragment(units: AppGraphFragment['units']): AppGraph {
+function fragment(
+  units: AppGraphFragment['units'],
+  dependencies: AppGraphFragment['dependencies'] = [],
+): AppGraph {
   return {
     schemaVersion: APP_GRAPH_SCHEMA_VERSION,
     source: { adapterId: 'fixture', displayName: 'Fixture' },
@@ -31,7 +35,7 @@ function fragment(units: AppGraphFragment['units']): AppGraph {
     actions: [],
     data: [],
     capabilities: [],
-    dependencies: [],
+    dependencies,
     edges: [],
     findings: [],
   }
@@ -41,6 +45,13 @@ const logicUnit = {
   id: 'fixture:src/lib/money.ts:domain-module:default',
   kind: 'domain-module' as const,
   source: { file: 'src/lib/money.ts', adapterId: 'fixture' },
+  dependencies: [],
+}
+
+const stateUnit = {
+  id: 'fixture:src/stores/catalogue.ts:state-module:default',
+  kind: 'state-module' as const,
+  source: { file: 'src/stores/catalogue.ts', adapterId: 'fixture' },
   dependencies: [],
 }
 
@@ -68,7 +79,7 @@ describe('the migration state', () => {
       adapterId: 'fixture',
       outputRoot: '/out',
       units: {
-        'fixture:a': { fingerprint: 'abc', output: 'a.ts', transforms: ['copy-shared-unit'] },
+        'fixture:a': { fingerprint: 'abc', output: 'a.ts', transforms: ['copy-movable-unit'] },
       },
     }
 
@@ -114,6 +125,73 @@ describe('running a migration', () => {
     expect(readFileSync(join(out, 'src/lib/money.ts'), 'utf8')).toBe(content)
   })
 
+  it('copies a portable state module unchanged', () => {
+    const { root, out } = workspace()
+    const content = 'export const useCatalogue = () => 1\n'
+    const graph = fragment([stateUnit])
+    const report = runMigration({
+      graph,
+      plan: plan(graph),
+      adapterId: 'fixture',
+      sourceRoot: root,
+      outputRoot: out,
+      write: true,
+      readText: () => content,
+    })
+
+    expect(report.moved).toContain(stateUnit.id)
+    expect(readFileSync(join(out, 'src/stores/catalogue.ts'), 'utf8')).toBe(content)
+  })
+
+  it('reports the imports a moved unit did not carry', () => {
+    const { root, out } = workspace()
+    const store = [
+      "import { a } from '../lib/money'",
+      "import { b } from './helpers'",
+      "import { defineStore } from 'pinia'",
+      "import { fetch } from '@/api/products'",
+      '',
+    ].join('\n')
+    const graph = fragment([logicUnit, stateUnit], [{ id: 'fixture:pinia', name: 'pinia' }])
+    const report = runMigration({
+      graph,
+      plan: plan(graph),
+      adapterId: 'fixture',
+      sourceRoot: root,
+      outputRoot: out,
+      readText: (path) => {
+        if (path === 'src/stores/catalogue.ts') return store
+        if (path === 'src/lib/money.ts') return 'export const a = 1\n'
+        return undefined
+      },
+    })
+
+    expect(report.moved).toContain(stateUnit.id)
+    expect(report.unresolved.map((entry) => entry.specifier).sort()).toEqual([
+      './helpers',
+      '@/api/products',
+    ])
+    expect(report.unresolved.every((entry) => entry.file === 'src/stores/catalogue.ts')).toBe(true)
+  })
+
+  it('renders the unresolved imports in the human report', () => {
+    const { root, out } = workspace()
+    const graph = fragment([stateUnit])
+    const report = runMigration({
+      graph,
+      plan: plan(graph),
+      adapterId: 'fixture',
+      sourceRoot: root,
+      outputRoot: out,
+      readText: () => "import { x } from '@/api/products'\n",
+    })
+
+    const rendered = renderMigration(report)
+
+    expect(rendered).toContain('Unresolved imports (1)')
+    expect(rendered).toContain('@/api/products')
+  })
+
   it('does the work once: a second run at the same content is a no-op', () => {
     const { root, out } = workspace()
     const graph = fragment([logicUnit])
@@ -136,7 +214,7 @@ describe('running a migration', () => {
         [logicUnit.id]: {
           fingerprint: fingerprintOf('export const a = 1\n'),
           output: 'src/lib/money.ts',
-          transforms: ['copy-shared-unit'],
+          transforms: ['copy-movable-unit'],
         },
       },
     }
@@ -165,7 +243,7 @@ describe('running a migration', () => {
           [logicUnit.id]: {
             fingerprint: fingerprintOf('export const a = 1\n'),
             output: 'src/lib/money.ts',
-            transform: 'copy-shared-unit',
+            transform: 'copy-movable-unit',
           },
         },
       },

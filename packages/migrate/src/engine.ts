@@ -3,6 +3,12 @@ import { dirname, join, relative, resolve, sep } from 'node:path'
 import type { AppGraph, NodeId } from '@memolabs-apps/graph'
 import type { MigrationPlan } from '@memolabs-apps/planner'
 import {
+  importSpecifiers,
+  isRelativeSpecifier,
+  packageNameOf,
+  resolveRelativeSpecifier,
+} from './imports.js'
+import {
   MIGRATION_STATE_SCHEMA_VERSION,
   fingerprintOf,
   type MigrationState,
@@ -53,12 +59,26 @@ export interface SkippedUnit {
   readonly reason: string
 }
 
+/**
+ * An import a moved unit names that this run did not carry.
+ *
+ * A copy leaves the manual work behind it in the open rather than hiding it: the
+ * moved file is written, and this says what a person still has to do.
+ */
+export interface UnresolvedImport {
+  readonly unit: NodeId
+  readonly file: string
+  readonly specifier: string
+  readonly reason: string
+}
+
 export interface MigrationReport {
   readonly schemaVersion: number
   readonly dryRun: boolean
   readonly files: readonly PlannedWrite[]
   readonly moved: readonly NodeId[]
   readonly skipped: readonly SkippedUnit[]
+  readonly unresolved: readonly UnresolvedImport[]
   readonly restored: readonly string[]
   /** The state as it would be after this run, which the caller may persist. */
   readonly state: MigrationState
@@ -107,7 +127,11 @@ export function runMigration(options: MigrationOptions): MigrationReport {
   const files: PlannedWrite[] = []
   const moved: NodeId[] = []
   const skipped: SkippedUnit[] = []
+  const movedUnits = new Map<NodeId, { readonly file: string; readonly content: string }>()
   const units: Record<string, UnitMigrationState> = { ...previous }
+  const declaredDependencies = new Set(
+    options.graph.dependencies.map((dependency) => dependency.name),
+  )
   const writes: {
     readonly write: TransformWrite
     readonly target: string
@@ -181,6 +205,7 @@ export function runMigration(options: MigrationOptions): MigrationReport {
     }
 
     moved.push(unit.id)
+    movedUnits.set(unit.id, { file: unit.source.file, content })
     units[unit.id] = { fingerprint, output: firstOutput, transforms: ran }
   }
 
@@ -197,6 +222,7 @@ export function runMigration(options: MigrationOptions): MigrationReport {
     files,
     moved,
     skipped,
+    unresolved: collectUnresolved(movedUnits, declaredDependencies, options.readText),
     restored: [],
     state: nextState,
   }
@@ -247,6 +273,64 @@ export function runMigration(options: MigrationOptions): MigrationReport {
 
 /** Where the record lives, inside the output directory it describes. */
 export const STATE_FILE = '.navirox/migration.json'
+
+/**
+ * What the units this run moved still need.
+ *
+ * A relative specifier is carried when it resolves to another file this run moved.
+ * A bare specifier is carried when the project declares its package, because the
+ * manifest is what a native application installs. Everything else is manual work
+ * the report names rather than hides.
+ */
+function collectUnresolved(
+  movedUnits: ReadonlyMap<NodeId, { readonly file: string; readonly content: string }>,
+  declared: ReadonlySet<string>,
+  readText: (path: string) => string | undefined,
+): readonly UnresolvedImport[] {
+  const movedFiles = new Set([...movedUnits.values()].map((entry) => entry.file))
+  const unresolved: UnresolvedImport[] = []
+
+  for (const [unit, entry] of movedUnits) {
+    for (const specifier of importSpecifiers(entry.content)) {
+      if (isRelativeSpecifier(specifier)) {
+        const resolved = resolveRelativeSpecifier(
+          entry.file,
+          specifier,
+          (path) => readText(path) !== undefined,
+        )
+
+        if (resolved !== undefined && movedFiles.has(resolved)) {
+          continue
+        }
+
+        unresolved.push({
+          unit,
+          file: entry.file,
+          specifier,
+          reason:
+            resolved === undefined
+              ? 'the file it names could not be found in the project'
+              : 'the file it names was not moved by this run',
+        })
+
+        continue
+      }
+
+      if (declared.has(packageNameOf(specifier))) {
+        continue
+      }
+
+      unresolved.push({
+        unit,
+        file: entry.file,
+        specifier,
+        reason: 'it is not relative and the project does not declare it as a dependency',
+      })
+    }
+  }
+
+  return unresolved
+}
 
 function readIfPresent(path: string): string | undefined {
   try {

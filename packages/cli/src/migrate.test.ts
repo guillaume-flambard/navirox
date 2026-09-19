@@ -133,6 +133,52 @@ describe('running the migrate command', () => {
     expect(second.lines.join('\n')).toContain('already migrated')
   })
 
+  it('moves a state module and names the import it did not carry', async () => {
+    const root = project()
+    const out = join(root, 'mobile')
+    const io = capture()
+    const stateSource =
+      "import { fetchProducts } from '@/api/products'\nexport const useCatalogue = () => 1\n"
+
+    writeFileSync(join(root, 'catalogue.ts'), stateSource)
+
+    const stateAdapter: SourceAdapter = {
+      ...adapter(),
+      id: 'fake-state',
+      buildGraph: (): Promise<AppGraphFragment> =>
+        Promise.resolve({
+          routes: [],
+          screens: [],
+          units: [
+            {
+              id: 'fake-state:catalogue.ts:state-module:default',
+              kind: 'state-module',
+              source: { file: 'catalogue.ts', adapterId: 'fake-state' },
+              dependencies: [],
+            },
+          ],
+          actions: [],
+          data: [],
+          capabilities: [],
+          dependencies: [],
+          edges: [],
+          findings: [],
+        }),
+    }
+
+    const code = await runCli(['migrate', '--write', '--out', out], io.io, root, {
+      inspect: { registry: registryOf(stateAdapter) },
+    })
+
+    expect(code).toBe(0)
+    expect(existsSync(join(out, 'catalogue.ts'))).toBe(true)
+
+    const printed = io.lines.join('\n')
+
+    expect(printed).toContain('Unresolved imports (1)')
+    expect(printed).toContain('@/api/products')
+  })
+
   it('fails with a message when nothing can be inspected', async () => {
     const root = project()
     const io = capture()

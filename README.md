@@ -139,7 +139,8 @@ What each adapter reports, and what it deliberately does not, is recorded in
 gate that puts two frameworks through one pipeline. The `Migration plan` column
 means the generic plan every adapter gets from the shared planner; it is not a
 per-framework transform. Framework-specific transforms are roadmap Stage E, and
-today the only transform is `copy-shared-unit`.
+today the only transform is `copy-movable-unit`, which copies the units the plan
+classified `shared` or `portable` and reports the imports it did not carry.
 
 ## Packages
 

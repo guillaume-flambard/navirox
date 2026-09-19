@@ -29,6 +29,18 @@ export function renderMigration(report: MigrationReport): string {
   }
 
   lines.push('')
+  lines.push(`Unresolved imports (${report.unresolved.length})`)
+
+  if (report.unresolved.length === 0) {
+    lines.push('  nothing')
+  } else {
+    for (const entry of report.unresolved) {
+      lines.push(`  ${entry.file}`)
+      lines.push(`      ${entry.specifier}: ${entry.reason}`)
+    }
+  }
+
+  lines.push('')
   lines.push(`Not moved (${report.skipped.length})`)
 
   const groups = new Map<string, number>()
