@@ -6,7 +6,7 @@ import type {
   SourceDescriptor,
   SourceLocation,
   UnitKind,
-} from '@navirox/graph'
+} from '@memolabs-apps/graph'
 
 /**
  * The source adapter contract.

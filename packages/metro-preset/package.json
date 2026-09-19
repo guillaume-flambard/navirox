@@ -1,5 +1,5 @@
 {
-  "name": "@navirox/metro-preset",
+  "name": "@memolabs-apps/metro-preset",
   "version": "0.1.0",
   "description": "The Navirox Metro preset: the Vue SFC transform and the CSS parser, composed.",
   "license": "MIT",
@@ -25,7 +25,7 @@
     "clean": "rm -rf dist"
   },
   "dependencies": {
-    "@navirox/runtime-symbiote": "workspace:*"
+    "@memolabs-apps/runtime-symbiote": "workspace:*"
   },
   "devDependencies": {
     "@babel/core": "^7.25.2",

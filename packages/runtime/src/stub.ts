@@ -63,7 +63,7 @@ const stubComponent: NaviroxComponent = () => null
 /**
  * A runtime that renders nothing.
  *
- * It exists so `@navirox/ui`, `@navirox/native` and `@navirox/router` can be
+ * It exists so `@memolabs-apps/ui`, `@memolabs-apps/native` and `@memolabs-apps/router` can be
  * exercised against the seam with no Symbiote, no React Native and no simulator
  * present. It is a test double, not a product runtime.
  */

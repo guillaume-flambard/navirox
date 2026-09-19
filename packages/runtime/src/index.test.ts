@@ -3,9 +3,9 @@ import { assertNativeRuntime, createRuntime } from './create-runtime.js'
 import { PACKAGE_NAME, PACKAGE_ROLE } from './index.js'
 import { createStubRuntime } from './stub.js'
 
-describe('@navirox/runtime', () => {
+describe('@memolabs-apps/runtime', () => {
   it('has a stable package identity', () => {
-    expect(PACKAGE_NAME).toBe('@navirox/runtime')
+    expect(PACKAGE_NAME).toBe('@memolabs-apps/runtime')
     expect(PACKAGE_ROLE.length).toBeGreaterThan(0)
   })
 })

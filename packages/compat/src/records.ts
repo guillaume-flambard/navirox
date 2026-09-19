@@ -137,7 +137,7 @@ export const SEED_RECORDS: readonly CompatibilityRecord[] = [
     notes: 'The secure store behind the native facade.',
   },
   {
-    subject: { kind: 'package', name: '@navirox/runtime' },
+    subject: { kind: 'package', name: '@memolabs-apps/runtime' },
     status: 'not-applicable',
     evidence: [
       { level: 'unit-tested', source: 'packages/runtime, the contract test against the stub' },
@@ -145,7 +145,7 @@ export const SEED_RECORDS: readonly CompatibilityRecord[] = [
     notes: 'Native side. A project does not migrate it, it depends on it.',
   },
   {
-    subject: { kind: 'package', name: '@navirox/runtime-symbiote' },
+    subject: { kind: 'package', name: '@memolabs-apps/runtime-symbiote' },
     status: 'not-applicable',
     evidence: [
       {
@@ -156,25 +156,25 @@ export const SEED_RECORDS: readonly CompatibilityRecord[] = [
     notes: 'Native side, and the only package allowed to reach the renderer.',
   },
   {
-    subject: { kind: 'package', name: '@navirox/ui' },
+    subject: { kind: 'package', name: '@memolabs-apps/ui' },
     status: 'not-applicable',
     evidence: [{ level: 'unit-tested', source: 'packages/ui' }],
     notes: 'Native side: the component surface a migrated view is written against.',
   },
   {
-    subject: { kind: 'package', name: '@navirox/native' },
+    subject: { kind: 'package', name: '@memolabs-apps/native' },
     status: 'not-applicable',
     evidence: [{ level: 'unit-tested', source: 'packages/native' }],
     notes: 'Native side: the capability surface.',
   },
   {
-    subject: { kind: 'package', name: '@navirox/metro-preset' },
+    subject: { kind: 'package', name: '@memolabs-apps/metro-preset' },
     status: 'not-applicable',
     evidence: [{ level: 'integration-tested', source: 'examples/vue-basic/metro.config.js' }],
     notes: 'Build tooling on the target side.',
   },
   {
-    subject: { kind: 'package', name: '@navirox/router' },
+    subject: { kind: 'package', name: '@memolabs-apps/router' },
     status: 'not-applicable',
     evidence: [{ level: 'unit-tested', source: 'packages/router' }],
     notes: 'Native side: the routing surface a migrated screen uses.',

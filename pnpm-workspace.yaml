@@ -2,7 +2,7 @@
 #
 # `packages/*` are ours. `examples/*` are members too, and that is a deliberate
 # departure from the note this file used to carry: the examples consume
-# `@navirox/*` through `workspace:*`, because those packages are not published
+# `@memolabs-apps/*` through `workspace:*`, because those packages are not published
 # yet and a `workspace:` range is what makes an example resolve the code in this
 # repo rather than a registry that has nothing to give. Upstream SymbioteNative
 # can keep its examples standalone precisely because its packages ARE published.

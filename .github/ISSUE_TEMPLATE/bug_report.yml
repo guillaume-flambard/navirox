@@ -30,7 +30,7 @@ body:
     id: package
     attributes:
       label: Which package
-      description: For example @navirox/metro-preset, @navirox/runtime-symbiote, or navirox (CLI).
+      description: For example @memolabs-apps/metro-preset, @memolabs-apps/runtime-symbiote, or navirox (CLI).
     validations:
       required: false
   - type: input

@@ -15,7 +15,7 @@ case.
 
 ## What Changes
 
-- Add `@navirox/source-nuxt`: detection, filesystem routes from the pages
+- Add `@memolabs-apps/source-nuxt`: detection, filesystem routes from the pages
   directory, layout units, composable units, and findings for the directories and
   primitives it does not model (server routes, plugins, middleware, runtime
   config).

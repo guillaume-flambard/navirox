@@ -6,7 +6,7 @@ fixture. This change fixes the scan instead, which is where the failure lived.
 ## The question, and the answer
 
 The shared capability scan reports what a file does with the browser. It is shared
-on purpose: it lives in `@navirox/source`, it reads plain source text, and it is
+on purpose: it lives in `@memolabs-apps/source`, it reads plain source text, and it is
 what makes a Vue report and a Qwik report comparable at all. Its vocabulary is
 declared once and every adapter reads through it.
 
@@ -94,8 +94,8 @@ read.
 
 | Command                                          | Result                                     |
 | ------------------------------------------------ | ------------------------------------------ |
-| `pnpm --filter @navirox/source build`            | clean                                      |
-| `pnpm --filter @navirox/source test`             | 6 files, 42 tests (39 before, three added) |
+| `pnpm --filter @memolabs-apps/source build`            | clean                                      |
+| `pnpm --filter @memolabs-apps/source test`             | 6 files, 42 tests (39 before, three added) |
 | the three added tests                            | a local named like a global reports nothing, `window.location` still reports, the global without a direction is still `unknown` |
 | `pnpm build`                                     | 29 packages                                 |
 | `pnpm typecheck`                                 | 54 tasks                                    |

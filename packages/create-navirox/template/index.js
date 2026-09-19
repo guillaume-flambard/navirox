@@ -19,7 +19,7 @@
  * has. The alternative, a global, would tie the app to a single store instance
  * and break the moment two apps run in one process.
  */
-import { createSymbioteRuntime } from '@navirox/runtime-symbiote/bootstrap';
+import { createSymbioteRuntime } from '@memolabs-apps/runtime-symbiote/bootstrap';
 import { createPinia } from 'pinia';
 import App from './App';
 import { name as appName } from './app.json';

@@ -3,7 +3,7 @@
  *
  * A provider implements these; a façade consumes them through
  * `NativeRuntime.nativeModules`. They live in the seam rather than in
- * `@navirox/native` because both sides need them: the adapter that implements a
+ * `@memolabs-apps/native` because both sides need them: the adapter that implements a
  * module must not import the façade (that would point the dependency arrow back
  * up the stack), and the façade must not know which provider is underneath.
  *

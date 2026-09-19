@@ -1,11 +1,11 @@
-import { createStubRuntime } from '@navirox/runtime/stub'
+import { createStubRuntime } from '@memolabs-apps/runtime/stub'
 import { describe, expect, it } from 'vitest'
 import { createRouter } from './index.js'
 
 /**
  * The seam contract, which the plan calls Proof B.
  *
- * `@navirox/router` works against a runtime the seam itself supplies, and no
+ * `@memolabs-apps/router` works against a runtime the seam itself supplies, and no
  * navigation library is named in this file or in anything it imports. The stub is
  * a real implementation of the interface rather than a mock, which is what makes
  * this a contract instead of a rehearsal: if the router needed anything the

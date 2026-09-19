@@ -36,7 +36,7 @@ body:
       label: Constraints
       description: Two rules decide a lot of design here. Please confirm your proposal respects them.
       options:
-        - label: It does not require application code to import anything outside `@navirox/*`.
+        - label: It does not require application code to import anything outside `@memolabs-apps/*`.
           required: false
-        - label: It does not require a public `@navirox/*` package other than `runtime-symbiote` to touch Symbiote or React Native.
+        - label: It does not require a public `@memolabs-apps/*` package other than `runtime-symbiote` to touch Symbiote or React Native.
           required: false

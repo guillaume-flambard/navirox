@@ -1,4 +1,4 @@
-import { stripComments } from '@navirox/source'
+import { stripComments } from '@memolabs-apps/source'
 
 /**
  * A component is found by what a module exports, not by its extension or its

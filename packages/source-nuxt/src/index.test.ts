@@ -2,8 +2,12 @@ import { mkdtempSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { fileURLToPath } from 'node:url'
-import { SourceAdapterRegistry, createProjectFiles, verifyAdapterContract } from '@navirox/source'
-import { createVueAdapter } from '@navirox/source-vue'
+import {
+  SourceAdapterRegistry,
+  createProjectFiles,
+  verifyAdapterContract,
+} from '@memolabs-apps/source'
+import { createVueAdapter } from '@memolabs-apps/source-vue'
 import { describe, expect, it } from 'vitest'
 import { buildGraph, createNuxtAdapter, detect, pagePattern } from './index'
 

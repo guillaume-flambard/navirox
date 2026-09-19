@@ -1,7 +1,7 @@
 ## Context
 
-The repository has a working runtime seam: `@navirox/runtime` declares the
-contract, `@navirox/runtime-symbiote` is the only package that names the
+The repository has a working runtime seam: `@memolabs-apps/runtime` declares the
+contract, `@memolabs-apps/runtime-symbiote` is the only package that names the
 renderer, and `packages/runtime-symbiote/src/import-boundary.test.ts` fails on
 the commit that breaks the rule. That test is a static scan of
 `packages/*/src/**/*.ts` that strips comments, ignores `node_modules` and
@@ -46,19 +46,19 @@ intermediate representation designed before two adapters exist.
 
 ## Decisions
 
-### Two packages, `@navirox/graph` and `@navirox/source`
+### Two packages, `@memolabs-apps/graph` and `@memolabs-apps/source`
 
 The App Graph lives in its own package and the contract depends on it, so the
 direction is `source` depends on `graph`. Consumers that only read a graph
 (`inspect`, and later `compat` and a planner) then depend on `graph` without
 depending on the adapter SDK.
 
-Alternatives considered. Putting the graph inside `@navirox/source` would be one
+Alternatives considered. Putting the graph inside `@memolabs-apps/source` would be one
 package instead of two, but it forces every graph consumer to take a dependency
 on the adapter contract, and it makes the "no framework import" rule harder to
-state per package. Creating a single `@navirox/core` was rejected for the same
+state per package. Creating a single `@memolabs-apps/core` was rejected for the same
 reason the pack rejects a grand core: it grows into the universal intermediate
-representation nobody can keep honest. A separate `@navirox/planner` was
+representation nobody can keep honest. A separate `@memolabs-apps/planner` was
 considered and rejected for now, because there is no planner logic yet and an
 empty package is a promise rather than a boundary.
 
@@ -71,7 +71,7 @@ concept only when a second adapter needs it, or a migration or target decision
 consumes it, or a user-visible tool decision depends on it. Framework syntax
 stays in adapter owned metadata.
 
-### The boundary check lives in `@navirox/source`
+### The boundary check lives in `@memolabs-apps/source`
 
 The source plane's contract package owns the rule, the way the renderer's edge
 package owns its own rule. The check is a static scan, so it needs no framework

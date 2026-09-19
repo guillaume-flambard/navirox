@@ -1,9 +1,13 @@
-import { PACKAGE_NAME as SEAM_PACKAGE_NAME } from '@navirox/runtime'
-import type { NativeRuntime, NaviroxComponent, NavigationCapabilities } from '@navirox/runtime'
+import { PACKAGE_NAME as SEAM_PACKAGE_NAME } from '@memolabs-apps/runtime'
+import type {
+  NativeRuntime,
+  NaviroxComponent,
+  NavigationCapabilities,
+} from '@memolabs-apps/runtime'
 
 /** Canonical npm name of this package. Kept in code so the import
  *  boundary checks can assert against it without reading package.json. */
-export const PACKAGE_NAME = '@navirox/router'
+export const PACKAGE_NAME = '@memolabs-apps/router'
 
 /** One line describing this package's role in the Navirox stack. */
 export const PACKAGE_ROLE = 'File-based routing plus a generated, fully typed route manifest.'

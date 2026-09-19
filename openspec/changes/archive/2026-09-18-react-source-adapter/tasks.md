@@ -2,7 +2,7 @@
 
 - [x] 1.1 Create `packages/source-react` with the package conventions, a dependency
       on the two neutral packages, and the tsconfig references. Verify with
-      `pnpm --filter @navirox/source-react build`.
+      `pnpm --filter @memolabs-apps/source-react build`.
 - [x] 1.2 Implement detection with the native runtime refusal, and prove all three
       outcomes: a web project matches, a native project does not, and a project
       without React does not throw.

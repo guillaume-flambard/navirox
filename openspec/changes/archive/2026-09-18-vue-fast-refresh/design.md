@@ -1,6 +1,6 @@
 ## Context
 
-The Vue transform in this repository is upstream's, reached through `@navirox/runtime-symbiote`'s build facts: `withNavirox` sets `transformer.babelTransformerPath` to `@symbiote-native/vue/metro-vue-transformer`, and that transformer compiles the SFC and then re-labels the result as `<file>.vue.tsx` before handing it to React Native's own Babel transformer. Editing a component therefore produces a new module, but nothing tells the running application that only one component changed, so Metro falls through to its full reload path, the surface stops and re-mounts, the app is created again and the Pinia store is constructed again.
+The Vue transform in this repository is upstream's, reached through `@memolabs-apps/runtime-symbiote`'s build facts: `withNavirox` sets `transformer.babelTransformerPath` to `@symbiote-native/vue/metro-vue-transformer`, and that transformer compiles the SFC and then re-labels the result as `<file>.vue.tsx` before handing it to React Native's own Babel transformer. Editing a component therefore produces a new module, but nothing tells the running application that only one component changed, so Metro falls through to its full reload path, the surface stops and re-mounts, the app is created again and the Pinia store is constructed again.
 
 Facts measured before designing, all from source rather than memory:
 
@@ -17,7 +17,7 @@ Facts measured before designing, all from source rather than memory:
 **Goals:**
 
 - Editing a single file component updates the running application in place: no unmount, no store reconstruction, no full bundle reload.
-- The mechanism lives in `@navirox/metro-preset`, the package that already owns the Vue build integration, and is enabled from the application's Babel configuration.
+- The mechanism lives in `@memolabs-apps/metro-preset`, the package that already owns the Vue build integration, and is enabled from the application's Babel configuration.
 - The injected code is inert wherever Metro's hot runtime or Vue's development HMR runtime is absent, with no flag and no conditional in application code.
 - The behaviour is provable twice: a unit test on the transform, and the registration's presence in a real Metro bundle.
 
@@ -42,7 +42,7 @@ Facts measured before designing, all from source rather than memory:
 
 **Contract answers (AGENT-GUIDE section 12).** The shared contract is insufficient: no. `withNavirox` and `NaviroxMetroOptions` are untouched, and the new surface is one additional export from the same package. Which real integration demonstrated the need: the Vue build integration this repository already owns. Is adapter metadata enough: yes, the whole mechanism is build-side and no application API is added. Does the schema version change: not applicable, the App Graph and the runtime seam are untouched.
 
-**No changeset.** The only dependency added is a devDependency of `@navirox/metro-preset`, nothing published gains a runtime dependency, and every package stays at 0.0.0, consistent with the previous changes.
+**No changeset.** The only dependency added is a devDependency of `@memolabs-apps/metro-preset`, nothing published gains a runtime dependency, and every package stays at 0.0.0, consistent with the previous changes.
 
 ## Risks / Trade-offs
 

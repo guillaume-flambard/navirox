@@ -22,7 +22,7 @@ and one that quietly omits routes.
 
 ## What Changes
 
-A new adapter package, `@navirox/source-qwik`, the tenth source adapter and the
+A new adapter package, `@memolabs-apps/source-qwik`, the tenth source adapter and the
 first one for Qwik. It reads:
 
 - detection from the manifest, with the native runtime refusal every JSX adapter
@@ -58,8 +58,8 @@ None.
 
 ## Impact
 
-- New package `packages/source-qwik`, depending on `@navirox/graph`,
-  `@navirox/source` and `@navirox/source-react` (for the native declaration
+- New package `packages/source-qwik`, depending on `@memolabs-apps/graph`,
+  `@memolabs-apps/source` and `@memolabs-apps/source-react` (for the native declaration
   refusal, as Next and Astro already do).
 - `packages/cli`: one line in the composition root and one dependency, which
   brings the registry to ten adapters, plus a Solid-shaped block in the gate.

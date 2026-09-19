@@ -13,7 +13,7 @@ always accompanied by the reason it was chosen and the evidence behind it, and
 
 ## What Changes
 
-- Add `@navirox/planner`: the decision model, the rule engine, and the first
+- Add `@memolabs-apps/planner`: the decision model, the rule engine, and the first
   generic rules drawn from the App Graph.
 - Every decision carries a classification from the closed set, a confidence, at
   least one reason and at least one piece of evidence. There is no class without

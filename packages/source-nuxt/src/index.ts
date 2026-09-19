@@ -1,8 +1,8 @@
-import type { SourceAdapter } from '@navirox/source'
+import type { SourceAdapter } from '@memolabs-apps/source'
 import { ADAPTER_ID, COMPOSES, DISPLAY_NAME, FRAMEWORK, TESTED_VERSIONS, detect } from './detect.js'
 import { buildGraph, inspect } from './inspect.js'
 
-export const PACKAGE_NAME = '@navirox/source-nuxt'
+export const PACKAGE_NAME = '@memolabs-apps/source-nuxt'
 
 export const PACKAGE_ROLE =
   'The Nuxt source adapter: detection, filesystem routes, layouts and composables, on top of the Vue adapter.'

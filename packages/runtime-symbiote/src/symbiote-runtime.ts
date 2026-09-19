@@ -1,11 +1,11 @@
-import { RUNTIME_INJECTION_KEY } from '@navirox/runtime'
+import { RUNTIME_INJECTION_KEY } from '@memolabs-apps/runtime'
 import type {
   MountOptions,
   NativeRuntime,
   NaviroxComponent,
   Platform,
   RuntimeHandle,
-} from '@navirox/runtime'
+} from '@memolabs-apps/runtime'
 import {
   DEFAULT_PLATFORMS,
   hostComponentsFrom,
@@ -25,7 +25,7 @@ export const DEFAULT_APP_KEY = 'NaviroxRoot'
  * `config.errorHandler` and still catch its own first render.
  *
  * Deliberately typed `unknown`: the seam must not put a renderer's app type into a
- * `@navirox/*` signature, or the engine stops being swappable.
+ * `@memolabs-apps/*` signature, or the engine stops being swappable.
  */
 export type ConfigureApp = (app: unknown) => void
 
@@ -85,7 +85,7 @@ export interface SymbioteRuntimeOptions {
   /** Sets the app configurator for the next mount. This is the Pinia seam. */
   readonly configure?: ConfigureApp
   /**
-   * Present so this factory satisfies `RuntimeFactory` from `@navirox/runtime`.
+   * Present so this factory satisfies `RuntimeFactory` from `@memolabs-apps/runtime`.
    * `appKey` and `modules` are read from here when the named options are absent.
    */
   readonly config?: Readonly<Record<string, unknown>>
@@ -94,7 +94,7 @@ export interface SymbioteRuntimeOptions {
 /**
  * The Symbiote-backed runtime, built from an injected renderer host.
  *
- * Every other Navirox package talks to the seam in `@navirox/runtime`, so a
+ * Every other Navirox package talks to the seam in `@memolabs-apps/runtime`, so a
  * Symbiote major bump (there were two in three months) cannot break the toolchain,
  * the router or the component surface.
  */

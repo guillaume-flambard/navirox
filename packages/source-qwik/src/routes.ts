@@ -1,5 +1,5 @@
-import type { SourceLocation } from '@navirox/graph'
-import type { DiscoveredRoute } from '@navirox/source'
+import type { SourceLocation } from '@memolabs-apps/graph'
+import type { DiscoveredRoute } from '@memolabs-apps/source'
 import { ADAPTER_ID } from './detect.js'
 
 /**

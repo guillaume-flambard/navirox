@@ -15,7 +15,7 @@ The five adapters now ask one neutral predicate. A test file, a configuration fi
 an entry point and a declaration file are not application logic, and each exclusion
 is a statement: a test is not shipped, configuration describes the build, an entry
 point wires, a declaration file has no behaviour. The predicate lives in
-`@navirox/source` because two copies of that question would eventually disagree
+`@memolabs-apps/source` because two copies of that question would eventually disagree
 about the same file, and the disagreement would look like a framework difference.
 
 ## The plan on a real project, after

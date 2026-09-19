@@ -1,5 +1,5 @@
 {
-  "name": "@navirox/native",
+  "name": "@memolabs-apps/native",
   "version": "0.1.0",
   "description": "Vue-first native API surface (haptics, storage, camera, location) over a pluggable provider.",
   "license": "MIT",
@@ -25,7 +25,7 @@
     "clean": "rm -rf dist"
   },
   "dependencies": {
-    "@navirox/runtime": "workspace:*"
+    "@memolabs-apps/runtime": "workspace:*"
   },
   "peerDependencies": {
     "vue": ">=3.5.0"

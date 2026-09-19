@@ -1,9 +1,9 @@
 import { existsSync, mkdtempSync, readFileSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
-import type { AppGraph, AppGraphFragment } from '@navirox/graph'
-import { APP_GRAPH_SCHEMA_VERSION } from '@navirox/graph'
-import { plan } from '@navirox/planner'
+import type { AppGraph, AppGraphFragment } from '@memolabs-apps/graph'
+import { APP_GRAPH_SCHEMA_VERSION } from '@memolabs-apps/graph'
+import { plan } from '@memolabs-apps/planner'
 import { describe, expect, it } from 'vitest'
 import {
   GENERIC_TRANSFORMS,

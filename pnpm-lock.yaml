@@ -46,16 +46,16 @@ importers:
 
   examples/vue-basic:
     dependencies:
-      '@navirox/metro-preset':
+      '@memolabs-apps/metro-preset':
         specifier: workspace:*
         version: link:../../packages/metro-preset
-      '@navirox/native':
+      '@memolabs-apps/native':
         specifier: workspace:*
         version: link:../../packages/native
-      '@navirox/runtime-symbiote':
+      '@memolabs-apps/runtime-symbiote':
         specifier: workspace:*
         version: link:../../packages/runtime-symbiote
-      '@navirox/ui':
+      '@memolabs-apps/ui':
         specifier: workspace:*
         version: link:../../packages/ui
       '@symbiote-native/css-parser':
@@ -197,58 +197,58 @@ importers:
 
   packages/cli:
     dependencies:
-      '@navirox/compat':
+      '@memolabs-apps/compat':
         specifier: workspace:*
         version: link:../compat
-      '@navirox/doctor':
+      '@memolabs-apps/doctor':
         specifier: workspace:*
         version: link:../doctor
-      '@navirox/inspect':
+      '@memolabs-apps/inspect':
         specifier: workspace:*
         version: link:../inspect
-      '@navirox/migrate':
+      '@memolabs-apps/migrate':
         specifier: workspace:*
         version: link:../migrate
-      '@navirox/planner':
+      '@memolabs-apps/planner':
         specifier: workspace:*
         version: link:../planner
-      '@navirox/source':
+      '@memolabs-apps/source':
         specifier: workspace:*
         version: link:../source
-      '@navirox/source-angular':
+      '@memolabs-apps/source-angular':
         specifier: workspace:*
         version: link:../source-angular
-      '@navirox/source-astro':
+      '@memolabs-apps/source-astro':
         specifier: workspace:*
         version: link:../source-astro
-      '@navirox/source-lit':
+      '@memolabs-apps/source-lit':
         specifier: workspace:*
         version: link:../source-lit
-      '@navirox/source-next':
+      '@memolabs-apps/source-next':
         specifier: workspace:*
         version: link:../source-next
-      '@navirox/source-nuxt':
+      '@memolabs-apps/source-nuxt':
         specifier: workspace:*
         version: link:../source-nuxt
-      '@navirox/source-qwik':
+      '@memolabs-apps/source-qwik':
         specifier: workspace:*
         version: link:../source-qwik
-      '@navirox/source-react':
+      '@memolabs-apps/source-react':
         specifier: workspace:*
         version: link:../source-react
-      '@navirox/source-solid':
+      '@memolabs-apps/source-solid':
         specifier: workspace:*
         version: link:../source-solid
-      '@navirox/source-svelte':
+      '@memolabs-apps/source-svelte':
         specifier: workspace:*
         version: link:../source-svelte
-      '@navirox/source-sveltekit':
+      '@memolabs-apps/source-sveltekit':
         specifier: workspace:*
         version: link:../source-sveltekit
-      '@navirox/source-vanilla':
+      '@memolabs-apps/source-vanilla':
         specifier: workspace:*
         version: link:../source-vanilla
-      '@navirox/source-vue':
+      '@memolabs-apps/source-vue':
         specifier: workspace:*
         version: link:../source-vue
     devDependencies:
@@ -324,10 +324,10 @@ importers:
 
   packages/inspect:
     dependencies:
-      '@navirox/graph':
+      '@memolabs-apps/graph':
         specifier: workspace:*
         version: link:../graph
-      '@navirox/source':
+      '@memolabs-apps/source':
         specifier: workspace:*
         version: link:../source
     devDependencies:
@@ -343,7 +343,7 @@ importers:
 
   packages/metro-preset:
     dependencies:
-      '@navirox/runtime-symbiote':
+      '@memolabs-apps/runtime-symbiote':
         specifier: workspace:*
         version: link:../runtime-symbiote
     devDependencies:
@@ -362,10 +362,10 @@ importers:
 
   packages/migrate:
     dependencies:
-      '@navirox/graph':
+      '@memolabs-apps/graph':
         specifier: workspace:*
         version: link:../graph
-      '@navirox/planner':
+      '@memolabs-apps/planner':
         specifier: workspace:*
         version: link:../planner
     devDependencies:
@@ -381,7 +381,7 @@ importers:
 
   packages/native:
     dependencies:
-      '@navirox/runtime':
+      '@memolabs-apps/runtime':
         specifier: workspace:*
         version: link:../runtime
     devDependencies:
@@ -400,10 +400,10 @@ importers:
 
   packages/planner:
     dependencies:
-      '@navirox/compat':
+      '@memolabs-apps/compat':
         specifier: workspace:*
         version: link:../compat
-      '@navirox/graph':
+      '@memolabs-apps/graph':
         specifier: workspace:*
         version: link:../graph
     devDependencies:
@@ -419,7 +419,7 @@ importers:
 
   packages/router:
     dependencies:
-      '@navirox/runtime':
+      '@memolabs-apps/runtime':
         specifier: workspace:*
         version: link:../runtime
     devDependencies:
@@ -451,7 +451,7 @@ importers:
 
   packages/runtime-symbiote:
     dependencies:
-      '@navirox/runtime':
+      '@memolabs-apps/runtime':
         specifier: workspace:*
         version: link:../runtime
       '@symbiote-native/components':
@@ -491,7 +491,7 @@ importers:
 
   packages/source:
     dependencies:
-      '@navirox/graph':
+      '@memolabs-apps/graph':
         specifier: workspace:*
         version: link:../graph
     devDependencies:
@@ -507,10 +507,10 @@ importers:
 
   packages/source-angular:
     dependencies:
-      '@navirox/graph':
+      '@memolabs-apps/graph':
         specifier: workspace:*
         version: link:../graph
-      '@navirox/source':
+      '@memolabs-apps/source':
         specifier: workspace:*
         version: link:../source
     devDependencies:
@@ -526,19 +526,19 @@ importers:
 
   packages/source-astro:
     dependencies:
-      '@navirox/graph':
+      '@memolabs-apps/graph':
         specifier: workspace:*
         version: link:../graph
-      '@navirox/source':
+      '@memolabs-apps/source':
         specifier: workspace:*
         version: link:../source
-      '@navirox/source-react':
+      '@memolabs-apps/source-react':
         specifier: workspace:*
         version: link:../source-react
-      '@navirox/source-svelte':
+      '@memolabs-apps/source-svelte':
         specifier: workspace:*
         version: link:../source-svelte
-      '@navirox/source-vue':
+      '@memolabs-apps/source-vue':
         specifier: workspace:*
         version: link:../source-vue
     devDependencies:
@@ -554,13 +554,13 @@ importers:
 
   packages/source-lit:
     dependencies:
-      '@navirox/graph':
+      '@memolabs-apps/graph':
         specifier: workspace:*
         version: link:../graph
-      '@navirox/source':
+      '@memolabs-apps/source':
         specifier: workspace:*
         version: link:../source
-      '@navirox/source-react':
+      '@memolabs-apps/source-react':
         specifier: workspace:*
         version: link:../source-react
     devDependencies:
@@ -576,13 +576,13 @@ importers:
 
   packages/source-next:
     dependencies:
-      '@navirox/graph':
+      '@memolabs-apps/graph':
         specifier: workspace:*
         version: link:../graph
-      '@navirox/source':
+      '@memolabs-apps/source':
         specifier: workspace:*
         version: link:../source
-      '@navirox/source-react':
+      '@memolabs-apps/source-react':
         specifier: workspace:*
         version: link:../source-react
     devDependencies:
@@ -598,13 +598,13 @@ importers:
 
   packages/source-nuxt:
     dependencies:
-      '@navirox/graph':
+      '@memolabs-apps/graph':
         specifier: workspace:*
         version: link:../graph
-      '@navirox/source':
+      '@memolabs-apps/source':
         specifier: workspace:*
         version: link:../source
-      '@navirox/source-vue':
+      '@memolabs-apps/source-vue':
         specifier: workspace:*
         version: link:../source-vue
     devDependencies:
@@ -620,13 +620,13 @@ importers:
 
   packages/source-qwik:
     dependencies:
-      '@navirox/graph':
+      '@memolabs-apps/graph':
         specifier: workspace:*
         version: link:../graph
-      '@navirox/source':
+      '@memolabs-apps/source':
         specifier: workspace:*
         version: link:../source
-      '@navirox/source-react':
+      '@memolabs-apps/source-react':
         specifier: workspace:*
         version: link:../source-react
     devDependencies:
@@ -642,10 +642,10 @@ importers:
 
   packages/source-react:
     dependencies:
-      '@navirox/graph':
+      '@memolabs-apps/graph':
         specifier: workspace:*
         version: link:../graph
-      '@navirox/source':
+      '@memolabs-apps/source':
         specifier: workspace:*
         version: link:../source
     devDependencies:
@@ -661,13 +661,13 @@ importers:
 
   packages/source-solid:
     dependencies:
-      '@navirox/graph':
+      '@memolabs-apps/graph':
         specifier: workspace:*
         version: link:../graph
-      '@navirox/source':
+      '@memolabs-apps/source':
         specifier: workspace:*
         version: link:../source
-      '@navirox/source-react':
+      '@memolabs-apps/source-react':
         specifier: workspace:*
         version: link:../source-react
     devDependencies:
@@ -683,10 +683,10 @@ importers:
 
   packages/source-svelte:
     dependencies:
-      '@navirox/graph':
+      '@memolabs-apps/graph':
         specifier: workspace:*
         version: link:../graph
-      '@navirox/source':
+      '@memolabs-apps/source':
         specifier: workspace:*
         version: link:../source
     devDependencies:
@@ -702,13 +702,13 @@ importers:
 
   packages/source-sveltekit:
     dependencies:
-      '@navirox/graph':
+      '@memolabs-apps/graph':
         specifier: workspace:*
         version: link:../graph
-      '@navirox/source':
+      '@memolabs-apps/source':
         specifier: workspace:*
         version: link:../source
-      '@navirox/source-svelte':
+      '@memolabs-apps/source-svelte':
         specifier: workspace:*
         version: link:../source-svelte
     devDependencies:
@@ -724,13 +724,13 @@ importers:
 
   packages/source-vanilla:
     dependencies:
-      '@navirox/graph':
+      '@memolabs-apps/graph':
         specifier: workspace:*
         version: link:../graph
-      '@navirox/source':
+      '@memolabs-apps/source':
         specifier: workspace:*
         version: link:../source
-      '@navirox/source-react':
+      '@memolabs-apps/source-react':
         specifier: workspace:*
         version: link:../source-react
     devDependencies:
@@ -746,10 +746,10 @@ importers:
 
   packages/source-vue:
     dependencies:
-      '@navirox/graph':
+      '@memolabs-apps/graph':
         specifier: workspace:*
         version: link:../graph
-      '@navirox/source':
+      '@memolabs-apps/source':
         specifier: workspace:*
         version: link:../source
       '@vue/compiler-sfc':
@@ -768,7 +768,7 @@ importers:
 
   packages/ui:
     dependencies:
-      '@navirox/runtime':
+      '@memolabs-apps/runtime':
         specifier: workspace:*
         version: link:../runtime
     devDependencies:

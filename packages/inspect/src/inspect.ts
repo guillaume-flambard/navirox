@@ -1,7 +1,7 @@
-import type { AppGraph, FindingSeverity } from '@navirox/graph'
-import { APP_GRAPH_SCHEMA_VERSION } from '@navirox/graph'
-import type { InspectContext, SourceAdapterRegistry } from '@navirox/source'
-import { createProjectFiles } from '@navirox/source'
+import type { AppGraph, FindingSeverity } from '@memolabs-apps/graph'
+import { APP_GRAPH_SCHEMA_VERSION } from '@memolabs-apps/graph'
+import type { InspectContext, SourceAdapterRegistry } from '@memolabs-apps/source'
+import { createProjectFiles } from '@memolabs-apps/source'
 import {
   INSPECT_REPORT_SCHEMA_VERSION,
   type InspectFailureReason,

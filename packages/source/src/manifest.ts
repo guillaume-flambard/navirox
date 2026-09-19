@@ -1,4 +1,4 @@
-import type { SourceLocation } from '@navirox/graph'
+import type { SourceLocation } from '@memolabs-apps/graph'
 
 /**
  * A parsed manifest, with where it was read from.

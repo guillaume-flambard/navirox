@@ -7,15 +7,15 @@ import {
   type HapticsModule,
   type NativeRuntime,
   type SecureStoreModule,
-} from '@navirox/runtime'
-import { createStubRuntime } from '@navirox/runtime/stub'
+} from '@memolabs-apps/runtime'
+import { createStubRuntime } from '@memolabs-apps/runtime/stub'
 import { describe, expect, it } from 'vitest'
 import { createNativeApi, useHaptics, useSecureStore } from './index.js'
 
 /**
  * The seam contract, which the plan calls Proof B.
  *
- * `@navirox/native` works against a runtime the seam itself supplies, and no
+ * `@memolabs-apps/native` works against a runtime the seam itself supplies, and no
  * provider is named in this file or in anything it imports. The stub is a real
  * implementation of the interface rather than a mock, which is what makes this a
  * contract instead of a rehearsal: if the facade needed anything the interface

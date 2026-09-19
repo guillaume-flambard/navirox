@@ -1,10 +1,10 @@
 ## 1. Add the Solid adapter
 
-- [x] 1.1 Create `packages/source-solid` (`@navirox/source-solid`, version `0.1.0`,
-      dependencies `@navirox/graph`, `@navirox/source` and `@navirox/source-react` as
+- [x] 1.1 Create `packages/source-solid` (`@memolabs-apps/source-solid`, version `0.1.0`,
+      dependencies `@memolabs-apps/graph`, `@memolabs-apps/source` and `@memolabs-apps/source-react` as
       `workspace:*`, the repository package conventions, and a `tsconfig.json` referencing
       those three). Verify with `corepack pnpm install` and
-      `corepack pnpm --filter @navirox/source-solid build`.
+      `corepack pnpm --filter @memolabs-apps/source-solid build`.
 - [x] 1.2 Write detection: one high confidence candidate when the manifest declares
       `solid-js`, evidence naming the manifest field, and no candidate when the manifest
       declares a native runtime or no Solid at all. Verify against three fixtures: a Solid
@@ -40,7 +40,7 @@
 ## 3. Extend the gate
 
 - [x] 3.1 Register the adapter in `SOURCE_ADAPTER_PACKAGES` in `packages/cli/src/cli.ts` and
-      add `@navirox/source-solid` as `workspace:*` to `packages/cli/package.json`. Verify the
+      add `@memolabs-apps/source-solid` as `workspace:*` to `packages/cli/package.json`. Verify the
       registry lists nine adapters in alphabetical order, with `solid` between `sveltekit`
       and `vue`.
 - [x] 3.2 Add a Solid block to `packages/cli/src/adapters.test.ts` comparing the Solid report

@@ -35,7 +35,7 @@ on, and none names an expectation:
 - `@symbiote-native/css-parser` is `supported-with-adapter` and cites the Metro
   preset it is reached through, because it is a build time parser rather than a
   runtime shim.
-- The `@navirox/*` packages are `not-applicable`: they are the native side, and a
+- The `@memolabs-apps/*` packages are `not-applicable`: they are the native side, and a
   project depends on them rather than migrating them.
 
 ## What the model refuses

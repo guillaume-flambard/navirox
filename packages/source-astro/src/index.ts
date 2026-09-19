@@ -1,10 +1,10 @@
-import type { SourceAdapter } from '@navirox/source'
+import type { SourceAdapter } from '@memolabs-apps/source'
 
 import { ADAPTER_ID, COMPOSES, DISPLAY_NAME, FRAMEWORK, TESTED_VERSIONS, detect } from './detect.js'
 import { buildGraph } from './graph.js'
 import { inspect } from './inspect.js'
 
-export const PACKAGE_NAME = '@navirox/source-astro'
+export const PACKAGE_NAME = '@memolabs-apps/source-astro'
 export const PACKAGE_ROLE =
   'The Astro source adapter: pages, islands, and the framework components it hands to the adapters that read them.'
 

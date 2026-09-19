@@ -99,7 +99,7 @@ export interface RuntimeCapabilities {
 }
 
 /**
- * The only contract `@navirox/runtime-symbiote` has to satisfy.
+ * The only contract `@memolabs-apps/runtime-symbiote` has to satisfy.
  *
  * Deliberately small. Every member is something a *different* renderer could
  * plausibly supply. If this interface ever grows toward Symbiote's full API it

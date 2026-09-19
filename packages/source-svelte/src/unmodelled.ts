@@ -1,4 +1,4 @@
-import { stripComments } from '@navirox/source'
+import { stripComments } from '@memolabs-apps/source'
 
 /**
  * Svelte constructs this adapter recognizes and does not model.

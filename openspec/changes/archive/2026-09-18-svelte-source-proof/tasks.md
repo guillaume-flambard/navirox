@@ -3,23 +3,23 @@
 - [x] 1.1 Move the capability scan from `packages/source-vue/src/capabilities.ts`
       into `packages/source/src/capabilities.ts` unchanged in behaviour, and
       export it from the neutral package. Verify with
-      `pnpm --filter @navirox/source build` and the existing Vue adapter tests,
+      `pnpm --filter @memolabs-apps/source build` and the existing Vue adapter tests,
       which must still pass without edits to their assertions.
 - [x] 1.2 Have the Vue adapter import the scan from the neutral package and keep
       re-exporting it, so nothing that used it changes. Verify with
-      `pnpm --filter @navirox/source-vue test`.
+      `pnpm --filter @memolabs-apps/source-vue test`.
 - [x] 1.3 Add a test in the neutral package that pins the scan's vocabulary: the
       declared capability names, the usage kinds, and the rule that a capabibility
       used without a direction is unknown. Verify with
-      `pnpm --filter @navirox/source test`.
+      `pnpm --filter @memolabs-apps/source test`.
 - [x] 1.4 Confirm the framework boundary check still reports no violation after a
-      second adapter exists. Verify with `pnpm --filter @navirox/source test`.
+      second adapter exists. Verify with `pnpm --filter @memolabs-apps/source test`.
 
 ## 2. Add the Svelte adapter
 
 - [x] 2.1 Create `packages/source-svelte` with the package conventions, a
-      dependency on `@navirox/graph` and `@navirox/source`, and the two tsconfig
-      references. Verify with `pnpm --filter @navirox/source-svelte build`.
+      dependency on `@memolabs-apps/graph` and `@memolabs-apps/source`, and the two tsconfig
+      references. Verify with `pnpm --filter @memolabs-apps/source-svelte build`.
 - [x] 2.2 Implement detection over the manifest, with evidence naming the file
       and the field, and no throw on a missing or malformed manifest. Verify with
       a fixture project and an empty directory.
@@ -47,7 +47,7 @@
 
 - [x] 3.1 Create `packages/source-sveltekit`, depending on the two neutral
       packages and nothing else, declaring that it composes the Svelte adapter.
-      Verify with `pnpm --filter @navirox/source-sveltekit build`.
+      Verify with `pnpm --filter @memolabs-apps/source-sveltekit build`.
 - [x] 3.2 Implement detection over the SvelteKit manifest entry. Verify with a
       SvelteKit fixture and with a plain Svelte project, which must not match.
 - [x] 3.3 Implement route extraction from page files: root path, nested path,
@@ -64,11 +64,11 @@
 ## 4. Run the gate
 
 - [x] 4.1 Register both new adapters at the composition root in
-      `packages/cli/src/cli.ts`. Verify with `pnpm --filter @navirox/cli test`.
+      `packages/cli/src/cli.ts`. Verify with `pnpm --filter @memolabs-apps/cli test`.
 - [x] 4.2 Write the comparison test: both fixtures through one pipeline, the same
       unit kinds, the same capabilities with the same usage kinds, every node
       kind drawn from the shared schema, and no adapter specific concept. Verify
-      with `pnpm --filter @navirox/cli test`.
+      with `pnpm --filter @memolabs-apps/cli test`.
 - [x] 4.3 Make the comparison's assertions fail on purpose once, by breaking one
       fixture, and confirm the test reports the divergence rather than passing.
 - [x] 4.4 Declare package fixtures as `inputs` on the `test` task in

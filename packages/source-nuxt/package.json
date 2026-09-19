@@ -1,5 +1,5 @@
 {
-  "name": "@navirox/source-nuxt",
+  "name": "@memolabs-apps/source-nuxt",
   "version": "0.1.0",
   "description": "The Nuxt source adapter: detection, filesystem routes, layouts and composables, on top of the Vue adapter.",
   "license": "MIT",
@@ -25,9 +25,9 @@
     "clean": "rm -rf dist"
   },
   "dependencies": {
-    "@navirox/graph": "workspace:*",
-    "@navirox/source": "workspace:*",
-    "@navirox/source-vue": "workspace:*"
+    "@memolabs-apps/graph": "workspace:*",
+    "@memolabs-apps/source": "workspace:*",
+    "@memolabs-apps/source-vue": "workspace:*"
   },
   "devDependencies": {
     "@types/node": "^26.6.1",

@@ -1,5 +1,5 @@
-import type { MigrationDecision } from '@navirox/planner'
-import type { UnitNode } from '@navirox/graph'
+import type { MigrationDecision } from '@memolabs-apps/planner'
+import type { UnitNode } from '@memolabs-apps/graph'
 
 /**
  * What a transform is allowed to do.

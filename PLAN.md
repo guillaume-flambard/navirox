@@ -57,8 +57,8 @@ Navirox owns **the team-and-product layer**, thin curated façades at the two su
 | `doctor` / compatibility registry / CI matrix | **Yes, fully** | The declared moat; purely Navirox knowledge |
 | `inspect` / `migrate` (Nuxt + Vue) | **Yes, fully** | Highest-durability asset; upstream will never build it |
 | Shared-code model + conventions + docs | **Yes, fully** | The reason a Vue team picks us |
-| `@navirox/runtime` seam + `@navirox/runtime-symbiote` | **Yes (thin)** | The replaceability contract; §5.2 |
-| `@navirox/ui` / `@navirox/native` / `@navirox/router` | **Yes (façade only)** | API stability + a place to add Vue-first sugar; §4 |
+| `@memolabs-apps/runtime` seam + `@memolabs-apps/runtime-symbiote` | **Yes (thin)** | The replaceability contract; §5.2 |
+| `@memolabs-apps/ui` / `@memolabs-apps/native` / `@memolabs-apps/router` | **Yes (façade only)** | API stability + a place to add Vue-first sugar; §4 |
 | Renderer, components, styles, native modules | **No — consume** | Symbiote's job; forking it is explicitly a non-goal |
 
 ### What this plan delivers
@@ -83,10 +83,10 @@ Every row is a place where the blueprint is wrong, obsolete, or unproven. **Evid
 |---|---|---|---|
 | 1 | §29 `npm create <name>` scaffolds — MVP DoD | No published scaffolder exists. Symbiote docs: *"The quickest way to try it today is to run one of the repository examples instead of starting from a published scaffolder."* | Scaffolder is **Navirox's first real deliverable**, not a wrapper. §8 Day 6, §22 NX-006. |
 | 2 | §15/§26 Expo Dev Client + EAS Build/Update/Submit is the V1 ship backend | Symbiote docs: *"SymbioteNative apps never install the `expo` meta-package — it bundles its own Metro config and Babel preset, which collide with this project's own bundler pipeline (Vue SFC transform, Angular AOT linker, the CSS-parser transform)."* | **EAS is not a V1 backend.** Demote to `[RESEARCH]` with a hard experiment. §9. Ship V1 = Xcode/Gradle + Fastlane. |
-| 3 | §18 "initially re-exports" for View/Text/Pressable | `view`, `text`, `pressable`, `text-input`, `scroll-view` are **intrinsic tags — no import at all**. Only list components (`FlatList`, `SectionList`, …) are imported. | `@navirox/ui` cannot "re-export" primitives. It becomes a **types + conventions + sugar** package. §4, §5.9. |
+| 3 | §18 "initially re-exports" for View/Text/Pressable | `view`, `text`, `pressable`, `text-input`, `scroll-view` are **intrinsic tags — no import at all**. Only list components (`FlatList`, `SectionList`, …) are imported. | `@memolabs-apps/ui` cannot "re-export" primitives. It becomes a **types + conventions + sugar** package. §4, §5.9. |
 | 4 | §16/§17 Navirox builds routing (`app/` file-based, `<Stack><Slot /></Stack>`) | `@symbiote-native/navigation` already ships native Stack (via `react-native-screens`) + JS Tab/Drawer, with explicit verbs (`push`/`pop`/`replace`/`reset`), hooks/composables, and linking. **No `navigate()`.** | Navirox adds **file-based routing + typed params** *on top*, not navigators. This fills the real gap: *"Route `params` are `unknown` in this v1."* §5.6. |
 | 5 | §19 V2 class-based styling "ideally UnoCSS" | `@symbiote-native/css-parser` already compiles plain CSS, CSS Modules, **SCSS/Sass, Less, Stylus**, with `css-dts` codegen and a `typescript-plugin`. **Tailwind is the open seam.** | Styling is **solved**. Navirox documents it and adds Tailwind/Uno later as `[OPTIONAL]`. §11 (0.3). |
-| 6 | §15/§21 Navirox owns "native API + provider model" (`useCamera`, `useLocation`) | ~28 `expo-modules-core` wrappers already exist (haptics, sensors, secure store, local auth, network, battery, device, crypto, sharing, sms, …) via `@symbiote-native/*`. | `@navirox/native` is a **curated, versioned façade** + provider abstraction, not an implementation. §5.7. |
+| 6 | §15/§21 Navirox owns "native API + provider model" (`useCamera`, `useLocation`) | ~28 `expo-modules-core` wrappers already exist (haptics, sensors, secure store, local auth, network, battery, device, crypto, sharing, sms, …) via `@symbiote-native/*`. | `@memolabs-apps/native` is a **curated, versioned façade** + provider abstraction, not an implementation. §5.7. |
 | 7 | §12 compatibility registry is a nice-to-have moat | npm versions are **uncoordinated and fast-moving**: `@symbiote-native/vue` **2.0.0**, `navigation` **4.0.1**, `engine` **0.5.0**, all published within days of each other. | Registry + CI matrix move **earlier** — they are load-bearing, not polish. §18. |
 | 8 | §13 CI matrix across Vue × runtime × RN × Expo SDK | `@symbiote-native/engine` peer is **`react-native >=0.86`**; New Architecture is **mandatory** (no legacy fallback — it talks to `global.nativeFabricUIManager`). | Matrix axes are real but **narrower than assumed** (no legacy RN, no Expo SDK axis until §9 proves it). §18. |
 | 9 | §44 anti-fork: "50 adapters hard" | Upstream's own **non-goals**: no RN native forking, no hiding `react-native`, **no making third-party RN JS components framework-agnostic**, no replacing Yoga/Fabric. | Anti-fork strategy becomes **integration + workflow intelligence**, not adapter volume. §15. |
@@ -107,7 +107,7 @@ Every row is a place where the blueprint is wrong, obsolete, or unproven. **Evid
 2. **A project system** — `navirox.config.ts`, a Metro/Babel preset, TS config, and conventions.
 3. **A compatibility authority** — a registry + CI matrix + `navirox doctor` that tells a Vue team, truthfully, what works.
 4. **A migration engine** — `navirox inspect` and `navirox migrate` for existing Vue/Nuxt codebases.
-5. **A stable public API surface** — `@navirox/ui`, `@navirox/native`, `@navirox/router` versioned on *Navirox's* schedule, decoupled from Symbiote's churn.
+5. **A stable public API surface** — `@memolabs-apps/ui`, `@memolabs-apps/native`, `@memolabs-apps/router` versioned on *Navirox's* schedule, decoupled from Symbiote's churn.
 6. **A shared-code doctrine** — the three-category model (shared / adaptable / platform-specific) with tooling that enforces it.
 
 ### What Navirox IS NOT (non-goals — record these in the README)
@@ -130,7 +130,7 @@ Given §2 Finding #1 (Symbiote already ships components, styles, navigation, nat
 
 ### Option A — Pure façade (thin re-export)
 
-`@navirox/ui` re-exports Symbiote's tags/components; `@navirox/native` re-exports the wrappers.
+`@memolabs-apps/ui` re-exports Symbiote's tags/components; `@memolabs-apps/native` re-exports the wrappers.
 
 - **Pro:** near-zero maintenance; instant breadth.
 - **Con:** fails the blueprint's own anti-Symbiote test — useless if Symbiote ships a scaffolder; adds no durable value; **cannot** deliver "replace Symbiote later" because there is nothing to replace *with*.
@@ -144,14 +144,14 @@ Given §2 Finding #1 (Symbiote already ships components, styles, navigation, nat
 
 ### Option C — Thin curated façade + owned non-renderer core ⭐ RECOMMENDED
 
-- **Non-renderer core is owned outright**: `create-navirox`, `@navirox/config`, `@navirox/metro-preset`, `@navirox/doctor`, `@navirox/compat`, `@navirox/inspect`, `@navirox/migrate`, `@navirox/cli`. **None of these import Symbiote.** They are Symbiote-independent by construction, which is what actually delivers replaceability.
-- **Renderer-touching surface is a curated façade**, in exactly one package allowed to import Symbiote: `@navirox/runtime-symbiote`. `@navirox/ui` / `native` / `router` sit **above** the seam and import only `@navirox/runtime`.
+- **Non-renderer core is owned outright**: `create-navirox`, `@memolabs-apps/config`, `@memolabs-apps/metro-preset`, `@memolabs-apps/doctor`, `@memolabs-apps/compat`, `@memolabs-apps/inspect`, `@memolabs-apps/migrate`, `@memolabs-apps/cli`. **None of these import Symbiote.** They are Symbiote-independent by construction, which is what actually delivers replaceability.
+- **Renderer-touching surface is a curated façade**, in exactly one package allowed to import Symbiote: `@memolabs-apps/runtime-symbiote`. `@memolabs-apps/ui` / `native` / `router` sit **above** the seam and import only `@memolabs-apps/runtime`.
 - **Replaceability is real, not rhetorical:** swapping Symbiote means writing one new `runtime-*` package. Contract tests (§19) prove the seam.
 - **Vue-first sugar is where Navirox adds genuine, non-duplicative value**: typed route params (Symbiote's are `unknown`), file-based routing, `v-model`-consistent native composables, project-wide conventions.
 - **Con:** the façade must be maintained against churn — which is *exactly the work the compatibility registry already does*, so the two reinforce each other.
 - **Verdict: recommended.**
 
-**If you disagree, change the depth of `@navirox/ui|native|router` in §5.6/§5.7/§5.9 — the rest of the plan (core, sprint, gates, roadmap, risks) is unaffected.**
+**If you disagree, change the depth of `@memolabs-apps/ui|native|router` in §5.6/§5.7/§5.9 — the rest of the plan (core, sprint, gates, roadmap, risks) is unaffected.**
 
 ---
 
@@ -163,19 +163,19 @@ Given §2 Finding #1 (Symbiote already ships components, styles, navigation, nat
 ┌──────────────────────────────────────────────────────────────────────┐
 │ L0  Vue/Nuxt application code                                        │
 │     .vue SFC · <script setup> · Pinia · TS                           │
-│     imports: @navirox/ui · @navirox/native · @navirox/router         │
+│     imports: @memolabs-apps/ui · @memolabs-apps/native · @memolabs-apps/router         │
 └───────────────┬──────────────────────────────────────────────────────┘
                 │  (the ONLY imports app code needs)
 ┌───────────────▼──────────────────────────────────────────────────────┐
 │ L1  Navirox public façades           [owned · thin · versioned]      │
-│     @navirox/ui · @navirox/native · @navirox/router                  │
+│     @memolabs-apps/ui · @memolabs-apps/native · @memolabs-apps/router                  │
 └───────────────┬──────────────────────────────────────────────────────┘
 ┌───────────────▼──────────────────────────────────────────────────────┐
-│ L2  @navirox/runtime   — the replaceable seam   [owned · tiny]       │
+│ L2  @memolabs-apps/runtime   — the replaceable seam   [owned · tiny]       │
 │     NativeRuntime interface + host-component & native-module registry │
 └───────────────┬──────────────────────────────────────────────────────┘
 ┌───────────────▼──────────────────────────────────────────────────────┐
-│ L3  @navirox/runtime-symbiote        [owned · the ONLY Symbiote edge]│
+│ L3  @memolabs-apps/runtime-symbiote        [owned · the ONLY Symbiote edge]│
 └───────────────┬──────────────────────────────────────────────────────┘
 ┌───────────────▼──────────────────────────────────────────────────────┐
 │ L4  Symbiote  @symbiote-native/{vue,engine,navigation,css-parser,…}   │
@@ -189,8 +189,8 @@ Given §2 Finding #1 (Symbiote already ships components, styles, navigation, nat
 └──────────────────────────────────────────────────────────────────────┘
 
 Toolchain plane (never imports L2–L6):
-  @navirox/cli · @navirox/config · @navirox/metro-preset · @navirox/doctor
-  @navirox/compat · @navirox/inspect · @navirox/migrate · create-navirox
+  @memolabs-apps/cli · @memolabs-apps/config · @memolabs-apps/metro-preset · @memolabs-apps/doctor
+  @memolabs-apps/compat · @memolabs-apps/inspect · @memolabs-apps/migrate · create-navirox
 ```
 
 **Hard rule (lint-enforced, §19):** the toolchain plane must not import Symbiote. Only L3 may.
@@ -200,7 +200,7 @@ Toolchain plane (never imports L2–L6):
 Deliberately small. Every member is something a *different* renderer could plausibly supply.
 
 ```ts
-// @navirox/runtime — the ONLY contract @navirox/runtime-symbiote must satisfy
+// @memolabs-apps/runtime — the ONLY contract @memolabs-apps/runtime-symbiote must satisfy
 export interface NativeRuntime {
   readonly id: string;                 // 'symbiote'
   readonly version: string;
@@ -228,7 +228,7 @@ export declare function createRuntime(impl: RuntimeFactory): NativeRuntime;
 
 **What this seam buys:**
 
-- `@navirox/ui|native|router` compile against **this**, so they never break when `@symbiote-native/*` ships a major bump (they broke majors twice in three months).
+- `@memolabs-apps/ui|native|router` compile against **this**, so they never break when `@symbiote-native/*` ships a major bump (they broke majors twice in three months).
 - A second runtime (`runtime-bare`, `runtime-lynx`, a future Vue renderer) is an implementation of this interface only.
 - `doctor` reads `capabilities` to diff reality against the registry.
 
@@ -236,7 +236,7 @@ export declare function createRuntime(impl: RuntimeFactory): NativeRuntime;
 
 ### 5.3 Symbiote runtime adapter
 
-One package, `@navirox/runtime-symbiote`, with a `runtime.json` manifest (the same passive-manifest idea upstream uses for native linking):
+One package, `@memolabs-apps/runtime-symbiote`, with a `runtime.json` manifest (the same passive-manifest idea upstream uses for native linking):
 
 ```json
 {
@@ -249,7 +249,7 @@ One package, `@navirox/runtime-symbiote`, with a `runtime.json` manifest (the sa
 }
 ```
 
-That manifest is consumed by `@navirox/compat` and `navirox doctor` — so the adapter and the registry are the same source of truth.
+That manifest is consumed by `@memolabs-apps/compat` and `navirox doctor` — so the adapter and the registry are the same source of truth.
 
 ### 5.4 Expo / RN / Fabric integration boundaries
 
@@ -267,20 +267,20 @@ That manifest is consumed by `@navirox/compat` and `navirox doctor` — so the a
 
 ### 5.5 CLI architecture
 
-**Shape:** one thin dispatcher (`@navirox/cli`) + one command per package, so a command can be tested and versioned independently.
+**Shape:** one thin dispatcher (`@memolabs-apps/cli`) + one command per package, so a command can be tested and versioned independently.
 
 ```
 packages/cli/src/
 ├── bin.ts                 # #!/usr/bin/env node, parses argv, lazy-imports commands
 ├── commands/
-│   ├── dev.ts             # from @navirox/dev
-│   ├── doctor.ts          # from @navirox/doctor
-│   ├── inspect.ts         # from @navirox/inspect
-│   ├── migrate.ts         # from @navirox/migrate
-│   ├── build.ts           # from @navirox/build     (ios|android)
-│   ├── update.ts          # @navirox/build          (OTA story — §9/§11)
-│   ├── submit.ts          # @navirox/build
-│   └── add.ts             # @navirox/native         (§5.7 plumbing)
+│   ├── dev.ts             # from @memolabs-apps/dev
+│   ├── doctor.ts          # from @memolabs-apps/doctor
+│   ├── inspect.ts         # from @memolabs-apps/inspect
+│   ├── migrate.ts         # from @memolabs-apps/migrate
+│   ├── build.ts           # from @memolabs-apps/build     (ios|android)
+│   ├── update.ts          # @memolabs-apps/build          (OTA story — §9/§11)
+│   ├── submit.ts          # @memolabs-apps/build
+│   └── add.ts             # @memolabs-apps/native         (§5.7 plumbing)
 └── lib/                   # shared arg parsing, output formatting, exit codes
 ```
 
@@ -307,7 +307,7 @@ app/
     └── _layout.vue
 ```
 
-Navirox generates a **typed route manifest** at dev/build time and projects it through `@navirox/runtime`:
+Navirox generates a **typed route manifest** at dev/build time and projects it through `@memolabs-apps/runtime`:
 
 ```ts
 // generated: .navirox/routes.d.ts
@@ -319,7 +319,7 @@ export interface RouteParams {
 // useRouter().push('profile/[id]', { id: '42' })  // ← params type-checked
 ```
 
-- `@navirox/router` wraps `@symbiote-native/navigation/vue` (pinned), exposing `useRouter()`/`useRoute()`/`useFocusEffect()` **with types**.
+- `@memolabs-apps/router` wraps `@symbiote-native/navigation/vue` (pinned), exposing `useRouter()`/`useRoute()`/`useFocusEffect()` **with types**.
 - Navirox's explicit verbs mirror upstream (no `navigate()`), so no conceptual translation layer is needed.
 - Deep links map from the generated manifest into upstream's linking config — a Navirox generator, not a Navigator.
 
@@ -332,13 +332,13 @@ export interface RouteParams {
 ```ts
 // navirox.config.ts
 export default defineNaviroxConfig({
-  runtime: 'symbiote',            // → @navirox/runtime-symbiote
+  runtime: 'symbiote',            // → @memolabs-apps/runtime-symbiote
   native: { provider: 'symbiote' },
   platforms: ['ios', 'android'],
 });
 ```
 
-**Curated façade, not an implementation.** `@navirox/native` exposes the providers Navirox has *verified*, with Vue-first signatures, and delegates to Symbiote's wrappers:
+**Curated façade, not an implementation.** `@memolabs-apps/native` exposes the providers Navirox has *verified*, with Vue-first signatures, and delegates to Symbiote's wrappers:
 
 | Navirox API | Delegates to | Status |
 |---|---|---|
@@ -386,16 +386,16 @@ Entry shape:
 1. **No entry without evidence.** `support` must cite a real test run; `unknown` is a first-class value and the default.
 2. The registry is **generated**, not hand-written: the CI matrix writes it, so it cannot rot.
 3. `navirox doctor` reads it; `--json` feeds CI.
-4. `@navirox/compat` is a **pure data + query package** — no Symbiote import (toolchain plane, §5.1).
+4. `@memolabs-apps/compat` is a **pure data + query package** — no Symbiote import (toolchain plane, §5.1).
 
 ### 5.9 Migration tooling architecture
 
 Three stages, each shippable alone:
 
 ```
-1. DETECT      @navirox/inspect   static analysis, no execution, no network
-2. CLASSIFY    @navirox/inspect   shared | adaptable | platform-specific  (blueprint §9)
-3. REWRITE     @navirox/migrate   codemods for the safe subset; TODO markers for the rest
+1. DETECT      @memolabs-apps/inspect   static analysis, no execution, no network
+2. CLASSIFY    @memolabs-apps/inspect   shared | adaptable | platform-specific  (blueprint §9)
+3. REWRITE     @memolabs-apps/migrate   codemods for the safe subset; TODO markers for the rest
 ```
 
 **Detection targets (blueprint §23, verified as real gaps):** Nuxt, Vue version, Vue Router, Pinia, VueUse, Tailwind, i18n, API clients, **browser-API usage**, DOM-specific components, `window`/`document`, `localStorage`, `navigator.*`, `<input type="file">`, CSS `:hover`.
@@ -431,7 +431,7 @@ packages/business/    pure rules       ✅ shared
 packages/ui-native/   native-only      ⚠ platform-specific
 ```
 
-Rule Navirox teaches and checks: **shared packages may import `vue`, `pinia`, and `zod` — never `window`, never `@navirox/native`.**
+Rule Navirox teaches and checks: **shared packages may import `vue`, `pinia`, and `zod` — never `window`, never `@memolabs-apps/native`.**
 
 ### 5.11 Testing / CI / release architecture
 
@@ -442,11 +442,11 @@ Mirrors the only proven approach (Symbiote's own):
 | Unit / integration (renderer) | **Vitest** | Components, route generation, codemods, registry queries — **fake Fabric slot** where needed |
 | Tooling suites | **Node built-in test runner** | `*.test.mjs` / `*.test.cjs` for CLIs and build scripts |
 | E2E / native | **Detox** | iOS + Android, shared `testID`s |
-| Contract tests | Vitest | `@navirox/runtime` seam — proves replaceability |
+| Contract tests | Vitest | `@memolabs-apps/runtime` seam — proves replaceability |
 | Migration fixtures | Vitest | input repo → expected diff + expected TODO list |
 | Compatibility | generated CI matrix | writes the registry (§18) |
 
-**Release:** pnpm workspaces + Turborepo + **Changesets**; independent versioning per package; `@navirox/*` published to npm under the same scope as the CLI. Canary channel on every `main` push.
+**Release:** pnpm workspaces + Turborepo + **Changesets**; independent versioning per package; `@memolabs-apps/*` published to npm under the same scope as the CLI. Canary channel on every `main` push.
 
 ---
 
@@ -461,19 +461,19 @@ navirox/
 ├── AGENTS.md                        # agent instructions (this repo)
 │
 ├── packages/
-│   ├── runtime/                     # @navirox/runtime          — the seam (§5.2)
-│   ├── runtime-symbiote/            # @navirox/runtime-symbiote — ONLY Symbiote edge
-│   ├── ui/                          # @navirox/ui               — façade + sugar
-│   ├── native/                      # @navirox/native           — curated provider façade + `add`
-│   ├── router/                      # @navirox/router           — file-based + typed routes
-│   ├── config/                      # @navirox/config           — defineNaviroxConfig, schema
-│   ├── metro-preset/                # @navirox/metro-preset     — composes SFC + CSS transforms
-│   ├── compat/                      # @navirox/compat           — registry schema + queries
-│   ├── doctor/                      # @navirox/doctor
-│   ├── inspect/                     # @navirox/inspect          — detect + classify
-│   ├── migrate/                     # @navirox/migrate          — codemods
-│   ├── build/                       # @navirox/build            — ios/android/update/submit
-│   ├── cli/                         # @navirox/cli              — `navirox` bin
+│   ├── runtime/                     # @memolabs-apps/runtime          — the seam (§5.2)
+│   ├── runtime-symbiote/            # @memolabs-apps/runtime-symbiote — ONLY Symbiote edge
+│   ├── ui/                          # @memolabs-apps/ui               — façade + sugar
+│   ├── native/                      # @memolabs-apps/native           — curated provider façade + `add`
+│   ├── router/                      # @memolabs-apps/router           — file-based + typed routes
+│   ├── config/                      # @memolabs-apps/config           — defineNaviroxConfig, schema
+│   ├── metro-preset/                # @memolabs-apps/metro-preset     — composes SFC + CSS transforms
+│   ├── compat/                      # @memolabs-apps/compat           — registry schema + queries
+│   ├── doctor/                      # @memolabs-apps/doctor
+│   ├── inspect/                     # @memolabs-apps/inspect          — detect + classify
+│   ├── migrate/                     # @memolabs-apps/migrate          — codemods
+│   ├── build/                       # @memolabs-apps/build            — ios/android/update/submit
+│   ├── cli/                         # @memolabs-apps/cli              — `navirox` bin
 │   └── create-navirox/              # create-navirox            — `npm create navirox`
 │
 ├── registry/                        # versioned compatibility data (§5.8)
@@ -525,7 +525,7 @@ native ─▶ runtime ◀───── runtime-symbiote ──▶ @symbiote-na
 **Proof definitions (acceptance criteria are binary — no partial pass):**
 
 - **Proof A — Native rendering with real Vue DX.** A `.vue` SFC with `<script setup>`, `ref`, `computed`, props/emits, and a Pinia store renders on **iOS and Android** as native Fabric views, with Fast Refresh.
-- **Proof B — Navirox owns the surface.** The canary app imports **only** `@navirox/*` (verified by an import scan; zero `@symbiote-native/*` in app code). Swapping `runtime-symbiote` for a stub runtime keeps `@navirox/ui|native|router` compiling.
+- **Proof B — Navirox owns the surface.** The canary app imports **only** `@memolabs-apps/*` (verified by an import scan; zero `@symbiote-native/*` in app code). Swapping `runtime-symbiote` for a stub runtime keeps `@memolabs-apps/ui|native|router` compiling.
 - **Proof C — Ecosystem breadth is real.** At least one `expo-modules-core`-based native module works on both platforms via `navirox add`, and one **pure-JS** npm Vue package (`pinia`) works unchanged.
 
 ### Day 0 — Toolchain reconciliation `[BUILD-NOW]`
@@ -536,7 +536,7 @@ native ─▶ runtime ◀───── runtime-symbiote ──▶ @symbiote-na
 
 ### Day 1 — iOS render `[BUILD-NOW]`
 
-Bootstrap the monorepo; clone/study `examples/vue-sfc`; stand up `packages/runtime` + `packages/runtime-symbiote`; render `App.vue` on the iOS simulator (iPhone 17 Pro available). `react-native` pinned at app root; `.vue` Metro transformer wired via `@navirox/metro-preset`.
+Bootstrap the monorepo; clone/study `examples/vue-sfc`; stand up `packages/runtime` + `packages/runtime-symbiote`; render `App.vue` on the iOS simulator (iPhone 17 Pro available). `react-native` pinned at app root; `.vue` Metro transformer wired via `@memolabs-apps/metro-preset`.
 
 - **Accept:** native views on iOS sim, hot reload works, no Symbiote import in app code.
 
@@ -548,7 +548,7 @@ Android build (`@symbiote-native/android` shims installed for Keyboard/Settings)
 
 ### Day 3 — The seam (Proof B) `[BUILD-NOW]`
 
-Finalize `NativeRuntime`; move the canary to import **only** `@navirox/*`; add the **import-boundary test** (app code must not import Symbiote) and a **stub-runtime contract test**.
+Finalize `NativeRuntime`; move the canary to import **only** `@memolabs-apps/*`; add the **import-boundary test** (app code must not import Symbiote) and a **stub-runtime contract test**.
 
 - **Accept:** `pnpm test` proves the seam; app code has zero Symbiote imports.
 
@@ -608,7 +608,7 @@ Architecture doc (the §5 diagram), README, the split-screen demo (left: SFC edi
 
 ### Expected outcome and the shipping backend
 
-If E1–E4 fail (expected), **V1's ship backend is the raw native toolchain**, orchestrated by `@navirox/build`:
+If E1–E4 fail (expected), **V1's ship backend is the raw native toolchain**, orchestrated by `@memolabs-apps/build`:
 
 - `navirox build ios` → `xcodebuild` (+ `pod install`) · `navirox build android` → `gradlew assembleRelease`
 - `navirox submit` → **Fastlane** (`deliver` / `supply`) — no EAS dependency
@@ -638,7 +638,7 @@ If E1–E4 fail (expected), **V1's ship backend is the raw native toolchain**, o
 - [x] Vue 3 + SFC + `<script setup>` + TypeScript
 - [x] Pinia works; a store shared across screens
 - [x] Native primitives render: `view`, `text`, `pressable`, `text-input`, `scroll-view`, plus `Image`, `FlatList`
-- [x] `@navirox/native`: haptics + secure storage (both platforms)
+- [x] `@memolabs-apps/native`: haptics + secure storage (both platforms)
 - [x] **iOS** and **Android** both run the canary
 - [x] Fast Refresh / HMR for SFC and stores
   - Measured with the app running on the emulator, before and after. Before:
@@ -654,7 +654,7 @@ If E1–E4 fail (expected), **V1's ship backend is the raw native toolchain**, o
     `BUNDLE`. Both of Vue's paths were exercised: a child re-renders through
     `instance.parent.update()`, the root through `appContext.reload`.
   - The implementation is `withVueFastRefresh`, a Babel plugin exported by
-    `@navirox/metro-preset` and named in the `babel.config.js` of
+    `@memolabs-apps/metro-preset` and named in the `babel.config.js` of
     `examples/vue-basic` and of the scaffolder template. Vue already ships the
     runtime half in its development build (`__VUE_HMR_RUNTIME__` with
     `createRecord`/`rerender`/`reload`, plus `mountComponent` watching any
@@ -704,7 +704,7 @@ If E1–E4 fail (expected), **V1's ship backend is the raw native toolchain**, o
     note. `pnpm-lock.yaml` did not move, because the internal ranges stay
     `workspace:*`, and the diff of every manifest is the one `"version"` line.
   - Tags come in the two shapes the milestone needs. `changeset git-tag` creates
-    one per package (`@navirox/<name>@0.1.0` and `create-navirox@0.1.0`), which is
+    one per package (`@memolabs-apps/<name>@0.1.0` and `create-navirox@0.1.0`), which is
     what `changeset publish` would have created, and a `0.1.0` tag marks the
     release commit itself, which is the string this item asks for. Both are
     local: this work was committed without a push.
@@ -742,7 +742,7 @@ Everything in §10. **Exit:** the DoD checklist passes on a clean machine, on bo
 ### 0.3 — Compatibility registry, VueUse, DSX `[BUILD-NOW]`
 
 - Registry v1 + generated CI matrix (§5.8, §18); `doctor` reads it and `--json` is documented
-- VueUse compatibility matrix + `@navirox/vueuse` aware substitutions (blueprint §21)
+- VueUse compatibility matrix + `@memolabs-apps/vueuse` aware substitutions (blueprint §21)
 - Tailwind/Uno bridge — `[OPTIONAL]`, gated on `css-parser`'s seam
 - Depends on: 0.2 · **Exit:** the matrix runs nightly and publishes the registry; `doctor` correctly reports at least 40 packages with evidence.
 
@@ -755,7 +755,7 @@ Everything in §10. **Exit:** the DoD checklist passes on a clean machine, on bo
 
 ### 1.0 — Production readiness `[BUILD-NOW]`
 
-- Frozen public API for `@navirox/ui|native|router`; SemVer guarantee + deprecation policy
+- Frozen public API for `@memolabs-apps/ui|native|router`; SemVer guarantee + deprecation policy
 - Compatibility guarantees published as a policy ("we support N, we test M")
 - Build/update story resolved — meaning EAS is either **proven** or **officially declined** with a documented alternative
 - Docs site, examples, CI matrix, migration tooling, at least one production app in the wild
@@ -799,7 +799,7 @@ Every claim in the README must map to a row here and a test that backs it.
 
 | ID | Risk | Likelihood | Impact | Mitigation |
 |---|---|---|---|---|
-| **R-01** | **Symbiote is beta and churns majors fast** (`vue` 0.3.x→2.0.0 in ~3 months) | High | High | Pin exactly; `runtime-symbiote` is the only edge; registry + matrix detect breakage in CI; never expose Symbiote types in `@navirox/*` public API. |
+| **R-01** | **Symbiote is beta and churns majors fast** (`vue` 0.3.x→2.0.0 in ~3 months) | High | High | Pin exactly; `runtime-symbiote` is the only edge; registry + matrix detect breakage in CI; never expose Symbiote types in `@memolabs-apps/*` public API. |
 | **R-02** | **Bus factor 1** (65 stars, 1 fork, single author, 12 open issues) | High | Critical | Design for replacement (§5.2); track upstream commits; publish a "runtime status" page; keep a second-runtime spike on the backlog. |
 | **R-03** | Upstream ships its own scaffolder, absorbing Navirox's entry point | Medium | High | Front-load the assets upstream won't build: migration, registry, shared-code model, DX. Never let `create` be the *only* value. |
 | **R-04** | EAS is unusable (§9) and users expect it | High | Medium | State it before they ask; ship Fastlane + raw toolchain; publish the E1–E6 results. |
@@ -852,8 +852,8 @@ Upstream's roadmap commits to **full Expo SDK parity** and it already owns compo
 
 | Navirox surface | If Symbiote ships it tomorrow | Verdict |
 |---|---|---|
-| `@navirox/ui` components | Absorbed | ❌ not a moat |
-| `@navirox/native` wrappers | Absorbed | ❌ not a moat |
+| `@memolabs-apps/ui` components | Absorbed | ❌ not a moat |
+| `@memolabs-apps/native` wrappers | Absorbed | ❌ not a moat |
 | Navigators | Already shipped | ❌ never build |
 | Styling | Already shipped | ❌ never build |
 | `create-navirox` | A competitor, not an absorber — assume upstream eventually does it | ⚠️ necessary, not durable |
@@ -980,7 +980,7 @@ Navirox inspect ./my-nuxt-app
 - Imports `window`/`document`/`localStorage` ⇒ B, unless used for layout ⇒ C.
 - Imports a map/chart/canvas/PDF library ⇒ C.
 - Pure TS with no browser and no native import ⇒ A.
-- Uses Nuxt-only composables (`useFetch`, `useAsyncData`, Nuxt `useRoute`) ⇒ B (adapt to `@navirox/router` / fetch).
+- Uses Nuxt-only composables (`useFetch`, `useAsyncData`, Nuxt `useRoute`) ⇒ B (adapt to `@memolabs-apps/router` / fetch).
 
 **Codemod policy:** AST-based; each codemod is a pure, fixture-tested function; **never** silently rewrite category C; every rewrite emits a machine-readable TODO with a doc link.
 
@@ -1015,7 +1015,7 @@ Vue (3.4/3.5/3.6) · React Native (`>=0.86` floor + latest) · `@symbiote-native
 |---|---|---|---|
 | Unit | Vitest | Pure logic: route manifest generation, codemods, registry queries | ✅ |
 | Component/integration | Vitest + fake Fabric slot | SFC renders; reactivity; store wiring (no simulator) | ✅ |
-| **Contract (seam)** | Vitest | `@navirox/ui\|native\|router` work against a **stub runtime** ⇒ replaceability is real | ✅ (Proof B) |
+| **Contract (seam)** | Vitest | `@memolabs-apps/ui\|native\|router` work against a **stub runtime** ⇒ replaceability is real | ✅ (Proof B) |
 | **Import boundary** | dep-cruiser + custom rule | app code has zero Symbiote imports; toolchain plane never imports Symbiote | ✅ |
 | Tooling | Node built-in runner | CLI / `*.test.mjs` against the shipped module format | ✅ |
 | E2E | Detox, iOS + Android | Real native build; **shared spec + shared `testID`s** (upstream's proven trick) | ✅ (1 journey/platform) |
@@ -1048,8 +1048,8 @@ navirox/
 └── registry/                # versioned compatibility data
 ```
 
-- **Versioning:** SemVer per package; Changesets; `@navirox/ui|native|router` follow Navirox's own majors (they are façades — Symbiote's majors must never force a Navirox major).
-- **Publishing:** npm scope `@navirox` + `create-navirox`; provenance enabled; canary on `main`.
+- **Versioning:** SemVer per package; Changesets; `@memolabs-apps/ui|native|router` follow Navirox's own majors (they are façades — Symbiote's majors must never force a Navirox major).
+- **Publishing:** npm scope `@memolabs-apps` + `create-navirox`; provenance enabled; canary on `main`.
 - **Docs site:** getting started, architecture (the §5 diagram), compatibility (live registry), migration guide, RFC index, and an **honest limitations page** (§9 register).
 - **RFC process:** required for any public-API change; template in `.github/ISSUE_TEMPLATE/rfc.yml`.
 - **Governance:** start BDFL-with-RFCs; state the bus-factor plan explicitly (R-02).
@@ -1102,27 +1102,27 @@ Complexity: `S` ≤ half-day · `M` ≤ 2 days · `L` ≤ 5 days.
 - **Tests:** n/a (evidence artifact committed to `docs/`)
 - **Dependencies:** NX-001
 
-### NX-003 — `@navirox/runtime` seam + stub runtime `[BUILD-NOW]`
+### NX-003 — `@memolabs-apps/runtime` seam + stub runtime `[BUILD-NOW]`
 
 - **Blocks:** NX-004, NX-005. **Complexity:** M
 - **Description:** Implement the §5.2 `NativeRuntime` interface and a **stub** implementation used only by tests.
 - **Prerequisites:** NX-001
 - **Implementation notes:** keep the interface under ~20 members; include `capabilities`; **no** Symbiote import in this package; publish types plus a tiny runtime.
 - **Acceptance criteria:** interface exported; stub satisfies it; a consumer compiles against the stub with zero Symbiote present.
-- **Tests:** contract test compiling `@navirox/ui|native|router` against the stub (this is **Proof B**).
+- **Tests:** contract test compiling `@memolabs-apps/ui|native|router` against the stub (this is **Proof B**).
 - **Dependencies:** NX-001
 
-### NX-004 — `@navirox/runtime-symbiote` `[BUILD-NOW]`
+### NX-004 — `@memolabs-apps/runtime-symbiote` `[BUILD-NOW]`
 
 - **Blocks:** NX-005, NX-006. **Complexity:** L
 - **Description:** The **only** package allowed to import Symbiote. Implements `NativeRuntime` over `@symbiote-native/*`.
 - **Prerequisites:** NX-002, NX-003
 - **Implementation notes:** pin `@symbiote-native/vue@^2.0.0`, `engine@^0.5.0`, `navigation@^4.0.1`, `react-native>=0.86`; ship `runtime.json` (§5.3); map `mount`→`AppRegistry`; expose `hostComponents`; wire `nativeModules`; register `react-native-screens` configs via upstream's `register` side-effect import.
 - **Acceptance criteria:** `examples/vue-basic` renders on iOS **and** Android; `runtime.json` matches installed versions; no other package imports Symbiote.
-- **Tests:** contract tests vs. `@navirox/runtime`; import-boundary test.
+- **Tests:** contract tests vs. `@memolabs-apps/runtime`; import-boundary test.
 - **Dependencies:** NX-002, NX-003
 
-### NX-005 — `@navirox/metro-preset` (SFC + CSS pipeline) `[BUILD-NOW]`
+### NX-005 — `@memolabs-apps/metro-preset` (SFC + CSS pipeline) `[BUILD-NOW]`
 
 - **Blocks:** NX-006. **Complexity:** M
 - **Description:** Compose the Vue SFC transformer and `@symbiote-native/css-parser` into one documented preset, so a Navirox app needs one line of Metro config.
@@ -1152,7 +1152,7 @@ Complexity: `S` ≤ half-day · `M` ≤ 2 days · `L` ≤ 5 days.
 - **Tests:** unit per check; snapshot of `--json`; a fixture project with `expo` installed must fail.
 - **Dependencies:** NX-004
 
-### NX-008 — `@navirox/native` façade: haptics + secure storage `[BUILD-NOW]`
+### NX-008 — `@memolabs-apps/native` façade: haptics + secure storage `[BUILD-NOW]`
 
 - **Blocks:** 0.1. **Complexity:** M
 - **Description:** First curated native APIs with Vue-first signatures, exposed over the seam.
@@ -1185,7 +1185,7 @@ Complexity: `S` ≤ half-day · `M` ≤ 2 days · `L` ≤ 5 days.
 ### NX-011 — Compatibility registry schema + seed `[BUILD-NOW]`
 
 - **Blocks:** NX-012, 0.3. **Complexity:** M
-- **Description:** Implement §5.8's schema + `@navirox/compat` queries, seeded with what Days 1–7 actually proved.
+- **Description:** Implement §5.8's schema + `@memolabs-apps/compat` queries, seeded with what Days 1–7 actually proved.
 - **Prerequisites:** NX-004, NX-007
 - **Implementation notes:** no Symbiote import; Zod schema; `unknown` default; **no entry without an evidence reference**.
 - **Acceptance criteria:** `doctor` reads it; schema snapshot-tested; every seeded entry cites a real test.
@@ -1248,7 +1248,7 @@ Complexity: `S` ≤ half-day · `M` ≤ 2 days · `L` ≤ 5 days.
 ### 0.0.1 — Sprint artifact
 
 - [ ] `examples/vue-basic` runs on iOS **and** Android
-- [ ] App code imports **only** `@navirox/*` (import-boundary test green)
+- [ ] App code imports **only** `@memolabs-apps/*` (import-boundary test green)
 - [ ] Stub-runtime contract test green (**Proof B**)
 - [ ] One `expo-modules-core` module working (**Proof C**) *or* a written NO-GO
 - [ ] Registry seeded with evidence from the sprint
@@ -1294,7 +1294,7 @@ Complexity: `S` ≤ half-day · `M` ≤ 2 days · `L` ≤ 5 days.
 
 ### 1.0 — Production readiness
 
-- [ ] `@navirox/ui|native|router` API frozen + SemVer/deprecation policy
+- [ ] `@memolabs-apps/ui|native|router` API frozen + SemVer/deprecation policy
 - [ ] Compatibility *policy* published (supported = green cell ≤14 days)
 - [ ] EAS proven **or** officially declined in writing
 - [ ] Docs site, examples, matrix, migration tooling complete
@@ -1321,7 +1321,7 @@ NX-001 … NX-012, NX-016, NX-017, NX-018; §5.2–§5.11; §6–§8; §16–§2
 - Tailwind/Uno bridge (`css-parser`'s open seam)
 - Desktop target (blueprint §49 — explicitly out of early scope)
 - Migration Cloud / Compatibility Cloud (blueprint §40 — needs 1.0 trust first)
-- `@navirox/vueuse` shim package
+- `@memolabs-apps/vueuse` shim package
 
 ### `[BLOCKED-UPSTREAM]` — cannot be built by Navirox
 

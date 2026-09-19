@@ -1,10 +1,13 @@
 import { createRequire } from 'node:module'
 import { join } from 'node:path'
-import { SYMBIOTE_SOURCE_EXTENSIONS, symbioteVueTransformerPath } from '@navirox/runtime-symbiote'
+import {
+  SYMBIOTE_SOURCE_EXTENSIONS,
+  symbioteVueTransformerPath,
+} from '@memolabs-apps/runtime-symbiote'
 
 /** Canonical npm name of this package. Kept in code so the import
  *  boundary checks can assert against it without reading package.json. */
-export const PACKAGE_NAME = '@navirox/metro-preset'
+export const PACKAGE_NAME = '@memolabs-apps/metro-preset'
 
 /** One line describing this package's role in the Navirox stack. */
 export const PACKAGE_ROLE =
@@ -62,7 +65,7 @@ export interface NaviroxMetroOptions {
  * A Navirox app's `metro.config.js` is:
  *
  * ```js
- * const { createNaviroxConfig } = require('@navirox/metro-preset')
+ * const { createNaviroxConfig } = require('@memolabs-apps/metro-preset')
  * module.exports = createNaviroxConfig()
  * ```
  *

@@ -2,7 +2,11 @@ import { createRequire } from 'node:module'
 import { readFileSync } from 'node:fs'
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
-import { assertNativeRuntime, RUNTIME_INJECTION_KEY, type NaviroxComponent } from '@navirox/runtime'
+import {
+  assertNativeRuntime,
+  RUNTIME_INJECTION_KEY,
+  type NaviroxComponent,
+} from '@memolabs-apps/runtime'
 import { HOST_PRIMITIVES } from '@symbiote-native/components/host-primitives'
 import { describe, expect, it } from 'vitest'
 import {
@@ -97,11 +101,11 @@ function fakeHost(engineVersion = '0.5.0'): {
   }
 }
 
-describe('@navirox/runtime-symbiote', () => {
+describe('@memolabs-apps/runtime-symbiote', () => {
   it('identifies itself and declares the seam it is built on', () => {
-    expect(PACKAGE_NAME).toBe('@navirox/runtime-symbiote')
+    expect(PACKAGE_NAME).toBe('@memolabs-apps/runtime-symbiote')
     expect(PACKAGE_ROLE.length).toBeGreaterThan(0)
-    expect(BUILT_ON).toBe('@navirox/runtime')
+    expect(BUILT_ON).toBe('@memolabs-apps/runtime')
   })
 
   it('keeps the renderer edge in exactly one file', () => {
@@ -183,7 +187,7 @@ describe('host components', () => {
     ])
   })
 
-  it("reads upstream's real table and finds every primitive @navirox/ui requires", () => {
+  it("reads upstream's real table and finds every primitive @memolabs-apps/ui requires", () => {
     const tags = intrinsicTagsOf(HOST_PRIMITIVES as HostPrimitiveTable)
     for (const required of ['view', 'text', 'pressable', 'text-input', 'scroll-view']) {
       expect(tags, `${required} is derived from the upstream table`).toContain(required)

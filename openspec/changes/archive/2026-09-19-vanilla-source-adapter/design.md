@@ -40,7 +40,7 @@ Three facts decide the shape:
 1. **A base adapter with no composition.** There is no framework to compose. Rejected: a
    `source-html` package that would exist only to be composed, since nothing composes it.
 2. **Detection requires the absence of a known framework and the presence of a
-   document.** The list of known frameworks is the one `@navirox/source` already declares
+   document.** The list of known frameworks is the one `@memolabs-apps/source` already declares
    to keep framework imports out of the core, so adding a framework remains a one-line
    data change in one place. Rejected: a second list inside the adapter, which would
    drift; and claiming on the document alone, which would let this adapter claim a Vue

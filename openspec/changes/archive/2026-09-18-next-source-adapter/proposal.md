@@ -13,7 +13,7 @@ already declares a native dependency is not a source project at all.
 
 ## What Changes
 
-- Add `@navirox/source-next`, composing the React adapter and reading what Next
+- Add `@memolabs-apps/source-next`, composing the React adapter and reading what Next
   adds.
 - Read both routers: the App Router from page files and the Pages Router from page
   modules, including nested and dynamic segments, with route groups dropped from

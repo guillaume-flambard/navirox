@@ -1,5 +1,5 @@
-import type { Finding } from '@navirox/graph'
-import { findingId } from '@navirox/graph'
+import type { Finding } from '@memolabs-apps/graph'
+import { findingId } from '@memolabs-apps/graph'
 import type { FindingDraft } from './routes.js'
 import { ADAPTER_ID } from './detect.js'
 

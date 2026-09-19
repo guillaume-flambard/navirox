@@ -1,6 +1,6 @@
 /** Canonical npm name of this package. Kept in code so the import boundary
  *  checks can assert against it without reading package.json. */
-export const PACKAGE_NAME = '@navirox/planner'
+export const PACKAGE_NAME = '@memolabs-apps/planner'
 
 /** One line describing this package's role in the Navirox stack. */
 export const PACKAGE_ROLE =
@@ -16,7 +16,7 @@ export {
   orderedRules,
 } from './rules.js'
 export type { MigrationRule, RuleContext, RuleDecision, RuleLayer } from './rules.js'
-export type { AppGraph, AppGraphFragment } from '@navirox/graph'
+export type { AppGraph, AppGraphFragment } from '@memolabs-apps/graph'
 export { compatibilityEvidence, compatibilityRule } from './compatibility.js'
 export { PLAN_SCHEMA_VERSION, plan } from './plan.js'
 export { planToJson, renderPlan } from './render.js'

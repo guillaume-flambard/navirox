@@ -5,15 +5,15 @@
       Verify with the neutral capability test, including that the same call in a
       plain project and a Nuxt project yields the same capability and usage.
 - [x] 1.2 Confirm no adapter regression: the Vue and Svelte suites still pass
-      unchanged. Verify with `pnpm --filter @navirox/source-vue test` and
-      `pnpm --filter @navirox/source-svelte test`.
+      unchanged. Verify with `pnpm --filter @memolabs-apps/source-vue test` and
+      `pnpm --filter @memolabs-apps/source-svelte test`.
 
 ## 2. Add the Nuxt adapter
 
 - [x] 2.1 Create `packages/source-nuxt` with the package conventions, depending on
-      the two neutral packages and on `@navirox/source-vue`, and declaring that it
+      the two neutral packages and on `@memolabs-apps/source-vue`, and declaring that it
       composes the Vue adapter. Verify with
-      `pnpm --filter @navirox/source-nuxt build`.
+      `pnpm --filter @memolabs-apps/source-nuxt build`.
 - [x] 2.2 Implement detection over the manifest with evidence, and no throw on a
       missing or malformed one. Verify with the fixture and an empty directory.
 - [x] 2.3 Implement route reading from the pages directory: the root index, a
@@ -35,7 +35,7 @@
 
 - [x] 3.1 Register the adapter at the composition root in `packages/cli/src/cli.ts`
       and confirm the registry lists four adapters. Verify with
-      `pnpm --filter @navirox/cli test`.
+      `pnpm --filter @memolabs-apps/cli test`.
 - [x] 3.2 Prove the composition works end to end: inspect the Nuxt fixture through
       the pipeline and confirm the report contains both the Nuxt routes and the
       component units the Vue adapter read, with this adapter's identifier on both.

@@ -1,9 +1,9 @@
-import type { SourceAdapter } from '@navirox/source'
+import type { SourceAdapter } from '@memolabs-apps/source'
 import { ADAPTER_ID, DISPLAY_NAME, FRAMEWORK, TESTED_VERSIONS, detect } from './detect.js'
 import { buildGraph } from './graph.js'
 import { inspect } from './inspect.js'
 
-export const PACKAGE_NAME = '@navirox/source-lit'
+export const PACKAGE_NAME = '@memolabs-apps/source-lit'
 export const PACKAGE_ROLE =
   'The Lit source adapter: custom elements, reactive properties, and the routes a project declares in code.'
 

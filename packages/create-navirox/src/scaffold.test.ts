@@ -139,7 +139,7 @@ describe('scaffoldApp', () => {
 
     for (const group of ['dependencies', 'devDependencies'] as const) {
       for (const [name, version] of Object.entries(template[group])) {
-        if (name.startsWith('@navirox/')) {
+        if (name.startsWith('@memolabs-apps/')) {
           continue
         }
         expect(written[group][name], name).toBe(version)
@@ -163,9 +163,9 @@ describe('scaffoldApp', () => {
       description: string
     }
 
-    const preset = written.dependencies['@navirox/metro-preset']
-    const runtime = written.dependencies['@navirox/runtime-symbiote']
-    const cli = written.devDependencies['@navirox/cli']
+    const preset = written.dependencies['@memolabs-apps/metro-preset']
+    const runtime = written.dependencies['@memolabs-apps/runtime-symbiote']
+    const cli = written.devDependencies['@memolabs-apps/cli']
 
     expect(preset).toBeDefined()
     expect(runtime).toBeDefined()

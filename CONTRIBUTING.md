@@ -49,17 +49,17 @@ not a promise that CI is green.
 `AGENTS.md` is the full contract. Two of its rules account for most review
 comments:
 
-1. **`@navirox/runtime-symbiote` is the only package allowed to import
+1. **`@memolabs-apps/runtime-symbiote` is the only package allowed to import
    `@symbiote-native/*`**, `react-native`, or anything else from the Fabric
-   host. Every other package depends on the seam in `@navirox/runtime`.
-2. **Applications import only `@navirox/*`.** Zero `@symbiote-native/*` imports
+   host. Every other package depends on the seam in `@memolabs-apps/runtime`.
+2. **Applications import only `@memolabs-apps/*`.** Zero `@symbiote-native/*` imports
    in application code.
 
 Both are enforced by an import-boundary test rather than by convention. If your
 change makes that test fail, the change is wrong, not the test.
 
 A third rule is easy to break by accident: **never re-export a Symbiote type,
-class, component or prop name** from a public `@navirox/*` package. Our public
+class, component or prop name** from a public `@memolabs-apps/*` package. Our public
 API is ours. If a Symbiote concept leaks into our types, the engine stops being
 swappable.
 
@@ -100,7 +100,7 @@ pnpm release                   # build, then publish to npm, which needs credent
 ## Running the example
 
 `examples/vue-basic` is the acceptance render for the runtime and the Metro
-preset. It is a workspace member, so it resolves `@navirox/*` through
+preset. It is a workspace member, so it resolves `@memolabs-apps/*` through
 `workspace:*` and exercises the code in this repository rather than a registry
 that has nothing to publish yet.
 

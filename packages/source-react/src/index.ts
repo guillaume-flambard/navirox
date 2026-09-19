@@ -1,9 +1,9 @@
-import type { SourceAdapter } from '@navirox/source'
+import type { SourceAdapter } from '@memolabs-apps/source'
 import { ADAPTER_ID, DISPLAY_NAME, FRAMEWORK, TESTED_VERSIONS, detect } from './detect.js'
 import { buildGraph } from './graph.js'
 import { inspect } from './inspect.js'
 
-export const PACKAGE_NAME = '@navirox/source-react'
+export const PACKAGE_NAME = '@memolabs-apps/source-react'
 
 export const PACKAGE_ROLE =
   'The React source adapter: detection, function component and state module discovery, router configuration, and App Graph construction.'

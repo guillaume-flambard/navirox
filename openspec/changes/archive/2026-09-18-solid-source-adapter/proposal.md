@@ -14,7 +14,7 @@ returns elements.
 
 ## What Changes
 
-- Add `@navirox/source-solid`, a base adapter that composes nothing.
+- Add `@memolabs-apps/source-solid`, a base adapter that composes nothing.
 - Detect Solid from the manifest, and refuse a project that already declares a native
   runtime, because that is what Navirox produces rather than what it reads.
 - Read a component by what a module exports, the rule the React adapter holds itself to: a
@@ -43,8 +43,8 @@ None.
 
 ## Impact
 
-`packages/source-solid` is new, and it depends only on `@navirox/graph`, `@navirox/source`
-and `@navirox/source-react` (the last one for the native declaration check the React, Next
+`packages/source-solid` is new, and it depends only on `@memolabs-apps/graph`, `@memolabs-apps/source`
+and `@memolabs-apps/source-react` (the last one for the native declaration check the React, Next
 and Astro adapters already share). No package changes its public surface, the App Graph stays
 at schema version 1, and no dependency is added to the workspace.
 

@@ -96,8 +96,8 @@ limitation is recorded here rather than papered over.
 
 | Check | Result |
 | --- | --- |
-| `@navirox/source-nuxt` build | `tsc --build`, no output |
-| `@navirox/source-nuxt` tests | 22 passed, 1 file |
-| `@navirox/cli` tests, including the cross-adapter gate | 75 passed, 7 files |
+| `@memolabs-apps/source-nuxt` build | `tsc --build`, no output |
+| `@memolabs-apps/source-nuxt` tests | 22 passed, 1 file |
+| `@memolabs-apps/cli` tests, including the cross-adapter gate | 75 passed, 7 files |
 | The fixture on the Nuxt 4 convention | routes `/`, `/a/:slug`, `/dashboard`, `/posts/:slug`, `/settings` |
 | The fixture that must not change | routes `/`, `/about`, `/blog`, `/blog/:slug`, `/docs/:lang` |

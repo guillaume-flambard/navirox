@@ -4,7 +4,7 @@
       extensions it accepts and the declared exclusions for tests, configuration,
       entry points and declarations. Verify with unit tests over each exclusion.
 - [x] 1.2 Export it and add a test that two callers asking about the same path get
-      the same answer by construction. Verify with `pnpm --filter @navirox/source test`.
+      the same answer by construction. Verify with `pnpm --filter @memolabs-apps/source test`.
 
 ## 2. The adapters
 

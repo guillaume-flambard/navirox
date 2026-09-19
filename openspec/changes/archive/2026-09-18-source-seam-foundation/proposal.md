@@ -24,11 +24,11 @@ the Vue adapter behind it, belong to the follow-up change `vue-source-adapter`.
 
 - Vendor the canonical repositioning documents under `docs/repositioning/` and
   stop carrying a second copy of the pack in the working tree.
-- Add `@navirox/graph`, a dependency-free package holding the versioned App
+- Add `@memolabs-apps/graph`, a dependency-free package holding the versioned App
   Graph v1 model: routes, screens, units, actions, data, capabilities,
   dependencies, edges, findings and evidence, all traceable to a source
   location.
-- Add `@navirox/source`, a dependency-free package holding the `SourceAdapter`
+- Add `@memolabs-apps/source`, a dependency-free package holding the `SourceAdapter`
   contract, the adapter registry, and the detection and inspection types an
   adapter passes through.
 - Add a framework import boundary test that fails when a generic package
@@ -63,7 +63,7 @@ published capabilities yet; `openspec/specs/` is empty.
 
 ## Impact
 
-- New packages: `@navirox/graph`, `@navirox/source`. Both depend on nothing,
+- New packages: `@memolabs-apps/graph`, `@memolabs-apps/source`. Both depend on nothing,
   import no framework, and publish no provider type.
 - Modified: `tsconfig.json` (project references), `turbo.json` (test inputs),
   `README.md`, `AGENTS.md`, `PLAN.md`, `.gitignore`.

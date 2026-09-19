@@ -6,7 +6,7 @@ The runtime side already exists and needs nothing from us: vue 3.5.43 ships the 
 
 ## What Changes
 
-- `@navirox/metro-preset` gains a Babel plugin, `withVueFastRefresh`, that recognizes a compiled single file component (the upstream transformer re-labels `.vue` output as `.vue.tsx`) and rewrites its default export to carry a stable `__hmrId`, register it with `__VUE_HMR_RUNTIME__`, and accept its own Metro update by calling `reload` with the newly evaluated component.
+- `@memolabs-apps/metro-preset` gains a Babel plugin, `withVueFastRefresh`, that recognizes a compiled single file component (the upstream transformer re-labels `.vue` output as `.vue.tsx`) and rewrites its default export to carry a stable `__hmrId`, register it with `__VUE_HMR_RUNTIME__`, and accept its own Metro update by calling `reload` with the newly evaluated component.
 - `examples/vue-basic/babel.config.js` and `packages/create-navirox/template/babel.config.js` enable the plugin, next to the existing local plugin that already proves the pattern.
 - The injected code is inert wherever the development runtime is absent, so no application flag and no build conditional is introduced.
 

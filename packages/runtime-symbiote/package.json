@@ -1,5 +1,5 @@
 {
-  "name": "@navirox/runtime-symbiote",
+  "name": "@memolabs-apps/runtime-symbiote",
   "version": "0.1.0",
   "description": "The Symbiote-backed implementation of the runtime seam. The only package allowed to import @symbiote-native/*.",
   "license": "MIT",
@@ -30,7 +30,7 @@
     "clean": "rm -rf dist"
   },
   "dependencies": {
-    "@navirox/runtime": "workspace:*",
+    "@memolabs-apps/runtime": "workspace:*",
     "@symbiote-native/components": "2.0.0",
     "@symbiote-native/engine": "0.5.0",
     "@symbiote-native/navigation": "4.0.1",

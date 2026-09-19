@@ -1,6 +1,6 @@
-import type { AppGraph } from '@navirox/graph'
-import { APP_GRAPH_SCHEMA_VERSION } from '@navirox/graph'
-import { CompatibilityRegistry } from '@navirox/compat'
+import type { AppGraph } from '@memolabs-apps/graph'
+import { APP_GRAPH_SCHEMA_VERSION } from '@memolabs-apps/graph'
+import { CompatibilityRegistry } from '@memolabs-apps/compat'
 import { describe, expect, it } from 'vitest'
 import { MIGRATION_CLASSES, plan } from './index'
 

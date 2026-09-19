@@ -5,7 +5,7 @@
 // and baked into every transformed module (the app entry and the shared source).
 const debugFlag = process.env.DEBUG === '1' ? '1' : '0';
 
-const { withVueFastRefresh } = require('@navirox/metro-preset');
+const { withVueFastRefresh } = require('@memolabs-apps/metro-preset');
 
 function inlineDebugFlag({ types: t }) {
   return {

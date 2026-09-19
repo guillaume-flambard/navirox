@@ -1,9 +1,9 @@
 ## 1. Add the Vanilla adapter
 
-- [x] 1.1 Create `packages/source-vanilla` with `@navirox/graph`, `@navirox/source` and
-      `@navirox/source-react` as workspace dependencies, its tsconfig referencing the
+- [x] 1.1 Create `packages/source-vanilla` with `@memolabs-apps/graph`, `@memolabs-apps/source` and
+      `@memolabs-apps/source-react` as workspace dependencies, its tsconfig referencing the
       three, and the package conventions every adapter follows. Verify by
-      `corepack pnpm install` and `corepack pnpm --filter @navirox/source-vanilla build`.
+      `corepack pnpm install` and `corepack pnpm --filter @memolabs-apps/source-vanilla build`.
 - [x] 1.2 Write `src/detect.ts` with `FRAMEWORK = 'html'`, `ADAPTER_ID = 'vanilla'`,
       `DISPLAY_NAME = 'Vanilla HTML/CSS/JS'`, the living-standard version range, the
       framework list imported from the neutral package, the inherited native refusal and
@@ -33,9 +33,9 @@
 ## 3. Extend the gate
 
 - [x] 3.1 Register the adapter in `SOURCE_ADAPTER_PACKAGES` and add
-      `@navirox/source-vanilla` to the CLI dependencies, then extend the composition-root
+      `@memolabs-apps/source-vanilla` to the CLI dependencies, then extend the composition-root
       assertion to twelve adapters in alphabetical order with `vanilla` last. Verify by
-      `corepack pnpm --filter @navirox/cli test`.
+      `corepack pnpm --filter @memolabs-apps/cli test`.
 - [x] 3.2 Add a block comparing the vanilla report to the Vue report: the Vue capability
       multiset plus `dom:unknown`, kinds equal to the Vue kinds minus `component` and
       `state-module`, schema version 1, the exact routes, and the two findings. Verify by

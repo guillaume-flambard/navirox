@@ -1,4 +1,8 @@
-import type { NaviroxComponent, NavigationBackend, NavigationCapabilities } from '@navirox/runtime'
+import type {
+  NaviroxComponent,
+  NavigationBackend,
+  NavigationCapabilities,
+} from '@memolabs-apps/runtime'
 
 export const SYMBIOTE_NAVIGATION_ID = 'symbiote-navigation'
 

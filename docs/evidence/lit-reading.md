@@ -113,16 +113,16 @@ what that change wrote down.
 - No resolution of a `URLPattern` into a canonical path pattern.
 - No support for any router other than the labs package.
 - No reading of styles, directives or shadow DOM internals.
-- No transform, and no change to `@navirox/runtime`, `@navirox/ui` or the
+- No transform, and no change to `@memolabs-apps/runtime`, `@memolabs-apps/ui` or the
   acceptance app.
 
 ## Proof
 
 | Command                                                          | Result                          |
 | ---------------------------------------------------------------- | ------------------------------- |
-| `corepack pnpm --filter @navirox/source-lit build`               | `tsc --build`, no output        |
-| `corepack pnpm --filter @navirox/source-lit test`                | 21 passed (1 file)              |
-| `corepack pnpm --filter @navirox/cli test`                       | 85 passed (7 files, eleven adapters registered) |
+| `corepack pnpm --filter @memolabs-apps/source-lit build`               | `tsc --build`, no output        |
+| `corepack pnpm --filter @memolabs-apps/source-lit test`                | 21 passed (1 file)              |
+| `corepack pnpm --filter @memolabs-apps/cli test`                       | 85 passed (7 files, eleven adapters registered) |
 | `corepack pnpm build` / `typecheck` / `test`                     | 28 / 52 / 51 tasks successful   |
 | `corepack pnpm lint` / `format:check` / `deps:check`             | no output / clean / no issues   |
 | Detox journey, canary untouched                                  | 4/4 Android, 4/4 iOS            |

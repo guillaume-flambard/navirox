@@ -287,7 +287,7 @@ For each implementation ticket:
 
 Example:
 
-> This is Vue source analysis and belongs in `@navirox/source-vue`.
+> This is Vue source analysis and belongs in `@memolabs-apps/source-vue`.
 
 ## Step B — Add/modify contract only if necessary
 
@@ -412,7 +412,7 @@ If asked to "start the repositioning", do not add Angular/Svelte immediately.
 Start with:
 
 ```text
-1. add @navirox/source contract
+1. add @memolabs-apps/source contract
 2. add minimal App Graph schema
 3. add source-vue
 4. route inspect through registry

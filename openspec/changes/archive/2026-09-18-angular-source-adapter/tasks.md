@@ -2,7 +2,7 @@
 
 - [x] 1.1 Create `packages/source-angular` with the package conventions, depending
       on the two neutral packages, and the tsconfig references. Verify with
-      `pnpm --filter @navirox/source-angular build`.
+      `pnpm --filter @memolabs-apps/source-angular build`.
 - [x] 1.2 Implement detection over the manifest with evidence, and no throw on a
       missing or malformed one. Verify with the fixture and an empty directory.
 - [x] 1.3 Implement decorator reading: components, injectables, pipes, and the

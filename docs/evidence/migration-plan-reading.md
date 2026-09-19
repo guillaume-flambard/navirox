@@ -26,7 +26,7 @@ Decided
 Not decided (14)
     14  Whether this dependency works on a native surface needs a compatibility
         record, which does not exist yet.
-        for example vue:package.json:dependency:@navirox/metro-preset
+        for example vue:package.json:dependency:@memolabs-apps/metro-preset
 ```
 
 ## How to read it
@@ -50,7 +50,7 @@ Not decided (14)
   statement about source code.
 - No transforms. This change decides; it does not move code.
 - Nothing about capability use, because this application reaches native storage
-  through `@navirox/native` rather than through `localStorage`, so the reading
+  through `@memolabs-apps/native` rather than through `localStorage`, so the reading
   found no browser capability to classify. The rules for those exist and are
   covered by the planner's own tests over hand built graphs.
 

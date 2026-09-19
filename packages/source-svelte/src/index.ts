@@ -1,9 +1,9 @@
-import type { SourceAdapter } from '@navirox/source'
+import type { SourceAdapter } from '@memolabs-apps/source'
 import { ADAPTER_ID, DISPLAY_NAME, FRAMEWORK, TESTED_VERSIONS, detect } from './detect.js'
 import { buildGraph } from './graph.js'
 import { inspect } from './inspect.js'
 
-export const PACKAGE_NAME = '@navirox/source-svelte'
+export const PACKAGE_NAME = '@memolabs-apps/source-svelte'
 
 export const PACKAGE_ROLE =
   'The Svelte source adapter: detection, component inspection, and App Graph construction for an existing Svelte application.'
@@ -32,6 +32,6 @@ export { UNMODELLED_PATTERNS, scanUnmodelled } from './unmodelled.js'
 export type { UnmodelledPattern } from './unmodelled.js'
 // The version reading is neutral; it is re-exported so a consumer of this
 // package keeps finding it where it always was.
-export { declaredMajor, testedMajors } from '@navirox/source'
+export { declaredMajor, testedMajors } from '@memolabs-apps/source'
 export { buildGraph } from './graph.js'
 export { inspect } from './inspect.js'

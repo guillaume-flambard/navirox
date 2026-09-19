@@ -7,7 +7,7 @@
 ## 2. Declare what the configs require
 
 - [x] 2.1 In `examples/vue-basic/package.json`, remove the two experimental devDependencies (`@react-native/eslint-config` and `@typescript-eslint/parser` as it stands now, both added during the investigation) and add `@typescript-eslint/parser` and `vue-eslint-parser` in alphabetical position. Verified by `node -e` printing the eslint-related devDependencies and by the install in 2.3.
-- [x] 2.2 Apply the same change to `packages/create-navirox/template/package.json`, keeping its extra `@navirox/cli` entry and its missing e2e entries intact. Verified by `node -e` on that file and by the scaffolded lint run in 4.2.
+- [x] 2.2 Apply the same change to `packages/create-navirox/template/package.json`, keeping its extra `@memolabs-apps/cli` entry and its missing e2e entries intact. Verified by `node -e` on that file and by the scaffolded lint run in 4.2.
 - [x] 2.3 Run `corepack pnpm install` at the root. Verified by the command succeeding, and by `corepack pnpm peers check` reporting no unmet peer for `eslint-plugin-vue` or `typescript-eslint`.
 
 ## 3. Make the check reachable

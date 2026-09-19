@@ -69,11 +69,11 @@ vue:stores/canary.ts:state-module:default               (state-module)
   nothing resolved it.
 - An adapter the core knows nothing about produced a framework-neutral graph:
   every identifier starts with the adapter id, and the whole pipeline that
-  consumed it, `@navirox/inspect`, imports no framework.
+  consumed it, `@memolabs-apps/inspect`, imports no framework.
 - The state module was found by its declaration and not by its import: the app
   imports Pinia in more than one place and only one module declares a store.
 - No capability use was reported. That is a reading of this app, not a limit of
-  the scan: the app reaches native storage through `@navirox/native` rather than
+  the scan: the app reaches native storage through `@memolabs-apps/native` rather than
   through `localStorage`, so there was nothing for the pattern set to match.
 - `examples/` was not modified: `git status --porcelain examples/` is empty.
 

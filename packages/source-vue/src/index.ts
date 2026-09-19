@@ -1,9 +1,9 @@
-import type { SourceAdapter } from '@navirox/source'
+import type { SourceAdapter } from '@memolabs-apps/source'
 import { ADAPTER_ID, DISPLAY_NAME, FRAMEWORK, TESTED_VERSIONS, detect } from './detect.js'
 import { buildGraph } from './graph.js'
 import { inspect } from './inspect.js'
 
-export const PACKAGE_NAME = '@navirox/source-vue'
+export const PACKAGE_NAME = '@memolabs-apps/source-vue'
 
 export const PACKAGE_ROLE =
   'The Vue source adapter: detection, single file component inspection, and App Graph construction for an existing Vue application.'
@@ -29,7 +29,7 @@ export function createVueAdapter(): SourceAdapter {
 }
 
 export { ADAPTER_ID, DISPLAY_NAME, FRAMEWORK, TESTED_VERSIONS, detect } from './detect.js'
-// The capability scan is neutral and lives in `@navirox/source`; it is
+// The capability scan is neutral and lives in `@memolabs-apps/source`; it is
 // re-exported here because this adapter was its first user and a consumer of this
 // package should not have to know where it moved.
 export {
@@ -37,14 +37,19 @@ export {
   DECLARED_CAPABILITIES,
   DOM_PATTERNS,
   scanCapabilities,
-} from '@navirox/source'
-export type { CapabilityPattern } from '@navirox/source'
-export { MANIFEST_FILE, declaredRange, productionDependencies, readManifest } from '@navirox/source'
-export type { DeclaredRange, Manifest, TextReader } from '@navirox/source'
+} from '@memolabs-apps/source'
+export type { CapabilityPattern } from '@memolabs-apps/source'
+export {
+  MANIFEST_FILE,
+  declaredRange,
+  productionDependencies,
+  readManifest,
+} from '@memolabs-apps/source'
+export type { DeclaredRange, Manifest, TextReader } from '@memolabs-apps/source'
 export { UNMODELLED_PATTERNS, scanUnmodelled } from './unmodelled.js'
 export type { UnmodelledPattern } from './unmodelled.js'
 // The version reading is neutral; it is re-exported so a consumer of this
 // package keeps finding it where it always was.
-export { declaredMajor, testedMajors } from '@navirox/source'
+export { declaredMajor, testedMajors } from '@memolabs-apps/source'
 export { buildGraph } from './graph.js'
 export { inspect } from './inspect.js'

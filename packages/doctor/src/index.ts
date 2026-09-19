@@ -31,7 +31,7 @@ export type {
 } from './toolchain.js'
 
 /** The package name, so tooling can assert what it is looking at. */
-export const PACKAGE_NAME = '@navirox/doctor'
+export const PACKAGE_NAME = '@memolabs-apps/doctor'
 
 /** One line on what this package is for. */
 export const PACKAGE_ROLE = 'Environment and dependency diagnostics behind `navirox doctor`.'

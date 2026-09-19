@@ -63,11 +63,11 @@ The repository already contains a useful runtime boundary.
 ```text
 App
  ↓
-@navirox/ui / native / router
+@memolabs-apps/ui / native / router
  ↓
-@navirox/runtime
+@memolabs-apps/runtime
  ↓
-@navirox/runtime-symbiote
+@memolabs-apps/runtime-symbiote
  ↓
 Symbiote / native host
 ```
@@ -79,18 +79,18 @@ The repositioning adds a parallel upstream architecture:
 ```text
 Project files
  ↓
-@navirox/source
+@memolabs-apps/source
  ↓
-@navirox/source-vue
+@memolabs-apps/source-vue
  ↓
-@navirox/inspect / migrate / compat
+@memolabs-apps/inspect / migrate / compat
 ```
 
 Later:
 
 ```text
-@navirox/source-svelte
-@navirox/source-angular
+@memolabs-apps/source-svelte
+@memolabs-apps/source-angular
 ...
 ```
 
@@ -162,10 +162,10 @@ packages/
 ```
 
 Publishing can use flat names:
-- `@navirox/source`
-- `@navirox/source-vue`
-- `@navirox/graph`
-- `@navirox/planner`
+- `@memolabs-apps/source`
+- `@memolabs-apps/source-vue`
+- `@memolabs-apps/graph`
+- `@memolabs-apps/planner`
 - etc.
 
 ---
@@ -553,7 +553,7 @@ Current config should be extended, not replaced.
 Target:
 
 ```ts
-import { defineNaviroxConfig } from '@navirox/config'
+import { defineNaviroxConfig } from '@memolabs-apps/config'
 
 export default defineNaviroxConfig({
   source: {
@@ -666,7 +666,7 @@ Examples:
 
 # 19. Build architecture
 
-`@navirox/build` should call a build provider.
+`@memolabs-apps/build` should call a build provider.
 
 Concept:
 
@@ -700,10 +700,10 @@ The current Vue SFC transform is still valuable for the existing runtime path.
 Possible long-term outcome:
 
 ```text
-@navirox/metro-preset
+@memolabs-apps/metro-preset
   = compatibility alias / runtime build preset
 
-@navirox/source-vue
+@memolabs-apps/source-vue
   = source analysis adapter
 ```
 

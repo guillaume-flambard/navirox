@@ -6,14 +6,14 @@ none exists. That is the honest answer and it is also the biggest single block o
 ignorance in the product, because a team's real question about a web project is
 usually about its dependencies.
 
-`@navirox/compat` has been a declared surface since the beginning and has never
+`@memolabs-apps/compat` has been a declared surface since the beginning and has never
 held a fact. This change gives it one, and makes the planner read it, so the
 unknown block shrinks by exactly as much as the evidence justifies and not one
 package more.
 
 ## What Changes
 
-- Implement `@navirox/compat`: the compatibility record model, the closed status
+- Implement `@memolabs-apps/compat`: the compatibility record model, the closed status
   and evidence sets, a declared seed of facts this repository can actually
   support, and a deterministic lookup.
 - Add a compatibility rule to the planner, at the rule layer reserved for it, so a

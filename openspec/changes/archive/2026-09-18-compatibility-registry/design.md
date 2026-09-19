@@ -1,7 +1,7 @@
 ## Context
 
 The planner exists, the plan is deterministic, and every dependency in it is
-unknown for one reason. `@navirox/compat` has been a declared surface since the
+unknown for one reason. `@memolabs-apps/compat` has been a declared surface since the
 first commit of the repositioning and has never contained a fact, so the reason is
 real rather than a shortcut.
 

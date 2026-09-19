@@ -1,5 +1,5 @@
 {
-  "name": "@navirox/source-solid",
+  "name": "@memolabs-apps/source-solid",
   "version": "0.1.0",
   "description": "The Solid source adapter: components, stores and the router's two declared shapes.",
   "license": "MIT",
@@ -25,9 +25,9 @@
     "clean": "rm -rf dist"
   },
   "dependencies": {
-    "@navirox/graph": "workspace:*",
-    "@navirox/source": "workspace:*",
-    "@navirox/source-react": "workspace:*"
+    "@memolabs-apps/graph": "workspace:*",
+    "@memolabs-apps/source": "workspace:*",
+    "@memolabs-apps/source-react": "workspace:*"
   },
   "devDependencies": {
     "@types/node": "^26.6.1",

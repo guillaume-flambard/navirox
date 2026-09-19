@@ -1,4 +1,4 @@
-import { stripComments } from '@navirox/source'
+import { stripComments } from '@memolabs-apps/source'
 
 /**
  * What a Qwik module declares, in the terms the framework itself uses.

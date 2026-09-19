@@ -1,7 +1,7 @@
 import { createSSRApp, h, type Component, type InjectionKey } from 'vue'
 import { renderToString } from 'vue/server-renderer'
-import { RUNTIME_INJECTION_KEY, type NativeRuntime } from '@navirox/runtime'
-import { createStubRuntime } from '@navirox/runtime/stub'
+import { RUNTIME_INJECTION_KEY, type NativeRuntime } from '@memolabs-apps/runtime'
+import { createStubRuntime } from '@memolabs-apps/runtime/stub'
 import { describe, expect, it } from 'vitest'
 import {
   createComponentSurface,
@@ -11,7 +11,7 @@ import {
 } from './index.js'
 
 /**
- * The seam contract, which the plan calls Proof B: `@navirox/ui` compiles and
+ * The seam contract, which the plan calls Proof B: `@memolabs-apps/ui` compiles and
  * works against a runtime the seam itself supplies, with no renderer anywhere in
  * this file or in the graph behind it.
  *

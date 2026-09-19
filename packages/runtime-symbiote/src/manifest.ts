@@ -1,13 +1,13 @@
-import type { Platform } from '@navirox/runtime'
+import type { Platform } from '@memolabs-apps/runtime'
 import manifestJson from './runtime.json' with { type: 'json' }
 
 /**
  * The runtime manifest: the passive description of what this adapter is and what
  * it was built against. It is the single source of truth shared by
- * `@navirox/compat` and `navirox doctor`, so the adapter and the compatibility
+ * `@memolabs-apps/compat` and `navirox doctor`, so the adapter and the compatibility
  * registry cannot drift apart.
  *
- * It ships as real, readable JSON at `@navirox/runtime-symbiote/runtime.json` so
+ * It ships as real, readable JSON at `@memolabs-apps/runtime-symbiote/runtime.json` so
  * tooling reads the same bytes this module imports.
  */
 export interface RuntimeManifest {

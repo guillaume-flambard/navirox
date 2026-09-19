@@ -1,4 +1,4 @@
-import { emptyGraphFragment } from '@navirox/graph'
+import { emptyGraphFragment } from '@memolabs-apps/graph'
 import { describe, expect, it } from 'vitest'
 
 import {

@@ -7,7 +7,7 @@ import {
   missingRemedies,
   PreflightError,
   type IProbe,
-} from '@navirox/doctor'
+} from '@memolabs-apps/doctor'
 import {
   createNodeRunner,
   METRO_READY_TIMEOUT_MS,

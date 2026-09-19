@@ -1,5 +1,5 @@
-import type { AppGraph, FindingSeverity, SourceDescriptor } from '@navirox/graph'
-import type { SupportLevel } from '@navirox/source'
+import type { AppGraph, FindingSeverity, SourceDescriptor } from '@memolabs-apps/graph'
+import type { SupportLevel } from '@memolabs-apps/source'
 
 /** The report schema version. A reader decides it can read a report with this. */
 export const INSPECT_REPORT_SCHEMA_VERSION = 1

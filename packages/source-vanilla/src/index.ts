@@ -1,9 +1,9 @@
-import type { SourceAdapter } from '@navirox/source'
+import type { SourceAdapter } from '@memolabs-apps/source'
 import { ADAPTER_ID, DISPLAY_NAME, FRAMEWORK, TESTED_VERSIONS, detect } from './detect.js'
 import { buildGraph } from './graph.js'
 import { inspect } from './inspect.js'
 
-export const PACKAGE_NAME = '@navirox/source-vanilla'
+export const PACKAGE_NAME = '@memolabs-apps/source-vanilla'
 export const PACKAGE_ROLE =
   'The vanilla HTML/CSS/JS source adapter: documents as routes, modules as units, and the absences of a framework reported as absences.'
 

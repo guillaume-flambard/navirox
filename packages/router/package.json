@@ -1,5 +1,5 @@
 {
-  "name": "@navirox/router",
+  "name": "@memolabs-apps/router",
   "version": "0.1.0",
   "description": "File-based routing plus a generated, fully typed route manifest.",
   "license": "MIT",
@@ -25,7 +25,7 @@
     "clean": "rm -rf dist"
   },
   "dependencies": {
-    "@navirox/runtime": "workspace:*"
+    "@memolabs-apps/runtime": "workspace:*"
   },
   "devDependencies": {
     "@types/node": "^26.6.1",

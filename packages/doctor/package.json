@@ -1,5 +1,5 @@
 {
-  "name": "@navirox/doctor",
+  "name": "@memolabs-apps/doctor",
   "version": "0.1.0",
   "description": "Environment and dependency diagnostics behind `navirox doctor`.",
   "license": "MIT",

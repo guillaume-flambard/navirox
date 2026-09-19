@@ -1,11 +1,11 @@
 ## 1. Add the Astro adapter
 
-- [x] 1.1 Create `packages/source-astro` as `@navirox/source-astro`, version
-  `0.0.0`, depending on `@navirox/graph`, `@navirox/source`,
-  `@navirox/source-vue`, `@navirox/source-react` and `@navirox/source-svelte`,
+- [x] 1.1 Create `packages/source-astro` as `@memolabs-apps/source-astro`, version
+  `0.0.0`, depending on `@memolabs-apps/graph`, `@memolabs-apps/source`,
+  `@memolabs-apps/source-vue`, `@memolabs-apps/source-react` and `@memolabs-apps/source-svelte`,
   all as `workspace:*`, with the package conventions of the repository and a
   `tsconfig.json` referencing those five packages. Verify with
-  `corepack pnpm install` then `corepack pnpm --filter @navirox/source-astro build`.
+  `corepack pnpm install` then `corepack pnpm --filter @memolabs-apps/source-astro build`.
 - [x] 1.2 Write the detection: one candidate at high confidence when the
   manifest declares `astro`, with evidence naming the manifest and the range, no
   candidate when it does not, and no candidate when the manifest declares a
@@ -39,9 +39,9 @@
 ## 2. Extend the gate
 
 - [x] 2.1 Register the adapter in `SOURCE_ADAPTER_PACKAGES` and add
-  `@navirox/source-astro` to the dependencies of `packages/cli`, then extend the
+  `@memolabs-apps/source-astro` to the dependencies of `packages/cli`, then extend the
   composition root assertion to the eight adapters in alphabetical order.
-  Verify with `corepack pnpm --filter @navirox/cli test`.
+  Verify with `corepack pnpm --filter @memolabs-apps/cli test`.
 - [x] 2.2 Add a gate test proving selection prefers Astro over Vue for a project
   that declares both, on the model of the SvelteKit selection test. Verify that
   the test fails if the ASTRO adapter drops `composes`.
@@ -55,7 +55,7 @@
 
 - [x] 3.1 Add `./packages/source-astro` to the references of the root
   `tsconfig.json` and check the lockfile is current after `corepack pnpm install`.
-- [x] 3.2 Update `README.md`: a row for `@navirox/source-astro` in the package
+- [x] 3.2 Update `README.md`: a row for `@memolabs-apps/source-astro` in the package
   table, the adapter count in the source support prose, and an Astro row in the
   support matrix that claims detection and inspection only, at Experimental.
 - [x] 3.3 Write `docs/evidence/astro-gate-reading.md` recording the measured

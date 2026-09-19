@@ -20,7 +20,7 @@ nothing.
 
 ## What Changes
 
-- A new package, `@navirox/source-vanilla`, a base adapter with no composition.
+- A new package, `@memolabs-apps/source-vanilla`, a base adapter with no composition.
 - Detection that claims a project only when the manifest declares no known source
   framework and the project contains an HTML document. The list of known frameworks is
   the one the neutral boundary already declares, so the list that keeps frameworks out
@@ -53,8 +53,8 @@ field, and no neutral package is touched.
 
 ## Impact
 
-- New package `packages/source-vanilla` (dependencies `@navirox/graph`,
-  `@navirox/source` and `@navirox/source-react` for the inherited refusal).
+- New package `packages/source-vanilla` (dependencies `@memolabs-apps/graph`,
+  `@memolabs-apps/source` and `@memolabs-apps/source-react` for the inherited refusal).
 - `packages/cli` gains one line in the composition root and one dependency, which takes
   the registry to twelve adapters, and `packages/cli/src/adapters.test.ts` gains a block.
 - `tsconfig.json`, `tsconfig.json` references, `pnpm-lock.yaml`, the README and

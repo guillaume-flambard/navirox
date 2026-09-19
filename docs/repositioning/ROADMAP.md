@@ -24,7 +24,7 @@ Exit:
 # Stage B — Vue becomes Adapter #1
 
 Deliver:
-- `@navirox/source-vue`;
+- `@memolabs-apps/source-vue`;
 - Vue detection;
 - graph extraction;
 - generic inspect flow;
@@ -40,7 +40,7 @@ Exit:
 # Stage C — Nuxt migration intelligence
 
 Deliver:
-- `@navirox/source-nuxt`;
+- `@memolabs-apps/source-nuxt`;
 - route/page/layout discovery;
 - composable analysis;
 - Nuxt browser/server boundary findings;

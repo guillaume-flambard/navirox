@@ -7,7 +7,7 @@ by carrying one.
 ## Commission
 
 ```
-pnpm --filter @navirox/cli test
+pnpm --filter @memolabs-apps/cli test
 ```
 
 The comparison is `packages/cli/src/adapters.test.ts`. It builds the registry
@@ -17,7 +17,7 @@ reports to one shape.
 
 ## What the gate asserts
 
-- Both fixtures are inspected through `@navirox/inspect` with no adapter
+- Both fixtures are inspected through `@memolabs-apps/inspect` with no adapter
   specific code path.
 - The two reports agree on the shape of the graph: the same node collections, the
   same set of unit kinds, the same set of keys present on a unit node, the same
@@ -59,7 +59,7 @@ the change.
 
 ## What the second adapter does and does not do
 
-`@navirox/source-svelte` detects, discovers components, store modules and
+`@memolabs-apps/source-svelte` detects, discovers components, store modules and
 capability use, reports dependencies, enforces its tested version range, and
 reports the constructs it does not model (Svelte 4 syntax, raw HTML insertion, the
 `svelte:` namespace).
@@ -70,7 +70,7 @@ a component contains rather than rejecting a malformed one. That is a narrower
 claim than the Vue adapter makes, and it is stated in the adapter's own
 documentation rather than left for a user to discover.
 
-`@navirox/source-sveltekit` composes the Svelte adapter for everything except
+`@memolabs-apps/source-sveltekit` composes the Svelte adapter for everything except
 routing, and contributes the routing the framework documents: one route per
 `+page.svelte`, with a nested directory becoming a path and a bracketed segment
 becoming a parameter. Server pages, layouts, error pages and endpoints are

@@ -62,12 +62,12 @@ The identifier SHALL be derived from the path of the file the component came fro
 
 ### Requirement: The registration is delivered by the package that owns the Vue build integration
 
-The plugin SHALL be exported by `@navirox/metro-preset`, and the application's Babel configuration SHALL be the place it is enabled. No component SHALL carry the registration in its own source.
+The plugin SHALL be exported by `@memolabs-apps/metro-preset`, and the application's Babel configuration SHALL be the place it is enabled. No component SHALL carry the registration in its own source.
 
 #### Scenario: the shipped and scaffolded apps enable it in their Babel configuration
 
 - **WHEN** the example application and an application produced by the scaffolder are built
-- **THEN** each takes the plugin from `@navirox/metro-preset` in its `babel.config.js`
+- **THEN** each takes the plugin from `@memolabs-apps/metro-preset` in its `babel.config.js`
 
 #### Scenario: a real bundle contains the registration
 

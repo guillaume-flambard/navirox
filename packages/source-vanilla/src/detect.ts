@@ -1,6 +1,6 @@
-import type { DetectionCandidate, DetectionContext, DetectionResult } from '@navirox/source'
-import { SOURCE_FRAMEWORK_PATTERNS, matchesPattern, readManifest } from '@navirox/source'
-import { declaredNames, nativeDeclarations } from '@navirox/source-react'
+import type { DetectionCandidate, DetectionContext, DetectionResult } from '@memolabs-apps/source'
+import { SOURCE_FRAMEWORK_PATTERNS, matchesPattern, readManifest } from '@memolabs-apps/source'
+import { declaredNames, nativeDeclarations } from '@memolabs-apps/source-react'
 
 /**
  * This is the only adapter that claims a project by what it does not declare, so it has to be

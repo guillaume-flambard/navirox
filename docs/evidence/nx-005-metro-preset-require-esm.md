@@ -5,7 +5,7 @@ module graph, not inferred from documentation.
 
 ## The dependency being verified
 
-`@navirox/metro-preset` is ESM (`"type": "module"`, `dist/index.js`). A Navirox app's
+`@memolabs-apps/metro-preset` is ESM (`"type": "module"`, `dist/index.js`). A Navirox app's
 `metro.config.js` is CommonJS, because that is what Metro loads. The preset is therefore
 reached through Node's `require(esm)` support, which was unflagged in Node 22.12 and is
 stable from 22.13. Navirox's own `engines.node` floor is `>=22.13.0`, so the dependency
@@ -22,7 +22,7 @@ From `packages/metro-preset`, in a CommonJS context:
 
 ```bash
 node --input-type=commonjs -e "
-const m = require('@navirox/metro-preset');
+const m = require('@memolabs-apps/metro-preset');
 console.log('exports:', Object.keys(m).sort().join(', '));
 const c = m.withNavirox({ resolver: { sourceExts: ['js','ts'] } });
 console.log('sourceExts:', c.resolver.sourceExts.join(','));
@@ -50,7 +50,7 @@ Three things at once, none of which the source alone could establish:
    six Navirox extensions appended in a stable order out.
 3. **The pin is what runs.** `symbioteVueTransformerPath()` resolves across a package
    boundary into the `@symbiote-native/vue@2.0.0` copy that
-   `@navirox/runtime-symbiote` pins, inside `node_modules/.pnpm/`, and the resolved file
+   `@memolabs-apps/runtime-symbiote` pins, inside `node_modules/.pnpm/`, and the resolved file
    exists. The transformer an app runs is the one the adapter was built against, not a
    hoisted or independently resolved stranger. This is the exact-pin rule paying off
    at build time rather than only at install time.
@@ -62,7 +62,7 @@ The resolution happens from the adapter's own tree (`createRequire(import.meta.u
 
 `PLAN.md` line 180 states the hard rule: the toolchain plane must not import Symbiote,
 only the runtime layer may. The preset sits in the toolchain plane, so it cannot name
-`@navirox/runtime-symbiote`'s transformer specifier, let alone a `@symbiote-native/*`
+`@memolabs-apps/runtime-symbiote`'s transformer specifier, let alone a `@symbiote-native/*`
 one.
 
 The resolution is that **the adapter declares its build-time requirements and the preset

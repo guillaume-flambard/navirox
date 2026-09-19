@@ -13,7 +13,7 @@ no adapter, so the report is empty.
 
 ## What Changes
 
-- Add `@navirox/source-react`: detection, component discovery, state modules,
+- Add `@memolabs-apps/source-react`: detection, component discovery, state modules,
   routes from a router configuration, the shared capability scan, dependencies,
   and findings for what it does not model.
 - Detection refuses a project that declares the native runtime, because a React

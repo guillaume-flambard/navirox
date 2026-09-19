@@ -1,12 +1,12 @@
-import type { Finding, SourceLocation } from '@navirox/graph'
-import { findingId } from '@navirox/graph'
+import type { Finding, SourceLocation } from '@memolabs-apps/graph'
+import { findingId } from '@memolabs-apps/graph'
 import type {
   DiscoveredCapability,
   DiscoveredDependency,
   DiscoveredUnit,
   InspectContext,
   SourceInspection,
-} from '@navirox/source'
+} from '@memolabs-apps/source'
 import {
   declaredMajor,
   declaredRange,
@@ -16,10 +16,10 @@ import {
   scanCapabilities,
   stripComments,
   testedMajors,
-} from '@navirox/source'
-import { createReactAdapter } from '@navirox/source-react'
-import { createSvelteAdapter } from '@navirox/source-svelte'
-import { createVueAdapter } from '@navirox/source-vue'
+} from '@memolabs-apps/source'
+import { createReactAdapter } from '@memolabs-apps/source-react'
+import { createSvelteAdapter } from '@memolabs-apps/source-svelte'
+import { createVueAdapter } from '@memolabs-apps/source-vue'
 
 import { ADAPTER_ID, COMPOSES, DISPLAY_NAME, FRAMEWORK, TESTED_VERSIONS } from './detect.js'
 import type { IslandReading } from './islands.js'

@@ -1,4 +1,4 @@
-# @navirox/graph
+# @memolabs-apps/graph
 
 ## 0.1.0
 

@@ -1,20 +1,20 @@
 import { describe, expect, it } from 'vitest'
-import { HAPTICS_MODULE_ID, SECURE_STORE_MODULE_ID } from '@navirox/runtime'
-import { createStubRuntime } from '@navirox/runtime/stub'
+import { HAPTICS_MODULE_ID, SECURE_STORE_MODULE_ID } from '@memolabs-apps/runtime'
+import { createStubRuntime } from '@memolabs-apps/runtime/stub'
 import { BUILT_ON, KNOWN_MODULES, PACKAGE_NAME, PACKAGE_ROLE, createNativeApi } from './index'
 
-describe('@navirox/native', () => {
+describe('@memolabs-apps/native', () => {
   it('has a stable package identity', () => {
-    expect(PACKAGE_NAME).toBe('@navirox/native')
+    expect(PACKAGE_NAME).toBe('@memolabs-apps/native')
     expect(PACKAGE_ROLE.length).toBeGreaterThan(0)
   })
 
   it('is built on the runtime seam, never on a concrete runtime', () => {
-    expect(BUILT_ON).toBe('@navirox/runtime')
+    expect(BUILT_ON).toBe('@memolabs-apps/runtime')
   })
 })
 
-describe('@navirox/native against the runtime seam (Proof B)', () => {
+describe('@memolabs-apps/native against the runtime seam (Proof B)', () => {
   it('resolves a module through the seam without any renderer present', () => {
     const impact = () => Promise.resolve()
     const runtime = createStubRuntime({ modules: { haptics: { impact } } })

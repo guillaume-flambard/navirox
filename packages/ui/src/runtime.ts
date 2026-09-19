@@ -1,5 +1,5 @@
-import { RUNTIME_INJECTION_KEY } from '@navirox/runtime'
-import type { NativeRuntime, NaviroxComponent } from '@navirox/runtime'
+import { RUNTIME_INJECTION_KEY } from '@memolabs-apps/runtime'
+import type { NativeRuntime, NaviroxComponent } from '@memolabs-apps/runtime'
 import { inject, type InjectionKey } from 'vue'
 
 /**
@@ -26,7 +26,7 @@ export function useRuntime(): NativeRuntime {
     throw new Error(
       'This component needs a Navirox runtime, and none was provided above it. ' +
         'A runtime provides itself when it mounts, so this component can only be used inside an app mounted by one. ' +
-        'If the app mounts through a runtime of its own, that runtime is responsible for providing itself under RUNTIME_INJECTION_KEY from @navirox/runtime.',
+        'If the app mounts through a runtime of its own, that runtime is responsible for providing itself under RUNTIME_INJECTION_KEY from @memolabs-apps/runtime.',
     )
   }
 

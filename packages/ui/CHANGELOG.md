@@ -1,4 +1,4 @@
-# @navirox/ui
+# @memolabs-apps/ui
 
 ## 0.1.0
 
@@ -11,4 +11,4 @@
 ### Patch Changes
 
 - Updated dependencies
-  - @navirox/runtime@0.1.0
+  - @memolabs-apps/runtime@0.1.0

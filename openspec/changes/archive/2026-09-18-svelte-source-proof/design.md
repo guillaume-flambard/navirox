@@ -41,7 +41,7 @@ of accident this change exists to find.
 
 ## Decisions
 
-**The capability scan moves into `@navirox/source`.** It describes browser APIs,
+**The capability scan moves into `@memolabs-apps/source`.** It describes browser APIs,
 both adapters need it, and its behaviour does not change in the move, which makes
 the move reviewable as a relocation rather than a rewrite. Alternative rejected:
 duplicating it in the Svelte adapter, which would have let the two adapters

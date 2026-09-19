@@ -1,14 +1,14 @@
-import type { AppGraphFragment, Finding } from '@navirox/graph'
-import { findingId } from '@navirox/graph'
-import type { InspectContext, SourceInspection } from '@navirox/source'
+import type { AppGraphFragment, Finding } from '@memolabs-apps/graph'
+import { findingId } from '@memolabs-apps/graph'
+import type { InspectContext, SourceInspection } from '@memolabs-apps/source'
 import {
   buildFragment,
   declaredMajor,
   declaredRange,
   readManifest,
   testedMajors,
-} from '@navirox/source'
-import { createVueAdapter } from '@navirox/source-vue'
+} from '@memolabs-apps/source'
+import { createVueAdapter } from '@memolabs-apps/source-vue'
 import type { FindingDraft, PageMetadata } from './conventions.js'
 import {
   CLIENT_COMPONENT_SUFFIX,

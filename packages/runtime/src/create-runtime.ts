@@ -48,7 +48,7 @@ export function assertNativeRuntime(value: unknown): asserts value is NativeRunt
   if (problems.length > 0) {
     throw new TypeError(
       `Invalid Navirox runtime: ${problems.join(', ')}. ` +
-        'A runtime must implement the NativeRuntime interface from @navirox/runtime.',
+        'A runtime must implement the NativeRuntime interface from @memolabs-apps/runtime.',
     )
   }
 }

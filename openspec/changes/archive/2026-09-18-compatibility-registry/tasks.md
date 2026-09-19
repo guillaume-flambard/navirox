@@ -2,7 +2,7 @@
 
 - [x] 1.1 Implement the record model: the subject shape, the closed status set, the
       closed evidence level set, evidence with a source, and notes. Verify with
-      `pnpm --filter @navirox/compat build`.
+      `pnpm --filter @memolabs-apps/compat build`.
 - [x] 1.2 Author the seed as data, limited to facts the acceptance application
       demonstrates, each naming where the demonstration lives. The seed is written
       as typed data in the package and re-validated by the same loader as any

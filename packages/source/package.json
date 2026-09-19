@@ -1,5 +1,5 @@
 {
-  "name": "@navirox/source",
+  "name": "@memolabs-apps/source",
   "version": "0.1.0",
   "description": "The source adapter contract, the adapter registry, and the framework import boundary that keeps the core neutral.",
   "license": "MIT",
@@ -25,7 +25,7 @@
     "clean": "rm -rf dist"
   },
   "dependencies": {
-    "@navirox/graph": "workspace:*"
+    "@memolabs-apps/graph": "workspace:*"
   },
   "devDependencies": {
     "@types/node": "^26.6.1",

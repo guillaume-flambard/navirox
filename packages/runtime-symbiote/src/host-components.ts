@@ -1,4 +1,4 @@
-import type { HostComponent, Platform } from '@navirox/runtime'
+import type { HostComponent, Platform } from '@memolabs-apps/runtime'
 
 /**
  * The shape of one entry in `@symbiote-native/components/host-primitives`, which

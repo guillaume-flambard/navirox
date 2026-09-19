@@ -1,6 +1,10 @@
 import { fileURLToPath } from 'node:url'
-import { SourceAdapterRegistry, createProjectFiles, verifyAdapterContract } from '@navirox/source'
-import { createSvelteAdapter } from '@navirox/source-svelte'
+import {
+  SourceAdapterRegistry,
+  createProjectFiles,
+  verifyAdapterContract,
+} from '@memolabs-apps/source'
+import { createSvelteAdapter } from '@memolabs-apps/source-svelte'
 import { describe, expect, it } from 'vitest'
 import { buildGraph, createSvelteKitAdapter, detect, routePattern } from './index'
 

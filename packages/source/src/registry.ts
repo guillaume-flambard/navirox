@@ -1,4 +1,4 @@
-import type { Evidence } from '@navirox/graph'
+import type { Evidence } from '@memolabs-apps/graph'
 
 import type {
   DetectionCandidate,

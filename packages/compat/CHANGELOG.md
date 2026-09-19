@@ -1,4 +1,4 @@
-# @navirox/compat
+# @memolabs-apps/compat
 
 ## 0.1.0
 

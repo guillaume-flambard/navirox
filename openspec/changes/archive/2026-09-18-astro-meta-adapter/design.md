@@ -100,7 +100,7 @@ and the Astro documentation asks for extra configuration to tell them apart.
 
 **Two values of data are added to the neutral package.** `.astro` joins the
 source extensions and `astro.config.mjs` joins the configuration names in
-`@navirox/source`. Both are lists that a framework adds a value to rather than a
+`@memolabs-apps/source`. Both are lists that a framework adds a value to rather than a
 branch, which is the shape the file already documents.
 
 Contract questions from the AGENT-GUIDE:

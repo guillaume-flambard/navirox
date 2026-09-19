@@ -1,4 +1,4 @@
-# @navirox/build
+# @memolabs-apps/build
 
 ## 0.1.0
 

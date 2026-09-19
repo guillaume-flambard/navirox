@@ -1,4 +1,4 @@
-# @navirox/runtime
+# @memolabs-apps/runtime
 
 ## 0.1.0
 

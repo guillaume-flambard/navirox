@@ -1,4 +1,4 @@
-import type { NativeModuleRegistry } from '@navirox/runtime'
+import type { NativeModuleRegistry } from '@memolabs-apps/runtime'
 
 /**
  * The native module registry, supplied by the app.
@@ -9,7 +9,7 @@ import type { NativeModuleRegistry } from '@navirox/runtime'
  * plain imports. So the only honest source for this list is the application,
  * which knows what it installed.
  *
- * The value is that the seam gets a single, queryable answer: `@navirox/native`
+ * The value is that the seam gets a single, queryable answer: `@memolabs-apps/native`
  * can report exactly which of the modules an app expects are actually present,
  * instead of failing deep inside a render.
  */

@@ -27,11 +27,11 @@ tooling and the docs. Both seams are replaceable by design.
 
 ## Hard architectural rules
 
-1. **`@navirox/runtime-symbiote` is the only package allowed to import
+1. **`@memolabs-apps/runtime-symbiote` is the only package allowed to import
    `@symbiote-native/*`**, `react-native`, or anything else from the Fabric host.
-   Every other package depends on the seam in `@navirox/runtime`, never on a
+   Every other package depends on the seam in `@memolabs-apps/runtime`, never on a
    particular implementation of it.
-2. **Applications import only `@navirox/*`.** Zero `@symbiote-native/*` imports
+2. **Applications import only `@memolabs-apps/*`.** Zero `@symbiote-native/*` imports
    in app code. This is Proof B in `PLAN.md` section 8 and it is enforced by an
    import-boundary test, not by convention.
 3. **The dependency direction is one way.**
@@ -40,7 +40,7 @@ tooling and the docs. Both seams are replaceable by design.
    must not reach Symbiote at all. Cycles back into the renderer are the failure
    mode this whole layout exists to prevent.
 4. **Never re-export a Symbiote type, class, component or prop name** from a
-   public `@navirox/*` package. Our public API is ours. If a Symbiote concept
+   public `@memolabs-apps/*` package. Our public API is ours. If a Symbiote concept
    leaks into our types, the engine stops being swappable.
 5. **Do not promise 100% shared UI.** The shared layer is types, API clients,
    validation, business rules, stores and composables. The view layer is
@@ -51,7 +51,7 @@ tooling and the docs. Both seams are replaceable by design.
    `source` outside the adapters, `compat`, `inspect`, `migrate`, `config`,
    `build`, `doctor`, `cli`) must never import a source framework or its compiler
    packages, and a source adapter must never import a target provider. The
-   forbidden list is declared once, in `@navirox/source`, and a static check
+   forbidden list is declared once, in `@memolabs-apps/source`, and a static check
    fails the build when a neutral package reaches across the line. The same
    reasoning as rule 1, applied to the other seam.
 

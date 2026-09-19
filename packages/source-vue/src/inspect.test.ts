@@ -1,5 +1,5 @@
 import { fileURLToPath } from 'node:url'
-import { createProjectFiles } from '@navirox/source'
+import { createProjectFiles } from '@memolabs-apps/source'
 import { describe, expect, it } from 'vitest'
 import { inspect } from './index'
 

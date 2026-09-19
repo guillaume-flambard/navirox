@@ -98,9 +98,9 @@ directions rather than smoothed over:
 
 | Command                                              | Result                           |
 | ---------------------------------------------------- | -------------------------------- |
-| `corepack pnpm --filter @navirox/source-vanilla build` | `tsc --build`, no output       |
-| `corepack pnpm --filter @navirox/source-vanilla test`  | 21 passed (1 file)             |
-| `corepack pnpm --filter @navirox/cli test`             | 89 passed (7 files, twelve adapters registered) |
+| `corepack pnpm --filter @memolabs-apps/source-vanilla build` | `tsc --build`, no output       |
+| `corepack pnpm --filter @memolabs-apps/source-vanilla test`  | 21 passed (1 file)             |
+| `corepack pnpm --filter @memolabs-apps/cli test`             | 89 passed (7 files, twelve adapters registered) |
 | `corepack pnpm build` / `typecheck` / `test`           | 29 / 54 / 53 tasks successful  |
 | `corepack pnpm lint` / `format:check` / `deps:check`   | no output / clean / no issues  |
 | Detox journey, canary untouched                        | 4/4 Android, 4/4 iOS           |

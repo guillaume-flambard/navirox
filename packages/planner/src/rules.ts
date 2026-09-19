@@ -1,4 +1,4 @@
-import type { AppGraph, NodeId } from '@navirox/graph'
+import type { AppGraph, NodeId } from '@memolabs-apps/graph'
 import type { Confidence, MigrationClass } from './classes.js'
 
 /**

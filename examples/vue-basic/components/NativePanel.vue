@@ -1,7 +1,7 @@
 <!--
   The native API half of the canary: haptics and secure storage.
 
-  Both come from @navirox/native, which resolves them out of the runtime instead
+  Both come from @memolabs-apps/native, which resolves them out of the runtime instead
   of importing a provider, so this file names no third party package and no
   renderer. The two providers are declared in the app's manifest because that is
   the manifest React Native's autolinking reads, and the adapter is what imports
@@ -17,7 +17,7 @@
   kept outside the process, which is the only thing a secure store is for.
 -->
 <script setup lang="ts">
-import { useHaptics, useSecureStore } from '@navirox/native';
+import { useHaptics, useSecureStore } from '@memolabs-apps/native';
 import { onMounted, ref } from 'vue';
 
 /** The key this app stores its timestamp under, in the keychain's own terms. */

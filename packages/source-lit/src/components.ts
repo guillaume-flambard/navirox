@@ -1,4 +1,4 @@
-import { stripComments } from '@navirox/source'
+import { stripComments } from '@memolabs-apps/source'
 
 /**
  * A Lit component is a custom element: a class the browser registers under a tag name, with its

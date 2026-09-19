@@ -387,20 +387,20 @@ The target is not required to be codegen-based.
 Current valuable pattern:
 
 ```text
-@navirox/ui
-@navirox/native
-@navirox/router
+@memolabs-apps/ui
+@memolabs-apps/native
+@memolabs-apps/router
         ↓
-@navirox/runtime
+@memolabs-apps/runtime
         ↓
-@navirox/runtime-symbiote
+@memolabs-apps/runtime-symbiote
         ↓
 Symbiote
 ```
 
 Keep it.
 
-Do not push source-framework knowledge into `@navirox/runtime`.
+Do not push source-framework knowledge into `@memolabs-apps/runtime`.
 
 Runtime contracts should stay concerned with mobile execution capabilities.
 
@@ -413,7 +413,7 @@ Recommended shape:
 ```text
 packages/
   source/
-    core/            or @navirox/source
+    core/            or @memolabs-apps/source
     vue/
     nuxt/
     svelte/          later
@@ -424,11 +424,11 @@ packages/
 Package naming may be flattened for publishing:
 
 ```text
-@navirox/source
-@navirox/source-vue
-@navirox/source-nuxt
-@navirox/source-svelte
-@navirox/source-angular
+@memolabs-apps/source
+@memolabs-apps/source-vue
+@memolabs-apps/source-nuxt
+@memolabs-apps/source-svelte
+@memolabs-apps/source-angular
 ```
 
 Do not rename working packages merely to achieve a pretty directory tree. Introduce the seam first.
@@ -437,7 +437,7 @@ Do not rename working packages merely to achieve a pretty directory tree. Introd
 
 # 11. Current package evolution
 
-## `@navirox/runtime`
+## `@memolabs-apps/runtime`
 
 Keep.
 Role:
@@ -445,43 +445,43 @@ Role:
 - provider registry;
 - native execution abstractions.
 
-## `@navirox/runtime-symbiote`
+## `@memolabs-apps/runtime-symbiote`
 
 Keep.
 Role:
 - only Symbiote edge;
 - current runtime provider.
 
-## `@navirox/ui`
+## `@memolabs-apps/ui`
 
 Keep.
 Role:
 - stable target/native UI surface;
 - no source-framework compiler knowledge.
 
-## `@navirox/native`
+## `@memolabs-apps/native`
 
 Keep.
 Role:
 - stable native capability surface.
 
-## `@navirox/router`
+## `@memolabs-apps/router`
 
 Keep, but separate:
 - target navigation API;
 - source-route discovery belongs in source adapters.
 
-## `@navirox/metro-preset`
+## `@memolabs-apps/metro-preset`
 
 Short term: keep as current Vue build integration.
 
 Long term:
 - either becomes explicitly Vue/runtime-specific;
-- or is consumed by `@navirox/source-vue` / runtime tooling.
+- or is consumed by `@memolabs-apps/source-vue` / runtime tooling.
 
 Do not generalize Metro itself into the source seam.
 
-## `@navirox/inspect`
+## `@memolabs-apps/inspect`
 
 Promote into a generic orchestrator:
 - select source adapter;
@@ -491,7 +491,7 @@ Promote into a generic orchestrator:
 - call migration planner;
 - render report.
 
-## `@navirox/migrate`
+## `@memolabs-apps/migrate`
 
 Promote into generic migration orchestrator:
 - source-specific transforms from adapter;
@@ -499,21 +499,21 @@ Promote into generic migration orchestrator:
 - target transforms from target provider;
 - migration state tracking.
 
-## `@navirox/compat`
+## `@memolabs-apps/compat`
 
 Promote into source-neutral compatibility engine.
 
-## `@navirox/doctor`
+## `@memolabs-apps/doctor`
 
 Keep source-neutral where possible.
 May call source adapters for source-specific diagnostics.
 
-## `@navirox/build`
+## `@memolabs-apps/build`
 
 Target-provider orchestrator.
 Must not assume EAS or Symbiote identity.
 
-## `@navirox/config`
+## `@memolabs-apps/config`
 
 Expand carefully.
 
@@ -554,7 +554,7 @@ Vue Router/Nuxt route discovery
 Vue composable analysis
 Vue browser API patterns
         ↓
-@navirox/source-vue
+@memolabs-apps/source-vue
 ```
 
 Nuxt-specific knowledge:
@@ -569,7 +569,7 @@ useAsyncData
 Nuxt auto-imports
 runtime config
         ↓
-@navirox/source-nuxt
+@memolabs-apps/source-nuxt
 ```
 
 The Nuxt adapter can compose the Vue adapter.

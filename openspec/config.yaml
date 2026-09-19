@@ -23,17 +23,17 @@ context: |
   - the source seam, being added now: source frameworks -> source adapters ->
     the framework-neutral core (graph, planner, compat, inspect, migrate)
   - the runtime seam, already working and preserved: the public mobile surface ->
-    @navirox/runtime -> @navirox/runtime-symbiote -> Symbiote / Fabric
+    @memolabs-apps/runtime -> @memolabs-apps/runtime-symbiote -> Symbiote / Fabric
 
   Hard architectural rules:
   - no framework-neutral core package may import a source framework (vue, nuxt,
     svelte, angular, react, astro or their compiler packages); framework imports
     belong in source-* adapters
-  - only @navirox/runtime-symbiote may import @symbiote-native/*, react-native
+  - only @memolabs-apps/runtime-symbiote may import @symbiote-native/*, react-native
     or react
   - a source adapter never imports a target provider
   - never re-export a provider-specific type, class, component or prop name
-    through a public @navirox/* package
+    through a public @memolabs-apps/* package
   - a migration decision is never `portable` merely because the code parses;
     `unknown` and `manual` are valid results, and a compatibility claim requires
     evidence
@@ -44,7 +44,7 @@ context: |
   the root; syncpack for version drift; changesets for release.
 
   Package conventions: packages live under packages/<name> and are named
-  @navirox/<name> (create-navirox is the exception). Every package.json carries
+  @memolabs-apps/<name> (create-navirox is the exception). Every package.json carries
   version 0.0.0, license MIT, type module, engines node >= 22.13.0, main and
   types pointing into dist, an exports map, files ["dist"], the scripts build /
   typecheck / test / clean, and publishConfig access public. Dependencies that

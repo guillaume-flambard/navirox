@@ -1,4 +1,4 @@
-# @navirox/metro-preset
+# @memolabs-apps/metro-preset
 
 ## 0.1.0
 
@@ -11,4 +11,4 @@
 ### Patch Changes
 
 - Updated dependencies
-  - @navirox/runtime-symbiote@0.1.0
+  - @memolabs-apps/runtime-symbiote@0.1.0

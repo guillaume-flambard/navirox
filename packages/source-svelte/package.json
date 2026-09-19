@@ -1,5 +1,5 @@
 {
-  "name": "@navirox/source-svelte",
+  "name": "@memolabs-apps/source-svelte",
   "version": "0.1.0",
   "description": "The Svelte source adapter: detection, component inspection and App Graph construction for an existing Svelte application.",
   "license": "MIT",
@@ -25,8 +25,8 @@
     "clean": "rm -rf dist"
   },
   "dependencies": {
-    "@navirox/graph": "workspace:*",
-    "@navirox/source": "workspace:*"
+    "@memolabs-apps/graph": "workspace:*",
+    "@memolabs-apps/source": "workspace:*"
   },
   "devDependencies": {
     "@types/node": "^26.6.1",

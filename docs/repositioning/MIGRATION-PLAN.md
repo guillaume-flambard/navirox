@@ -26,17 +26,17 @@ Based on the current repository structure:
 - CI;
 - changesets;
 - TypeScript setup;
-- `@navirox/runtime`;
-- `@navirox/runtime-symbiote`;
+- `@memolabs-apps/runtime`;
+- `@memolabs-apps/runtime-symbiote`;
 - runtime boundary tests;
-- `@navirox/metro-preset`;
+- `@memolabs-apps/metro-preset`;
 - current SFC/native bootstrap path;
-- `@navirox/ui`;
-- `@navirox/native`;
-- `@navirox/router`;
+- `@memolabs-apps/ui`;
+- `@memolabs-apps/native`;
+- `@memolabs-apps/router`;
 - `create-navirox`;
-- `@navirox/cli`;
-- `@navirox/doctor`;
+- `@memolabs-apps/cli`;
+- `@memolabs-apps/doctor`;
 - current build evidence;
 - acceptance app;
 - declared packages for inspect/compat/migrate/build.
@@ -105,7 +105,7 @@ packages/source-core
 Prefer published package name:
 
 ```text
-@navirox/source
+@memolabs-apps/source
 ```
 
 ## Implement
@@ -141,7 +141,7 @@ Make Vue the first adapter without changing user behavior.
 Add:
 
 ```text
-@navirox/source-vue
+@memolabs-apps/source-vue
 ```
 
 Initially it may delegate to existing code.
@@ -172,7 +172,7 @@ selects `source-vue` through the registry.
 
 ## Goal
 
-Turn `@navirox/inspect` into an adapter orchestrator.
+Turn `@memolabs-apps/inspect` into an adapter orchestrator.
 
 Before:
 
@@ -199,7 +199,7 @@ inspect
 
 ## DoD
 
-No `vue` import in `@navirox/inspect`.
+No `vue` import in `@memolabs-apps/inspect`.
 
 ---
 
@@ -332,7 +332,7 @@ Prove universality.
 Build a deliberately limited adapter:
 
 ```text
-@navirox/source-svelte
+@memolabs-apps/source-svelte
 ```
 
 Support:
@@ -346,7 +346,7 @@ Support:
 Then:
 
 ```text
-@navirox/source-sveltekit
+@memolabs-apps/source-sveltekit
 ```
 
 Support:
@@ -455,24 +455,24 @@ Astro should delegate islands to those adapters where possible.
 
 | Current package | Action |
 |---|---|
-| `@navirox/runtime` | Keep |
-| `@navirox/runtime-symbiote` | Keep |
-| `@navirox/ui` | Keep |
-| `@navirox/native` | Keep |
-| `@navirox/router` | Keep; clarify target vs source routing responsibilities |
-| `@navirox/metro-preset` | Keep; treat as Vue/runtime build implementation |
-| `@navirox/cli` | Keep; make adapter-aware |
-| `@navirox/doctor` | Keep; source-neutral core |
-| `@navirox/inspect` | Generalize |
-| `@navirox/compat` | Generalize |
-| `@navirox/migrate` | Generalize |
-| `@navirox/build` | Generalize around providers |
-| `@navirox/config` | Extend |
+| `@memolabs-apps/runtime` | Keep |
+| `@memolabs-apps/runtime-symbiote` | Keep |
+| `@memolabs-apps/ui` | Keep |
+| `@memolabs-apps/native` | Keep |
+| `@memolabs-apps/router` | Keep; clarify target vs source routing responsibilities |
+| `@memolabs-apps/metro-preset` | Keep; treat as Vue/runtime build implementation |
+| `@memolabs-apps/cli` | Keep; make adapter-aware |
+| `@memolabs-apps/doctor` | Keep; source-neutral core |
+| `@memolabs-apps/inspect` | Generalize |
+| `@memolabs-apps/compat` | Generalize |
+| `@memolabs-apps/migrate` | Generalize |
+| `@memolabs-apps/build` | Generalize around providers |
+| `@memolabs-apps/config` | Extend |
 | `create-navirox` | Keep; later allow source detection / attach mode |
-| new `@navirox/source` | Add |
-| new `@navirox/source-vue` | Add |
-| new `@navirox/graph` | Add only if useful as separate package |
-| new `@navirox/planner` | Add only when logic justifies package |
+| new `@memolabs-apps/source` | Add |
+| new `@memolabs-apps/source-vue` | Add |
+| new `@memolabs-apps/graph` | Add only if useful as separate package |
+| new `@memolabs-apps/planner` | Add only when logic justifies package |
 
 ---
 

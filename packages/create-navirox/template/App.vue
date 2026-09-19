@@ -12,7 +12,7 @@
      instance, one writing and one reading. Pinia reaches the app through the
      runtime's `configure` seam, so nothing here imports the renderer.
   4. The native API proof. `NativePanel` calls haptics and the secure store
-     through @navirox/native, which resolves both from the runtime, so the panel
+     through @memolabs-apps/native, which resolves both from the runtime, so the panel
      names no provider and no renderer either. The providers themselves are
      declared in this app's manifest, which is what autolinking reads.
 
@@ -20,12 +20,12 @@
   `<text-input>`, `<scroll-view>` and `<image>` are lowercase because they are
   host primitives rather than components to import. `FlatList` is the exception,
   and it is not a primitive at all: a list virtualizes, so it owns state and the
-  renderer ships it as a component. It is imported from @navirox/ui, our façade
+  renderer ships it as a component. It is imported from @memolabs-apps/ui, our façade
   over whichever engine is underneath. Nothing here imports @symbiote-native/*:
   that is the point of the example.
 -->
 <script setup lang="ts">
-import { FlatList } from '@navirox/ui';
+import { FlatList } from '@memolabs-apps/ui';
 import CounterControls from './components/CounterControls.vue';
 import CounterReadout from './components/CounterReadout.vue';
 import NativePanel from './components/NativePanel.vue';

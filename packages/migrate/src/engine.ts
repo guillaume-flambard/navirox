@@ -1,7 +1,7 @@
 import { mkdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
 import { dirname, join, relative, resolve, sep } from 'node:path'
-import type { AppGraph, NodeId } from '@navirox/graph'
-import type { MigrationPlan } from '@navirox/planner'
+import type { AppGraph, NodeId } from '@memolabs-apps/graph'
+import type { MigrationPlan } from '@memolabs-apps/planner'
 import {
   MIGRATION_STATE_SCHEMA_VERSION,
   fingerprintOf,

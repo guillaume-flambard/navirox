@@ -1,4 +1,4 @@
-# @navirox/config
+# @memolabs-apps/config
 
 ## 0.1.0
 

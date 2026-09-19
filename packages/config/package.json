@@ -1,5 +1,5 @@
 {
-  "name": "@navirox/config",
+  "name": "@memolabs-apps/config",
   "version": "0.1.0",
   "description": "defineNaviroxConfig and its schema.",
   "license": "MIT",

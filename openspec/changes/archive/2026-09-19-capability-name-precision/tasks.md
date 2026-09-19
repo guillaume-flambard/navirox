@@ -15,7 +15,7 @@
 - [x] 2.1 In `packages/source/src/capabilities.test.ts`, add a test that a local
       variable named `location` reports nothing, and one that `window.location`
       still reports `url-navigation`. Verify with
-      `corepack pnpm --filter @navirox/source test`.
+      `corepack pnpm --filter @memolabs-apps/source test`.
 
 - [x] 2.2 Add a test that a bare `window.location` with no property to read the
       usage from reports `unknown`, so the fallback's purpose is asserted rather

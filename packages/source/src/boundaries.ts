@@ -45,11 +45,11 @@ export const SOURCE_FRAMEWORK_PATTERNS: readonly RegExp[] = [
  * is exactly what the seam exists to prevent.
  */
 export const TARGET_PROVIDER_PATTERNS: readonly RegExp[] = [
-  /^@navirox\/runtime(\/|$)/,
-  /^@navirox\/runtime-symbiote(\/|$)/,
-  /^@navirox\/ui(\/|$)/,
-  /^@navirox\/native(\/|$)/,
-  /^@navirox\/router(\/|$)/,
+  /^@memolabs-apps\/runtime(\/|$)/,
+  /^@memolabs-apps\/runtime-symbiote(\/|$)/,
+  /^@memolabs-apps\/ui(\/|$)/,
+  /^@memolabs-apps\/native(\/|$)/,
+  /^@memolabs-apps\/router(\/|$)/,
 ]
 
 /**

@@ -81,9 +81,9 @@ neutral model and would have to grow again for the next one.
 
 | Check                                  | Result                                                    |
 | -------------------------------------- | --------------------------------------------------------- |
-| `@navirox/source-solid` build          | `tsc --build`, no output                                  |
-| `@navirox/source-solid` tests          | 18 passed                                                 |
-| `@navirox/cli` tests (the gate)        | 78 passed, nine adapters registered                       |
+| `@memolabs-apps/source-solid` build          | `tsc --build`, no output                                  |
+| `@memolabs-apps/source-solid` tests          | 18 passed                                                 |
+| `@memolabs-apps/cli` tests (the gate)        | 78 passed, nine adapters registered                       |
 | Solid fixture inspection               | 8 units, 5 capabilities, 3 routes, no finding             |
 | Untested fixture                       | `version-untested` and a component, nothing invented      |
 | Identifier prefix                      | every node starts with `solid:`                           |

@@ -12,7 +12,7 @@ nothing has to happen to and puts them where the native application can use them
 
 ## What Changes
 
-- Implement `@navirox/migrate`: a migration state file, a transform pipeline with
+- Implement `@memolabs-apps/migrate`: a migration state file, a transform pipeline with
   declared families, and one generic transform that copies the units the plan
   called `shared` into a native workspace unchanged.
 - Idempotence: a unit already migrated at the same source fingerprint is skipped,

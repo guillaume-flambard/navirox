@@ -4,17 +4,17 @@
       `packages/source/src/types.ts`: units, capabilities, dependencies, routes,
       each a semantic type with a source location and no framework concept.
       Keep `descriptor` and `findings`. Verify with
-      `pnpm --filter @navirox/source typecheck`.
+      `pnpm --filter @memolabs-apps/source typecheck`.
 - [x] 1.2 Keep the boundary check green and the existing 24 tests passing, and
       add a test that an inspection with empty collections is valid. Verify with
-      `pnpm --filter @navirox/source test`.
+      `pnpm --filter @memolabs-apps/source test`.
 
 ## 2. Add the Vue adapter
 
-- [x] 2.1 Create `packages/source-vue` as `@navirox/source-vue`, depending on
-      `@navirox/graph`, `@navirox/source` and `@vue/compiler-sfc`, following the
+- [x] 2.1 Create `packages/source-vue` as `@memolabs-apps/source-vue`, depending on
+      `@memolabs-apps/graph`, `@memolabs-apps/source` and `@vue/compiler-sfc`, following the
       package conventions and referencing its two workspace dependencies in its
-      `tsconfig.json`. Verify with `pnpm --filter @navirox/source-vue build`.
+      `tsconfig.json`. Verify with `pnpm --filter @memolabs-apps/source-vue build`.
 - [x] 2.2 Implement detection: read the manifest, match a Vue dependency, return
       one candidate with evidence naming the manifest file and the dependency
       field, and return no candidate without throwing when there is no manifest.
@@ -48,13 +48,13 @@
 
 ## 3. Implement the neutral inspection pipeline
 
-- [x] 3.1 Give `@navirox/inspect` its dependencies on `@navirox/graph` and
-      `@navirox/source` and define the versioned report type: schema version,
+- [x] 3.1 Give `@memolabs-apps/inspect` its dependencies on `@memolabs-apps/graph` and
+      `@memolabs-apps/source` and define the versioned report type: schema version,
       source descriptor, summary counts and the assembled graph. Verify with
-      `pnpm --filter @navirox/inspect typecheck`.
+      `pnpm --filter @memolabs-apps/inspect typecheck`.
 - [x] 3.2 Implement the project file loader: a root directory, an ignore list
       covering dependency and build output, and deterministic file ordering and
-      text reading. It lives in `@navirox/source` as `createProjectFiles`, next
+      text reading. It lives in `@memolabs-apps/source` as `createProjectFiles`, next
       to the ignore list, because the adapter fixtures need the same walk and two
       walks would be two answers to what a project is. Verify with tests over a
       temporary project (the CLI tests in `packages/cli/src/inspect.test.ts`).
@@ -78,9 +78,9 @@
       pipeline and print through the existing writer, returning the exit code
       rather than calling the process. Verify with a test that injects a
       context, so the test does not depend on the real adapter being built.
-- [x] 4.3 Add the CLI dependencies on `@navirox/inspect` and
-      `@navirox/source-vue`. Verify with `pnpm install --lockfile-only` or
-      `pnpm install` and a clean `pnpm --filter @navirox/cli test`.
+- [x] 4.3 Add the CLI dependencies on `@memolabs-apps/inspect` and
+      `@memolabs-apps/source-vue`. Verify with `pnpm install --lockfile-only` or
+      `pnpm install` and a clean `pnpm --filter @memolabs-apps/cli test`.
 
 ## 5. Position the new support
 

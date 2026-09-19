@@ -1,4 +1,4 @@
-import type { DiscoveredRoute } from '@navirox/source'
+import type { DiscoveredRoute } from '@memolabs-apps/source'
 
 /**
  * Astro routes come from one directory, and that directory is a documented

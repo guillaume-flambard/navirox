@@ -1,4 +1,4 @@
-import type { CompatibilityRecord, CompatibilityRegistry } from '@navirox/compat'
+import type { CompatibilityRecord, CompatibilityRegistry } from '@memolabs-apps/compat'
 import type { MigrationClass } from './classes.js'
 import type { MigrationRule, RuleDecision } from './rules.js'
 

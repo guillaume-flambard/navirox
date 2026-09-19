@@ -1,5 +1,5 @@
 {
-  "name": "@navirox/planner",
+  "name": "@memolabs-apps/planner",
   "version": "0.1.0",
   "description": "The migration decision model, the rule engine and the generic rules that turn an App Graph into a plan.",
   "license": "MIT",
@@ -25,8 +25,8 @@
     "clean": "rm -rf dist"
   },
   "dependencies": {
-    "@navirox/compat": "workspace:*",
-    "@navirox/graph": "workspace:*"
+    "@memolabs-apps/compat": "workspace:*",
+    "@memolabs-apps/graph": "workspace:*"
   },
   "devDependencies": {
     "@types/node": "^26.6.1",

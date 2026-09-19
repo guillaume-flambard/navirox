@@ -1,6 +1,6 @@
 import { resolve } from 'node:path'
-import type { IDoctorDeps } from '@navirox/doctor'
-import type { SourceAdapter, SourceAdapterRegistry } from '@navirox/source'
+import type { IDoctorDeps } from '@memolabs-apps/doctor'
+import type { SourceAdapter, SourceAdapterRegistry } from '@memolabs-apps/source'
 import { parseArguments, HELP } from './args.js'
 import { createDevContext, runDev, type IDevContext } from './dev.js'
 import type { IDevIo } from './runner.js'
@@ -44,23 +44,23 @@ export interface ICliContext {
  * for nothing.
  */
 const SOURCE_ADAPTER_PACKAGES: readonly (readonly [string, string])[] = [
-  ['@navirox/source-vue', 'createVueAdapter'],
-  ['@navirox/source-svelte', 'createSvelteAdapter'],
-  ['@navirox/source-sveltekit', 'createSvelteKitAdapter'],
-  ['@navirox/source-nuxt', 'createNuxtAdapter'],
-  ['@navirox/source-angular', 'createAngularAdapter'],
-  ['@navirox/source-react', 'createReactAdapter'],
-  ['@navirox/source-next', 'createNextAdapter'],
-  ['@navirox/source-astro', 'createAstroAdapter'],
-  ['@navirox/source-solid', 'createSolidAdapter'],
-  ['@navirox/source-qwik', 'createQwikAdapter'],
-  ['@navirox/source-lit', 'createLitAdapter'],
-  ['@navirox/source-vanilla', 'createVanillaAdapter'],
+  ['@memolabs-apps/source-vue', 'createVueAdapter'],
+  ['@memolabs-apps/source-svelte', 'createSvelteAdapter'],
+  ['@memolabs-apps/source-sveltekit', 'createSvelteKitAdapter'],
+  ['@memolabs-apps/source-nuxt', 'createNuxtAdapter'],
+  ['@memolabs-apps/source-angular', 'createAngularAdapter'],
+  ['@memolabs-apps/source-react', 'createReactAdapter'],
+  ['@memolabs-apps/source-next', 'createNextAdapter'],
+  ['@memolabs-apps/source-astro', 'createAstroAdapter'],
+  ['@memolabs-apps/source-solid', 'createSolidAdapter'],
+  ['@memolabs-apps/source-qwik', 'createQwikAdapter'],
+  ['@memolabs-apps/source-lit', 'createLitAdapter'],
+  ['@memolabs-apps/source-vanilla', 'createVanillaAdapter'],
 ]
 
 /** Builds the registry the inspect command uses, from the list above. */
 export async function createAdapterRegistry(): Promise<SourceAdapterRegistry> {
-  const { SourceAdapterRegistry } = await import('@navirox/source')
+  const { SourceAdapterRegistry } = await import('@memolabs-apps/source')
   const registry = new SourceAdapterRegistry()
 
   for (const [packageName, factoryName] of SOURCE_ADAPTER_PACKAGES) {
@@ -100,7 +100,7 @@ export async function runCli(
   if (parsed.command === 'inspect') {
     try {
       const { renderFailure, renderReport, reportToJson, runInspection } =
-        await import('@navirox/inspect')
+        await import('@memolabs-apps/inspect')
       const registry = context.inspect?.registry ?? (await createAdapterRegistry())
       const outcome = await runInspection({
         rootDir: directory,
@@ -129,9 +129,9 @@ export async function runCli(
 
   if (parsed.command === 'plan') {
     try {
-      const { runInspection, renderFailure } = await import('@navirox/inspect')
-      const { loadSeedRegistry } = await import('@navirox/compat')
-      const { plan, planToJson, renderPlan } = await import('@navirox/planner')
+      const { runInspection, renderFailure } = await import('@memolabs-apps/inspect')
+      const { loadSeedRegistry } = await import('@memolabs-apps/compat')
+      const { plan, planToJson, renderPlan } = await import('@memolabs-apps/planner')
       const registry = context.inspect?.registry ?? (await createAdapterRegistry())
       const outcome = await runInspection({
         rootDir: directory,
@@ -164,12 +164,12 @@ export async function runCli(
 
   if (parsed.command === 'migrate') {
     try {
-      const { renderFailure, runInspection } = await import('@navirox/inspect')
-      const { loadSeedRegistry } = await import('@navirox/compat')
-      const { plan } = await import('@navirox/planner')
+      const { renderFailure, runInspection } = await import('@memolabs-apps/inspect')
+      const { loadSeedRegistry } = await import('@memolabs-apps/compat')
+      const { plan } = await import('@memolabs-apps/planner')
       const { migrationToJson, parseState, renderMigration, runMigration } =
-        await import('@navirox/migrate')
-      const { createProjectFiles } = await import('@navirox/source')
+        await import('@memolabs-apps/migrate')
+      const { createProjectFiles } = await import('@memolabs-apps/source')
       const { readFileSync } = await import('node:fs')
       const { join } = await import('node:path')
       const registry = context.inspect?.registry ?? (await createAdapterRegistry())
@@ -233,7 +233,7 @@ export async function runCli(
       // dev server needs, which is what keeps `navirox doctor` quick on a machine
       // where something is already wrong.
       const { createDoctorDeps, exitCodeFor, renderReport, reportToJson, runDoctor } =
-        await import('@navirox/doctor')
+        await import('@memolabs-apps/doctor')
       const report = runDoctor(
         { directory, platform: parsed.platform },
         context.doctor ?? createDoctorDeps(),

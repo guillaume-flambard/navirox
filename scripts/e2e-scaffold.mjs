@@ -10,7 +10,7 @@
  *
  * That difference is the whole point. An app that consumes the packages through
  * `link:` (what the scaffolder writes while the packages are unpublished) has
- * `@navirox/*` living in this repository and its own dependencies living in its
+ * `@memolabs-apps/*` living in this repository and its own dependencies living in its
  * own store, and Metro resolves React Native from whichever tree the importing
  * file sits in. Two stores means two copies of React Native, two module
  * registries, and a red screen on launch. Packing and installing into the app
@@ -168,7 +168,7 @@ function publishablePackages() {
     .map((manifest) => JSON.parse(readFileSync(manifest, 'utf8')))
     .filter((manifest) => manifest.private !== true)
     .map((manifest) => ({
-      directory: join(PACKAGES_DIRECTORY, manifest.name.replace('@navirox/', '')),
+      directory: join(PACKAGES_DIRECTORY, manifest.name.replace('@memolabs-apps/', '')),
       name: manifest.name,
       version: manifest.version,
     }))
@@ -196,7 +196,7 @@ function pack(destination, packages) {
 
     const artifact = join(
       destination,
-      `${entry.name.replace('@navirox/', 'navirox-')}-${entry.version}.tgz`,
+      `${entry.name.replace('@memolabs-apps/', 'navirox-')}-${entry.version}.tgz`,
     )
 
     assert(existsSync(artifact), `pnpm pack wrote no artifact for ${entry.name}.`)

@@ -1,4 +1,4 @@
-import type { CapabilityUsage } from '@navirox/graph'
+import type { CapabilityUsage } from '@memolabs-apps/graph'
 
 /**
  * The browser capabilities any adapter can look for.

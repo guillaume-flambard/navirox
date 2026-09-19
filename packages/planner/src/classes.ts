@@ -1,4 +1,4 @@
-import type { Evidence, NodeId } from '@navirox/graph'
+import type { Evidence, NodeId } from '@memolabs-apps/graph'
 
 /**
  * The migration decision model.

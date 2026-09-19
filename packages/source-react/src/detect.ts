@@ -1,5 +1,5 @@
-import type { DetectionContext, DetectionResult } from '@navirox/source'
-import { declaredRange, readManifest } from '@navirox/source'
+import type { DetectionContext, DetectionResult } from '@memolabs-apps/source'
+import { declaredRange, readManifest } from '@memolabs-apps/source'
 
 /**
  * The React adapter.

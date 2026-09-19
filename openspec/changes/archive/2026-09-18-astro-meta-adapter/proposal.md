@@ -25,7 +25,7 @@ the composition lives in the adapter and the graph does not move.
 
 ## What Changes
 
-The change adds `@navirox/source-astro`, the eighth source adapter and the first
+The change adds `@memolabs-apps/source-astro`, the eighth source adapter and the first
 one that composes others.
 
 - **Detection and composition.** The adapter declares itself a candidate when
@@ -69,9 +69,9 @@ capability requires of a framework construct.
 
 ## Impact
 
-- New package `packages/source-astro`, depending on `@navirox/graph`,
-  `@navirox/source`, `@navirox/source-vue`, `@navirox/source-react` and
-  `@navirox/source-svelte`. It imports no framework and no target provider.
+- New package `packages/source-astro`, depending on `@memolabs-apps/graph`,
+  `@memolabs-apps/source`, `@memolabs-apps/source-vue`, `@memolabs-apps/source-react` and
+  `@memolabs-apps/source-svelte`. It imports no framework and no target provider.
 - `packages/source/src/files.ts`: two values of data, `.astro` in the source
   extensions and `astro.config.mjs` in the configuration names.
 - `packages/cli`: the adapter is registered at the composition root and the

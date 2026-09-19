@@ -86,11 +86,11 @@ const IDENTITY_FILES = [
  * did not depend on the CLI would need a global install to take its first step.
  */
 const NAVIROX_PACKAGES = [
-  { name: '@navirox/metro-preset', directory: 'metro-preset', field: 'dependencies' },
-  { name: '@navirox/native', directory: 'native', field: 'dependencies' },
-  { name: '@navirox/runtime-symbiote', directory: 'runtime-symbiote', field: 'dependencies' },
-  { name: '@navirox/ui', directory: 'ui', field: 'dependencies' },
-  { name: '@navirox/cli', directory: 'cli', field: 'devDependencies' },
+  { name: '@memolabs-apps/metro-preset', directory: 'metro-preset', field: 'dependencies' },
+  { name: '@memolabs-apps/native', directory: 'native', field: 'dependencies' },
+  { name: '@memolabs-apps/runtime-symbiote', directory: 'runtime-symbiote', field: 'dependencies' },
+  { name: '@memolabs-apps/ui', directory: 'ui', field: 'dependencies' },
+  { name: '@memolabs-apps/cli', directory: 'cli', field: 'devDependencies' },
 ] as const
 
 /** Thrown when the destination already holds something, rather than overwriting it. */

@@ -1,4 +1,4 @@
-export const PACKAGE_NAME = '@navirox/source'
+export const PACKAGE_NAME = '@memolabs-apps/source'
 
 export const PACKAGE_ROLE =
   'The source adapter contract, the adapter registry, and the framework import boundary that keeps the core neutral.'

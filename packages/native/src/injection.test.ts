@@ -1,8 +1,8 @@
 import { describe, expect, it } from 'vitest'
 import { createSSRApp, h, type Component, type InjectionKey } from 'vue'
 import { renderToString } from 'vue/server-renderer'
-import { RUNTIME_INJECTION_KEY, type NativeRuntime } from '@navirox/runtime'
-import { createStubRuntime } from '@navirox/runtime/stub'
+import { RUNTIME_INJECTION_KEY, type NativeRuntime } from '@memolabs-apps/runtime'
+import { createStubRuntime } from '@memolabs-apps/runtime/stub'
 import { useHaptics, useNativeApi, useRuntime, useSecureStore } from './index'
 
 /**

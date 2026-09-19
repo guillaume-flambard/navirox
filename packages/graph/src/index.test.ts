@@ -1,9 +1,9 @@
 import { describe, expect, it } from 'vitest'
 import { APP_GRAPH_SCHEMA_VERSION, PACKAGE_NAME, PACKAGE_ROLE, emptyGraphFragment } from './index'
 
-describe('@navirox/graph', () => {
+describe('@memolabs-apps/graph', () => {
   it('has a stable package identity', () => {
-    expect(PACKAGE_NAME).toBe('@navirox/graph')
+    expect(PACKAGE_NAME).toBe('@memolabs-apps/graph')
     expect(PACKAGE_ROLE.length).toBeGreaterThan(0)
   })
 

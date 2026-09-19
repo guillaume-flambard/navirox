@@ -1,11 +1,11 @@
-import { RUNTIME_INJECTION_KEY } from '@navirox/runtime'
-import { createStubRuntime, type StubRuntime } from '@navirox/runtime/stub'
+import { RUNTIME_INJECTION_KEY } from '@memolabs-apps/runtime'
+import { createStubRuntime, type StubRuntime } from '@memolabs-apps/runtime/stub'
 import { createSSRApp, h, type Component, type InjectionKey } from 'vue'
 import { renderToString } from 'vue/server-renderer'
 import { describe, expect, it } from 'vitest'
 import { FlatList } from './flat-list'
 import { useRuntime, useRuntimeComponent } from './runtime'
-import type { NativeRuntime } from '@navirox/runtime'
+import type { NativeRuntime } from '@memolabs-apps/runtime'
 
 /**
  * The façade, exercised against the stub runtime.

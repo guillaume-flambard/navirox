@@ -1,4 +1,4 @@
-import type { UnitKind } from '@navirox/graph'
+import type { UnitKind } from '@memolabs-apps/graph'
 import type { InspectOutcome, InspectReport } from './types.js'
 
 /**

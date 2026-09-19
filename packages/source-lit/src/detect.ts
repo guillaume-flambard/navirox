@@ -1,6 +1,6 @@
-import type { DetectionCandidate, DetectionContext, DetectionResult } from '@navirox/source'
-import { declaredRange, readManifest } from '@navirox/source'
-import { nativeDeclarations } from '@navirox/source-react'
+import type { DetectionCandidate, DetectionContext, DetectionResult } from '@memolabs-apps/source'
+import { declaredRange, readManifest } from '@memolabs-apps/source'
+import { nativeDeclarations } from '@memolabs-apps/source-react'
 
 /**
  * Lit is thin enough that the container is the platform, but the one risk it shares with React

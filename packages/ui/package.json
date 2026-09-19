@@ -1,5 +1,5 @@
 {
-  "name": "@navirox/ui",
+  "name": "@memolabs-apps/ui",
   "version": "0.1.0",
   "description": "Curated native component facade: View, Text, Pressable, ScrollView, TextInput, FlatList.",
   "license": "MIT",
@@ -25,7 +25,7 @@
     "clean": "rm -rf dist"
   },
   "dependencies": {
-    "@navirox/runtime": "workspace:*"
+    "@memolabs-apps/runtime": "workspace:*"
   },
   "peerDependencies": {
     "vue": ">=3.5.0"

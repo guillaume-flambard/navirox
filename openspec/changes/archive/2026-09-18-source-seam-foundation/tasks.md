@@ -28,39 +28,39 @@
 
 ## 2. Add the graph package
 
-- [x] 2.1 Create `packages/graph` as `@navirox/graph` with no dependency, using
+- [x] 2.1 Create `packages/graph` as `@memolabs-apps/graph` with no dependency, using
       the package conventions of the repository (`version 0.0.0`, `type:
   module`, `main` and `types` on `dist`, scripts `build`, `typecheck`,
       `test`, `clean`, and a `tsconfig.json` extending the base config). Verify
-      with `pnpm --filter @navirox/graph build`.
+      with `pnpm --filter @memolabs-apps/graph build`.
 - [x] 2.2 Implement the App Graph v1 types: the graph itself with its schema
       version, route, screen, unit, action, data, capability, dependency and
       edge nodes, findings, evidence and source locations, plus the fragment an
-      adapter returns. Verify with `pnpm --filter @navirox/graph typecheck`.
+      adapter returns. Verify with `pnpm --filter @memolabs-apps/graph typecheck`.
 - [x] 2.3 Implement the deterministic node id helper and unit test it: the same
       inputs produce the same id, an id names the adapter, and a normalized path
       spelling change does not change the id. Verify with
-      `pnpm --filter @navirox/graph test`.
+      `pnpm --filter @memolabs-apps/graph test`.
 
 ## 3. Add the source package
 
-- [x] 3.1 Create `packages/source` as `@navirox/source`, depending only on
-      `@navirox/graph`, following the same package conventions. Verify with
-      `pnpm --filter @navirox/source build`.
+- [x] 3.1 Create `packages/source` as `@memolabs-apps/source`, depending only on
+      `@memolabs-apps/graph`, following the same package conventions. Verify with
+      `pnpm --filter @memolabs-apps/source build`.
 - [x] 3.2 Implement the adapter contract and its supporting types: support
       level, detection context, result and evidence, inspect context and
       inspection result, graph context, the version declaration, and the
       migration provider placeholder. Verify with
-      `pnpm --filter @navirox/source typecheck`.
+      `pnpm --filter @memolabs-apps/source typecheck`.
 - [x] 3.3 Implement the adapter registry: registration, deterministic listing,
       lookup by id, multi candidate detection, and most specific selection.
       Verify with unit tests covering ordering independence, the meta-framework
       preference, the empty candidate outcome, and an unknown id lookup that
-      fails in a typed way (`pnpm --filter @navirox/source test`).
+      fails in a typed way (`pnpm --filter @memolabs-apps/source test`).
 - [x] 3.4 Add contract tests that any adapter can be run against: identity,
       declared support level from the closed set, detection evidence, and
       unsupported input producing findings instead of a crash. Verify with
-      `pnpm --filter @navirox/source test`.
+      `pnpm --filter @memolabs-apps/source test`.
 
 ## 4. Add the framework import boundary
 
@@ -72,11 +72,11 @@
 - [x] 4.2 Declare the forbidden framework package list in one place, assert it
       is not empty, and cover the two directions: a neutral package must not
       import a framework, and a source adapter must not import a target
-      provider. Verify with `pnpm --filter @navirox/source test`, including a
+      provider. Verify with `pnpm --filter @memolabs-apps/source test`, including a
       case that proves an adapter package is allowed to import its own
       framework.
 - [x] 4.3 Confirm the renderer boundary check still runs and still passes.
-      Verify with `pnpm --filter @navirox/runtime-symbiote test`.
+      Verify with `pnpm --filter @memolabs-apps/runtime-symbiote test`.
 
 ## 5. Wire the workspace
 

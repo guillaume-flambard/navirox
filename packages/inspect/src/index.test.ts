@@ -1,9 +1,9 @@
 import { describe, expect, it } from 'vitest'
 import { PACKAGE_NAME, PACKAGE_ROLE } from './index'
 
-describe('@navirox/inspect', () => {
+describe('@memolabs-apps/inspect', () => {
   it('has a stable package identity', () => {
-    expect(PACKAGE_NAME).toBe('@navirox/inspect')
+    expect(PACKAGE_NAME).toBe('@memolabs-apps/inspect')
     expect(PACKAGE_ROLE.length).toBeGreaterThan(0)
   })
 })

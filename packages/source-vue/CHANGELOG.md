@@ -1,4 +1,4 @@
-# @navirox/source-vue
+# @memolabs-apps/source-vue
 
 ## 0.1.0
 
@@ -11,5 +11,5 @@
 ### Patch Changes
 
 - Updated dependencies
-  - @navirox/graph@0.1.0
-  - @navirox/source@0.1.0
+  - @memolabs-apps/graph@0.1.0
+  - @memolabs-apps/source@0.1.0

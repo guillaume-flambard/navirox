@@ -3,7 +3,7 @@
  *
  * These are BUILD-time facts, not runtime ones: Metro needs to know which
  * transformer compiles a `.vue` file and which extensions its resolver must
- * accept. They live here, in the adapter, rather than in `@navirox/metro-preset`
+ * accept. They live here, in the adapter, rather than in `@memolabs-apps/metro-preset`
  * on purpose.
  *
  * The preset is part of the toolchain plane, and the project's hard rule is that
@@ -59,7 +59,7 @@ export function symbioteVueTransformerPath(): string {
     throw new Error(
       `Navirox could not resolve the Vue transformer "${SYMBIOTE_VUE_TRANSFORMER}". ` +
         'It ships with @symbiote-native/vue, which is a dependency of ' +
-        '@navirox/runtime-symbiote and therefore of any app that installs a Navirox runtime. ' +
+        '@memolabs-apps/runtime-symbiote and therefore of any app that installs a Navirox runtime. ' +
         'If you are resolving this outside an installed app, install the runtime package first.',
     )
   }

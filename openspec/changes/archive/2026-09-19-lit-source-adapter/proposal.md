@@ -8,7 +8,7 @@ Routing is the third reading, and it is the narrowest of the ten. Lit ships no r
 
 ## What Changes
 
-- Add `@navirox/source-lit`, a base source adapter with no composition, depending on `@navirox/graph`, `@navirox/source` and `@navirox/source-react` for the native refusal.
+- Add `@memolabs-apps/source-lit`, a base source adapter with no composition, depending on `@memolabs-apps/graph`, `@memolabs-apps/source` and `@memolabs-apps/source-react` for the native refusal.
 - Detect Lit from its manifest, with evidence, and refuse a project that already declares a native runtime.
 - Read a component as the element it registers: a class extending `LitElement` or `ReactiveElement`, registered either by the `@customElement` decorator or by a `customElements.define` call.
 - Read reactive property declarations as adapter metadata rather than a unit, and never produce a `state-module`, because Lit documents no such module.

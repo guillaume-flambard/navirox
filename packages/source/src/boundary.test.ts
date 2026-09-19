@@ -99,10 +99,12 @@ describe('the source framework import boundary', () => {
     // supposed to live, so naming one is not a violation there; reaching for the
     // target side is, because that is what makes an adapter stop being reusable.
     expect(forbiddenSpecifiers('neutral', ['vue'])).toEqual(['vue'])
-    expect(forbiddenSpecifiers('neutral', ['@navirox/runtime'])).toEqual([])
+    expect(forbiddenSpecifiers('neutral', ['@memolabs-apps/runtime'])).toEqual([])
 
     expect(forbiddenSpecifiers('adapter', ['vue'])).toEqual([])
-    expect(forbiddenSpecifiers('adapter', ['@navirox/runtime'])).toEqual(['@navirox/runtime'])
+    expect(forbiddenSpecifiers('adapter', ['@memolabs-apps/runtime'])).toEqual([
+      '@memolabs-apps/runtime',
+    ])
   })
 
   it('tells an adapter package apart from a neutral one', () => {

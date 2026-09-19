@@ -22,12 +22,12 @@
  * specifier is not one of ours: the first thing to break was
  * `@babel/runtime/helpers/interopRequireDefault`, which this app declares as a
  * devDependency and which pnpm links out of the root store like everything else.
- * `@navirox/metro-preset` sets neither key, because a published app installs
- * `@navirox/*` and their dependencies inside its own root and needs no help.
+ * `@memolabs-apps/metro-preset` sets neither key, because a published app installs
+ * `@memolabs-apps/*` and their dependencies inside its own root and needs no help.
  */
 const path = require('path');
 const { getDefaultConfig } = require('@react-native/metro-config');
-const { withNavirox } = require('@navirox/metro-preset');
+const { withNavirox } = require('@memolabs-apps/metro-preset');
 
 const projectRoot = __dirname;
 // Two levels up: examples/vue-basic, then examples, then the repository root.

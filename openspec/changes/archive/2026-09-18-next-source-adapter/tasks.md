@@ -1,9 +1,9 @@
 ## 1. Add the Next adapter
 
 - [x] 1.1 Create `packages/source-next` with the package conventions, depending on
-      the neutral packages and on `@navirox/source-react`, declaring that it
+      the neutral packages and on `@memolabs-apps/source-react`, declaring that it
       composes the React adapter, and referencing the three in its tsconfig.
-      Verify with `pnpm --filter @navirox/source-next build`.
+      Verify with `pnpm --filter @memolabs-apps/source-next build`.
 - [x] 1.2 Implement detection over the manifest with evidence, and the refusal of a
       project that declares a native dependency. Verify with three fixtures: a Next
       project, a plain React project, and a project that declares a native
@@ -27,7 +27,7 @@
       lists seven adapters. Verify with the CLI tests.
 - [x] 2.2 Add the Next comparison to the gate: the same capability set as Vue, the
       same three unit kinds, and the layout as the only addition, named. Verify
-      with `pnpm --filter @navirox/cli test`.
+      with `pnpm --filter @memolabs-apps/cli test`.
 - [x] 2.3 Prove the comparison can fail: break one fixture capability, confirm the
       test names the missing capability, and restore it.
 

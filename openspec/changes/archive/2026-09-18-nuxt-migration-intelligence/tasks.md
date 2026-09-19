@@ -59,7 +59,7 @@
       do not exist, a `.client.vue` file, a `.server.vue` file, and an
       `app.config.ts`. Verify: the fixture exists and the package tests read it.
 - [x] 5.2 Confirm the adapter gate and the mirrored fixtures are untouched:
-      `corepack pnpm --filter @navirox/cli test` passes without an edit to the
+      `corepack pnpm --filter @memolabs-apps/cli test` passes without an edit to the
       Nuxt comparison, or with one added line if the registry listing changes.
 - [x] 5.3 Record the reading in `docs/evidence/` and say in `README.md` what
       Nuxt detection and inspection cover. State what was deliberately not done:

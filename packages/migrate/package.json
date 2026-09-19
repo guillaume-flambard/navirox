@@ -1,5 +1,5 @@
 {
-  "name": "@navirox/migrate",
+  "name": "@memolabs-apps/migrate",
   "version": "0.1.0",
   "description": "The migration engine: a versioned state file, a transform pipeline, and the writes it performs.",
   "license": "MIT",
@@ -25,8 +25,8 @@
     "clean": "rm -rf dist"
   },
   "dependencies": {
-    "@navirox/graph": "workspace:*",
-    "@navirox/planner": "workspace:*"
+    "@memolabs-apps/graph": "workspace:*",
+    "@memolabs-apps/planner": "workspace:*"
   },
   "devDependencies": {
     "@types/node": "^26.6.1",

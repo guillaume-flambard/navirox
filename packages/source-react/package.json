@@ -1,5 +1,5 @@
 {
-  "name": "@navirox/source-react",
+  "name": "@memolabs-apps/source-react",
   "version": "0.1.0",
   "description": "The React source adapter: detection, function component and state module discovery, router configuration, and App Graph construction.",
   "license": "MIT",
@@ -25,8 +25,8 @@
     "clean": "rm -rf dist"
   },
   "dependencies": {
-    "@navirox/graph": "workspace:*",
-    "@navirox/source": "workspace:*"
+    "@memolabs-apps/graph": "workspace:*",
+    "@memolabs-apps/source": "workspace:*"
   },
   "devDependencies": {
     "@types/node": "^26.6.1",

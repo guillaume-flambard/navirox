@@ -1,22 +1,22 @@
 import { describe, expect, it } from 'vitest'
-import { createStubRuntime } from '@navirox/runtime/stub'
-import type { NaviroxComponent } from '@navirox/runtime'
+import { createStubRuntime } from '@memolabs-apps/runtime/stub'
+import type { NaviroxComponent } from '@memolabs-apps/runtime'
 import { BUILT_ON, PACKAGE_NAME, PACKAGE_ROLE, createRouter } from './index'
 
 const screen = {} as NaviroxComponent
 
-describe('@navirox/router', () => {
+describe('@memolabs-apps/router', () => {
   it('has a stable package identity', () => {
-    expect(PACKAGE_NAME).toBe('@navirox/router')
+    expect(PACKAGE_NAME).toBe('@memolabs-apps/router')
     expect(PACKAGE_ROLE.length).toBeGreaterThan(0)
   })
 
   it('is built on the runtime seam, never on a concrete runtime', () => {
-    expect(BUILT_ON).toBe('@navirox/runtime')
+    expect(BUILT_ON).toBe('@memolabs-apps/runtime')
   })
 })
 
-describe('@navirox/router against the runtime seam (Proof B)', () => {
+describe('@memolabs-apps/router against the runtime seam (Proof B)', () => {
   it('registers routes through the backend without any renderer present', () => {
     const runtime = createStubRuntime()
     const router = createRouter(runtime)

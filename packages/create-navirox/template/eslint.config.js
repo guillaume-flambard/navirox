@@ -3,7 +3,7 @@ const vue = require('eslint-plugin-vue');
 const prettier = require('eslint-config-prettier/flat');
 const tsParser = require('@typescript-eslint/parser');
 
-// This app is a Vue app that renders through Navirox, not a React app: it imports `@navirox/*`,
+// This app is a Vue app that renders through Navirox, not a React app: it imports `@memolabs-apps/*`,
 // Vue and Pinia and nothing else. The React Native preset that used to back this file brought
 // rules for React, React Native, React Hooks, Jest and Flow for code that does not exist here, and
 // it pins its own `eslint` peer to `^8 || ^9` in every published version, so it cannot even load on

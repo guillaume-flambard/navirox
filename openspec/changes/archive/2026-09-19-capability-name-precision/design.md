@@ -1,6 +1,6 @@
 ## Context
 
-`@navirox/source` holds the capability vocabulary every adapter reads through,
+`@memolabs-apps/source` holds the capability vocabulary every adapter reads through,
 because it describes the browser rather than a framework. Its patterns are
 ordered, the first match on a line wins, and the loose pattern for a capability
 sits last as a fallback.

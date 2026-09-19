@@ -6,7 +6,7 @@ import {
   symbioteVueTransformerPath,
 } from './build-integration'
 
-describe('@navirox/runtime-symbiote build integration', () => {
+describe('@memolabs-apps/runtime-symbiote build integration', () => {
   it('names the Vue transformer as a bare module specifier', () => {
     expect(SYMBIOTE_VUE_TRANSFORMER).toBe('@symbiote-native/vue/metro-vue-transformer')
   })

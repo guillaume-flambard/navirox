@@ -12,19 +12,19 @@ mostly about how that stays true.
 
 ## The layers
 
-| Package                     | What it is                                                                         | May import                                                    |
-| --------------------------- | ---------------------------------------------------------------------------------- | ------------------------------------------------------------- |
-| `@navirox/runtime`          | The seam. Types, contracts and validation, with no renderer value in it.           | Nothing but Node built-ins and types                          |
-| `@navirox/runtime-symbiote` | The implementation of the seam over Symbiote and React Native.                     | `@navirox/runtime` and the host, and nothing else may do this |
-| `@navirox/ui`               | The component façade: `FlatList` today, the rest of the surface with each release. | `@navirox/runtime`                                            |
-| `@navirox/native`           | The native API façade: haptics, secure storage, and the modules 0.2 adds.          | `@navirox/runtime`                                            |
-| `@navirox/router`           | File-based routing and a generated, typed route manifest (surface declared).       | `@navirox/runtime`                                            |
-| `@navirox/metro-preset`     | The Vue SFC transform and the CSS parser, composed into one Metro preset.          | Nothing renderer-shaped                                       |
-| `@navirox/cli`              | `navirox dev` and `navirox doctor`.                                                | `@navirox/doctor`                                             |
-| `@navirox/doctor`           | The environment, runtime and compatibility report.                                 | Nothing renderer-shaped, and nothing from the adapter         |
-| `create-navirox`            | The scaffolder behind `npm create navirox`.                                        | Nothing renderer-shaped                                       |
+| Package                           | What it is                                                                         | May import                                                          |
+| --------------------------------- | ---------------------------------------------------------------------------------- | ------------------------------------------------------------------- |
+| `@memolabs-apps/runtime`          | The seam. Types, contracts and validation, with no renderer value in it.           | Nothing but Node built-ins and types                                |
+| `@memolabs-apps/runtime-symbiote` | The implementation of the seam over Symbiote and React Native.                     | `@memolabs-apps/runtime` and the host, and nothing else may do this |
+| `@memolabs-apps/ui`               | The component façade: `FlatList` today, the rest of the surface with each release. | `@memolabs-apps/runtime`                                            |
+| `@memolabs-apps/native`           | The native API façade: haptics, secure storage, and the modules 0.2 adds.          | `@memolabs-apps/runtime`                                            |
+| `@memolabs-apps/router`           | File-based routing and a generated, typed route manifest (surface declared).       | `@memolabs-apps/runtime`                                            |
+| `@memolabs-apps/metro-preset`     | The Vue SFC transform and the CSS parser, composed into one Metro preset.          | Nothing renderer-shaped                                             |
+| `@memolabs-apps/cli`              | `navirox dev` and `navirox doctor`.                                                | `@memolabs-apps/doctor`                                             |
+| `@memolabs-apps/doctor`           | The environment, runtime and compatibility report.                                 | Nothing renderer-shaped, and nothing from the adapter               |
+| `create-navirox`                  | The scaffolder behind `npm create navirox`.                                        | Nothing renderer-shaped                                             |
 
-`@navirox/compat`, `@navirox/inspect`, `@navirox/migrate` and `@navirox/build`
+`@memolabs-apps/compat`, `@memolabs-apps/inspect`, `@memolabs-apps/migrate` and `@memolabs-apps/build`
 are declared surfaces with no implementation in 0.1. Their manifests exist so the
 layout is settled; they ship with their milestones.
 
@@ -51,12 +51,12 @@ application's own manifest instead of being spelled out.
 `AGENTS.md` states the four rules in full, each with the failure it prevents.
 The short version:
 
-1. Only `@navirox/runtime-symbiote` imports `@symbiote-native/*`, `react-native`,
+1. Only `@memolabs-apps/runtime-symbiote` imports `@symbiote-native/*`, `react-native`,
    or anything else from the Fabric host.
-2. Applications import only `@navirox/*`. Zero `@symbiote-native/*` imports in
+2. Applications import only `@memolabs-apps/*`. Zero `@symbiote-native/*` imports in
    app code, checked by the same boundary test.
 3. The dependency direction is one way, as the diagram above says.
-4. No public `@navirox/*` package re-exports a Symbiote type, class, component or
+4. No public `@memolabs-apps/*` package re-exports a Symbiote type, class, component or
    prop name. Our public API is ours; if a renderer concept leaks into our types,
    the engine stops being swappable.
 
@@ -94,7 +94,7 @@ them with no import at all, and a scroll view's axis is the tag rather than a
 prop, because the two axes use different native view managers.
 
 A list is not a tag. It virtualizes, so it owns state and windowing, which makes
-it a component rather than an element. `FlatList` comes from `@navirox/ui`, and
+it a component rather than an element. `FlatList` comes from `@memolabs-apps/ui`, and
 resolves the engine's list through the seam.
 The renderer's own prop surface stays in the adapter; the façade publishes our
 props, passes anything else through untouched, and never re-exports a renderer
@@ -125,13 +125,13 @@ runtime.mount(App, { name: appName })
 ```
 
 `App.vue` is a `<script setup lang="ts">` single file component that imports only
-`@navirox/*`. The manifest declares the Navirox packages and the native provider
+`@memolabs-apps/*`. The manifest declares the Navirox packages and the native provider
 packages, and carries its own `pnpm-workspace.yaml` because that is where pnpm
 keeps its settings now.
 
 ## The toolchain
 
-`@navirox/metro-preset` composes the Vue SFC transform and the CSS parser into
+`@memolabs-apps/metro-preset` composes the Vue SFC transform and the CSS parser into
 one preset, so a `.vue` file and its `<style>` block both reach the bundle. The
 template's `metro.config.js` is two lines on top of the plain React Native
 config, and deliberately carries no workspace wiring: a published app installs
@@ -143,14 +143,14 @@ get the Navirox packages. While they are unpublished it links them from the
 checkout and says so, because a version range pointing at a registry that has
 nothing to give would not install.
 
-`@navirox/doctor` asks whether the machine, the app and the runtime agree. It
+`@memolabs-apps/doctor` asks whether the machine, the app and the runtime agree. It
 reads files rather than importing the renderer, which is why the compatibility
 registry reports `unknown` with its reason until it lands in 0.2, and why a
 check that cannot be decided is never reported as a pass.
 
 From workspace source to a published install, there are three states:
 
-1. **Linked.** The scaffolder links `@navirox/*` from the checkout. This works
+1. **Linked.** The scaffolder links `@memolabs-apps/*` from the checkout. This works
    for building and bundling, and it cannot run: the app and the linked packages
    sit in two different package stores, so Metro loads two copies of the host
    runtime and the app dies on a module registry that never saw the caller.
@@ -158,7 +158,7 @@ From workspace source to a published install, there are three states:
    app outside the workspace. One copy of every runtime package, resolved inside
    the app. This is what `scripts/e2e-scaffold.mjs` runs in CI, and it is the
    shape a stranger gets from a registry.
-3. **Published.** The app installs `@navirox/*` from the registry with no
+3. **Published.** The app installs `@memolabs-apps/*` from the registry with no
    coordination, and the linked and packed variants disappear.
 
 ## Evidence

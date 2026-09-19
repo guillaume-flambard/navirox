@@ -10,7 +10,7 @@ imports. That is a fourth reactivity story, and the honest question was whether
 it forces a fourth concept.
 
 It does not. The App Graph stayed at version 1, no shared type in
-`@navirox/source` gained a field, and no framework-neutral package was touched. A
+`@memolabs-apps/source` gained a field, and no framework-neutral package was touched. A
 `useStore` call is recorded as metadata on the component that made it, exactly as
 the module boundary was for Next and the islands were for Astro.
 
@@ -85,7 +85,7 @@ because that word is how the browser exposes one. A Qwik page that binds
 the use line. The fixture was written to destructure the idiomatic
 `const { params } = useLocation()` instead, which keeps the documented way to read
 a parameter and does not bind the trap word, and the five expected capabilities
-came back exactly. The trap is in `@navirox/source`, so it is available to every
+came back exactly. The trap is in `@memolabs-apps/source`, so it is available to every
 adapter; it was recorded here rather than fixed at the time, because a fix would
 change how every framework's `location` is read and that belongs to its own change.
 
@@ -98,9 +98,9 @@ in the fixture is now a style choice rather than a workaround.
 
 | Command                                              | Result                                |
 | ---------------------------------------------------- | ------------------------------------- |
-| `pnpm --filter @navirox/source-qwik build`           | `tsc --build` with no output          |
-| `pnpm --filter @navirox/source-qwik test`            | 19 tests, 1 file                      |
-| `pnpm --filter @navirox/cli test`                    | 82 tests, 7 files, ten adapters       |
+| `pnpm --filter @memolabs-apps/source-qwik build`           | `tsc --build` with no output          |
+| `pnpm --filter @memolabs-apps/source-qwik test`            | 19 tests, 1 file                      |
+| `pnpm --filter @memolabs-apps/cli test`                    | 82 tests, 7 files, ten adapters       |
 | `pnpm build` / `typecheck` / `test`                  | 27 / 50 / 49 tasks, all successful    |
 
 The negative fixture declares `@builder.io/qwik ^0.20.0`, a major the adapter has

@@ -12,7 +12,7 @@ disagrees with the previous four about how an application is assembled.
 
 ## What Changes
 
-- Add `@navirox/source-angular`: detection, component and service discovery through
+- Add `@memolabs-apps/source-angular`: detection, component and service discovery through
   decorators, the shared capability scan, dependencies, findings for the constructs
   it does not model, and the top level routes a routes file states.
 - Add the mirrored Angular fixture: the same journey as the Vue and Svelte

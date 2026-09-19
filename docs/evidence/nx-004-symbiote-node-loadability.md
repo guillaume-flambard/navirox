@@ -43,7 +43,7 @@ CommonJS file with no relative imports at all.
 
 Two consequences, both encoded in the code:
 
-1. **The package barrel must stay host-free.** `@navirox/compat` and `navirox doctor`
+1. **The package barrel must stay host-free.** `@memolabs-apps/compat` and `navirox doctor`
    need to read `runtime.json` from plain Node. If `src/index.ts` imported the
    renderer, that read would fail. The renderer import therefore lives in
    `src/bootstrap.ts` alone, published as the `./bootstrap` subpath, and the barrel

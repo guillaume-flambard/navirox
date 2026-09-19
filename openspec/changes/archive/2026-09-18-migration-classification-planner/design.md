@@ -37,12 +37,12 @@ unknown instead of a default.
 
 ## Decisions
 
-**A separate package, `@navirox/planner`.** Change 1 rejected a planner package
+**A separate package, `@memolabs-apps/planner`.** Change 1 rejected a planner package
 whose only content would have been a placeholder, and that reasoning still holds.
 This change reverses the decision for the reason that was named at the time: real
 logic now exists, with its own tests, and it belongs neither in the graph schema
 nor in the inspection pipeline. Alternative rejected: folding the rules into
-`@navirox/inspect`, which would have made reading and judging one thing and would
+`@memolabs-apps/inspect`, which would have made reading and judging one thing and would
 have put a decision in the report a reader expects to be a description.
 
 **Every decision carries reasons and evidence, and the type enforces it.** This is

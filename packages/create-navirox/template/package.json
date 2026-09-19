@@ -2,7 +2,7 @@
   "name": "vue-basic",
   "version": "0.0.0",
   "private": true,
-  "description": "The Navirox basic example: a Vue 3 single file component rendering native views through @navirox/*.",
+  "description": "The Navirox basic example: a Vue 3 single file component rendering native views through @memolabs-apps/*.",
   "scripts": {
     "android": "react-native run-android",
     "android:release": "react-native run-android --mode Release",
@@ -15,10 +15,10 @@
     "typecheck": "vue-tsc --noEmit -p tsconfig.typecheck.json"
   },
   "dependencies": {
-    "@navirox/metro-preset": "workspace:*",
-    "@navirox/native": "workspace:*",
-    "@navirox/runtime-symbiote": "workspace:*",
-    "@navirox/ui": "workspace:*",
+    "@memolabs-apps/metro-preset": "workspace:*",
+    "@memolabs-apps/native": "workspace:*",
+    "@memolabs-apps/runtime-symbiote": "workspace:*",
+    "@memolabs-apps/ui": "workspace:*",
     "@symbiote-native/css-parser": "0.5.0",
     "@symbiote-native/engine": "0.5.0",
     "@symbiote-native/vue": "2.0.0",
@@ -34,7 +34,7 @@
     "@babel/core": "^7.25.2",
     "@babel/preset-env": "^7.25.3",
     "@babel/runtime": "^7.25.0",
-    "@navirox/cli": "workspace:*",
+    "@memolabs-apps/cli": "workspace:*",
     "@react-native-community/cli": "20.1.0",
     "@react-native-community/cli-platform-android": "20.1.0",
     "@react-native-community/cli-platform-ios": "20.1.0",

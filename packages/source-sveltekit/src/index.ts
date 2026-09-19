@@ -1,8 +1,8 @@
-import type { SourceAdapter } from '@navirox/source'
+import type { SourceAdapter } from '@memolabs-apps/source'
 import { ADAPTER_ID, COMPOSES, DISPLAY_NAME, FRAMEWORK, TESTED_VERSIONS, detect } from './detect.js'
 import { buildGraph, inspect } from './inspect.js'
 
-export const PACKAGE_NAME = '@navirox/source-sveltekit'
+export const PACKAGE_NAME = '@memolabs-apps/source-sveltekit'
 
 export const PACKAGE_ROLE =
   'The SvelteKit source adapter: detection, filesystem route extraction, and App Graph construction on top of the Svelte adapter.'

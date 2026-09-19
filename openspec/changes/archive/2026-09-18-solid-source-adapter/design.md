@@ -48,7 +48,7 @@ package, and no meta framework is in scope, so there is nothing to compose and n
 compose it from.
 
 **The native refusal is inherited rather than rewritten.** `nativeDeclarations` already lives
-in `@navirox/source-react` and is already imported by the Next and Astro adapters. Rejected:
+in `@memolabs-apps/source-react` and is already imported by the Next and Astro adapters. Rejected:
 writing a fourth copy of the same three prefixes, which is how the same rule drifts apart;
 and moving it into the neutral package now, which is a shared contract change this ticket
 does not need and which the compatibility work can do when a second consumer outside React

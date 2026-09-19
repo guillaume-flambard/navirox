@@ -1,5 +1,5 @@
-import type { DiscoveredRoute } from '@navirox/source'
-import { stripComments } from '@navirox/source'
+import type { DiscoveredRoute } from '@memolabs-apps/source'
+import { stripComments } from '@memolabs-apps/source'
 import { ADAPTER_ID } from './detect.js'
 
 /**

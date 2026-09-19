@@ -1,9 +1,9 @@
-import type { SourceAdapter } from '@navirox/source'
+import type { SourceAdapter } from '@memolabs-apps/source'
 import { ADAPTER_ID, DISPLAY_NAME, FRAMEWORK, TESTED_VERSIONS, detect } from './detect.js'
 import { buildGraph } from './graph.js'
 import { inspect } from './inspect.js'
 
-export const PACKAGE_NAME = '@navirox/source-solid'
+export const PACKAGE_NAME = '@memolabs-apps/source-solid'
 
 export const PACKAGE_ROLE =
   "The Solid source adapter: components, stores and the router's two declared shapes."

@@ -1,13 +1,13 @@
 ## Context
 
-Change 1 shipped the seam and archived its specs. `@navirox/source` exports the
-contract, the registry and the boundary check, and `@navirox/graph` exports the
+Change 1 shipped the seam and archived its specs. `@memolabs-apps/source` exports the
+contract, the registry and the boundary check, and `@memolabs-apps/graph` exports the
 model. `SourceInspection` is currently `{ descriptor, findings }`, which was
 enough to typecheck an interface and not enough to write one against: an adapter
 has nowhere to put what it discovered, and `buildGraph(inspection, ctx)` receives
 that same empty payload.
 
-The repository also has a second constraint. `@navirox/inspect` and the `inspect`
+The repository also has a second constraint. `@memolabs-apps/inspect` and the `inspect`
 command are declared surfaces, while the CLI, the doctor and the real runtime
 path work. The acceptance app must keep working untouched, because it is the only
 end to end proof in the repository.
@@ -73,7 +73,7 @@ graph is not allowed to name.
 
 **The adapter set is composed at the composition root.** The CLI names adapter
 packages as data and imports them lazily, the same way it already reaches
-`@navirox/doctor`, and hands a populated registry to the pipeline. This is the
+`@memolabs-apps/doctor`, and hands a populated registry to the pipeline. This is the
 behaviour the archived spec already requires: a new adapter is registered at the
 composition root without editing a generic package. Alternatives rejected: having
 an adapter register itself through an import side effect, which hides the wiring
@@ -94,7 +94,7 @@ severity findings, which conflates "this project has a problem" with "the tool
 failed" and would break scripting on a project that merely has an unknown
 dependency.
 
-**No changeset.** `@navirox/inspect`, `@navirox/cli` and the new adapter all stay
+**No changeset.** `@memolabs-apps/inspect`, `@memolabs-apps/cli` and the new adapter all stay
 at `0.0.0` and nothing in the repository is published. The repository still has no
 changeset at all, and inventing the release process here would smuggle the
 deferred release item into a source seam change.

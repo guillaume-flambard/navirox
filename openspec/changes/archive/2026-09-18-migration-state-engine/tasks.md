@@ -2,7 +2,7 @@
 
 - [x] 1.1 Implement the state model: schema version, adapter, target, per unit
       status and source fingerprint, and the version check that refuses a state it
-      does not know. Verify with `pnpm --filter @navirox/migrate build`.
+      does not know. Verify with `pnpm --filter @memolabs-apps/migrate build`.
 - [x] 1.2 Implement reading and writing, including the refuse-to-guess path for an
       unknown version. Verify with a test over a state file written by an older
       schema version.
@@ -12,7 +12,7 @@
 ## 2. The engine
 
 - [x] 2.1 Implement the transform contract: identifier, family, condition, and the
-      outputs it declares. Verify with `pnpm --filter @navirox/migrate typecheck`.
+      outputs it declares. Verify with `pnpm --filter @memolabs-apps/migrate typecheck`.
 - [x] 2.2 Implement the run: select units from the plan, apply the transforms that
       apply, collect the writes, and produce a report as data. Verify with a test
       over a small plan built by hand.

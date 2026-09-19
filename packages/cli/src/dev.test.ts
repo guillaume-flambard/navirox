@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { detectPackageManager, runDev, type IDevContext } from './dev'
-import { PreflightError } from '@navirox/doctor'
+import { PreflightError } from '@memolabs-apps/doctor'
 import type { ICommand } from './runner'
 
 const MANIFEST_PATH_SUFFIX = 'package.json'

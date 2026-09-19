@@ -16,14 +16,14 @@ Astro are attempted.
 
 ## What Changes
 
-- Move the browser capability scan from `@navirox/source-vue` into
-  `@navirox/source`. The pattern set describes browser APIs, not a framework, and
+- Move the browser capability scan from `@memolabs-apps/source-vue` into
+  `@memolabs-apps/source`. The pattern set describes browser APIs, not a framework, and
   two adapters now need it: this is the first concept the model admits because a
   second adapter needs it, which is the rule the seam was built with.
-- Add `@navirox/source-svelte`: detection, component discovery, store modules,
+- Add `@memolabs-apps/source-svelte`: detection, component discovery, store modules,
   capability use through the shared scan, and the same finding vocabulary the Vue
   adapter uses.
-- Add `@navirox/source-sveltekit`: detection and real route extraction from the
+- Add `@memolabs-apps/source-sveltekit`: detection and real route extraction from the
   filesystem routing SvelteKit documents, composing the Svelte adapter through the
   `composes` field the registry already honours.
 - Register both adapters at the composition root and add the cross-adapter

@@ -19,17 +19,17 @@ The implementation strategy is intentionally narrower than the vision:
 
 This is not a big-bang rewrite. Existing work is preserved, especially:
 
-- `@navirox/runtime`
-- `@navirox/runtime-symbiote`
-- `@navirox/ui`
-- `@navirox/native`
-- `@navirox/router`
-- `@navirox/cli`
-- `@navirox/doctor`
-- `@navirox/compat`
-- `@navirox/inspect`
-- `@navirox/migrate`
-- `@navirox/build`
+- `@memolabs-apps/runtime`
+- `@memolabs-apps/runtime-symbiote`
+- `@memolabs-apps/ui`
+- `@memolabs-apps/native`
+- `@memolabs-apps/router`
+- `@memolabs-apps/cli`
+- `@memolabs-apps/doctor`
+- `@memolabs-apps/compat`
+- `@memolabs-apps/inspect`
+- `@memolabs-apps/migrate`
+- `@memolabs-apps/build`
 - `create-navirox`
 - the current runtime-boundary tests
 - the existing acceptance application and build evidence
@@ -138,9 +138,9 @@ Navirox already has the beginning of a **runtime seam**:
 ```text
 Navirox public surface
         ↓
-@navirox/runtime
+@memolabs-apps/runtime
         ↓
-@navirox/runtime-symbiote
+@memolabs-apps/runtime-symbiote
         ↓
 Symbiote / React Native / Fabric
 ```

@@ -1,4 +1,4 @@
-# @navirox/planner
+# @memolabs-apps/planner
 
 ## 0.1.0
 
@@ -11,5 +11,5 @@
 ### Patch Changes
 
 - Updated dependencies
-  - @navirox/compat@0.1.0
-  - @navirox/graph@0.1.0
+  - @memolabs-apps/compat@0.1.0
+  - @memolabs-apps/graph@0.1.0

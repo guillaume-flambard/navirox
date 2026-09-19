@@ -1,16 +1,16 @@
-import { PACKAGE_NAME as SEAM_PACKAGE_NAME } from '@navirox/runtime'
+import { PACKAGE_NAME as SEAM_PACKAGE_NAME } from '@memolabs-apps/runtime'
 
-export const PACKAGE_NAME = '@navirox/runtime-symbiote'
+export const PACKAGE_NAME = '@memolabs-apps/runtime-symbiote'
 export const PACKAGE_ROLE =
   'The Symbiote-backed implementation of the runtime seam. The only package allowed to import @symbiote-native/*.'
 export const BUILT_ON: string = SEAM_PACKAGE_NAME
 
 /**
  * This barrel is deliberately host-free: it imports no `@symbiote-native/*`
- * package, so `@navirox/compat` and `navirox doctor` can read the manifest from
+ * package, so `@memolabs-apps/compat` and `navirox doctor` can read the manifest from
  * plain Node.
  *
- * The renderer edge lives in `@navirox/runtime-symbiote/bootstrap`, which is the
+ * The renderer edge lives in `@memolabs-apps/runtime-symbiote/bootstrap`, which is the
  * only file allowed to import the renderer, and the renderer itself is injected
  * into `createRuntimeFromHost` here so every decision stays testable without it.
  */

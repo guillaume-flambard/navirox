@@ -1,4 +1,4 @@
-# @navirox/doctor
+# @memolabs-apps/doctor
 
 ## 0.1.0
 

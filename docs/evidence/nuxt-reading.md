@@ -88,7 +88,7 @@ statement about the project.
 ## What moved into the neutral core
 
 `declaredMajor` and `testedMajors`, the reading of a declared version range, moved
-from the adapters into `@navirox/source` at the third copy. Reading a range is
+from the adapters into `@memolabs-apps/source` at the third copy. Reading a range is
 neutral: every adapter needs the same answer to decide whether it was tested
 against what a project declares.
 

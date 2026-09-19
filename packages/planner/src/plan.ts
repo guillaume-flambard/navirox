@@ -1,5 +1,5 @@
-import type { AppGraph, NodeId } from '@navirox/graph'
-import type { CompatibilityRegistry } from '@navirox/compat'
+import type { AppGraph, NodeId } from '@memolabs-apps/graph'
+import type { CompatibilityRegistry } from '@memolabs-apps/compat'
 import { compatibilityEvidence, compatibilityRule } from './compatibility.js'
 import {
   CONFIDENCES,

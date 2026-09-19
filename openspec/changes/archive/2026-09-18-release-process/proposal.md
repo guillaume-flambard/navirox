@@ -24,7 +24,7 @@ it is the last item of the 0.1 list that is still open.
   packages to `0.1.0` and creates a `CHANGELOG.md` beside each one, and record
   what it does and does not touch.
 - Tag the release. `changeset git-tag` creates one tag per package
-  (`@navirox/ui@0.1.0`), and a milestone tag `0.1.0` goes on the same commit
+  (`@memolabs-apps/ui@0.1.0`), and a milestone tag `0.1.0` goes on the same commit
   because that is the name the definition of done uses and no changesets
   command produces it.
 - Add a check that the process is actually running: a `pull_request` job step

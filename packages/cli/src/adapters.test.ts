@@ -1,5 +1,5 @@
 import { fileURLToPath } from 'node:url'
-import { runInspection } from '@navirox/inspect'
+import { runInspection } from '@memolabs-apps/inspect'
 import { describe, expect, it } from 'vitest'
 import { createAdapterRegistry } from './cli'
 

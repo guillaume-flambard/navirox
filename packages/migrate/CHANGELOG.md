@@ -1,4 +1,4 @@
-# @navirox/migrate
+# @memolabs-apps/migrate
 
 ## 0.1.0
 
@@ -11,5 +11,5 @@
 ### Patch Changes
 
 - Updated dependencies
-  - @navirox/graph@0.1.0
-  - @navirox/planner@0.1.0
+  - @memolabs-apps/graph@0.1.0
+  - @memolabs-apps/planner@0.1.0

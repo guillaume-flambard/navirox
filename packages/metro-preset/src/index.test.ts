@@ -2,7 +2,7 @@ import { mkdirSync, mkdtempSync, readFileSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { describe, expect, it } from 'vitest'
-import { symbioteVueTransformerPath } from '@navirox/runtime-symbiote'
+import { symbioteVueTransformerPath } from '@memolabs-apps/runtime-symbiote'
 import {
   createNaviroxConfig,
   NAVIROX_SOURCE_EXTENSIONS,
@@ -17,9 +17,9 @@ const ownManifest = JSON.parse(
   dependencies?: Record<string, string>
 }
 
-describe('@navirox/metro-preset', () => {
+describe('@memolabs-apps/metro-preset', () => {
   it('has a stable package identity', () => {
-    expect(PACKAGE_NAME).toBe('@navirox/metro-preset')
+    expect(PACKAGE_NAME).toBe('@memolabs-apps/metro-preset')
     expect(PACKAGE_ROLE.length).toBeGreaterThan(0)
   })
 

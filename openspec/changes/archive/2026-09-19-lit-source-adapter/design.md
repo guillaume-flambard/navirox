@@ -35,7 +35,7 @@ The third is routing, and it is the weakest of the ten. Lit ships no router. The
 
 ## Decisions
 
-**The adapter is a base adapter, not a composer.** It depends on `@navirox/source-react` only for the native refusal, which is imported rather than written a fifth time. There is no framework for it to compose: Lit is the framework, and its components are custom elements rather than another adapter's components. Rejected: a `source-lit` that composes a hypothetical `source-custom-elements`, which would be a package that exists only to be composed.
+**The adapter is a base adapter, not a composer.** It depends on `@memolabs-apps/source-react` only for the native refusal, which is imported rather than written a fifth time. There is no framework for it to compose: Lit is the framework, and its components are custom elements rather than another adapter's components. Rejected: a `source-lit` that composes a hypothetical `source-custom-elements`, which would be a package that exists only to be composed.
 
 **A component is a class extending `LitElement` or `ReactiveElement`.** The declaration also records whether the class registers itself with the `@customElement` decorator or with a `customElements.define` call, plus whether it declares a reactive property, and whether the tag name could be read. Rejected: reading only the decorator (misses the documented JavaScript form) and reading only `customElements.define` (misses the common TypeScript form). Rejected: treating any class that calls `customElements.define` as a component, which would report a registration site rather than the element it registers.
 

@@ -5,8 +5,8 @@ import type {
   GraphEdge,
   NodeId,
   UnitNode,
-} from '@navirox/graph'
-import { nodeId } from '@navirox/graph'
+} from '@memolabs-apps/graph'
+import { nodeId } from '@memolabs-apps/graph'
 import type { SourceInspection } from './types.js'
 
 /**

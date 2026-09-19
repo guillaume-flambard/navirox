@@ -1,11 +1,11 @@
-import type { Finding, FindingSeverity, SourceLocation } from '@navirox/graph'
-import { findingId } from '@navirox/graph'
+import type { Finding, FindingSeverity, SourceLocation } from '@memolabs-apps/graph'
+import { findingId } from '@memolabs-apps/graph'
 import type {
   DiscoveredCapability,
   DiscoveredUnit,
   InspectContext,
   SourceInspection,
-} from '@navirox/source'
+} from '@memolabs-apps/source'
 import {
   declaredMajor,
   declaredRange,
@@ -15,7 +15,7 @@ import {
   scanCapabilities,
   stripComments,
   testedMajors,
-} from '@navirox/source'
+} from '@memolabs-apps/source'
 import { isComponentExtension, readDeclaration } from './components.js'
 import { readRoutes } from './routes.js'
 import type { FindingDraft } from './routes.js'

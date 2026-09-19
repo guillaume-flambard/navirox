@@ -3,7 +3,7 @@ import type {
   HapticNotificationType,
   HapticsModule,
   SecureStoreModule,
-} from '@navirox/runtime'
+} from '@memolabs-apps/runtime'
 
 /**
  * The two standard modules, mapped from the provider's vocabulary onto the

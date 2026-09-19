@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { createStubRuntime } from '@navirox/runtime/stub'
+import { createStubRuntime } from '@memolabs-apps/runtime/stub'
 import {
   BUILT_ON,
   PACKAGE_NAME,
@@ -11,18 +11,18 @@ import {
   resolveHostComponents,
 } from './index'
 
-describe('@navirox/ui', () => {
+describe('@memolabs-apps/ui', () => {
   it('has a stable package identity', () => {
-    expect(PACKAGE_NAME).toBe('@navirox/ui')
+    expect(PACKAGE_NAME).toBe('@memolabs-apps/ui')
     expect(PACKAGE_ROLE.length).toBeGreaterThan(0)
   })
 
   it('is built on the runtime seam, never on a concrete runtime', () => {
-    expect(BUILT_ON).toBe('@navirox/runtime')
+    expect(BUILT_ON).toBe('@memolabs-apps/runtime')
   })
 })
 
-describe('@navirox/ui against the runtime seam (Proof B)', () => {
+describe('@memolabs-apps/ui against the runtime seam (Proof B)', () => {
   it('resolves every required primitive without any renderer present', () => {
     const runtime = createStubRuntime()
     const surface = createComponentSurface(runtime)

@@ -23,7 +23,7 @@
       `workspace:*` range.
 - [x] 2.3 Create the per package tags with `corepack pnpm exec changeset
       git-tag`. Verify: `git tag` lists 25 tags of the form
-      `@navirox/<name>@0.1.0` and `create-navirox@0.1.0`.
+      `@memolabs-apps/<name>@0.1.0` and `create-navirox@0.1.0`.
 - [x] 2.4 Create the milestone tag with `git tag -a 0.1.0 -m "<message>"`.
       Verify: `git tag` lists `0.1.0`, and `git tag | grep -x 0.1.0` prints
       it, which the changesets tags cannot satisfy on their own.

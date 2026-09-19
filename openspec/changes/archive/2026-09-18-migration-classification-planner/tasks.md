@@ -1,11 +1,11 @@
 ## 1. Add the planner package
 
-- [x] 1.1 Create `packages/planner` as `@navirox/planner`, depending only on
-      `@navirox/graph`, following the package conventions and referencing the graph
-      package in its tsconfig. Verify with `pnpm --filter @navirox/planner build`.
+- [x] 1.1 Create `packages/planner` as `@memolabs-apps/planner`, depending only on
+      `@memolabs-apps/graph`, following the package conventions and referencing the graph
+      package in its tsconfig. Verify with `pnpm --filter @memolabs-apps/planner build`.
 - [x] 1.2 Implement the decision model: the closed classification set, the
       confidence set, reasons, evidence and blockers, with the type requiring a
-      reason and evidence. Verify with `pnpm --filter @navirox/planner typecheck`.
+      reason and evidence. Verify with `pnpm --filter @memolabs-apps/planner typecheck`.
 - [x] 1.3 Implement the rule engine: rules as data, the declared precedence
       layers, deterministic ordering, and the fallback that produces `unknown`
       rather than nothing. Verify with unit tests covering override precedence,
