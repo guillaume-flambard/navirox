@@ -185,18 +185,17 @@ function pack(destination, packages) {
   const artifacts = new Map()
 
   for (const entry of packages) {
+    const artifact = join(
+      destination,
+      `${entry.name.replace(/^@/, '').replace('/', '-')}-${entry.version}.tgz`,
+    )
     // Captured rather than inherited: `pnpm pack` prints the whole tarball
     // listing, and only a failure is worth reading.
-    const result = capture('pnpm', ['pack', '--pack-destination', destination], entry.directory)
+    const result = capture('pnpm', ['pack', '--out', artifact], entry.directory)
 
     assert(
       result.status === 0,
       `pnpm pack exited ${result.status} for ${entry.name}.\n${result.stdout}${result.stderr}`,
-    )
-
-    const artifact = join(
-      destination,
-      `${entry.name.replace('@memolabs-apps/', 'navirox-')}-${entry.version}.tgz`,
     )
 
     assert(existsSync(artifact), `pnpm pack wrote no artifact for ${entry.name}.`)
