@@ -1,0 +1,7 @@
+[
+  { "id": 1, "name": "Aurora Lamp", "price": 49 },
+  { "id": 2, "name": "Basalt Mug", "price": 18 },
+  { "id": 3, "name": "Cedar Stool", "price": 72 },
+  { "id": 4, "name": "Dune Throw", "price": 35 },
+  { "id": 5, "name": "Ember Kettle", "price": 64 }
+]
