@@ -92,20 +92,27 @@ to the compatibility and planning layers and no compatibility facts exist yet.
 
 ### Requirement: What cannot be inspected is reported as a finding
 
-Inspection MUST complete on a partial project. It MUST report a missing router,
-a router it does not extract routes from, a file its parser rejects, and a
-construct it does not model as findings, and it MUST NOT invent a result to fill
-the gap. Route extent MUST NOT be inferred from a directory convention.
+Inspection MUST complete on a partial project. It MUST read literal top-level
+paths from a literal `routes` property passed directly to Vue Router's
+`createRouter`. It MUST report a missing router, a computed or otherwise
+unreadable router configuration, a file its parser rejects, and a construct it
+does not model as findings. It MUST NOT invent a result to fill the gap. Route
+extent MUST NOT be inferred from a directory convention.
 
 #### Scenario: A rejected file leaves the inspection standing
 
 - **WHEN** inspection meets a component its parser rejects
 - **THEN** inspection completes, the failure is reported as a finding naming the file, and the remaining components are still reported
 
-#### Scenario: Routes are not inferred from a convention
+#### Scenario: Literal Vue Router routes are read
 
-- **WHEN** inspection runs against a project with a views directory and no extracted router
-- **THEN** no route node is produced and a finding states that routes were not extracted
+- **WHEN** inspection reads a `createRouter` call with a literal `routes` array
+- **THEN** it reports each top-level route with a literal `path`, including named parameters
+
+#### Scenario: Routes are not inferred from a convention or computed table
+
+- **WHEN** inspection runs against a project with a views directory or computed route table
+- **THEN** no route node is produced for the unreadable shape and a finding states why
 
 ### Requirement: The fragment is deterministic and traceable
 

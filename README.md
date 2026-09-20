@@ -102,8 +102,9 @@ marketing badge. The four levels are the ones the roadmap defines:
 React, Next, Astro, Solid, Qwik, Lit and vanilla HTML/CSS/JS are detected,
 inspected, and planned for by one generic planner. Nothing converts a native view:
 the only migration transform that exists copies the units the planner classifies
-`shared` byte for byte, and there is no framework-specific transform yet. Plain Vue
-routes are not extracted either. Nuxt reads the
+`shared` byte for byte, and there is no framework-specific transform yet. Vue
+reads literal top-level routes passed directly to `createRouter`; computed,
+nested and plugin-defined routes are reported rather than guessed. Nuxt reads the
 application directory Nuxt 4 documents, the `definePageMeta` macro and the two halves of a
 component, and its data calls stay one shared capability rather than a model of their own.
 Qwik reads Qwik City's route conventions, including pathless groups and named layouts,

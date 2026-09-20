@@ -27,11 +27,11 @@
   "dependencies": {
     "@memolabs-apps/graph": "workspace:*",
     "@memolabs-apps/source": "workspace:*",
-    "@vue/compiler-sfc": "^3.5.43"
+    "@vue/compiler-sfc": "^3.5.43",
+    "typescript": "~6.0.3"
   },
   "devDependencies": {
     "@types/node": "^26.6.1",
-    "typescript": "~6.0.3",
     "vitest": "^5.0.1"
   },
   "publishConfig": {

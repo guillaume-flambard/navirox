@@ -141,8 +141,14 @@ jobs:
       - run: node scripts/e2e-scaffold.mjs --build ios
 
   journey-android:
-    name: run the shared journey on an emulator
+    name: run ${{ matrix.app }} journey on an emulator
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        app: [vue-basic, vue-pilot]
+    env:
+      NAVIROX_E2E_APP: ${{ matrix.app }}
     # The step that boots the emulator has no timeout of its own and the default
     # job timeout is six hours, so an emulator that hangs mid-boot costs a
     # runner for the afternoon instead of failing in the time a journey takes.
@@ -184,7 +190,7 @@ jobs:
       # and runs a binary, it does not compile one. Building here rather than
       # inside the emulator step also keeps the emulator step to the run itself,
       # which is the part that can hang.
-      - run: pnpm --filter vue-basic e2e:build:android
+      - run: pnpm --filter "$NAVIROX_E2E_APP" e2e:build:android
 
       # This job owns the emulator end to end rather than handing it to the
       # maintained helper action, which is deliberate. That action deadlocks
@@ -204,10 +210,10 @@ jobs:
       # way. It is replaced below with a bounded poll on an explicit serial,
       # which is what the helper action does internally for the same reason.
       #
-      # The profile is load-bearing rather than cosmetic: the canary is a fixed
-      # column whose list takes the height the card leaves, so a small AVD
-      # starves the list to zero height and the list journey fails on the device
-      # profile instead of on the code. A phone-sized AVD is part of the setup.
+      # The profile is load-bearing rather than cosmetic: both the canary and
+      # the migrated pilot use a fixed column whose list takes the height the
+      # card leaves. A small AVD starves the list to zero height, so a phone-
+      # sized AVD is part of the setup rather than an incidental CI detail.
       - name: Run the journey against the emulator
         env:
           NAVIROX_ANDROID_AVD: navirox-e2e
@@ -307,14 +313,20 @@ jobs:
           adb -s "$SERIAL" shell settings put global transition_animation_scale 0
           adb -s "$SERIAL" shell settings put global animator_duration_scale 0
 
-          pnpm --filter vue-basic e2e:test:android || fail "the shared journey failed on the emulator"
+          pnpm --filter "$NAVIROX_E2E_APP" e2e:test:android || fail "the $NAVIROX_E2E_APP journey failed on the emulator"
 
   journey-ios:
-    name: run the shared journey on a simulator
+    name: run ${{ matrix.app }} journey on a simulator
     # Same reasoning as the iOS build job above: a macOS runner costs several
     # times a Linux one, so the journey is verified on main and on demand.
     if: github.event_name != 'pull_request'
     runs-on: macos-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        app: [vue-basic, vue-pilot]
+    env:
+      NAVIROX_E2E_APP: ${{ matrix.app }}
     # The first launch on a fresh runner boots a simulator, installs the app and
     # builds a Metro bundle from an empty cache, which is minutes before the first
     # assertion. Without a cap, a stuck simulator waits out the six-hour default.
@@ -346,8 +358,9 @@ jobs:
 
       # Pods are not committed, and adding a devDependency is enough to move the
       # lock the build checks the manifest against.
-      - run: pod install
-        working-directory: examples/vue-basic/ios
+      - run: |
+          cd "examples/$NAVIROX_E2E_APP/ios"
+          pod install
 
-      - run: pnpm --filter vue-basic e2e:build:ios
-      - run: pnpm --filter vue-basic e2e:test:ios
+      - run: pnpm --filter "$NAVIROX_E2E_APP" e2e:build:ios
+      - run: pnpm --filter "$NAVIROX_E2E_APP" e2e:test:ios

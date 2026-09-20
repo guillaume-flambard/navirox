@@ -4,6 +4,7 @@ import { findingId } from '@memolabs-apps/graph'
 import type {
   DiscoveredCapability,
   DiscoveredDependency,
+  DiscoveredRoute,
   DiscoveredUnit,
   InspectContext,
   SourceInspection,
@@ -19,6 +20,7 @@ import {
   testedMajors,
 } from '@memolabs-apps/source'
 import { ADAPTER_ID, DISPLAY_NAME, FRAMEWORK, TESTED_VERSIONS } from './detect.js'
+import { readRoutes } from './routes.js'
 import { scanUnmodelled } from './unmodelled.js'
 
 /**
@@ -26,8 +28,10 @@ import { scanUnmodelled } from './unmodelled.js'
  *
  * Three limits are deliberate and are reported rather than hidden:
  *
- * - Routes are not extracted. A `views` directory is a convention, not a route
- *   table, so no route node is produced and a finding says why.
+ * - Literal top-level routes passed directly to Vue Router's `createRouter` are
+ *   extracted. A `views` directory, computed route table, spread or nested
+ *   route remains a convention or an unreadable shape, so it is reported rather
+ *   than guessed.
  * - Capability use is found by scanning text against a declared pattern set. A
  *   capability used in a way the set does not describe is a miss, never a claim.
  * - A repeated capability becomes one entry per file, capability and usage, at
@@ -195,9 +199,11 @@ export function inspect(context: InspectContext): Promise<SourceInspection> {
   const units: DiscoveredUnit[] = []
   const capabilities: DiscoveredCapability[] = []
   const dependencies: DiscoveredDependency[] = []
+  const routes: DiscoveredRoute[] = []
   const manifest = readManifest(context, ADAPTER_ID)
 
   let frameworkVersion: string | undefined
+  let declaresRouter = false
 
   if (manifest === undefined) {
     findings.push(
@@ -255,16 +261,7 @@ export function inspect(context: InspectContext): Promise<SourceInspection> {
     }
 
     if (declaredRange(manifest, 'vue-router') !== undefined) {
-      findings.push(
-        finding(
-          'router-not-extracted',
-          'warning',
-          'Routes were not extracted',
-          'The project declares vue-router. This adapter does not read a router module, so no route node was produced and route extent is unknown.',
-          manifest.source,
-          [{ kind: 'manifest', value: `${manifest.source.file} dependencies.vue-router` }],
-        ),
-      )
+      declaresRouter = true
     }
   }
 
@@ -273,6 +270,23 @@ export function inspect(context: InspectContext): Promise<SourceInspection> {
 
     if (text === undefined) {
       continue
+    }
+
+    if (text.includes('vue-router')) {
+      const reading = readRoutes(file, text)
+
+      routes.push(...reading.routes)
+      findings.push(
+        ...reading.findings.map((routeFinding) =>
+          finding(
+            routeFinding.code,
+            'warning',
+            routeFinding.title,
+            routeFinding.message,
+            routeFinding.source,
+          ),
+        ),
+      )
     }
 
     let unit: DiscoveredUnit | undefined
@@ -308,7 +322,26 @@ export function inspect(context: InspectContext): Promise<SourceInspection> {
     }
   }
 
+  if (declaresRouter && routes.length === 0) {
+    findings.push(
+      finding(
+        'router-not-extracted',
+        'warning',
+        'No routes were extracted',
+        'The project declares vue-router, but no literal routes property passed to createRouter could be established.',
+        manifest?.source,
+        [
+          {
+            kind: 'manifest',
+            value: `${manifest?.source.file ?? 'package.json'} dependencies.vue-router`,
+          },
+        ],
+      ),
+    )
+  }
+
   units.sort(bySource)
+  routes.sort((left, right) => left.key.localeCompare(right.key))
   capabilities.sort(bySource)
   dependencies.sort(bySource)
   findings.sort((left, right) => left.id.localeCompare(right.id))
@@ -322,7 +355,7 @@ export function inspect(context: InspectContext): Promise<SourceInspection> {
     units,
     capabilities,
     dependencies,
-    routes: [],
+    routes,
     findings,
   })
 }

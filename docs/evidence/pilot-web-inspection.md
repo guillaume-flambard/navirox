@@ -1,5 +1,12 @@
 # The pilot web app, inspected and planned
 
+> **Addendum 2026-09-19.** The output below is the original inspection
+> snapshot. The shipped adapter now reads the pilot's three literal Vue Router
+> paths. Running `node packages/cli/dist/bin.js inspect -C pilots/vue-web` on
+> the current checkout reports `routes 3`, no findings, and the JSON graph names
+> `/`, `/favourites`, and `/product/:id` (with parameter `id`). The historical
+> snapshot remains below because it records the gap that prompted the change.
+
 This records the first time the source seam faced a web application that was
 written for the browser rather than for Native. It is the evidence for issue
 #12, and the input the next issue needs to choose a migration slice.
@@ -221,8 +228,9 @@ The slice, concretely:
 
 What must stay manual:
 
-- The four components and the three routes. The view layer is rewritten, and
-  routes are not extracted, so both are hand work.
+- The four components and their native navigation implementation. The route
+  paths are now inspected, but a native screen and navigator are still hand
+  work.
 - The two adaptable modules. `localStorage` becomes a native storage call and
   `fetch` becomes the native API client; neither is a copy.
 - The app bootstrap and router. Neither is a unit today.
@@ -241,8 +249,8 @@ Native acceptance criteria, for #13:
 
 Bounded follow-up work, not new source frameworks:
 
-- Route extraction for Vue (`router-not-extracted`): read the router module and
-  emit route and screen nodes.
+- Route-to-screen and nested-route modelling: literal top-level paths are read;
+  component targets and nested routes remain deliberately unresolved.
 - Application modules as units: `main.ts` and `router/index.ts` are invisible.
 - Cross-unit dependency edges: a view's import of a store, and a store's import
   of a utility, are not modelled.

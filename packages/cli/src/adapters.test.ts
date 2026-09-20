@@ -139,7 +139,7 @@ describe('two frameworks through one pipeline', () => {
     expect(capabilities(vue.report)).toContain('geolocation:invoke')
   })
 
-  it('finds a route only where a framework documents one', async () => {
+  it('finds routes where adapters establish them', async () => {
     const registry = await createAdapterRegistry()
     const sveltekit = await runInspection({
       rootDir: fixture('source-sveltekit', 'sveltekit-app'),
@@ -161,7 +161,7 @@ describe('two frameworks through one pipeline', () => {
       '/about',
       '/blog/:slug',
     ])
-    expect(vue.report.graph.routes).toEqual([])
+    expect(vue.report.graph.routes.map((route) => route.pathPattern)).toEqual(['/', '/profile/:id'])
   })
 
   it('did not have to move the shared schema for a second framework', async () => {

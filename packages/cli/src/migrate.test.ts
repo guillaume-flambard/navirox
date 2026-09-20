@@ -1,17 +1,22 @@
-import { existsSync, mkdtempSync, writeFileSync } from 'node:fs'
+import { existsSync, mkdtempSync, readFileSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
+import { fileURLToPath } from 'node:url'
 import type { AppGraphFragment } from '@memolabs-apps/planner'
 import type { SourceAdapter } from '@memolabs-apps/source'
 import { SourceAdapterRegistry } from '@memolabs-apps/source'
 import { describe, expect, it } from 'vitest'
 import { UsageError, parseArguments } from './args'
-import { runCli } from './cli'
+import { createAdapterRegistry, runCli } from './cli'
 
 function project(): string {
   const root = mkdtempSync(join(tmpdir(), 'navirox-cli-migrate-'))
   writeFileSync(join(root, 'logic.ts'), 'export const a = 1\n')
   return root
+}
+
+function vueFixture(): string {
+  return fileURLToPath(new URL('../../source-vue/fixtures/vue-app', import.meta.url))
 }
 
 function capture() {
@@ -93,6 +98,29 @@ describe('parsing the migrate command', () => {
 })
 
 describe('running the migrate command', () => {
+  it('moves the safe subset of a Vue project through the shipped composition root', async () => {
+    const root = vueFixture()
+    const out = mkdtempSync(join(tmpdir(), 'navirox-vue-migration-'))
+    const io = capture()
+    const registry = await createAdapterRegistry()
+
+    const code = await runCli(['migrate', '--write', '--out', out], io.io, root, {
+      inspect: { registry },
+    })
+
+    expect(code).toBe(0)
+    expect(readFileSync(join(out, 'src/lib/pinia.ts'), 'utf8')).toBe(
+      readFileSync(join(root, 'src/lib/pinia.ts'), 'utf8'),
+    )
+    expect(readFileSync(join(out, 'src/stores/counter.ts'), 'utf8')).toBe(
+      readFileSync(join(root, 'src/stores/counter.ts'), 'utf8'),
+    )
+    expect(existsSync(join(out, 'src/App.vue'))).toBe(false)
+    expect(existsSync(join(out, 'src/views/Profile.vue'))).toBe(false)
+    expect(existsSync(join(out, '.navirox', 'migration.json'))).toBe(true)
+    expect(io.lines.join('\n')).toContain('copy-movable-unit')
+  })
+
   it('writes nothing without --write', async () => {
     const root = project()
     const out = join(root, 'mobile')

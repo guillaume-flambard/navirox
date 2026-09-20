@@ -96,11 +96,28 @@ describe('inspecting a Vue project', () => {
     expect(inspection.dependencies.some((dependency) => dependency.name === 'vite')).toBe(false)
   })
 
-  it('reports a router it does not extract routes from', async () => {
+  it('reads literal top-level routes from a vue-router configuration', async () => {
     const inspection = await inspect(createProjectFiles(fixture('vue-app')))
 
-    expect(codes(inspection.findings)).toContain('router-not-extracted')
+    expect(codes(inspection.findings)).not.toContain('router-not-extracted')
+    expect(
+      inspection.routes.map((route) => ({
+        path: route.pathPattern,
+        params: route.params,
+        file: route.source.file,
+      })),
+    ).toEqual([
+      { path: '/', params: undefined, file: 'src/router/index.ts' },
+      { path: '/profile/:id', params: ['id'], file: 'src/router/index.ts' },
+    ])
+  })
+
+  it('reports a computed route table instead of guessing its routes', async () => {
+    const inspection = await inspect(createProjectFiles(fixture('vue-dynamic-router')))
+
     expect(inspection.routes).toEqual([])
+    expect(codes(inspection.findings)).toContain('router-routes-not-literal')
+    expect(codes(inspection.findings)).toContain('router-not-extracted')
   })
 
   it('claims no support for a version outside the tested range', async () => {
@@ -139,7 +156,7 @@ describe('inspecting a project the adapter cannot read', () => {
     expect(failed?.severity).toBe('error')
   })
 
-  it('produces no route node for a views directory', async () => {
+  it('produces no route node when no readable router exists', async () => {
     const inspection = await inspect(createProjectFiles(fixture('vue-broken')))
 
     expect(inspection.routes).toEqual([])

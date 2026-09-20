@@ -62,11 +62,16 @@ describe('building the fragment', () => {
     expect(vue?.id).toBe('vue:package.json:dependency:vue')
   })
 
-  it('produces no screen and no route it did not read', async () => {
+  it('carries the routes it read without inferring screens', async () => {
     const graph = await fragment()
 
     expect(graph.screens).toEqual([])
-    expect(graph.routes).toEqual([])
+    expect(
+      graph.routes.map((route) => ({ path: route.pathPattern, params: route.params })),
+    ).toEqual([
+      { path: '/', params: undefined },
+      { path: '/profile/:id', params: ['id'] },
+    ])
     expect(graph.actions).toEqual([])
     expect(graph.data).toEqual([])
   })
