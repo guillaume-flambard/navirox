@@ -27,6 +27,10 @@ overrides:
   # never calls, and 5.x still exports the XMLParser it does call. Checked by
   # running the CLI config command after the bump, not by reading a changelog.
   fast-xml-parser: ^5.7.0
+  # Detox brings stream-json through its reporting stack. Versions through 3.4.0
+  # have a denial-of-service advisory in JSON filters; 3.5.0 is the patched
+  # release and is compatible with this Node 22+ workspace.
+  stream-json: 3.5.0
 
 minimumReleaseAgeExclude:
   - '@vue/compiler-core@3.5.43'
