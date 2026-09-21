@@ -108,6 +108,36 @@ describe('the native capture driver', () => {
     expect(device.commands).toEqual(['test'])
   })
 
+  it('leaves the packager alone when the caller started it', () => {
+    const device = fakeDevice('warm-packager')
+    const argumentsSeen: string[][] = []
+    const runner: DeviceProcessRunner = (command, args) => {
+      argumentsSeen.push([...args])
+
+      if (args[0] === 'build') {
+        writeFileSync(device.binaryPath, 'apk')
+      }
+
+      if (args[0] === 'test') {
+        writeFileSync(device.outPath, 'png')
+      }
+
+      return { status: 0, stdout: '', stderr: '' }
+    }
+
+    captureNativeDevice(scenario(), capture, device.outPath, {
+      ...optionsFor(device, runner),
+      skipStart: true,
+    })
+
+    const build = argumentsSeen.find((args) => args[0] === 'build') ?? []
+    const test = argumentsSeen.find((args) => args[0] === 'test') ?? []
+
+    expect(build).not.toContain('--start')
+    expect(test).toContain('--start')
+    expect(test[test.indexOf('--start') + 1]).toBe('false')
+  })
+
   it('refuses a run whose build produced no application binary', () => {
     const device = fakeDevice('no-binary')
     const runner: DeviceProcessRunner = () => ({ status: 0, stdout: '', stderr: '' })

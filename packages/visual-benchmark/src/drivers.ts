@@ -180,12 +180,26 @@ export interface NativeDriverOptions {
   captureTest?: string
   /** Overrides the process runner. Tests inject a fake so no device is needed. */
   run?: DeviceProcessRunner
-  /** Hard timeout for the build and for the test run, in milliseconds. */
+  /**
+   * Do not let Detox start the application server. A caller that starts the
+   * packager itself and warms the bundle passes this, because Detox starting a
+   * cold packager per capture is what made every capture wait longer than the
+   * app was willing to wait for its script.
+   */
+  skipStart?: boolean
+  /** Hard timeout for the test run, in milliseconds. */
   timeoutMs?: number
+  /**
+   * Hard timeout for the build, in milliseconds. A cold device build is far
+   * slower than a test run and downloads its own toolchain, so it gets a
+   * budget of its own instead of sharing the test one.
+   */
+  buildTimeoutMs?: number
 }
 
 const DEFAULT_CAPTURE_TEST = 'e2e/capture.test.ts'
 const DEFAULT_DEVICE_TIMEOUT_MS = 20 * 60_000
+const DEFAULT_BUILD_TIMEOUT_MS = 40 * 60_000
 // An Xcode build prints tens of megabytes. The default buffer of a synchronous
 // spawn is one megabyte, and it kills the child with ENOBUFS instead of
 // reporting a build error, so the limit is raised deliberately.
@@ -252,6 +266,7 @@ export function captureNativeDevice(
   const configuration = nativeConfiguration(options.platform)
   const detox = join(appDirectory, 'node_modules', '.bin', 'detox')
   const timeoutMs = options.timeoutMs ?? DEFAULT_DEVICE_TIMEOUT_MS
+  const buildTimeoutMs = options.buildTimeoutMs ?? DEFAULT_BUILD_TIMEOUT_MS
 
   if (options.run === undefined && !existsSync(detox)) {
     throw new CaptureUnavailableError(
@@ -264,7 +279,7 @@ export function captureNativeDevice(
     const build = run(detox, ['build', '--configuration', configuration], {
       cwd: appDirectory,
       env: deviceEnvironment(options, capture),
-      timeoutMs,
+      timeoutMs: buildTimeoutMs,
     })
 
     if (build.error) {
@@ -289,15 +304,17 @@ export function captureNativeDevice(
     }
   }
 
-  const result = run(
-    detox,
-    ['test', '--configuration', configuration, '--testNamePattern', capture.key],
-    {
-      cwd: appDirectory,
-      env: deviceEnvironment(options, capture),
-      timeoutMs,
-    },
-  )
+  const testArguments = ['test', '--configuration', configuration, '--testNamePattern', capture.key]
+
+  if (options.skipStart === true) {
+    testArguments.push('--start', 'false')
+  }
+
+  const result = run(detox, testArguments, {
+    cwd: appDirectory,
+    env: deviceEnvironment(options, capture),
+    timeoutMs,
+  })
 
   if (result.error) {
     throw new CaptureUnavailableError(

@@ -63,6 +63,11 @@ const CHROME_PATH =
   process.env.NAVIROX_CHROME ?? '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome'
 const VITE_PORT = 5202
 const BASE_URL = `http://127.0.0.1:${VITE_PORT}`
+// The packager port is not free to choose: the harness Detox configuration
+// reverses 8081 into the device and a debug application asks for its script
+// there.
+const PACKAGER_PORT = 8081
+const BUNDLE_TIMEOUT_MS = 10 * 60_000
 const ROOT_TEST_ID = 'records-screen'
 const PLATFORMS = ['ios', 'android']
 const MOTION_ORDER = ['rest', 'first-meaningful', 'midpoint', 'settled', 'interrupted']
@@ -250,6 +255,68 @@ async function startVite() {
   throw new Error(`the vite harness never answered at ${BASE_URL}/records`)
 }
 
+// The packager is started once for the whole run and the bundle is requested
+// before any capture. Detox starts its own packager per invocation, and a cold
+// packager bundles every module on the first request, so each of the six
+// captures used to wait for a bundle the application gave up on. Warming it
+// here also makes the captures themselves much shorter.
+async function startPackager(appDirectory, platform) {
+  const packager = spawn(
+    join(appDirectory, 'node_modules', '.bin', 'react-native'),
+    ['start', '--port', String(PACKAGER_PORT)],
+    {
+      cwd: appDirectory,
+      stdio: ['ignore', 'pipe', 'pipe'],
+    },
+  )
+
+  packager.stdout.on('data', (chunk) => process.stdout.write(`[metro] ${chunk}`))
+  packager.stderr.on('data', (chunk) => process.stderr.write(`[metro] ${chunk}`))
+
+  const status = `http://127.0.0.1:${PACKAGER_PORT}/status`
+
+  for (let attempt = 0; attempt < 100; attempt += 1) {
+    try {
+      const response = await fetch(status)
+
+      if (response.ok) {
+        break
+      }
+    } catch {
+      // Not up yet.
+    }
+
+    await new Promise((resolve) => setTimeout(resolve, 300))
+  }
+
+  const bundle = `http://127.0.0.1:${PACKAGER_PORT}/index.bundle?platform=${platform}&dev=true&minify=false`
+  const started = Date.now()
+
+  for (;;) {
+    if (Date.now() - started > BUNDLE_TIMEOUT_MS) {
+      packager.kill()
+
+      throw new Error(`the packager never bundled index.bundle for ${platform}`)
+    }
+
+    try {
+      const response = await fetch(bundle)
+
+      if (response.ok) {
+        await response.arrayBuffer()
+
+        process.stdout.write(`[metro] bundled index.bundle for ${platform}\n`)
+
+        return packager
+      }
+    } catch {
+      // Still bundling.
+    }
+
+    await new Promise((resolve) => setTimeout(resolve, 1000))
+  }
+}
+
 async function main() {
   const options = parseArguments(process.argv.slice(2))
   const platform = options.platform
@@ -285,6 +352,7 @@ async function main() {
       ? newWorkspace('navirox-capture-')
       : namedWorkspace(options.workspace)
   let vite
+  let packager
 
   try {
     const packages = publishablePackages()
@@ -311,6 +379,7 @@ async function main() {
 
     step('Capture the scenarios')
 
+    packager = await startPackager(appDirectory, platform)
     vite = await startVite()
 
     const name = deviceName(platform)
@@ -356,6 +425,7 @@ async function main() {
                   scenarioPath,
                   rootTestId: ROOT_TEST_ID,
                   artifactDirectory,
+                  skipStart: true,
                 }),
               [otherPlatform]: other,
             },
@@ -505,6 +575,10 @@ async function main() {
   } finally {
     if (vite !== undefined) {
       vite.kill()
+    }
+
+    if (packager !== undefined) {
+      packager.kill()
     }
 
     if (!options.keep && options.workspace === undefined) {
