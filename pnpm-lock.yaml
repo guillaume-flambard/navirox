@@ -8,7 +8,6 @@ overrides:
   react: 19.2.3
   react-native: 0.86.0
   fast-xml-parser: ^5.7.0
-  stream-json: 3.5.0
 
 importers:
 
@@ -5106,13 +5105,11 @@ packages:
   std-env@4.2.0:
     resolution: {integrity: sha512-oCUKSupKTHX53EyjDtuZQ64pjLJ6yYCtpmEw0goYxtjG9KpbRe8KAsl2tBUGU9DyMcJ0RwJ8GqJAFzMXcXW1Rw==}
 
-  stream-chain@4.2.5:
-    resolution: {integrity: sha512-Wtyq3bNE3ggLR0v2vftqvuhltym3WbZAkZpfIrkr5F/6vpeUmWmwTgXa16zD87gpahwJ/Qulq3zVfUlgIc0J2A==}
-    engines: {node: '>=22'}
+  stream-chain@2.2.5:
+    resolution: {integrity: sha512-1TJmBx6aSWqZ4tx7aTpBDXK0/e2hhcNSTV8+CbFJtDjbb+I1mZ8lHit0Grw9GRT+6JbIrrDd8esncgBi8aBXGA==}
 
-  stream-json@3.5.0:
-    resolution: {integrity: sha512-dobB7zipGW8o11PvdRljQSWuyMxifADLvoHeA4elwNWOTbZo6+BlNa+P6aCq7Y9jRiWTy2Ucu2xSv0Y2/T+/kQ==}
-    engines: {node: '>=22'}
+  stream-json@1.9.1:
+    resolution: {integrity: sha512-uWkjJ+2Nt/LO9Z/JyKZbMusL8Dkh97uUBTv3AJQ74y07lVahLY4eEFsPsE97pxYBwr8nnjMAIch5eqI0gPShyw==}
 
   stream-parser@0.3.1:
     resolution: {integrity: sha512-bJ/HgKq41nlKvlhccD5kaCr/P+Hu0wPNKPJOH7en+YrJu/9EgqUF+88w5Jb6KNcjOFMhfX4B2asfeAtIGuHObQ==}
@@ -8128,7 +8125,7 @@ snapshots:
     dependencies:
       '@flatten-js/interval-tree': 1.1.4
       multi-sort-stream: 1.0.4
-      stream-json: 3.5.0
+      stream-json: 1.9.1
       trace-event-lib: 1.4.1
     optionalDependencies:
       bunyan: 2.0.5
@@ -8430,7 +8427,7 @@ snapshots:
       serialize-error: 8.1.0
       shell-quote: 1.10.0
       signal-exit: 3.0.7
-      stream-json: 3.5.0
+      stream-json: 1.9.1
       strip-ansi: 6.0.1
       telnet-client: 1.2.8
       tmp: 0.2.7
@@ -10541,11 +10538,11 @@ snapshots:
 
   std-env@4.2.0: {}
 
-  stream-chain@4.2.5: {}
+  stream-chain@2.2.5: {}
 
-  stream-json@3.5.0:
+  stream-json@1.9.1:
     dependencies:
-      stream-chain: 4.2.5
+      stream-chain: 2.2.5
 
   stream-parser@0.3.1(supports-color@8.1.1):
     dependencies:

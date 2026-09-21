@@ -27,10 +27,17 @@ overrides:
   # never calls, and 5.x still exports the XMLParser it does call. Checked by
   # running the CLI config command after the bump, not by reading a changelog.
   fast-xml-parser: ^5.7.0
-  # Detox brings stream-json through its reporting stack. Versions through 3.4.0
-  # have a denial-of-service advisory in JSON filters; 3.5.0 is the patched
-  # release and is compatible with this Node 22+ workspace.
-  stream-json: 3.5.0
+  # Detox brings stream-json through its reporting stack. An override to 3.5.0
+  # was tried here to close the denial-of-service advisory in the JSON filters,
+  # and it cannot work: 3.5.0 is an ESM package whose jsonl parser moved to
+  # src/jsonl/parser.js and exports a factory, while detox requires
+  # `stream-json/jsonl/Parser` and calls `JsonlParser.make(...)`. Every
+  # `detox build` therefore died on MODULE_NOT_FOUND before any native code ran.
+  # detox 20.51.4 and bunyamin 1.6.3 both declare the 1.x line, so the tree
+  # resolves 1.9.1, and the advisory (GHSA-528h-pc64-c93x, medium, the
+  # pick/ignore/filter/replace filters only, reached by detox's own device log
+  # parsing) is accepted until detox moves to the 3.x API. Nothing Navirox ships
+  # depends on stream-json.
 
 minimumReleaseAgeExclude:
   - '@vue/compiler-core@3.5.43'
