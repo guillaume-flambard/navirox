@@ -1,6 +1,6 @@
 {
   "name": "@memolabs-apps/build",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Build, update and submit orchestration for iOS and Android.",
   "license": "MIT",
   "type": "module",

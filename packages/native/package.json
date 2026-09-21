@@ -1,6 +1,6 @@
 {
   "name": "@memolabs-apps/native",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Vue-first native API surface (haptics, storage, camera, location) over a pluggable provider.",
   "license": "MIT",
   "type": "module",

@@ -1,6 +1,6 @@
 {
   "name": "@memolabs-apps/source-svelte",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "The Svelte source adapter: detection, component inspection and App Graph construction for an existing Svelte application.",
   "license": "MIT",
   "type": "module",

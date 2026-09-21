@@ -1,6 +1,6 @@
 {
   "name": "@memolabs-apps/graph",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "The framework-neutral App Graph schema and its deterministic node identifiers.",
   "license": "MIT",
   "type": "module",

@@ -1,6 +1,6 @@
 {
   "name": "@memolabs-apps/planner",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "The migration decision model, the rule engine and the generic rules that turn an App Graph into a plan.",
   "license": "MIT",
   "type": "module",

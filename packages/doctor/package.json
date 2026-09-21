@@ -1,6 +1,6 @@
 {
   "name": "@memolabs-apps/doctor",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Environment and dependency diagnostics behind `navirox doctor`.",
   "license": "MIT",
   "type": "module",

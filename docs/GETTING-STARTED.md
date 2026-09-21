@@ -32,10 +32,13 @@ what you get is the same tree the repository's own example is. The name you pass
 becomes the directory, the package name, the iOS target and the Android package
 id, so `my-app`, `MyApp` and `"my app"` all work and produce the same identifiers.
 
-Run from the public registry today, this step does scaffold, but `create-navirox`
-is published before the packages it points at: outside this repository the
-generated app's Navirox dependencies are written as `0.0.0`, and `pnpm install`
-will not resolve them. The setup that works before publication is the tarball
+Run from the public registry today, this step does scaffold, but the published
+`create-navirox` predates the packages it points at: outside this repository
+the generated app's Navirox dependencies are written as `0.0.0`, and
+`pnpm install` will not resolve them. From 0.1.1 on, once the publication
+tracked in issue #17 lands, a generated app records the scaffolder's own
+released version instead, so `pnpm install` resolves from the registry with
+no checkout present. Until then, the setup that works is the tarball
 install `scripts/e2e-scaffold.mjs` performs, described in the next section.
 
 ## 2. Check the machine before you build

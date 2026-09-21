@@ -188,8 +188,38 @@ describe('scaffoldApp', () => {
     }
 
     expect(result.warnings).toHaveLength(1)
+    expect(result.warnings[0]).toContain('linked from your checkout')
     expect(result.warnings[0]).toContain('pnpm build')
     expect(written.description).toBe('My App, built with Navirox.')
+  })
+
+  it('records the released version when no checkout is found', () => {
+    const targetDir = targetPath()
+    const result = scaffoldApp({ name: 'My App', targetDir, checkoutRoot: null })
+    const written = JSON.parse(read(targetDir, 'package.json')) as {
+      dependencies: Record<string, string>
+      devDependencies: Record<string, string>
+    }
+    // The released version is the scaffolder's own: the release moves as one,
+    // so the version create-navirox carries is the version every Navirox entry
+    // must name. Read from the manifest of record, never spelled out, so this
+    // test keeps passing after the next release.
+    const own = JSON.parse(
+      readFileSync(join(TEMPLATE_DIRECTORY, '..', 'package.json'), 'utf8'),
+    ) as { version: string }
+
+    for (const group of ['dependencies', 'devDependencies'] as const) {
+      for (const [name, version] of Object.entries(written[group])) {
+        if (name.startsWith('@memolabs-apps/')) {
+          expect(version, name).toBe(own.version)
+        }
+      }
+    }
+    expect(own.version).not.toBe('0.0.0')
+
+    expect(result.warnings).toHaveLength(1)
+    expect(result.warnings[0]).toContain('from the registry')
+    expect(result.warnings[0]).toContain(own.version)
   })
 
   it('refuses to write into a directory that already holds something', () => {

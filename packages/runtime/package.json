@@ -1,6 +1,6 @@
 {
   "name": "@memolabs-apps/runtime",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "The runtime seam: the single interface every public Navirox package depends on.",
   "license": "MIT",
   "type": "module",

@@ -1,6 +1,6 @@
 {
   "name": "@memolabs-apps/source-vanilla",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "The vanilla HTML/CSS/JS source adapter: documents as routes, modules as units, and the absences of a framework reported as absences.",
   "license": "MIT",
   "type": "module",

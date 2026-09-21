@@ -1,6 +1,6 @@
 {
   "name": "@memolabs-apps/source-solid",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "The Solid source adapter: components, stores and the router's two declared shapes.",
   "license": "MIT",
   "type": "module",

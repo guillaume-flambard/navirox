@@ -1,0 +1,799 @@
+$ navirox doctor
+Navirox doctor, for ios builds
+/private/var/folders/9l/jsy6rgt160v3z3vrkqqjhdyh0000gn/T/navirox-e2e-bpRfL2/app
+
+Environment
+  ✓ Node.js 24.21.0
+  ✓ pnpm 11.27.0, and this app pins no package manager to compare it against
+  ✓ watchman /opt/homebrew/bin/watchman
+  ✓ The Xcode command line tools /usr/bin/xcodebuild
+  ✓ CocoaPods /opt/homebrew/lib/ruby/gems/4.0.0/bin/pod
+
+Runtime
+  ✓ @memolabs-apps/metro-preset 0.1.1
+  ✓ @memolabs-apps/native 0.1.1
+  ✓ @memolabs-apps/runtime-symbiote 0.1.1
+  ✓ @memolabs-apps/ui 0.1.1
+  ✓ @symbiote-native/css-parser 0.5.0
+  ✓ @symbiote-native/engine 0.5.0
+  ✓ @symbiote-native/vue 2.0.0
+  ✓ @vue/devtools-api 8.2.1
+  ✓ @vue/runtime-core 3.5.43
+  ✓ pinia 4.0.3
+  ✓ react 19.2.3
+  ✓ react-native 0.86.0
+  ✓ react-native-haptic-feedback 3.0.0
+  ✓ react-native-keychain 10.0.0
+
+Compatibility
+  ✓ The expo meta-package not declared and not installed
+  ✓ The New Architecture ON, set in android/gradle.properties
+  ? The compatibility registry lands with 0.2, so nothing is checked here yet
+
+1 unknown.
+
+exit=0
+$ navirox inspect -C <web-proj> --json
+{
+  "schemaVersion": 1,
+  "rootDir": "/tmp/navirox-rc42/web-proj",
+  "source": {
+    "adapterId": "vue",
+    "displayName": "Vue",
+    "frameworkVersion": "^3.5.43"
+  },
+  "supportLevel": "experimental",
+  "summary": {
+    "files": 12,
+    "units": 9,
+    "capabilities": 5,
+    "dependencies": 3,
+    "routes": 2,
+    "screens": 1,
+    "findings": {
+      "info": 0,
+      "warning": 0,
+      "error": 0
+    }
+  },
+  "graph": {
+    "routes": [
+      {
+        "id": "vue:src/router/index.ts:route:/:185",
+        "pathPattern": "/",
+        "screenId": "vue:src/views/Profile.vue:screen:default",
+        "source": {
+          "file": "src/router/index.ts",
+          "adapterId": "vue",
+          "start": {
+            "line": 7,
+            "column": 5
+          }
+        }
+      },
+      {
+        "id": "vue:src/router/index.ts:route:/profile/:id:242",
+        "pathPattern": "/profile/:id",
+        "screenId": "vue:src/views/Profile.vue:screen:default",
+        "params": [
+          "id"
+        ],
+        "source": {
+          "file": "src/router/index.ts",
+          "adapterId": "vue",
+          "start": {
+            "line": 8,
+            "column": 5
+          }
+        }
+      }
+    ],
+    "screens": [
+      {
+        "id": "vue:src/views/Profile.vue:screen:default",
+        "unitId": "vue:src/views/Profile.vue:component:default",
+        "routeIds": [
+          "vue:src/router/index.ts:route:/:185",
+          "vue:src/router/index.ts:route:/profile/:id:242"
+        ],
+        "source": {
+          "file": "src/views/Profile.vue",
+          "adapterId": "vue",
+          "start": {
+            "line": 1,
+            "column": 1
+          }
+        }
+      }
+    ],
+    "units": [
+      {
+        "id": "vue:src/App.vue:component:default",
+        "kind": "component",
+        "source": {
+          "file": "src/App.vue",
+          "adapterId": "vue",
+          "start": {
+            "line": 1,
+            "column": 1
+          }
+        },
+        "dependencies": [
+          "vue:src/App.vue:capability:local-storage:read",
+          "vue:src/App.vue:capability:local-storage:write"
+        ],
+        "metadata": {
+          "script": false,
+          "scriptSetup": true,
+          "template": true,
+          "styles": 1
+        }
+      },
+      {
+        "id": "vue:src/components/Counter.vue:component:default",
+        "kind": "component",
+        "source": {
+          "file": "src/components/Counter.vue",
+          "adapterId": "vue",
+          "start": {
+            "line": 1,
+            "column": 1
+          }
+        },
+        "dependencies": [],
+        "metadata": {
+          "script": false,
+          "scriptSetup": true,
+          "template": true,
+          "styles": 0
+        }
+      },
+      {
+        "id": "vue:src/components/List.vue:component:default",
+        "kind": "component",
+        "source": {
+          "file": "src/components/List.vue",
+          "adapterId": "vue",
+          "start": {
+            "line": 1,
+            "column": 1
+          }
+        },
+        "dependencies": [],
+        "metadata": {
+          "script": false,
+          "scriptSetup": true,
+          "template": true,
+          "styles": 0
+        }
+      },
+      {
+        "id": "vue:src/components/NameInput.vue:component:default",
+        "kind": "component",
+        "source": {
+          "file": "src/components/NameInput.vue",
+          "adapterId": "vue",
+          "start": {
+            "line": 1,
+            "column": 1
+          }
+        },
+        "dependencies": [],
+        "metadata": {
+          "script": false,
+          "scriptSetup": true,
+          "template": true,
+          "styles": 0
+        }
+      },
+      {
+        "id": "vue:src/lib/api.ts:utility:default",
+        "kind": "utility",
+        "source": {
+          "file": "src/lib/api.ts",
+          "adapterId": "vue",
+          "start": {
+            "line": 1,
+            "column": 1
+          }
+        },
+        "dependencies": [
+          "vue:src/lib/api.ts:capability:network-request:invoke"
+        ]
+      },
+      {
+        "id": "vue:src/lib/pinia.ts:utility:default",
+        "kind": "utility",
+        "source": {
+          "file": "src/lib/pinia.ts",
+          "adapterId": "vue",
+          "start": {
+            "line": 1,
+            "column": 1
+          }
+        },
+        "dependencies": []
+      },
+      {
+        "id": "vue:src/lib/storage.ts:utility:default",
+        "kind": "utility",
+        "source": {
+          "file": "src/lib/storage.ts",
+          "adapterId": "vue",
+          "start": {
+            "line": 1,
+            "column": 1
+          }
+        },
+        "dependencies": [
+          "vue:src/lib/storage.ts:capability:local-storage:unknown"
+        ]
+      },
+      {
+        "id": "vue:src/stores/counter.ts:state-module:default",
+        "kind": "state-module",
+        "source": {
+          "file": "src/stores/counter.ts",
+          "adapterId": "vue",
+          "start": {
+            "line": 3,
+            "column": 1
+          }
+        },
+        "dependencies": []
+      },
+      {
+        "id": "vue:src/views/Profile.vue:component:default",
+        "kind": "component",
+        "source": {
+          "file": "src/views/Profile.vue",
+          "adapterId": "vue",
+          "start": {
+            "line": 1,
+            "column": 1
+          }
+        },
+        "dependencies": [
+          "vue:src/views/Profile.vue:capability:geolocation:invoke"
+        ],
+        "metadata": {
+          "script": false,
+          "scriptSetup": true,
+          "template": true,
+          "styles": 0
+        }
+      }
+    ],
+    "actions": [],
+    "data": [],
+    "capabilities": [
+      {
+        "id": "vue:src/App.vue:capability:local-storage:read",
+        "capability": "local-storage",
+        "usage": "read",
+        "source": {
+          "file": "src/App.vue",
+          "adapterId": "vue",
+          "start": {
+            "line": 5,
+            "column": 1
+          }
+        }
+      },
+      {
+        "id": "vue:src/App.vue:capability:local-storage:write",
+        "capability": "local-storage",
+        "usage": "write",
+        "source": {
+          "file": "src/App.vue",
+          "adapterId": "vue",
+          "start": {
+            "line": 7,
+            "column": 1
+          }
+        }
+      },
+      {
+        "id": "vue:src/lib/api.ts:capability:network-request:invoke",
+        "capability": "network-request",
+        "usage": "invoke",
+        "source": {
+          "file": "src/lib/api.ts",
+          "adapterId": "vue",
+          "start": {
+            "line": 2,
+            "column": 1
+          }
+        }
+      },
+      {
+        "id": "vue:src/lib/storage.ts:capability:local-storage:unknown",
+        "capability": "local-storage",
+        "usage": "unknown",
+        "source": {
+          "file": "src/lib/storage.ts",
+          "adapterId": "vue",
+          "start": {
+            "line": 4,
+            "column": 1
+          }
+        }
+      },
+      {
+        "id": "vue:src/views/Profile.vue:capability:geolocation:invoke",
+        "capability": "geolocation",
+        "usage": "invoke",
+        "source": {
+          "file": "src/views/Profile.vue",
+          "adapterId": "vue",
+          "start": {
+            "line": 3,
+            "column": 1
+          }
+        }
+      }
+    ],
+    "dependencies": [
+      {
+        "id": "vue:package.json:dependency:pinia",
+        "name": "pinia",
+        "version": "^4.0.3",
+        "source": {
+          "file": "package.json",
+          "adapterId": "vue"
+        }
+      },
+      {
+        "id": "vue:package.json:dependency:vue",
+        "name": "vue",
+        "version": "^3.5.43",
+        "source": {
+          "file": "package.json",
+          "adapterId": "vue"
+        }
+      },
+      {
+        "id": "vue:package.json:dependency:vue-router",
+        "name": "vue-router",
+        "version": "^4.5.0",
+        "source": {
+          "file": "package.json",
+          "adapterId": "vue"
+        }
+      }
+    ],
+    "edges": [
+      {
+        "from": "vue:src/App.vue:component:default",
+        "to": "vue:src/App.vue:capability:local-storage:read",
+        "kind": "uses"
+      },
+      {
+        "from": "vue:src/App.vue:component:default",
+        "to": "vue:src/App.vue:capability:local-storage:write",
+        "kind": "uses"
+      },
+      {
+        "from": "vue:src/lib/api.ts:utility:default",
+        "to": "vue:src/lib/api.ts:capability:network-request:invoke",
+        "kind": "uses"
+      },
+      {
+        "from": "vue:src/lib/storage.ts:utility:default",
+        "to": "vue:src/lib/storage.ts:capability:local-storage:unknown",
+        "kind": "uses"
+      },
+      {
+        "from": "vue:src/views/Profile.vue:component:default",
+        "to": "vue:src/views/Profile.vue:capability:geolocation:invoke",
+        "kind": "uses"
+      }
+    ],
+    "findings": [],
+    "schemaVersion": 1,
+    "source": {
+      "adapterId": "vue",
+      "displayName": "Vue",
+      "frameworkVersion": "^3.5.43"
+    }
+  }
+}
+exit=0
+$ navirox plan -C <web-proj> --json
+{
+  "schemaVersion": 1,
+  "source": {
+    "adapterId": "vue",
+    "displayName": "Vue",
+    "frameworkVersion": "^3.5.43"
+  },
+  "decisions": [
+    {
+      "subject": "vue:package.json:dependency:pinia",
+      "classification": "portable",
+      "confidence": "high",
+      "reasons": [
+        {
+          "ruleId": "compatibility-record",
+          "message": "A compatibility record says this works on a native target, at the evidence level named below. State lives behind the runtime seam and the acceptance journey drives one store from two sibling components on both platforms."
+        }
+      ],
+      "evidence": [
+        {
+          "kind": "compat-registry",
+          "value": "supported android-build-tested e2e/canary.test.ts, the shared store journey, on an emulator"
+        },
+        {
+          "kind": "compat-registry",
+          "value": "supported ios-build-tested e2e/canary.test.ts, the shared store journey, on a simulator"
+        }
+      ]
+    },
+    {
+      "subject": "vue:package.json:dependency:vue",
+      "classification": "portable",
+      "confidence": "high",
+      "reasons": [
+        {
+          "ruleId": "compatibility-record",
+          "message": "A compatibility record says this works on a native target, at the evidence level named below. Single file components render on the native surface through the runtime provider, which is what the acceptance application exists to show."
+        }
+      ],
+      "evidence": [
+        {
+          "kind": "compat-registry",
+          "value": "supported android-build-tested examples/vue-basic, built and driven by e2e/canary.test.ts on an emulator"
+        },
+        {
+          "kind": "compat-registry",
+          "value": "supported ios-build-tested examples/vue-basic, built and driven by e2e/canary.test.ts on a simulator"
+        }
+      ]
+    },
+    {
+      "subject": "vue:package.json:dependency:vue-router",
+      "classification": "unknown",
+      "confidence": "low",
+      "reasons": [
+        {
+          "ruleId": "dependency-compatibility-unknown",
+          "message": "Whether this dependency works on a native surface needs a compatibility record, which does not exist yet."
+        }
+      ],
+      "evidence": [
+        {
+          "kind": "manifest",
+          "value": "package.json vue-router ^4.5.0"
+        }
+      ]
+    },
+    {
+      "subject": "vue:src/App.vue:capability:local-storage:read",
+      "classification": "adaptable",
+      "confidence": "high",
+      "reasons": [
+        {
+          "ruleId": "capability-adaptable",
+          "message": "local-storage has a counterpart in the native capability surface, so the behaviour can be kept and the implementation replaced."
+        }
+      ],
+      "evidence": [
+        {
+          "kind": "source",
+          "value": "src/App.vue local-storage:read"
+        }
+      ]
+    },
+    {
+      "subject": "vue:src/App.vue:capability:local-storage:write",
+      "classification": "adaptable",
+      "confidence": "high",
+      "reasons": [
+        {
+          "ruleId": "capability-adaptable",
+          "message": "local-storage has a counterpart in the native capability surface, so the behaviour can be kept and the implementation replaced."
+        }
+      ],
+      "evidence": [
+        {
+          "kind": "source",
+          "value": "src/App.vue local-storage:write"
+        }
+      ]
+    },
+    {
+      "subject": "vue:src/App.vue:component:default",
+      "classification": "native-replacement",
+      "confidence": "high",
+      "reasons": [
+        {
+          "ruleId": "unit-view-layer",
+          "message": "The view layer is rewritten: what carries over is the behaviour behind it, not the markup."
+        }
+      ],
+      "evidence": [
+        {
+          "kind": "source",
+          "value": "src/App.vue"
+        }
+      ]
+    },
+    {
+      "subject": "vue:src/components/Counter.vue:component:default",
+      "classification": "native-replacement",
+      "confidence": "high",
+      "reasons": [
+        {
+          "ruleId": "unit-view-layer",
+          "message": "The view layer is rewritten: what carries over is the behaviour behind it, not the markup."
+        }
+      ],
+      "evidence": [
+        {
+          "kind": "source",
+          "value": "src/components/Counter.vue"
+        }
+      ]
+    },
+    {
+      "subject": "vue:src/components/List.vue:component:default",
+      "classification": "native-replacement",
+      "confidence": "high",
+      "reasons": [
+        {
+          "ruleId": "unit-view-layer",
+          "message": "The view layer is rewritten: what carries over is the behaviour behind it, not the markup."
+        }
+      ],
+      "evidence": [
+        {
+          "kind": "source",
+          "value": "src/components/List.vue"
+        }
+      ]
+    },
+    {
+      "subject": "vue:src/components/NameInput.vue:component:default",
+      "classification": "native-replacement",
+      "confidence": "high",
+      "reasons": [
+        {
+          "ruleId": "unit-view-layer",
+          "message": "The view layer is rewritten: what carries over is the behaviour behind it, not the markup."
+        }
+      ],
+      "evidence": [
+        {
+          "kind": "source",
+          "value": "src/components/NameInput.vue"
+        }
+      ]
+    },
+    {
+      "subject": "vue:src/lib/api.ts:capability:network-request:invoke",
+      "classification": "portable",
+      "confidence": "medium",
+      "reasons": [
+        {
+          "ruleId": "capability-portable",
+          "message": "network-request behaves the same on a native surface, so the call moves with its surrounding code."
+        }
+      ],
+      "evidence": [
+        {
+          "kind": "source",
+          "value": "src/lib/api.ts network-request:invoke"
+        }
+      ]
+    },
+    {
+      "subject": "vue:src/lib/api.ts:utility:default",
+      "classification": "adaptable",
+      "confidence": "medium",
+      "reasons": [
+        {
+          "ruleId": "unit-capability-bearing-logic",
+          "message": "This is logic that reaches a platform capability (network-request), so the behaviour moves and the capability call is replaced."
+        }
+      ],
+      "evidence": [
+        {
+          "kind": "source",
+          "value": "src/lib/api.ts"
+        }
+      ]
+    },
+    {
+      "subject": "vue:src/lib/pinia.ts:utility:default",
+      "classification": "shared",
+      "confidence": "high",
+      "reasons": [
+        {
+          "ruleId": "unit-shared-logic",
+          "message": "This is logic with no platform capability use, so it moves without changing its behaviour."
+        }
+      ],
+      "evidence": [
+        {
+          "kind": "source",
+          "value": "src/lib/pinia.ts"
+        }
+      ]
+    },
+    {
+      "subject": "vue:src/lib/storage.ts:capability:local-storage:unknown",
+      "classification": "adaptable",
+      "confidence": "high",
+      "reasons": [
+        {
+          "ruleId": "capability-adaptable",
+          "message": "local-storage has a counterpart in the native capability surface, so the behaviour can be kept and the implementation replaced."
+        }
+      ],
+      "evidence": [
+        {
+          "kind": "source",
+          "value": "src/lib/storage.ts local-storage:unknown"
+        }
+      ]
+    },
+    {
+      "subject": "vue:src/lib/storage.ts:utility:default",
+      "classification": "adaptable",
+      "confidence": "medium",
+      "reasons": [
+        {
+          "ruleId": "unit-capability-bearing-logic",
+          "message": "This is logic that reaches a platform capability (local-storage), so the behaviour moves and the capability call is replaced."
+        }
+      ],
+      "evidence": [
+        {
+          "kind": "source",
+          "value": "src/lib/storage.ts"
+        }
+      ]
+    },
+    {
+      "subject": "vue:src/stores/counter.ts:state-module:default",
+      "classification": "portable",
+      "confidence": "medium",
+      "reasons": [
+        {
+          "ruleId": "unit-state-module",
+          "message": "State lives behind the runtime seam, so a store moves with its shape intact."
+        }
+      ],
+      "evidence": [
+        {
+          "kind": "source",
+          "value": "src/stores/counter.ts"
+        }
+      ]
+    },
+    {
+      "subject": "vue:src/views/Profile.vue:capability:geolocation:invoke",
+      "classification": "adaptable",
+      "confidence": "high",
+      "reasons": [
+        {
+          "ruleId": "capability-adaptable",
+          "message": "geolocation has a counterpart in the native capability surface, so the behaviour can be kept and the implementation replaced."
+        }
+      ],
+      "evidence": [
+        {
+          "kind": "source",
+          "value": "src/views/Profile.vue geolocation:invoke"
+        }
+      ]
+    },
+    {
+      "subject": "vue:src/views/Profile.vue:component:default",
+      "classification": "native-replacement",
+      "confidence": "high",
+      "reasons": [
+        {
+          "ruleId": "unit-view-layer",
+          "message": "The view layer is rewritten: what carries over is the behaviour behind it, not the markup."
+        }
+      ],
+      "evidence": [
+        {
+          "kind": "source",
+          "value": "src/views/Profile.vue"
+        }
+      ]
+    }
+  ],
+  "unknowns": [
+    "vue:package.json:dependency:vue-router"
+  ],
+  "summary": {
+    "shared": 1,
+    "portable": 4,
+    "adaptable": 6,
+    "native-replacement": 5,
+    "web-fallback": 0,
+    "manual": 0,
+    "unknown": 1
+  }
+}
+exit=0
+$ navirox migrate -C <web-proj> --out <out> --write --json
+{
+  "schemaVersion": 1,
+  "dryRun": false,
+  "files": [
+    {
+      "unit": "vue:src/lib/pinia.ts:utility:default",
+      "transform": "copy-movable-unit",
+      "from": "src/lib/pinia.ts",
+      "to": "src/lib/pinia.ts"
+    },
+    {
+      "unit": "vue:src/stores/counter.ts:state-module:default",
+      "transform": "copy-movable-unit",
+      "from": "src/stores/counter.ts",
+      "to": "src/stores/counter.ts"
+    }
+  ],
+  "moved": [
+    "vue:src/lib/pinia.ts:utility:default",
+    "vue:src/stores/counter.ts:state-module:default"
+  ],
+  "skipped": [
+    {
+      "unit": "vue:src/App.vue:component:default",
+      "reason": "no transform applies, and the plan called it native-replacement"
+    },
+    {
+      "unit": "vue:src/components/Counter.vue:component:default",
+      "reason": "no transform applies, and the plan called it native-replacement"
+    },
+    {
+      "unit": "vue:src/components/List.vue:component:default",
+      "reason": "no transform applies, and the plan called it native-replacement"
+    },
+    {
+      "unit": "vue:src/components/NameInput.vue:component:default",
+      "reason": "no transform applies, and the plan called it native-replacement"
+    },
+    {
+      "unit": "vue:src/lib/api.ts:utility:default",
+      "reason": "no transform applies, and the plan called it adaptable"
+    },
+    {
+      "unit": "vue:src/lib/storage.ts:utility:default",
+      "reason": "no transform applies, and the plan called it adaptable"
+    },
+    {
+      "unit": "vue:src/views/Profile.vue:component:default",
+      "reason": "no transform applies, and the plan called it native-replacement"
+    }
+  ],
+  "unresolved": [],
+  "restored": [],
+  "state": {
+    "schemaVersion": 1,
+    "adapterId": "vue",
+    "outputRoot": "/tmp/navirox-rc42/migrated",
+    "units": {
+      "vue:src/lib/pinia.ts:utility:default": {
+        "fingerprint": "487e2027859fefef",
+        "output": "src/lib/pinia.ts",
+        "transforms": [
+          "copy-movable-unit"
+        ]
+      },
+      "vue:src/stores/counter.ts:state-module:default": {
+        "fingerprint": "1444b1db24f61c94",
+        "output": "src/stores/counter.ts",
+        "transforms": [
+          "copy-movable-unit"
+        ]
+      }
+    }
+  }
+}
+exit=0

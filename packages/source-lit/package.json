@@ -1,6 +1,6 @@
 {
   "name": "@memolabs-apps/source-lit",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "The Lit source adapter: custom elements, reactive properties, and the routes a project declares in code.",
   "license": "MIT",
   "type": "module",

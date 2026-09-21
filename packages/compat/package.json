@@ -1,6 +1,6 @@
 {
   "name": "@memolabs-apps/compat",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Compatibility records: what Navirox knows works on a native target, and the evidence behind each claim.",
   "license": "MIT",
   "type": "module",

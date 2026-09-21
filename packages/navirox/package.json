@@ -1,7 +1,7 @@
 {
-  "name": "@memolabs-apps/config",
+  "name": "navirox",
   "version": "0.1.1",
-  "description": "defineNaviroxConfig and its schema.",
+  "description": "Public launcher for the Navirox web-to-native analysis command.",
   "license": "MIT",
   "type": "module",
   "engines": {
@@ -15,6 +15,9 @@
       "default": "./dist/index.js"
     }
   },
+  "bin": {
+    "navirox": "./dist/bin.js"
+  },
   "files": [
     "dist"
   ],
@@ -24,7 +27,9 @@
     "test": "vitest run",
     "clean": "rm -rf dist"
   },
-  "dependencies": {},
+  "dependencies": {
+    "@memolabs-apps/cli": "workspace:*"
+  },
   "devDependencies": {
     "@types/node": "^26.6.1",
     "typescript": "~6.0.3",

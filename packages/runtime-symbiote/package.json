@@ -1,6 +1,6 @@
 {
   "name": "@memolabs-apps/runtime-symbiote",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "The Symbiote-backed implementation of the runtime seam. The only package allowed to import @symbiote-native/*.",
   "license": "MIT",
   "type": "module",

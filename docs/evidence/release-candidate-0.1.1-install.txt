@@ -1,0 +1,11 @@
+[WARN] using --force I sure hope you know what you are doing
+✓ Lockfile passes supply-chain policies (verified 4m ago)
+Lockfile is up to date, resolution step is skipped
+Progress: resolved 1, reused 0, downloaded 0, added 0
+Packages: +720
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+Progress: resolved 720, reused 709, downloaded 11, added 214
+Progress: resolved 720, reused 709, downloaded 11, added 445
+Progress: resolved 720, reused 709, downloaded 11, added 720, done
+
+Done in 3s using pnpm v11.27.0

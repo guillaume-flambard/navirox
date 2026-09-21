@@ -1,6 +1,6 @@
 {
   "name": "@memolabs-apps/migrate",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "The migration engine: a versioned state file, a transform pipeline, and the writes it performs.",
   "license": "MIT",
   "type": "module",

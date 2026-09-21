@@ -1,7 +1,7 @@
 {
-  "name": "@memolabs-apps/config",
+  "name": "@memolabs-apps/target-vue",
   "version": "0.1.1",
-  "description": "defineNaviroxConfig and its schema.",
+  "description": "A deliberately narrow Vue single-file-component to native-view compiler for Navirox.",
   "license": "MIT",
   "type": "module",
   "engines": {
@@ -12,7 +12,7 @@
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
-      "default": "./dist/index.js"
+      "import": "./dist/index.js"
     }
   },
   "files": [
@@ -24,10 +24,12 @@
     "test": "vitest run",
     "clean": "rm -rf dist"
   },
-  "dependencies": {},
+  "dependencies": {
+    "@vue/compiler-dom": "^3.5.43",
+    "@vue/compiler-sfc": "^3.5.43"
+  },
   "devDependencies": {
     "@types/node": "^26.6.1",
-    "typescript": "~6.0.3",
     "vitest": "^5.0.1"
   },
   "publishConfig": {

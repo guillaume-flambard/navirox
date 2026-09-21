@@ -1,6 +1,6 @@
 {
   "name": "@memolabs-apps/source-qwik",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "The Qwik source adapter: resumable component boundaries, Qwik City routes, and the surface the adapter reports rather than reads.",
   "license": "MIT",
   "type": "module",

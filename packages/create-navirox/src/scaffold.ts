@@ -30,6 +30,14 @@ const HERE = dirname(fileURLToPath(import.meta.url))
 export const TEMPLATE_DIRECTORY = join(HERE, '..', 'template')
 
 /**
+ * The scaffolder's own manifest. Its version is the released version: the whole
+ * release moves as one, so the version `create-navirox` was published as is the
+ * version every other Navirox package was published as. Resolves the same way
+ * as the template, from source under vitest or from the built output.
+ */
+const OWN_MANIFEST_PATH = join(HERE, '..', 'package.json')
+
+/**
  * Nothing here is authored: it is build output, a package manager's store, or a
  * value this machine wrote about itself and that would be wrong on any other.
  */
@@ -118,6 +126,13 @@ export interface IScaffoldOptions {
   readonly name: string
   /** The directory to create. Must not already hold something. */
   readonly targetDir: string
+  /**
+   * Override for the Navirox checkout discovery, so tests can exercise both
+   * arrangements. `undefined` (the default) discovers from the filesystem;
+   * `null` simulates an installed scaffolder with no checkout above it; a path
+   * pins the checkout to link against.
+   */
+  readonly checkoutRoot?: string | null
 }
 
 export interface IScaffoldResult {
@@ -159,7 +174,12 @@ export function scaffoldApp(options: IScaffoldOptions): IScaffoldResult {
   }
   renameIdentityPaths(targetDir, names)
 
-  const warnings = rewriteManifest(join(targetDir, 'package.json'), names, targetDir)
+  const warnings = rewriteManifest(
+    join(targetDir, 'package.json'),
+    names,
+    targetDir,
+    options.checkoutRoot,
+  )
 
   return { names, targetDir, files, warnings }
 }
@@ -248,7 +268,12 @@ function rewriteFile(path: string, names: IAppNames): void {
  * The npm name and the two Navirox dependencies live in `package.json`, which is
  * JSON rather than text, so it is edited as data instead of patched as a string.
  */
-function rewriteManifest(path: string, names: IAppNames, targetDir: string): readonly string[] {
+function rewriteManifest(
+  path: string,
+  names: IAppNames,
+  targetDir: string,
+  checkoutOverride?: string | null,
+): readonly string[] {
   const manifest = JSON.parse(readFileSync(path, 'utf8')) as {
     name?: string
     description?: string
@@ -260,14 +285,20 @@ function rewriteManifest(path: string, names: IAppNames, targetDir: string): rea
   manifest.name = names.dirName
   manifest.description = `${names.displayName}, built with Navirox.`
 
-  const workspaceRoot = findWorkspaceRoot()
-  if (workspaceRoot === undefined) {
+  const workspaceRoot = checkoutOverride === undefined ? findWorkspaceRoot() : checkoutOverride
+  // The released version is the scaffolder's own: the release moves as one, so
+  // the version this package was published as is the version every Navirox
+  // entry must name. Read at runtime, never hardcoded, so a later release
+  // cannot scaffold an app pinned to a version it did not write.
+  const releasedVersion =
+    workspaceRoot === undefined || workspaceRoot === null ? readReleasedVersion() : undefined
+  if (releasedVersion !== undefined) {
     warnings.push(
-      'The Navirox packages are not all published yet. This app points at version 0.0.0, which will not install until they are, or until you point those entries at packed tarballs or at the path to a Navirox checkout.',
+      `The Navirox packages come from the registry at version ${releasedVersion}: this app records ${releasedVersion} for every Navirox entry. If that version is not published yet, \`pnpm install\` fails until it is, or until you point those entries at packed tarballs or at the path to a Navirox checkout.`,
     )
   } else {
     warnings.push(
-      'The Navirox packages are linked from your checkout instead of installed from a registry, because they are not all published yet. Their own dependencies resolve from that checkout, so run `pnpm build` there once before `navirox dev`.',
+      `The Navirox packages are linked from your checkout at ${workspaceRoot} instead of installed from a registry. Their own dependencies resolve from that checkout, so run \`pnpm build\` there once before \`navirox dev\`.`,
     )
   }
 
@@ -290,13 +321,30 @@ function rewriteManifest(path: string, names: IAppNames, targetDir: string): rea
     // against the physical directory, so a lexically correct relative path can
     // land somewhere that does not exist.
     group[naviroxPackage.name] =
-      workspaceRoot === undefined
-        ? '0.0.0'
-        : `link:${toPosix(relative(realpathSync(targetDir), realpathSync(join(workspaceRoot, 'packages', naviroxPackage.directory))))}`
+      releasedVersion !== undefined
+        ? releasedVersion
+        : `link:${toPosix(relative(realpathSync(targetDir), realpathSync(join(workspaceRoot as string, 'packages', naviroxPackage.directory))))}`
   }
 
   writeFileSync(path, `${JSON.stringify(manifest, null, 2)}\n`)
   return warnings
+}
+
+/**
+ * Reads the version this scaffolder was released as from its own manifest. The
+ * manifest sits beside `src` and `dist`, so it resolves the same way whether
+ * this runs from source under vitest or from the built output.
+ */
+function readReleasedVersion(): string {
+  const manifest = JSON.parse(readFileSync(OWN_MANIFEST_PATH, 'utf8')) as {
+    version?: unknown
+  }
+  if (typeof manifest.version !== 'string' || manifest.version.length === 0) {
+    throw new Error(
+      `The create-navirox manifest at "${OWN_MANIFEST_PATH}" has no version, so there is no released version to write into a scaffolded app.`,
+    )
+  }
+  return manifest.version
 }
 
 /**

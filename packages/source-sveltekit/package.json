@@ -1,6 +1,6 @@
 {
   "name": "@memolabs-apps/source-sveltekit",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "The SvelteKit source adapter: detection, filesystem route extraction, and App Graph construction on top of the Svelte adapter.",
   "license": "MIT",
   "type": "module",
