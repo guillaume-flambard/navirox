@@ -150,6 +150,8 @@ export interface DiscoveredDependency {
 export interface DiscoveredRoute {
   readonly key: string
   readonly pathPattern: string
+  /** The file of the unit that renders this route, when the adapter can establish it. */
+  readonly unitFile?: string
   readonly unitKey?: string
   readonly params?: readonly string[]
   readonly source: SourceLocation

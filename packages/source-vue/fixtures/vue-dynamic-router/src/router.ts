@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
 
-const routes = [{ path: '/account' }]
+const baseRoutes = [{ path: '/account' }]
+const routes = [...baseRoutes]
 
 export default createRouter({
   history: createWebHistory(),

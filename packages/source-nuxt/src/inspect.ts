@@ -14,6 +14,7 @@ import {
   CLIENT_COMPONENT_SUFFIX,
   LAYOUTS_DIRS,
   SERVER_SURFACE,
+  readModuleRoutes,
   readRoutes,
   readUnits,
   readUnmodelled,
@@ -205,7 +206,12 @@ export async function inspect(context: InspectContext): Promise<SourceInspection
   const outsideRuntimeFiles = new Set(outsideRuntime.map((entry) => entry.file))
   const unmodelled = outsideRuntime.map((entry) => unmodelledFinding(entry))
 
-  const { routes, pages, findings: pageFindings } = readRoutes(context.files, context.readText)
+  const conventional = readRoutes(context.files, context.readText)
+  const moduleRoutes = readModuleRoutes(context.files, context.readText)
+  const routes = [...conventional.routes, ...moduleRoutes.routes].sort((left, right) =>
+    left.key.localeCompare(right.key),
+  )
+  const { pages, findings: pageFindings } = conventional
   const pageMetadata = new Map(pages.map((page) => [page.file, page.metadata]))
 
   const layouts = namesIn(context.files, LAYOUTS_DIRS)
@@ -251,6 +257,7 @@ export async function inspect(context: InspectContext): Promise<SourceInspection
       ...versionFinding(context),
       ...unmodelled,
       ...pageFindings.map(draftToFinding),
+      ...moduleRoutes.findings.map(draftToFinding),
       ...referenceFindings,
     ].sort((left, right) => left.id.localeCompare(right.id)),
   }

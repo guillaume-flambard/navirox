@@ -1,5 +1,6 @@
 import { resolve } from 'node:path'
 import type { IDoctorDeps } from '@memolabs-apps/doctor'
+import type { SemanticJudge } from '@memolabs-apps/planner'
 import type { SourceAdapter, SourceAdapterRegistry } from '@memolabs-apps/source'
 import { parseArguments, HELP } from './args.js'
 import { createDevContext, runDev, type IDevContext } from './dev.js'
@@ -30,6 +31,8 @@ export interface ICliContext {
   readonly doctor?: IDoctorDeps
   /** The adapter registry, supplied by a test or composed on demand. */
   readonly inspect?: { readonly registry: SourceAdapterRegistry }
+  /** The semantic judge `plan --semantic` uses. Supplied by a test; otherwise built from the environment. */
+  readonly planSemantic?: SemanticJudge
 }
 
 /**
@@ -97,7 +100,7 @@ export async function runCli(
 
   const directory = parsed.directory === undefined ? cwd : resolve(cwd, parsed.directory)
 
-  if (parsed.command === 'inspect') {
+  if (parsed.command === 'analyze' || parsed.command === 'inspect') {
     try {
       const { renderFailure, renderReport, reportToJson, runInspection } =
         await import('@memolabs-apps/inspect')
@@ -116,7 +119,7 @@ export async function runCli(
       if (parsed.json) {
         io.out(reportToJson(outcome.report))
       } else {
-        for (const line of renderReport(outcome.report).split('\n')) {
+        for (const line of renderReport(outcome.report, parsed.command).split('\n')) {
           io.out(line)
         }
       }
@@ -147,6 +150,38 @@ export async function runCli(
       // The registry is loaded here rather than inside the planner, which reads
       // only the graph and the inputs it is handed.
       const planned = plan(outcome.report.graph, { compatibility: loadSeedRegistry() })
+
+      if (parsed.semantic) {
+        const {
+          SEMANTIC_MODEL,
+          createTypeSafeJudge,
+          renderSemanticSuggestions,
+          suggestForUndecided,
+        } = await import('@memolabs-apps/planner')
+        // The judge is a seam: a test supplies one, the environment supplies the
+        // key for the real one. The key never reaches the plan itself.
+        const judge = context.planSemantic ?? createTypeSafeJudge()
+        const suggestions = await suggestForUndecided(outcome.report.graph, planned, judge)
+
+        if (parsed.json) {
+          io.out(
+            JSON.stringify(
+              { ...planned, semantic: { model: SEMANTIC_MODEL, suggestions } },
+              null,
+              2,
+            ),
+          )
+        } else {
+          for (const line of renderPlan(planned).split('\n')) {
+            io.out(line)
+          }
+          for (const line of renderSemanticSuggestions(suggestions).split('\n')) {
+            io.out(line)
+          }
+        }
+
+        return 0
+      }
 
       if (parsed.json) {
         io.out(planToJson(planned))

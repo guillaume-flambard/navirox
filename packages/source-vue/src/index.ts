@@ -11,11 +11,11 @@ export const PACKAGE_ROLE =
 /**
  * The Vue adapter.
  *
- * The support level is `experimental` and that is the honest label: only
- * top-level literal Vue Router routes are extracted, plugins are not resolved,
- * no migration transform exists, and capability detection is a declared pattern
- * scan. The four levels exist so that this can be said in one word instead of a
- * paragraph of caveats.
+ * The support level is `experimental` and that is the honest label: literal Vue
+ * Router routes, including literal nested routes, are extracted; plugins are
+ * not resolved, no migration transform exists, and capability detection is a
+ * declared pattern scan. The four levels exist so that this can be said in one
+ * word instead of a paragraph of caveats.
  */
 export function createVueAdapter(): SourceAdapter {
   return {

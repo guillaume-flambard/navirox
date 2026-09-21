@@ -41,6 +41,7 @@ export {
   SERVER_SURFACE,
   pagePattern,
   paramsOf,
+  readModuleRoutes,
   readPageMetadata,
   readRoutes,
   readUnits,

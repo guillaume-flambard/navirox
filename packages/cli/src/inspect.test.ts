@@ -109,6 +109,21 @@ describe('parsing the inspect command', () => {
   })
 })
 
+describe('running the analyze command', () => {
+  it('auto-detects and renders the same report as inspect', async () => {
+    const io = capture()
+    const code = await runCli(['analyze'], io.io, project(), {
+      inspect: { registry: registryOf(fakeAdapter()) },
+    })
+
+    expect(code).toBe(0)
+    expect(io.errors).toEqual([])
+    expect(io.lines.join('\n')).toContain('Navirox inspection')
+    expect(io.lines.join('\n')).toContain('Fake (experimental)')
+    expect(io.lines.join('\n')).toContain('navirox analyze --json')
+  })
+})
+
 describe('running the inspect command', () => {
   it('prints a report and succeeds', async () => {
     const io = capture()

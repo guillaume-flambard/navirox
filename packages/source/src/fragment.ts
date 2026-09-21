@@ -4,6 +4,7 @@ import type {
   DependencyNode,
   GraphEdge,
   NodeId,
+  ScreenNode,
   UnitNode,
 } from '@memolabs-apps/graph'
 import { nodeId } from '@memolabs-apps/graph'
@@ -29,10 +30,13 @@ export function buildFragment(inspection: SourceInspection, adapterId: string): 
   const identifier = (file: string, kind: string, key: string): NodeId =>
     nodeId({ adapterId, path: file, kind, key })
 
-  const unitIdByFile = new Map<string, NodeId>()
+  const unitIdBySourceKey = new Map<string, NodeId>()
+  const unitSourceBySourceKey = new Map<string, (typeof inspection.units)[number]['source']>()
 
   for (const unit of inspection.units) {
-    unitIdByFile.set(unit.source.file, identifier(unit.source.file, unit.kind, unit.key))
+    const key = `${unit.source.file}::${unit.key}`
+    unitIdBySourceKey.set(key, identifier(unit.source.file, unit.kind, unit.key))
+    unitSourceBySourceKey.set(key, unit.source)
   }
 
   const capabilities: CapabilityNode[] = inspection.capabilities.map((capability) => ({
@@ -55,7 +59,7 @@ export function buildFragment(inspection: SourceInspection, adapterId: string): 
   const edges: GraphEdge[] = []
 
   for (const capability of inspection.capabilities) {
-    const from = unitIdByFile.get(capability.source.file)
+    const from = unitIdBySourceKey.get(`${capability.source.file}::${capability.unitKey}`)
     const to = capabilityIdByUse.get(`${capability.source.file}::${capability.key}`)
 
     if (from !== undefined && to !== undefined && capability.unitKey !== undefined) {
@@ -89,16 +93,65 @@ export function buildFragment(inspection: SourceInspection, adapterId: string): 
   const byId = <T extends { readonly id: NodeId }>(left: T, right: T): number =>
     left.id.localeCompare(right.id)
 
+  const routeScreen = new Map<
+    string,
+    {
+      readonly id: NodeId
+      readonly unitId: NodeId
+      readonly source: (typeof inspection.units)[number]['source']
+    }
+  >()
+
+  for (const route of inspection.routes) {
+    const unitFile = route.unitFile ?? route.source.file
+    const unitKey = route.unitKey ?? 'default'
+    const unitSourceKey = `${unitFile}::${unitKey}`
+    const unitId = unitIdBySourceKey.get(unitSourceKey)
+    const source = unitSourceBySourceKey.get(unitSourceKey)
+
+    if (unitId === undefined || source === undefined) {
+      continue
+    }
+
+    const screenId = identifier(unitFile, 'screen', unitKey)
+    routeScreen.set(route.key, { id: screenId, unitId, source })
+  }
+
+  const screens = new Map<NodeId, ScreenNode>()
+
+  for (const route of inspection.routes) {
+    const screen = routeScreen.get(route.key)
+
+    if (screen === undefined) {
+      continue
+    }
+
+    const routeId = identifier(route.source.file, 'route', route.key)
+    const existing = screens.get(screen.id)
+
+    screens.set(screen.id, {
+      id: screen.id,
+      unitId: screen.unitId,
+      routeIds: [...(existing?.routeIds ?? []), routeId].sort(),
+      source: screen.source,
+    })
+  }
+
   return {
     routes: inspection.routes
-      .map((route) => ({
-        id: identifier(route.source.file, 'route', route.key),
-        pathPattern: route.pathPattern,
-        ...(route.params === undefined ? {} : { params: route.params }),
-        source: route.source,
-      }))
+      .map((route) => {
+        const screen = routeScreen.get(route.key)
+
+        return {
+          id: identifier(route.source.file, 'route', route.key),
+          pathPattern: route.pathPattern,
+          ...(screen === undefined ? {} : { screenId: screen.id }),
+          ...(route.params === undefined ? {} : { params: route.params }),
+          source: route.source,
+        }
+      })
       .sort(byId),
-    screens: [],
+    screens: [...screens.values()].sort(byId),
     units: units.sort(byId),
     actions: [],
     data: [],

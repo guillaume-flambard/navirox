@@ -52,6 +52,23 @@ enforced: one line per tool, `✓` for what is there, `✗` with the fix for wha
 not, and `?` for what the command cannot decide. Exit code 0 means go, 2 means a
 tool is missing, 3 means something in the app fights the Navirox pipeline.
 
+## Analyze an existing web project
+
+From a Vue, Angular or React project, run:
+
+```bash
+npx navirox analyze .
+```
+
+The command selects a source adapter from the project manifest and source files,
+then reports the framework, routes, components, state, browser capabilities and
+the parts it cannot establish. `--json` emits the same report for automation. A
+project with competing framework candidates must be selected explicitly, for
+example `npx navirox analyze . --framework angular`; Navirox does not guess.
+
+The public `npx` path remains subject to the publication limitation below. The
+same command works from a tarball-installed Navirox application today.
+
 ## 3. Run it
 
 ```bash

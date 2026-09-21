@@ -83,6 +83,16 @@ describe('reading Nuxt routes', () => {
 
     expect(inspection.routes.map((route) => route.pathPattern)).toEqual(['/', '/:id'])
   })
+
+  it('reads literal route tables that a Nuxt module adds through extendPages', async () => {
+    const inspection = await adapter.inspect(createProjectFiles(fixture('nuxt-module-routes')))
+
+    expect(inspection.routes.map((route) => route.pathPattern)).toEqual([
+      '/catalog/:catalogId',
+      '/catalog/:catalogId/items/:itemId',
+    ])
+    expect(inspection.routes.every((route) => route.unitFile?.endsWith('.vue'))).toBe(true)
+  })
 })
 
 describe('layouts and composables', () => {
@@ -160,6 +170,8 @@ describe('the Nuxt reading as a graph', () => {
     expect(JSON.stringify(await buildGraph(second))).toBe(JSON.stringify(graph))
     expect(ids.every((id) => id.startsWith('nuxt:'))).toBe(true)
     expect(graph.routes).toHaveLength(5)
+    expect(graph.screens).toHaveLength(5)
+    expect(graph.routes.every((route) => route.screenId !== undefined)).toBe(true)
   })
 
   it('reports the old major it was not tested against', async () => {

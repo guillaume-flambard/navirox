@@ -17,6 +17,15 @@ describe('parseArguments', () => {
     expect(parseArguments(['dev'], 'darwin').command).toBe('dev')
   })
 
+  it('reads analyze as the public project-analysis command', () => {
+    expect(parseArguments(['analyze'], 'darwin').command).toBe('analyze')
+  })
+
+  it("accepts the analyzed project as analyze's positional argument", () => {
+    expect(parseArguments(['analyze', '.'], 'darwin').directory).toBe('.')
+    expect(parseArguments(['analyze', 'apps/web'], 'darwin').directory).toBe('apps/web')
+  })
+
   it('defaults to ios on macOS and android everywhere else', () => {
     expect(parseArguments(['dev'], 'darwin').platform).toBe('ios')
     expect(parseArguments(['dev'], 'linux').platform).toBe('android')
@@ -103,6 +112,7 @@ describe('parseArguments', () => {
     expect(HELP).toContain('Usage:')
     expect(HELP).toContain('navirox <command> [options]')
     expect(HELP).toContain('dev')
+    expect(HELP).toContain('analyze')
     expect(HELP).toContain('--platform')
     expect(HELP).toContain('--directory')
     expect(HELP).toContain('--port')

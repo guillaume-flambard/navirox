@@ -216,6 +216,8 @@ describe('the graph, and the contract', () => {
 
     expect(nodes.length).toBeGreaterThan(0)
     expect(nodes.every((node) => node.id.startsWith(`${ADAPTER_ID}:`))).toBe(true)
+    expect(fragment.screens).toHaveLength(fragment.routes.length)
+    expect(fragment.routes.every((route) => route.screenId !== undefined)).toBe(true)
   })
 
   it('builds the same graph twice', async () => {

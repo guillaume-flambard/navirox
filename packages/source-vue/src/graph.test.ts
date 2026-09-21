@@ -62,16 +62,21 @@ describe('building the fragment', () => {
     expect(vue?.id).toBe('vue:package.json:dependency:vue')
   })
 
-  it('carries the routes it read without inferring screens', async () => {
+  it('links routes that name a component to one screen', async () => {
     const graph = await fragment()
 
-    expect(graph.screens).toEqual([])
     expect(
       graph.routes.map((route) => ({ path: route.pathPattern, params: route.params })),
     ).toEqual([
       { path: '/', params: undefined },
       { path: '/profile/:id', params: ['id'] },
     ])
+    expect(graph.screens).toHaveLength(1)
+    expect(graph.screens[0]?.unitId).toBe('vue:src/views/Profile.vue:component:default')
+    expect(graph.screens[0]?.routeIds).toHaveLength(2)
+    expect(new Set(graph.routes.map((route) => route.screenId))).toEqual(
+      new Set([graph.screens[0]?.id]),
+    )
     expect(graph.actions).toEqual([])
     expect(graph.data).toEqual([])
   })

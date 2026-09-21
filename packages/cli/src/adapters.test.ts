@@ -294,6 +294,7 @@ describe('Angular, the framework that assembles an application differently', () 
       '/',
       '/about',
       '/blog/:slug',
+      '/profile',
     ])
     expect(outcome.report.graph.units.every((unit) => unit.id.startsWith('angular:'))).toBe(true)
   })

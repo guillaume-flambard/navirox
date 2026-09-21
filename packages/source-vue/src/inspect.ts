@@ -1,6 +1,8 @@
+import { dirname, join, normalize } from 'node:path/posix'
 import { parse } from '@vue/compiler-sfc'
 import type { Finding, SourceLocation } from '@memolabs-apps/graph'
 import { findingId } from '@memolabs-apps/graph'
+import * as ts from 'typescript'
 import type {
   DiscoveredCapability,
   DiscoveredDependency,
@@ -17,10 +19,13 @@ import {
   productionDependencies,
   readManifest,
   scanCapabilities,
+  TEST_DIRECTORIES,
+  TEST_FILE_PATTERN,
   testedMajors,
 } from '@memolabs-apps/source'
 import { ADAPTER_ID, DISPLAY_NAME, FRAMEWORK, TESTED_VERSIONS } from './detect.js'
 import { readRoutes } from './routes.js'
+import type { ModuleResolver } from './routes.js'
 import { scanUnmodelled } from './unmodelled.js'
 
 /**
@@ -28,10 +33,10 @@ import { scanUnmodelled } from './unmodelled.js'
  *
  * Three limits are deliberate and are reported rather than hidden:
  *
- * - Literal top-level routes passed directly to Vue Router's `createRouter` are
- *   extracted. A `views` directory, computed route table, spread or nested
- *   route remains a convention or an unreadable shape, so it is reported rather
- *   than guessed.
+ * - Literal routes passed directly to Vue Router's `createRouter` are extracted,
+ *   including literal `children` arrays. A `views` directory, computed route
+ *   table, spread or computed nested route remains a convention or an unreadable
+ *   shape, so it is reported rather than guessed.
  * - Capability use is found by scanning text against a declared pattern set. A
  *   capability used in a way the set does not describe is a miss, never a claim.
  * - A repeated capability becomes one entry per file, capability and usage, at
@@ -47,6 +52,51 @@ function location(file: string, line?: number): SourceLocation {
   return line === undefined
     ? { file, adapterId: ADAPTER_ID }
     : { file, adapterId: ADAPTER_ID, start: { line, column: 1 } }
+}
+
+/** A test may create a throwaway router, but it does not establish an app route. */
+function isTestSource(file: string): boolean {
+  const segments = file.split('/')
+  const basename = segments.at(-1) ?? file
+
+  return (
+    segments.some((segment) => TEST_DIRECTORIES.includes(segment)) ||
+    TEST_FILE_PATTERN.test(basename)
+  )
+}
+
+/** Literal TypeScript path aliases that the project itself declares. */
+function moduleResolver(context: InspectContext): ModuleResolver {
+  const text = context.readText('tsconfig.json')
+  const parsed =
+    text === undefined ? undefined : ts.parseConfigFileTextToJson('tsconfig.json', text).config
+  const paths = parsed?.compilerOptions?.paths
+  const aliases: Array<{ readonly prefix: string; readonly target: string }> = []
+
+  if (paths !== null && typeof paths === 'object') {
+    for (const [pattern, targets] of Object.entries(paths as Record<string, unknown>)) {
+      const target = Array.isArray(targets) ? targets[0] : undefined
+
+      if (pattern.endsWith('/*') && typeof target === 'string' && target.endsWith('/*')) {
+        aliases.push({
+          prefix: pattern.slice(0, -1),
+          target: target.slice(0, -1).replace(/^\.\//, ''),
+        })
+      }
+    }
+  }
+
+  return (file, specifier) => {
+    if (specifier.startsWith('.')) {
+      return normalize(join(dirname(file), specifier))
+    }
+
+    const alias = aliases.find((candidate) => specifier.startsWith(candidate.prefix))
+
+    return alias === undefined
+      ? undefined
+      : normalize(`${alias.target}${specifier.slice(alias.prefix.length)}`)
+  }
 }
 
 function finding(
@@ -201,6 +251,7 @@ export function inspect(context: InspectContext): Promise<SourceInspection> {
   const dependencies: DiscoveredDependency[] = []
   const routes: DiscoveredRoute[] = []
   const manifest = readManifest(context, ADAPTER_ID)
+  const resolveModule = moduleResolver(context)
 
   let frameworkVersion: string | undefined
   let declaresRouter = false
@@ -272,8 +323,8 @@ export function inspect(context: InspectContext): Promise<SourceInspection> {
       continue
     }
 
-    if (text.includes('vue-router')) {
-      const reading = readRoutes(file, text)
+    if (!isTestSource(file) && text.includes('vue-router')) {
+      const reading = readRoutes(file, text, resolveModule)
 
       routes.push(...reading.routes)
       findings.push(

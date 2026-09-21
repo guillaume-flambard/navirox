@@ -1,7 +1,7 @@
 import { mkdtempSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
-import type { AppGraphFragment } from '@memolabs-apps/planner'
+import type { AppGraphFragment, SemanticAnswer, SemanticJudge } from '@memolabs-apps/planner'
 import type { SourceAdapter } from '@memolabs-apps/source'
 import { SourceAdapterRegistry } from '@memolabs-apps/source'
 import { describe, expect, it } from 'vitest'
@@ -80,6 +80,66 @@ function adapterWithOneComponent(): SourceAdapter {
   }
 }
 
+function adapterWithUnknownCapability(): SourceAdapter {
+  const source = { file: 'src/a.ts', adapterId: 'fake' }
+
+  return {
+    id: 'fake',
+    displayName: 'Fake',
+    supportLevel: 'experimental',
+    testedVersions: [{ framework: 'fake', versions: ['^1.0.0'] }],
+    detect: () =>
+      Promise.resolve({
+        candidates: [{ confidence: 'high', evidence: [{ kind: 'fixture', value: 'fixture' }] }],
+      }),
+    inspect: () =>
+      Promise.resolve({
+        descriptor: { adapterId: 'fake', displayName: 'Fake' },
+        units: [],
+        capabilities: [{ key: 'bluetooth', capability: 'bluetooth', usage: 'unknown', source }],
+        dependencies: [],
+        routes: [],
+        findings: [],
+      }),
+    buildGraph: (): Promise<AppGraphFragment> =>
+      Promise.resolve({
+        routes: [],
+        screens: [],
+        units: [],
+        actions: [],
+        data: [],
+        capabilities: [
+          {
+            id: 'fake:src/a.ts:capability:bluetooth',
+            capability: 'bluetooth',
+            usage: 'unknown',
+            source,
+          },
+        ],
+        dependencies: [],
+        edges: [],
+        findings: [],
+      }),
+  }
+}
+
+/** A judge that answers without a network and records how often it was asked. */
+function fakeJudge(
+  answers: Record<string, SemanticAnswer>,
+): SemanticJudge & { readonly calls: number } {
+  let calls = 0
+
+  return {
+    get calls() {
+      return calls
+    },
+    judge: () => {
+      calls += 1
+      return Promise.resolve(answers)
+    },
+  }
+}
+
 function registryOf(...adapters: readonly SourceAdapter[]): SourceAdapterRegistry {
   const registry = new SourceAdapterRegistry()
 
@@ -149,5 +209,89 @@ describe('running the plan command', () => {
 
     expect(parsed.source.adapterId).toBe('fake')
     expect(parsed.schemaVersion).toBe(1)
+  })
+})
+
+describe('parsing the semantic flag', () => {
+  it('accepts --semantic on plan and refuses it elsewhere', () => {
+    expect(parseArguments(['plan', '--semantic']).semantic).toBe(true)
+    expect(parseArguments(['plan']).semantic).toBe(false)
+    expect(() => parseArguments(['inspect', '--semantic'])).toThrow(UsageError)
+    expect(() => parseArguments(['dev', '--semantic'])).toThrow(UsageError)
+  })
+})
+
+describe('planning with a second opinion', () => {
+  it('asks nothing when the rules decided everything', async () => {
+    const io = capture()
+    const judge = fakeJudge({})
+
+    const code = await runCli(['plan', '--semantic'], io.io, project(), {
+      inspect: { registry: registryOf(adapterWithOneComponent()) },
+      planSemantic: judge,
+    })
+
+    expect(code).toBe(0)
+    expect(judge.calls).toBe(0)
+    expect(io.lines.join('\n')).toContain('no judgment was requested')
+  })
+
+  it('appends a second opinion for a subject the rules could not decide', async () => {
+    const io = capture()
+    const judge = fakeJudge({
+      q0: { choice: 'adaptable', confidence: 0.9, probabilities: { adaptable: 0.9 } },
+    })
+
+    const code = await runCli(['plan', '--semantic'], io.io, project(), {
+      inspect: { registry: registryOf(adapterWithUnknownCapability()) },
+      planSemantic: judge,
+    })
+
+    expect(code).toBe(0)
+    expect(judge.calls).toBe(1)
+    expect(io.lines.join('\n')).toContain('Second opinions')
+    expect(io.lines.join('\n')).toContain('-> adaptable')
+  })
+
+  it('carries the suggestions in the JSON when JSON was asked for', async () => {
+    const io = capture()
+    const judge = fakeJudge({
+      q0: { choice: 'portable', confidence: 0.6, probabilities: { portable: 0.6 } },
+    })
+
+    const code = await runCli(['plan', '--semantic', '--json'], io.io, project(), {
+      inspect: { registry: registryOf(adapterWithUnknownCapability()) },
+      planSemantic: judge,
+    })
+
+    const parsed = JSON.parse(io.lines.join('\n')) as {
+      schemaVersion: number
+      semantic?: { model: string; suggestions: readonly { suggested: string }[] }
+    }
+
+    expect(code).toBe(0)
+    expect(parsed.schemaVersion).toBe(1)
+    expect(parsed.semantic?.model).toBe('jev-latest')
+    expect(parsed.semantic?.suggestions).toHaveLength(1)
+    expect(parsed.semantic?.suggestions[0]?.suggested).toBe('portable')
+  })
+
+  it('fails readably when no key is configured', async () => {
+    const io = capture()
+    const previous = process.env['TYPESAFE_API_KEY']
+    delete process.env['TYPESAFE_API_KEY']
+
+    try {
+      const code = await runCli(['plan', '--semantic'], io.io, project(), {
+        inspect: { registry: registryOf(adapterWithUnknownCapability()) },
+      })
+
+      expect(code).toBe(1)
+      expect(io.errors.join('\n')).toContain('TYPESAFE_API_KEY')
+    } finally {
+      if (previous !== undefined) {
+        process.env['TYPESAFE_API_KEY'] = previous
+      }
+    }
   })
 })

@@ -1,5 +1,7 @@
 import type { SourceLocation } from '@memolabs-apps/graph'
 import type { DiscoveredRoute, DiscoveredUnit } from '@memolabs-apps/source'
+import { dirname, join, normalize } from 'node:path/posix'
+import * as ts from 'typescript'
 import { ADAPTER_ID } from './detect.js'
 
 /**
@@ -105,6 +107,11 @@ export interface PageMetadata {
 export interface PageReading {
   readonly routes: readonly DiscoveredRoute[]
   readonly pages: readonly { readonly file: string; readonly metadata: PageMetadata }[]
+  readonly findings: readonly FindingDraft[]
+}
+
+interface ModuleRouteReading {
+  readonly routes: readonly DiscoveredRoute[]
   readonly findings: readonly FindingDraft[]
 }
 
@@ -429,6 +436,253 @@ export function readRoutes(
     routes: routes.sort((left, right) => left.key.localeCompare(right.key)),
     pages: pages.map((page) => ({ file: page.file, metadata: page.metadata })),
     findings,
+  }
+}
+
+function property(object: ts.ObjectLiteralExpression, name: string): ts.Expression | undefined {
+  for (const candidate of object.properties) {
+    if (
+      ts.isPropertyAssignment(candidate) &&
+      (ts.isIdentifier(candidate.name) || ts.isStringLiteralLike(candidate.name)) &&
+      candidate.name.text === name
+    ) {
+      return candidate.initializer
+    }
+  }
+
+  return undefined
+}
+
+function location(file: string, sourceFile: ts.SourceFile, node: ts.Node): SourceLocation {
+  const start = sourceFile.getLineAndCharacterOfPosition(node.getStart(sourceFile))
+
+  return {
+    file,
+    adapterId: ADAPTER_ID,
+    start: { line: start.line + 1, column: start.character + 1 },
+  }
+}
+
+function nestedPattern(parent: string, child: string): string {
+  if (child === '') return parent
+  if (child.startsWith('/')) return child
+  return parent === '/' ? `/${child}` : `${parent}/${child}`
+}
+
+/** A literal route declaration uses the framework's path syntax unchanged. */
+function routePattern(path: string): { readonly pattern: string } {
+  return { pattern: path === '' ? '/' : path.startsWith('/') ? path : `/${path}` }
+}
+
+function localImports(
+  file: string,
+  sourceFile: ts.SourceFile,
+  files: ReadonlySet<string>,
+): ReadonlyMap<string, string> {
+  const imports = new Map<string, string>()
+
+  for (const statement of sourceFile.statements) {
+    if (
+      !ts.isImportDeclaration(statement) ||
+      !ts.isStringLiteral(statement.moduleSpecifier) ||
+      !statement.moduleSpecifier.text.startsWith('.') ||
+      statement.importClause?.namedBindings === undefined ||
+      !ts.isNamedImports(statement.importClause.namedBindings)
+    )
+      continue
+
+    const base = normalize(join(dirname(file), statement.moduleSpecifier.text))
+    const resolved = [
+      base,
+      `${base}.ts`,
+      `${base}.tsx`,
+      `${base}.js`,
+      `${base}.mjs`,
+      `${base}.cjs`,
+    ].find((candidate) => files.has(candidate))
+    if (resolved === undefined) continue
+
+    for (const binding of statement.importClause.namedBindings.elements)
+      imports.set(binding.name.text, resolved)
+  }
+
+  return imports
+}
+
+function routeFile(file: string, route: ts.ObjectLiteralExpression): string | undefined {
+  const target = property(route, 'file')
+  if (target === undefined || !ts.isCallExpression(target)) return undefined
+
+  const relative = target.arguments.find((argument) => ts.isStringLiteralLike(argument))
+  return relative === undefined ? undefined : normalize(join(dirname(file), relative.text))
+}
+
+function readRouteArray(
+  file: string,
+  sourceFile: ts.SourceFile,
+  initializer: ts.Expression,
+  parentPath?: string,
+): ModuleRouteReading {
+  if (!ts.isArrayLiteralExpression(initializer)) {
+    return {
+      routes: [],
+      findings: [
+        {
+          code: 'nuxt-module-routes-not-literal',
+          title: 'Module routes are not a literal array',
+          message: `${file} exports module routes through an expression, so no paths were guessed.`,
+          file,
+        },
+      ],
+    }
+  }
+
+  const routes: DiscoveredRoute[] = []
+  const findings: FindingDraft[] = []
+  for (const entry of initializer.elements) {
+    if (!ts.isObjectLiteralExpression(entry)) {
+      findings.push({
+        code: 'nuxt-module-route-not-literal',
+        title: 'A module route is not a literal object',
+        message: `${file} declares a module route through an expression or spread, so it was not guessed.`,
+        file,
+      })
+      continue
+    }
+
+    const path = property(entry, 'path')
+    if (path === undefined || !ts.isStringLiteralLike(path)) {
+      findings.push({
+        code: 'nuxt-module-route-path-not-literal',
+        title: 'A module route path is not a literal',
+        message: `${file} declares a computed module route path, so it was not guessed.`,
+        file,
+      })
+      continue
+    }
+
+    const pathPattern =
+      parentPath === undefined
+        ? routePattern(path.text).pattern
+        : nestedPattern(parentPath, path.text)
+    const params = paramsOf(pathPattern)
+    const unitFile = routeFile(file, entry)
+    routes.push({
+      key: `${pathPattern}:${entry.getStart(sourceFile)}`,
+      pathPattern,
+      ...(unitFile === undefined ? {} : { unitFile, unitKey: 'default' }),
+      ...(params.length === 0 ? {} : { params }),
+      source: location(file, sourceFile, entry),
+    })
+
+    const children = property(entry, 'children')
+    if (children !== undefined) {
+      const nested = readRouteArray(file, sourceFile, children, pathPattern)
+      routes.push(...nested.routes)
+      findings.push(...nested.findings)
+    }
+  }
+
+  return { routes, findings }
+}
+
+function pushedRouteNames(sourceFile: ts.SourceFile): readonly string[] {
+  const names = new Set<string>()
+  const visit = (node: ts.Node): void => {
+    if (
+      ts.isCallExpression(node) &&
+      ts.isIdentifier(node.expression) &&
+      node.expression.text === 'extendPages'
+    ) {
+      const callback = node.arguments[0]
+      if (callback !== undefined) {
+        const inspect = (candidate: ts.Node): void => {
+          if (
+            ts.isCallExpression(candidate) &&
+            ts.isPropertyAccessExpression(candidate.expression) &&
+            candidate.expression.name.text === 'push'
+          ) {
+            for (const argument of candidate.arguments) {
+              if (ts.isSpreadElement(argument) && ts.isIdentifier(argument.expression))
+                names.add(argument.expression.text)
+            }
+          }
+          ts.forEachChild(candidate, inspect)
+        }
+        inspect(callback)
+      }
+    }
+    ts.forEachChild(node, visit)
+  }
+  visit(sourceFile)
+  return [...names].sort()
+}
+
+/**
+ * Nuxt modules can extend the file-system router with literal arrays. Read the
+ * small, auditable subset that is established by `extendPages(...push(...routes))`.
+ * Computed tables and route mutations remain findings rather than guesses.
+ */
+export function readModuleRoutes(
+  files: readonly string[],
+  readText: (file: string) => string | undefined,
+): ModuleRouteReading {
+  const available = new Set(files)
+  const routes: DiscoveredRoute[] = []
+  const findings: FindingDraft[] = []
+
+  for (const file of files
+    .filter((candidate) => /(?:^|\/)module\.[cm]?[jt]s$/.test(candidate))
+    .sort()) {
+    const text = readText(file)
+    if (text === undefined || !text.includes('extendPages')) continue
+    const moduleSource = ts.createSourceFile(file, text, ts.ScriptTarget.Latest, true)
+    const imports = localImports(file, moduleSource, available)
+
+    for (const name of pushedRouteNames(moduleSource)) {
+      const routeTableFile = imports.get(name)
+      if (routeTableFile === undefined) {
+        findings.push({
+          code: 'nuxt-module-route-table-not-local',
+          title: 'A module route table is not a local import',
+          message: `${file} passes ${name} to extendPages, but the adapter cannot establish a local literal route table for it.`,
+          file,
+        })
+        continue
+      }
+      const routeText = readText(routeTableFile)
+      if (routeText === undefined) continue
+      const routeSource = ts.createSourceFile(
+        routeTableFile,
+        routeText,
+        ts.ScriptTarget.Latest,
+        true,
+      )
+      const declaration = routeSource.statements
+        .flatMap((statement) =>
+          ts.isVariableStatement(statement) ? [...statement.declarationList.declarations] : [],
+        )
+        .find((candidate) => ts.isIdentifier(candidate.name) && candidate.name.text === name)
+      if (declaration?.initializer === undefined) {
+        findings.push({
+          code: 'nuxt-module-route-table-not-found',
+          title: 'A module route table was not found',
+          message: `${file} imports ${name} from ${routeTableFile}, but that file does not declare a readable table with that name.`,
+          file: routeTableFile,
+        })
+        continue
+      }
+      const reading = readRouteArray(routeTableFile, routeSource, declaration.initializer)
+      routes.push(...reading.routes)
+      findings.push(...reading.findings)
+    }
+  }
+
+  return {
+    routes: routes.sort((left, right) => left.key.localeCompare(right.key)),
+    findings: findings.sort(
+      (left, right) => left.code.localeCompare(right.code) || left.file.localeCompare(right.file),
+    ),
   }
 }
 

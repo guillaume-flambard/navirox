@@ -2,6 +2,37 @@
 
 This roadmap separates **product vision**, **platform architecture**, and **framework support** so the project does not explode in scope.
 
+## Current execution order
+
+Source-adapter completion is the active product path. The order is Vue, Angular,
+Nuxt, then Next. React remains covered by the public analyzer because it is the
+base adapter for Next.
+
+For an adapter, **complete source support** means all of the following hold
+against its versioned fixture corpus and the installed public package:
+
+1. `npx navirox analyze . --json` identifies the adapter without relying on the
+   checkout;
+2. inspection produces a deterministic source graph, or explicitly reports the
+   construct it cannot establish;
+3. `navirox plan` accepts that graph and preserves every uncertainty in its
+   output;
+4. `navirox migrate` copies only units classified as shared or portable, with
+   idempotence and rollback verified;
+5. no framework-specific rule escapes its adapter into the neutral source,
+   inspect, planner or migration modules.
+
+This is not a claim that every web view is converted automatically, nor that a
+native runtime exists for every source framework. Those are separate target
+provider and transform gates. The supported migration contract remains the
+safe subset that Navirox can prove.
+
+Visual fidelity is a separate commercial gate. Until a generated native view
+tree and reproducible visual evidence exist, no adapter may claim visual parity
+or offer a web-to-native image diff. `docs/VISUAL-FIDELITY.md` defines the
+required evidence and puts the Vue target-provider proof before visual claims
+for every other adapter.
+
 ---
 
 # Stage A — Reposition (now)

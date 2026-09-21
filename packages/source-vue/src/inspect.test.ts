@@ -1,3 +1,6 @@
+import { mkdirSync, mkdtempSync, writeFileSync } from 'node:fs'
+import { tmpdir } from 'node:os'
+import { join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { createProjectFiles } from '@memolabs-apps/source'
 import { describe, expect, it } from 'vitest'
@@ -9,6 +12,31 @@ function fixture(name: string): string {
 
 function codes(findings: readonly { readonly code: string }[]): string[] {
   return findings.map((finding) => finding.code).sort()
+}
+
+function projectWithRouterTest(): string {
+  const root = mkdtempSync(join(tmpdir(), 'navirox-vue-router-test-'))
+
+  mkdirSync(join(root, 'src/router/__tests__'), { recursive: true })
+  writeFileSync(
+    join(root, 'package.json'),
+    JSON.stringify({ dependencies: { vue: '^3.5.0', 'vue-router': '^4.5.0' } }),
+  )
+  writeFileSync(
+    join(root, 'tsconfig.json'),
+    JSON.stringify({ compilerOptions: { paths: { '@/*': ['./src/*'] } } }),
+  )
+  writeFileSync(join(root, 'src/App.vue'), '<template>application</template>\n')
+  writeFileSync(
+    join(root, 'src/router/index.ts'),
+    "import { createRouter } from 'vue-router'\nexport const routes = [{ path: '/', component: () => import('@/App.vue') }]\nexport const router = createRouter({ routes })\n",
+  )
+  writeFileSync(
+    join(root, 'src/router/__tests__/router.spec.ts'),
+    "import { createRouter } from 'vue-router'\nconst router = createRouter({ routes: [{ path: '/test-only', component: () => import('../../App.vue') }] })\nvoid router\n",
+  )
+
+  return root
 }
 
 describe('inspecting a Vue project', () => {
@@ -110,6 +138,26 @@ describe('inspecting a Vue project', () => {
       { path: '/', params: undefined, file: 'src/router/index.ts' },
       { path: '/profile/:id', params: ['id'], file: 'src/router/index.ts' },
     ])
+  })
+
+  it('reads literal nested routes with their full paths and parameters', async () => {
+    const inspection = await inspect(createProjectFiles(fixture('vue-nested-router')))
+
+    expect(
+      inspection.routes.map((route) => ({ path: route.pathPattern, params: route.params })),
+    ).toEqual([
+      { path: '/account/:accountId', params: ['accountId'] },
+      { path: '/account/:accountId/billing/:invoiceId', params: ['accountId', 'invoiceId'] },
+      { path: '/account/:accountId/settings', params: ['accountId'] },
+    ])
+    expect(codes(inspection.findings)).not.toContain('router-route-children')
+  })
+
+  it('does not mistake a router created in a test for an application route', async () => {
+    const inspection = await inspect(createProjectFiles(projectWithRouterTest()))
+
+    expect(inspection.routes.map((route) => route.pathPattern)).toEqual(['/'])
+    expect(inspection.routes[0]?.unitFile).toBe('src/App.vue')
   })
 
   it('reports a computed route table instead of guessing its routes', async () => {

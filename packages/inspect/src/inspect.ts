@@ -1,7 +1,7 @@
 import type { AppGraph, FindingSeverity } from '@memolabs-apps/graph'
 import { APP_GRAPH_SCHEMA_VERSION } from '@memolabs-apps/graph'
-import type { InspectContext, SourceAdapterRegistry } from '@memolabs-apps/source'
-import { createProjectFiles } from '@memolabs-apps/source'
+import type { DetectedSource, InspectContext, SourceAdapterRegistry } from '@memolabs-apps/source'
+import { createProjectFiles, selectAdapter } from '@memolabs-apps/source'
 import {
   INSPECT_REPORT_SCHEMA_VERSION,
   type InspectFailureReason,
@@ -59,6 +59,30 @@ function summarize(files: number, graph: AppGraph): InspectionSummary {
   }
 }
 
+function areComposed(
+  left: DetectedSource,
+  right: DetectedSource,
+  registry: SourceAdapterRegistry,
+): boolean {
+  return (
+    registry.get(left.adapterId).composes?.includes(right.adapterId) === true ||
+    registry.get(right.adapterId).composes?.includes(left.adapterId) === true
+  )
+}
+
+function competingCandidates(
+  selected: DetectedSource,
+  detected: readonly DetectedSource[],
+  registry: SourceAdapterRegistry,
+): readonly DetectedSource[] {
+  return detected.filter(
+    (candidate) =>
+      candidate.adapterId !== selected.adapterId &&
+      candidate.confidence === selected.confidence &&
+      !areComposed(candidate, selected, registry),
+  )
+}
+
 export async function runInspection(options: InspectOptions): Promise<InspectOutcome> {
   const project = createProjectFiles(options.rootDir)
   const context: InspectContext = {
@@ -82,12 +106,28 @@ export async function runInspection(options: InspectOptions): Promise<InspectOut
 
     adapterId = options.framework
   } else {
-    const selected = await options.registry.select(context)
+    const detected = await options.registry.detect(context)
+    const selected = selectAdapter(detected, (id) => options.registry.get(id))
 
     if (selected === undefined) {
       return failure(
         'no-adapter',
         `No supported source adapter was detected for ${options.rootDir}.`,
+        registered,
+      )
+    }
+
+    const competing = competingCandidates(selected, detected, options.registry)
+
+    if (competing.length > 0) {
+      const candidates = [selected, ...competing].map((candidate) => candidate.adapterId).sort()
+
+      return failure(
+        'ambiguous-adapter',
+        `Navirox detected multiple unrelated source frameworks: ${candidates.join(', ')}. ` +
+          `Choose one explicitly with ${candidates
+            .map((candidate) => `--framework ${candidate}`)
+            .join(' or ')}.`,
         registered,
       )
     }

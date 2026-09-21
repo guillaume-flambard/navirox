@@ -13,7 +13,7 @@ export type TPlatform = 'ios' | 'android'
 const DEFAULT_PORT = 8081
 
 /** The commands this tool knows. Adding one is a change here and in the dispatch. */
-export type TCommand = 'dev' | 'doctor' | 'inspect' | 'plan' | 'migrate'
+export type TCommand = 'analyze' | 'dev' | 'doctor' | 'inspect' | 'plan' | 'migrate'
 
 /** Thrown when the command line itself does not make sense. */
 export class UsageError extends Error {
@@ -32,12 +32,14 @@ export interface IParsedArguments {
   readonly json: boolean
   readonly help: boolean
   readonly skipPreflight: boolean
-  /** The source adapter to use, bypassing detection. Only meaningful for inspect. */
+  /** The source adapter to use, bypassing detection. Only meaningful for source analysis. */
   readonly framework: string | undefined
   /** Where a migration writes. Only meaningful for migrate. */
   readonly out: string | undefined
   /** Whether a migration performs its writes. Absent means a dry run. */
   readonly write: boolean
+  /** Whether the plan asks TypeSafe for a second opinion on undecided subjects. */
+  readonly semantic: boolean
 }
 
 export const HELP = `navirox
@@ -46,8 +48,10 @@ The Navirox command line interface.
 
 Usage:
   navirox <command> [options]
+  navirox analyze [project] [options]
 
 Commands:
+  analyze Analyze a web project and detect its source framework.
   dev     Start an app: Metro first, then the platform build, with hot reload.
   doctor  Report the environment, the installed runtime, and what to fix.
   inspect Read an existing project and report what moving it to native involves.
@@ -64,12 +68,16 @@ dev only:
       --port <number>           Metro port. Defaults to ${DEFAULT_PORT}.
       --skip-preflight          Do not check the native toolchain first.
 
-inspect, plan and migrate only:
+analyze, inspect, plan and migrate only:
       --framework <id>          Use a named source adapter instead of detecting one.
 
 migrate only:
       --out <path>              Where to write. Required by --write.
       --write                   Perform the migration. Without it, nothing is written.
+
+plan only:
+      --semantic                Ask TypeSafe for a second opinion on the subjects the
+                                rules could not decide. Needs TYPESAFE_API_KEY.
 `
 
 /**
@@ -98,6 +106,8 @@ export function parseArguments(
   let outGiven = false
   let write = false
   let writeGiven = false
+  let semantic = false
+  let semanticGiven = false
 
   for (let index = 0; index < argv.length; index += 1) {
     const argument = argv[index]
@@ -126,6 +136,9 @@ export function parseArguments(
     } else if (argument === '--write') {
       write = true
       writeGiven = true
+    } else if (argument === '--semantic') {
+      semantic = true
+      semanticGiven = true
     } else if (argument === '--out') {
       out = valueFor(argv, index, argument)
       outGiven = true
@@ -140,17 +153,20 @@ export function parseArguments(
       index += 1
     } else if (argument.startsWith('-')) {
       throw new UsageError(`Unknown option "${argument}".`)
+    } else if (command === 'analyze' && directory === undefined) {
+      directory = argument
     } else if (command !== undefined) {
       throw new UsageError(`Unexpected argument "${argument}". navirox takes one command.`)
     } else if (
       argument !== 'dev' &&
       argument !== 'doctor' &&
+      argument !== 'analyze' &&
       argument !== 'inspect' &&
       argument !== 'plan' &&
       argument !== 'migrate'
     ) {
       throw new UsageError(
-        `Unknown command "${argument}". The commands are dev, doctor, inspect, plan and migrate.`,
+        `Unknown command "${argument}". The commands are analyze, dev, doctor, inspect, plan and migrate.`,
       )
     } else {
       command = argument
@@ -183,8 +199,17 @@ export function parseArguments(
     )
   }
 
+  if (semanticGiven && command !== 'plan') {
+    throw new UsageError(
+      command === undefined
+        ? '--semantic belongs to navirox plan, and no command was given.'
+        : `navirox ${command} produces no plan, so --semantic does not apply to it.`,
+    )
+  }
+
   if (
     command === 'doctor' ||
+    command === 'analyze' ||
     command === 'inspect' ||
     command === 'plan' ||
     command === 'migrate'
@@ -205,21 +230,39 @@ export function parseArguments(
     }
   }
 
-  if (command !== 'inspect' && command !== 'plan' && command !== 'migrate' && frameworkGiven) {
+  if (
+    command !== 'analyze' &&
+    command !== 'inspect' &&
+    command !== 'plan' &&
+    command !== 'migrate' &&
+    frameworkGiven
+  ) {
     throw new UsageError(
       command === undefined
-        ? '--framework belongs to navirox inspect and navirox plan, and no command was given.'
+        ? '--framework belongs to navirox analyze, inspect and plan, and no command was given.'
         : `navirox ${command} reads no source project, so --framework does not apply to it.`,
     )
   }
 
   if (command === undefined && !help) {
     throw new UsageError(
-      'A command is required. The commands are dev, doctor, inspect, plan and migrate.',
+      'A command is required. The commands are analyze, dev, doctor, inspect, plan and migrate.',
     )
   }
 
-  return { command, platform, directory, port, json, help, skipPreflight, framework, out, write }
+  return {
+    command,
+    platform,
+    directory,
+    port,
+    json,
+    help,
+    skipPreflight,
+    framework,
+    out,
+    write,
+    semantic,
+  }
 }
 
 /** Reads the value that belongs to an option, refusing a missing or option-like one. */

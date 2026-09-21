@@ -36,7 +36,9 @@
 
 import { spawnSync } from 'node:child_process'
 import {
+  cpSync,
   existsSync,
+  mkdirSync,
   mkdtempSync,
   readdirSync,
   readFileSync,
@@ -370,6 +372,146 @@ function assertHelp(appDir) {
   assert(result.stdout.includes('dev'), 'navirox --help does not mention the dev command.')
 }
 
+/**
+ * Installs the public launcher into an otherwise empty directory, then runs the
+ * command through pnpm's equivalent of `npx`. This is intentionally separate
+ * from the scaffolded native app: the analyzer must work for an existing web
+ * project before a Navirox app has been created.
+ */
+function analyzeExistingProject(workspace, artifacts) {
+  step('Analyzing an existing project through the installed public launcher')
+
+  const consumer = join(workspace, 'analyzer')
+  const projects = [
+    {
+      adapterId: 'vue',
+      fixture: join(PACKAGES_DIRECTORY, 'source-vue', 'fixtures', 'vue-app'),
+      minimumScreens: 1,
+    },
+    {
+      adapterId: 'angular',
+      fixture: join(PACKAGES_DIRECTORY, 'source-angular', 'fixtures', 'angular-app'),
+      minimumScreens: 1,
+    },
+    {
+      adapterId: 'nuxt',
+      fixture: join(PACKAGES_DIRECTORY, 'source-nuxt', 'fixtures', 'nuxt-app'),
+      minimumScreens: 1,
+    },
+    {
+      adapterId: 'next',
+      fixture: join(PACKAGES_DIRECTORY, 'source-next', 'fixtures', 'next-app'),
+      minimumScreens: 1,
+    },
+    {
+      adapterId: 'react',
+      fixture: join(PACKAGES_DIRECTORY, 'source-react', 'fixtures', 'react-app'),
+      minimumScreens: 0,
+    },
+  ]
+
+  mkdirSync(consumer)
+  writeFileSync(
+    join(consumer, 'package.json'),
+    `${JSON.stringify(
+      {
+        name: 'navirox-analysis-consumer',
+        private: true,
+        version: '0.0.0',
+        dependencies: { navirox: `file:${artifacts.get('navirox')}` },
+      },
+      null,
+      2,
+    )}\n`,
+  )
+
+  const overrides = [...artifacts]
+    .map(([name, artifact]) => `  '${name}': file:${artifact}`)
+    .join('\n')
+  writeFileSync(join(consumer, 'pnpm-workspace.yaml'), `overrides:\n${overrides}\n`)
+
+  const installStatus = run('pnpm', ['install'], consumer)
+  assert(installStatus === 0, 'The public navirox launcher does not install on its own.')
+
+  for (const project of projects) {
+    const source = join(workspace, `existing-${project.adapterId}-app`)
+    cpSync(project.fixture, source, { recursive: true })
+
+    const result = capture('pnpm', ['exec', 'navirox', 'analyze', source, '--json'], consumer)
+    assert(
+      result.status === 0,
+      `npx navirox analyze for ${project.adapterId} exited ${result.status}.\n${result.stderr}`,
+    )
+
+    const report = JSON.parse(result.stdout)
+    assert(
+      report.source.adapterId === project.adapterId,
+      `Expected ${project.adapterId} detection, got ${report.source.adapterId}.`,
+    )
+    assert(
+      report.summary.routes > 0,
+      `The installed launcher did not report the ${project.adapterId} application routes.`,
+    )
+    assert(
+      report.summary.screens >= project.minimumScreens,
+      `The installed launcher reported ${report.summary.screens} screens for ${project.adapterId}, expected at least ${project.minimumScreens}.`,
+    )
+    process.stdout.write(`   ${report.source.adapterId}, ${report.summary.routes} routes\n`)
+
+    const plan = capture('pnpm', ['exec', 'navirox', 'plan', '-C', source, '--json'], consumer)
+    assert(
+      plan.status === 0,
+      `npx navirox plan for ${project.adapterId} exited ${plan.status}.\n${plan.stderr}`,
+    )
+    const planned = JSON.parse(plan.stdout)
+    assert(
+      planned.source.adapterId === project.adapterId,
+      `Expected a ${project.adapterId} plan, got ${planned.source.adapterId}.`,
+    )
+
+    if (['vue', 'angular', 'nuxt', 'next'].includes(project.adapterId)) {
+      const output = join(workspace, `migrated-${project.adapterId}-app`)
+      const migration = capture(
+        'pnpm',
+        ['exec', 'navirox', 'migrate', '-C', source, '--out', output, '--write', '--json'],
+        consumer,
+      )
+      assert(
+        migration.status === 0,
+        `npx navirox migrate for ${project.adapterId} exited ${migration.status}.\n${migration.stderr}`,
+      )
+      const migrated = JSON.parse(migration.stdout)
+      assert(
+        migrated.dryRun === false,
+        `The requested ${project.adapterId} migration remained a dry run.`,
+      )
+      assert(
+        migrated.files.length > 0,
+        `The ${project.adapterId} migration did not move any safe unit.`,
+      )
+      assert(
+        existsSync(join(output, '.navirox', 'migration.json')),
+        `The ${project.adapterId} migration did not persist its idempotent migration state.`,
+      )
+
+      const repeated = capture(
+        'pnpm',
+        ['exec', 'navirox', 'migrate', '-C', source, '--out', output, '--write', '--json'],
+        consumer,
+      )
+      assert(
+        repeated.status === 0,
+        `A repeated ${project.adapterId} migration exited ${repeated.status}.\n${repeated.stderr}`,
+      )
+      const repeatedReport = JSON.parse(repeated.stdout)
+      assert(
+        repeatedReport.files.length === 0,
+        `The repeated ${project.adapterId} migration was not idempotent.`,
+      )
+    }
+  }
+}
+
 /** Reads the app key the platform projects register, which is also the iOS target name. */
 function appKey(appDir) {
   const manifest = JSON.parse(readFileSync(join(appDir, 'app.json'), 'utf8'))
@@ -485,6 +627,7 @@ function main() {
     assertInstalledFromArtifacts(appDir, packages)
     assertSingleRuntime(appDir)
     assertHelp(appDir)
+    analyzeExistingProject(workspace, artifacts)
 
     if (options.bundle) {
       for (const platform of ['ios', 'android']) {
