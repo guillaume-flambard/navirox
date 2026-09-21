@@ -20,6 +20,26 @@ function application(): string {
 
   mkdirSync(join(app, 'android', 'app'), { recursive: true })
   writeFileSync(
+    join(app, 'android', 'build.gradle'),
+    [
+      'buildscript {',
+      '    repositories {',
+      '        google()',
+      '        mavenCentral()',
+      '    }',
+      '}',
+      '',
+      'allprojects {',
+      '    repositories {',
+      '        google()',
+      '        mavenCentral()',
+      '    }',
+      '}',
+      '',
+    ].join('\n'),
+    'utf8',
+  )
+  writeFileSync(
     join(app, 'android', 'app', 'build.gradle'),
     [
       'android {',
@@ -46,9 +66,9 @@ describe('the device harness', () => {
     const app = application()
     const written = writeDeviceHarness(app)
 
-    // The five static files plus the generated Detox test and the build file it
-    // patches.
-    expect(written).toHaveLength(DEVICE_HARNESS_FILES.length + 2)
+    // The five static files plus the generated Detox test, the build file it
+    // patches and the root build file that resolves the Detox artifacts.
+    expect(written).toHaveLength(DEVICE_HARNESS_FILES.length + 3)
 
     for (const name of DEVICE_HARNESS_FILES) {
       const path = join(app, name)
@@ -67,6 +87,28 @@ describe('the device harness', () => {
     expect(existsSync(join(app, 'detox.config.js'))).toBe(true)
     expect(existsSync(join(app, 'e2e', 'jest.config.js'))).toBe(true)
     expect(deviceHarnessFile('detox.config.js')).toContain("config: 'e2e/jest.config.js'")
+  })
+
+  it('resolves the Detox artifacts the Android test APK needs', () => {
+    const app = application()
+
+    writeDeviceHarness(app)
+
+    const buildFile = join(app, 'android', 'build.gradle')
+    const text = readFileSync(buildFile, 'utf8')
+
+    expect(text).toContain('apply from: "../node_modules/detox/android/rninfo.gradle"')
+    expect(text).toContain('maven { url "$rootDir/../node_modules/detox/Detox-android" }')
+    expect(deviceHarnessFile('detox.config.js')).toContain(
+      'cd android && ./gradlew assembleDebug assembleAndroidTest',
+    )
+
+    writeDeviceHarness(app)
+
+    const again = readFileSync(buildFile, 'utf8')
+
+    expect(again.match(/Detox-android/g)).toHaveLength(1)
+    expect(again.match(/rninfo\.gradle/g)).toHaveLength(2)
   })
 
   it('drives the declared actions and names the five capture moments', () => {

@@ -88,7 +88,10 @@ module.exports = {
       type: 'android.apk',
       binaryPath: 'android/app/build/outputs/apk/debug/app-debug.apk',
       build:
-        'cd android ; ./gradlew assembleDebug assembleAndroidTest -DtestBuildType=debug ; cd -',
+        // A failing build has to stop the run. Chaining with a semicolon would
+        // let a failed assembleAndroidTest exit 0 and leave Detox looking for a
+        // test APK that was never produced.
+        'cd android && ./gradlew assembleDebug assembleAndroidTest -DtestBuildType=debug',
       start: 'react-native start',
       reversePorts: [8081],
     },
@@ -390,12 +393,96 @@ function insertBeforeBlockEnd(text: string, blockHeader: string, lines: readonly
   throw new Error(`The ${blockHeader} block in the application build file is not closed.`)
 }
 
+function insertAfterBlockStart(
+  text: string,
+  blockHeader: string,
+  lines: readonly string[],
+): string {
+  const all = text.split('\n')
+  const start = all.findIndex((line) => line.trimStart().startsWith(blockHeader))
+
+  if (start === -1) {
+    throw new Error(`The application root build file has no ${blockHeader} block to patch.`)
+  }
+
+  const indent = /^\s*/.exec(all[start] ?? '')?.[0] ?? ''
+
+  all.splice(start + 1, 0, ...lines.map((line) => `${indent}    ${line}`))
+
+  return all.join('\n')
+}
+
+function insertInNestedBlock(
+  text: string,
+  outerHeader: string,
+  innerHeader: string,
+  lines: readonly string[],
+): string {
+  const all = text.split('\n')
+  const outer = all.findIndex((line) => line.trimStart().startsWith(outerHeader))
+
+  if (outer === -1) {
+    throw new Error(`The application root build file has no ${outerHeader} block to patch.`)
+  }
+
+  const inner = all.findIndex(
+    (line, index) => index > outer && line.trimStart().startsWith(innerHeader),
+  )
+
+  if (inner === -1) {
+    throw new Error(`The application root build file has no ${innerHeader} block to patch.`)
+  }
+
+  const indent = /^\s*/.exec(all[inner] ?? '')?.[0] ?? ''
+  const closing = `${indent}}`
+
+  for (let index = inner + 1; index < all.length; index += 1) {
+    if (all[index] === closing) {
+      all.splice(index, 0, ...lines.map((line) => `${indent}    ${line}`))
+
+      return all.join('\n')
+    }
+  }
+
+  throw new Error(`The ${innerHeader} block in the application root build file is not closed.`)
+}
+
+/**
+ * The root build file of the scaffolded application resolves no Detox artifact:
+ * it carries neither the gradle script that declares the flavor dimension Detox's
+ * AAR is published in, nor the repository that holds that AAR. Without both, the
+ * androidTest dependency cannot resolve, so `assembleAndroidTest` fails and no
+ * test APK is produced at all.
+ */
+function patchAndroidRootBuild(text: string): string {
+  let patched = text
+
+  if (!patched.includes('detox/android/rninfo.gradle')) {
+    patched = insertAfterBlockStart(patched, 'buildscript {', [
+      "// Detox (e2e): rninfo.gradle exposes the RN version metadata Detox's AAR reads.",
+      '// The harness installs detox as a devDependency, so it sits under ./node_modules.',
+      'apply from: "../node_modules/detox/android/rninfo.gradle"',
+    ])
+  }
+
+  if (!patched.includes('detox/Detox-android')) {
+    patched = insertInNestedBlock(patched, 'allprojects {', 'repositories {', [
+      "// Detox's Android AAR, resolved from the node_modules detox the harness installs.",
+      'maven { url "$rootDir/../node_modules/detox/Detox-android" }',
+    ])
+  }
+
+  return patched
+}
+
 /**
  * Writes the Android test wiring the scaffolded application does not carry, the
  * same way it approves the build scripts. A Detox run needs a test APK that
  * starts the instrumentation, and the template ships neither an androidTest
  * source set nor the Detox test dependency, so `assembleAndroidTest` produced an
- * empty APK and the instrumentation never reported ready.
+ * empty APK and the instrumentation never reported ready. The root build file is
+ * patched too, because that dependency cannot resolve without the Detox gradle
+ * script and the repository that holds the Detox AAR.
  */
 export function writeAndroidTestWiring(appDirectory: string): readonly string[] {
   const buildFile = join(appDirectory, 'android', 'app', 'build.gradle')
@@ -434,7 +521,12 @@ export function writeAndroidTestWiring(appDirectory: string): readonly string[] 
 
   writeFileSync(buildFile, patched, 'utf8')
 
-  return [testFile, buildFile]
+  const rootBuildFile = join(appDirectory, 'android', 'build.gradle')
+  const rootText = readFileSync(rootBuildFile, 'utf8')
+
+  writeFileSync(rootBuildFile, patchAndroidRootBuild(rootText), 'utf8')
+
+  return [testFile, buildFile, rootBuildFile]
 }
 
 /**
