@@ -154,6 +154,14 @@ import { by, device, element, waitFor } from 'detox'
 const MOMENTS = ['rest', 'first-meaningful', 'midpoint', 'settled', 'interrupted']
 const SETTLE_TIMEOUT = 120000
 
+// The launch needs a budget of its own. jest applies its test timeout to hooks
+// too, and on a runner the first Metro bundle takes minutes: a single stalled
+// attempt spends the whole SETTLE_TIMEOUT, and jest would kill the run before
+// the retry had a chance. The examples set the same kind of budget in beforeAll.
+const HOOK_TIMEOUT = 480000
+
+jest.setTimeout(HOOK_TIMEOUT)
+
 interface DeclaredAction {
   press: string
   nth?: number
@@ -244,9 +252,11 @@ function target(action: DeclaredAction) {
   return element(by.id(action.press)).atIndex(action.nth ?? 0)
 }
 
-it('captures ' + captureKey + ' on ' + platform, async () => {
-  await launchAndSettle()
+// The launch is a hook rather than the first line of the test so it can spend
+// the larger budget above without eating the test's own timeout.
+beforeAll(launchAndSettle, HOOK_TIMEOUT)
 
+it('captures ' + captureKey + ' on ' + platform, async () => {
   for (const action of capture.actions ?? []) {
     await waitFor(target(action))
       .toExist()

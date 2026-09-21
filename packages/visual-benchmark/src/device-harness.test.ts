@@ -65,6 +65,14 @@ describe('the device harness', () => {
     }
   })
 
+  it('gives the launch a budget larger than the settle wait it performs', () => {
+    const capture = deviceHarnessFile('capture.test.ts')
+
+    expect(capture).toContain('beforeAll(launchAndSettle, HOOK_TIMEOUT)')
+    expect(capture).toContain('jest.setTimeout(HOOK_TIMEOUT)')
+    expect(capture).toContain('const HOOK_TIMEOUT = 480000')
+  })
+
   it('takes the device name from the environment rather than a tracked file', () => {
     const config = deviceHarnessFile('detox.config.js')
 
