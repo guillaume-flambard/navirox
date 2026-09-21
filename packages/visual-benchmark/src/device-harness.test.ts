@@ -1,4 +1,4 @@
-import { existsSync, mkdtempSync, readFileSync, writeFileSync } from 'node:fs'
+import { existsSync, mkdirSync, mkdtempSync, readFileSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { describe, expect, it } from 'vitest'
@@ -18,6 +18,26 @@ function application(): string {
     'utf8',
   )
 
+  mkdirSync(join(app, 'android', 'app'), { recursive: true })
+  writeFileSync(
+    join(app, 'android', 'app', 'build.gradle'),
+    [
+      'android {',
+      '    namespace "dev.navirox.recordsfixtureapp"',
+      '    defaultConfig {',
+      '        applicationId "dev.navirox.recordsfixtureapp"',
+      '        versionCode 1',
+      '    }',
+      '}',
+      '',
+      'dependencies {',
+      '    implementation("com.facebook.react:react-android")',
+      '}',
+      '',
+    ].join('\n'),
+    'utf8',
+  )
+
   return app
 }
 
@@ -26,7 +46,9 @@ describe('the device harness', () => {
     const app = application()
     const written = writeDeviceHarness(app)
 
-    expect(written).toHaveLength(DEVICE_HARNESS_FILES.length)
+    // The five static files plus the generated Detox test and the build file it
+    // patches.
+    expect(written).toHaveLength(DEVICE_HARNESS_FILES.length + 2)
 
     for (const name of DEVICE_HARNESS_FILES) {
       const path = join(app, name)
@@ -133,5 +155,41 @@ describe('the device harness', () => {
 
   it('refuses to hand out a file it does not write', () => {
     expect(() => deviceHarnessFile('nope.config.js')).toThrow(/no file named nope\.config\.js/)
+  })
+
+  it('writes the Android test wiring the scaffolded application does not carry', () => {
+    const app = application()
+
+    writeDeviceHarness(app)
+
+    const test = join(
+      app,
+      'android',
+      'app',
+      'src',
+      'androidTest',
+      'java',
+      'dev',
+      'navirox',
+      'recordsfixtureapp',
+      'DetoxTest.java',
+    )
+
+    expect(existsSync(test)).toBe(true)
+    expect(readFileSync(test, 'utf8').split('\n')[0]).toBe('package dev.navirox.recordsfixtureapp;')
+
+    const build = readFileSync(join(app, 'android', 'app', 'build.gradle'), 'utf8')
+
+    expect(build).toContain("testBuildType System.getProperty('testBuildType', 'debug')")
+    expect(build).toContain("testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'")
+    expect(build).toContain("missingDimensionStrategy 'detox', 'full'")
+    expect(build).toContain("androidTestImplementation('com.wix:detox:+')")
+
+    writeDeviceHarness(app)
+
+    const repeated = readFileSync(join(app, 'android', 'app', 'build.gradle'), 'utf8')
+
+    expect(repeated.match(/testInstrumentationRunner/g)).toHaveLength(1)
+    expect(repeated.match(/androidTestImplementation/g)).toHaveLength(1)
   })
 })

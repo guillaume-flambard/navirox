@@ -321,6 +321,122 @@ export function allowDeviceHarnessBuilds(appDirectory: string): void {
   writeFileSync(settingsPath, lines.join('\n'), 'utf8')
 }
 
+const ANDROID_DEFAULT_CONFIG_LINES: readonly string[] = [
+  "testBuildType System.getProperty('testBuildType', 'debug')",
+  "testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'",
+  "missingDimensionStrategy 'detox', 'full'",
+]
+
+const ANDROID_DEPENDENCY_LINES: readonly string[] = ["androidTestImplementation('com.wix:detox:+')"]
+
+/**
+ * The Android test entrypoint Detox drives. `detox test` installs the
+ * application plus this test APK and runs it on the emulator. Without it the
+ * test APK falls back to the legacy runner, which scans every dex entry and
+ * blocks the application before Detox can connect.
+ */
+export function detoxTestSource(namespace: string): string {
+  return `package ${namespace};
+
+import com.wix.detox.Detox;
+import com.wix.detox.config.DetoxConfig;
+
+import org.junit.Rule;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+
+import androidx.test.ext.junit.runners.AndroidJUnit4;
+import androidx.test.filters.LargeTest;
+import androidx.test.rule.ActivityTestRule;
+
+@RunWith(AndroidJUnit4.class)
+@LargeTest
+public class DetoxTest {
+    @Rule
+    public ActivityTestRule<MainActivity> mActivityRule =
+            new ActivityTestRule<>(MainActivity.class, false, false);
+
+    @Test
+    public void runDetoxTests() {
+        DetoxConfig detoxConfig = new DetoxConfig();
+        detoxConfig.idlePolicyConfig.masterTimeoutSec = 90;
+        detoxConfig.idlePolicyConfig.idleResourceTimeoutSec = 60;
+        detoxConfig.rnContextLoadTimeoutSec = (BuildConfig.DEBUG ? 180 : 60);
+        Detox.runTests(mActivityRule, detoxConfig);
+    }
+}
+`
+}
+
+function insertBeforeBlockEnd(text: string, blockHeader: string, lines: readonly string[]): string {
+  const all = text.split('\n')
+  const start = all.findIndex((line) => line.trimStart().startsWith(blockHeader))
+
+  if (start === -1) {
+    throw new Error(`The application build file has no ${blockHeader} block to patch.`)
+  }
+
+  const indent = /^\s*/.exec(all[start] ?? '')?.[0] ?? ''
+  const closing = `${indent}}`
+
+  for (let index = start + 1; index < all.length; index += 1) {
+    if (all[index] === closing) {
+      all.splice(index, 0, ...lines.map((line) => `${indent}    ${line}`))
+
+      return all.join('\n')
+    }
+  }
+
+  throw new Error(`The ${blockHeader} block in the application build file is not closed.`)
+}
+
+/**
+ * Writes the Android test wiring the scaffolded application does not carry, the
+ * same way it approves the build scripts. A Detox run needs a test APK that
+ * starts the instrumentation, and the template ships neither an androidTest
+ * source set nor the Detox test dependency, so `assembleAndroidTest` produced an
+ * empty APK and the instrumentation never reported ready.
+ */
+export function writeAndroidTestWiring(appDirectory: string): readonly string[] {
+  const buildFile = join(appDirectory, 'android', 'app', 'build.gradle')
+  const text = readFileSync(buildFile, 'utf8')
+  const namespace = /namespace\s+"([^"]+)"/.exec(text)?.[1]
+
+  if (namespace === undefined) {
+    throw new Error(
+      `The application build file at ${buildFile} declares no namespace, so the Detox test class has no package.`,
+    )
+  }
+
+  const testFile = join(
+    appDirectory,
+    'android',
+    'app',
+    'src',
+    'androidTest',
+    'java',
+    ...namespace.split('.'),
+    'DetoxTest.java',
+  )
+
+  mkdirSync(dirname(testFile), { recursive: true })
+  writeFileSync(testFile, detoxTestSource(namespace), 'utf8')
+
+  let patched = text
+
+  if (!patched.includes('testInstrumentationRunner')) {
+    patched = insertBeforeBlockEnd(patched, 'defaultConfig {', ANDROID_DEFAULT_CONFIG_LINES)
+  }
+
+  if (!patched.includes('androidTestImplementation')) {
+    patched = insertBeforeBlockEnd(patched, 'dependencies {', ANDROID_DEPENDENCY_LINES)
+  }
+
+  writeFileSync(buildFile, patched, 'utf8')
+
+  return [testFile, buildFile]
+}
+
 /**
  * Writes the harness into the prepared application. Existing files are
  * overwritten, because the harness is generated output and a stale copy would
@@ -344,6 +460,7 @@ export function writeDeviceHarness(appDirectory: string): readonly string[] {
   }
 
   allowDeviceHarnessBuilds(appDirectory)
+  written.push(...writeAndroidTestWiring(appDirectory))
 
   return written
 }
