@@ -46,6 +46,12 @@ examples/vue-pilot/.navirox/
 # about one file.
 packages/source-vue/fixtures/vue-broken/
 
+# And once more, for the generated target fixture. It is compiler output on
+# purpose: the target-vue test recompiles the web fixture and compares this
+# file byte for byte, and reformatting it would break the property the test
+# records. Re-running the compiler puts the difference back.
+packages/target-vue/fixtures/records/RecordsScreen.native.vue
+
 # And once more, for the OpenSpec artifacts, archived and live. Prettier has no
 # stable fixed point on a long requirement or task line with continuation lines:
 # writing the file leaves it in a shape the next check still reports, so the gate
@@ -59,6 +65,20 @@ openspec/specs/
 # .gitignore: without this line, anyone who has built Android locally fails the
 # format check on files no one wrote.
 **/android/app/.cxx/
+
+# And once more, for the installed agent skills. They are vendored verbatim by
+# `npx skills add`, which records what it wrote in skills-lock.json so the set
+# can be restored byte for byte. Reformatting them would make the tree disagree
+# with the lockfile and with every other machine that installed the same skill.
+.agents/skills/
+
+# And once more, for the visual benchmark artifacts. The capture runner writes
+# screenshots and a comparison review page per scenario, and the review page is
+# generated HTML that embeds measured numbers and image references: prettier
+# would reflow it into a shape the next run overwrites. The committed record is
+# the JSON report under docs/evidence/, which is already ignored above; nothing
+# under scenario-artifacts/ is authored by hand.
+packages/visual-benchmark/scenario-artifacts/
 
 # And once more, for watchman. It drops a short-lived cookie into a directory
 # while it scans it, so the format check can list a file that is already gone by

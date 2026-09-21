@@ -1,0 +1,114 @@
+{
+  "scenario": "records-motion",
+  "artifactDir": "/Users/memo/projects/active/apps/mobile/navirox/packages/visual-benchmark/scenario-artifacts/records-motion",
+  "motion": {
+    "declared": true,
+    "interruptible": true,
+    "labels": [
+      "rest",
+      "first-meaningful",
+      "midpoint",
+      "settled",
+      "interrupted"
+    ],
+    "interaction": "select a record, then replace the selection with a second press"
+  },
+  "labels": [
+    "rest",
+    "first-meaningful",
+    "midpoint",
+    "settled",
+    "interrupted"
+  ],
+  "labelsInOrder": true,
+  "frames": [
+    {
+      "key": "rest",
+      "moment": "rest",
+      "actions": [],
+      "web": "rest.web.png",
+      "bytes": 7041,
+      "sha256": "79ae46db66c55141b4004bcb98b90dd03821c4c6a94de85e1398c7be09a55468"
+    },
+    {
+      "key": "first-meaningful",
+      "moment": "first-meaningful",
+      "actions": [
+        {
+          "press": "record-select",
+          "nth": 0
+        }
+      ],
+      "web": "first-meaningful.web.png",
+      "bytes": 10145,
+      "sha256": "ea0554100f6017dfcd7cd5cb0a7c52875cf7bb770a74857ef043e777202f8ca8"
+    },
+    {
+      "key": "midpoint",
+      "moment": "midpoint",
+      "actions": [
+        {
+          "press": "record-select",
+          "nth": 1
+        }
+      ],
+      "web": "midpoint.web.png",
+      "bytes": 10332,
+      "sha256": "0298b68e348decd3ca11c2902356cdeceb7ebf105b4a1f736e8b21a7a18c77c1"
+    },
+    {
+      "key": "settled",
+      "moment": "settled",
+      "actions": [
+        {
+          "press": "record-select",
+          "nth": 1
+        },
+        {
+          "press": "record-select",
+          "nth": 1
+        }
+      ],
+      "web": "settled.web.png",
+      "bytes": 10332,
+      "sha256": "0298b68e348decd3ca11c2902356cdeceb7ebf105b4a1f736e8b21a7a18c77c1"
+    },
+    {
+      "key": "interrupted",
+      "moment": "interrupted",
+      "actions": [
+        {
+          "press": "record-select",
+          "nth": 0
+        },
+        {
+          "press": "record-select",
+          "nth": 1
+        }
+      ],
+      "web": "interrupted.web.png",
+      "bytes": 10332,
+      "sha256": "0298b68e348decd3ca11c2902356cdeceb7ebf105b4a1f736e8b21a7a18c77c1"
+    }
+  ],
+  "coincidentFrames": [
+    "midpoint and settled and interrupted"
+  ],
+  "missing": [],
+  "unavailable": [
+    "rest.ios",
+    "rest.android",
+    "first-meaningful.ios",
+    "first-meaningful.android",
+    "midpoint.ios",
+    "midpoint.android",
+    "settled.ios",
+    "settled.android",
+    "interrupted.ios",
+    "interrupted.android"
+  ],
+  "notes": [
+    "Discrete interaction: a press selects a record and a second press replaces the selection. No frame is an in-flight interpolation, and a pair listed under coincidentFrames reached the same state.",
+    "Native frames are unavailable on this machine: no Detox pipeline (stream-json) and no Android emulator, recorded rather than skipped."
+  ]
+}

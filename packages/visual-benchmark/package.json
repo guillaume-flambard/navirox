@@ -1,0 +1,37 @@
+{
+  "description": "Reproducible web/native capture scenarios with normalized comparison for Navirox.",
+  "devDependencies": {
+    "@types/node": "^26.6.1",
+    "@vitejs/plugin-vue": "^6.0.9",
+    "vite": "^8.3.0",
+    "vitest": "^5.0.1",
+    "vue": "^3.5.43"
+  },
+  "engines": {
+    "node": ">=22.13.0"
+  },
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "license": "MIT",
+  "main": "./dist/index.js",
+  "name": "@memolabs-apps/visual-benchmark",
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "build": "tsc --build",
+    "clean": "rm -rf dist",
+    "test": "vitest run",
+    "typecheck": "tsc --build"
+  },
+  "type": "module",
+  "types": "./dist/index.d.ts",
+  "version": "0.0.0"
+}

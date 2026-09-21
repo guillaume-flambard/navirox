@@ -3,6 +3,7 @@ import { findingId } from '@memolabs-apps/graph'
 import type {
   DiscoveredCapability,
   DiscoveredDependency,
+  DiscoveredRoute,
   DiscoveredUnit,
   InspectContext,
   SourceInspection,
@@ -19,7 +20,8 @@ import {
 } from '@memolabs-apps/source'
 import { ADAPTER_ID, DISPLAY_NAME, FRAMEWORK, TESTED_VERSIONS } from './detect.js'
 import { readDeclaration } from './decorators.js'
-import { isRoutesFile, readRoutes, type FindingDraft } from './routes.js'
+import { classifyReadiness } from './readiness.js'
+import { isRoutingModuleFile, isRoutesFile, readRoutes, type FindingDraft } from './routes.js'
 
 /**
  * Reads an Angular project.
@@ -168,9 +170,10 @@ function draftToFinding(draft: FindingDraft): Finding {
 export function inspect(context: InspectContext): Promise<SourceInspection> {
   const findings: Finding[] = []
   const units: DiscoveredUnit[] = []
+  const unitTexts = new Map<string, string>()
   const capabilities: DiscoveredCapability[] = []
   const dependencies: DiscoveredDependency[] = []
-  const routes = []
+  const routes: DiscoveredRoute[] = []
   const manifest = readManifest(context, ADAPTER_ID)
 
   let frameworkVersion: string | undefined
@@ -237,11 +240,35 @@ export function inspect(context: InspectContext): Promise<SourceInspection> {
       continue
     }
 
-    if (isRoutesFile(file)) {
+    if (text.includes('loadRemoteModule(')) {
+      findings.push(
+        finding(
+          'angular-remote-configuration',
+          'warning',
+          'A remote configuration was not read',
+          `${file} loads a federated remote module. The routes and components that arrive from that remote are not read, so nothing it contributes is in this report.`,
+          location(file, 1),
+        ),
+      )
+    }
+
+    if (isRoutesFile(file) || isRoutingModuleFile(file)) {
       const reading = readRoutes(file, text)
 
       routes.push(...reading.routes)
       findings.push(...reading.findings.map(draftToFinding))
+
+      if (isRoutingModuleFile(file)) {
+        const { unit, findings: moduleFindings } = readModule(file, text)
+
+        findings.push(...moduleFindings)
+
+        if (unit !== undefined) {
+          units.push(unit)
+          unitTexts.set(unit.source.file, text)
+        }
+      }
+
       continue
     }
 
@@ -251,6 +278,7 @@ export function inspect(context: InspectContext): Promise<SourceInspection> {
 
     if (unit !== undefined) {
       units.push(unit)
+      unitTexts.set(unit.source.file, text)
     }
 
     if (!isApplicationModule(file)) {
@@ -262,6 +290,31 @@ export function inspect(context: InspectContext): Promise<SourceInspection> {
     }
   }
 
+  const classified = units.map((unit) => {
+    const text = unitTexts.get(unit.source.file)
+
+    if (text === undefined) {
+      return unit
+    }
+
+    const routePatterns = routes
+      .filter((route) => route.unitFile === unit.source.file)
+      .map((route) => route.pathPattern)
+
+    return {
+      ...unit,
+      metadata: {
+        ...unit.metadata,
+        mobileReadiness: classifyReadiness({
+          file: unit.source.file,
+          text,
+          externalTemplate: unit.metadata?.externalTemplate === true,
+          routePatterns,
+        }),
+      },
+    }
+  })
+
   const bySource = (
     left: { readonly source: SourceLocation },
     right: { readonly source: SourceLocation },
@@ -269,7 +322,7 @@ export function inspect(context: InspectContext): Promise<SourceInspection> {
     left.source.file.localeCompare(right.source.file) ||
     (left.source.start?.line ?? 0) - (right.source.start?.line ?? 0)
 
-  units.sort(bySource)
+  classified.sort(bySource)
   capabilities.sort(bySource)
   dependencies.sort(
     (left, right) =>
@@ -284,7 +337,7 @@ export function inspect(context: InspectContext): Promise<SourceInspection> {
       displayName: DISPLAY_NAME,
       ...(frameworkVersion === undefined ? {} : { frameworkVersion }),
     },
-    units,
+    units: classified,
     capabilities,
     dependencies,
     routes: routes.sort((left, right) => left.key.localeCompare(right.key)),

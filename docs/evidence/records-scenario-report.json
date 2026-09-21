@@ -1,0 +1,29 @@
+{
+  "scenario": "records-list",
+  "artifactDir": "/Users/memo/projects/active/apps/mobile/navirox/packages/visual-benchmark/scenario-artifacts/records-list",
+  "outcomes": [
+    {
+      "capture": "rest",
+      "moment": "rest",
+      "web": "/Users/memo/projects/active/apps/mobile/navirox/packages/visual-benchmark/scenario-artifacts/records-list/rest.web.png",
+      "native": {},
+      "unavailable": [
+        {
+          "platform": "ios",
+          "reason": "capture 'rest' unavailable: no ios device driver in this runner: the simulator is never built, installed or launched, and Detox fails during install with MODULE_NOT_FOUND stream-json"
+        },
+        {
+          "platform": "android",
+          "reason": "capture 'rest' unavailable: no android device driver in this runner: the emulator is never built, installed or launched, and Detox fails during install with MODULE_NOT_FOUND stream-json"
+        }
+      ]
+    }
+  ],
+  "motion": {
+    "declared": false,
+    "interruptible": false,
+    "labels": [
+      "rest"
+    ]
+  }
+}

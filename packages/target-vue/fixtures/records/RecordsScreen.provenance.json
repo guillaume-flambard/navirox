@@ -1,0 +1,108 @@
+{
+  "schemaVersion": 1,
+  "input": {
+    "path": "RecordsScreen.web.vue",
+    "sha256": "05dba446ae5841044ca38bc1e0695530046dd9dfe7cc363f6b4928355f66dce1"
+  },
+  "outputPath": "packages/target-vue/fixtures/records/RecordsScreen.native.vue",
+  "compilerVersion": "0.1.1",
+  "nodes": [
+    {
+      "primitive": "view",
+      "sourceTag": "main",
+      "line": 2,
+      "column": 3,
+      "children": [
+        {
+          "primitive": "text",
+          "sourceTag": "h1",
+          "line": 3,
+          "column": 5,
+          "children": []
+        },
+        {
+          "primitive": "text",
+          "sourceTag": "p",
+          "line": 4,
+          "column": 5,
+          "children": []
+        },
+        {
+          "primitive": "text",
+          "sourceTag": "p",
+          "line": 7,
+          "column": 5,
+          "children": []
+        },
+        {
+          "primitive": "view",
+          "sourceTag": "div",
+          "line": 10,
+          "column": 5,
+          "children": [
+            {
+              "primitive": "text",
+              "sourceTag": "p",
+              "line": 11,
+              "column": 7,
+              "children": []
+            },
+            {
+              "primitive": "pressable",
+              "sourceTag": "button",
+              "line": 12,
+              "column": 7,
+              "children": []
+            }
+          ]
+        },
+        {
+          "primitive": "view",
+          "sourceTag": "div",
+          "line": 14,
+          "column": 5,
+          "children": [
+            {
+              "primitive": "view",
+              "sourceTag": "div",
+              "line": 15,
+              "column": 7,
+              "children": [
+                {
+                  "primitive": "pressable",
+                  "sourceTag": "button",
+                  "line": 16,
+                  "column": 9,
+                  "children": []
+                }
+              ]
+            },
+            {
+              "primitive": "view",
+              "sourceTag": "div",
+              "line": 20,
+              "column": 7,
+              "children": [
+                {
+                  "primitive": "text",
+                  "sourceTag": "h2",
+                  "line": 21,
+                  "column": 9,
+                  "children": []
+                },
+                {
+                  "primitive": "text",
+                  "sourceTag": "p",
+                  "line": 22,
+                  "column": 9,
+                  "children": []
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "findings": []
+}

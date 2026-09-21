@@ -1,0 +1,89 @@
+{
+  "scenario": "records-list",
+  "artifactDir": "/Users/memo/projects/active/apps/mobile/navirox/packages/visual-benchmark/scenario-artifacts/records-list",
+  "cases": [
+    {
+      "name": "two renders of one screen under the same conditions",
+      "a": "rest.1x.png",
+      "b": "rest.1x.repeat.png",
+      "masks": [],
+      "gating": true,
+      "verdict": "identical",
+      "differingPixels": 0,
+      "maskedDifferingPixels": 0,
+      "unmaskedDifferingPixels": 0,
+      "boundingBox": null
+    },
+    {
+      "name": "a second render at device scale 2",
+      "a": "rest.1x.png",
+      "b": "rest.2x.png",
+      "masks": [],
+      "gating": false,
+      "note": "Normalization does not equalize device scale factors: text rasterization at 2x differs from 1x, so this pair is measured and recorded but does not gate.",
+      "verdict": "undeclared-differences",
+      "differingPixels": 597,
+      "maskedDifferingPixels": 0,
+      "unmaskedDifferingPixels": 597,
+      "boundingBox": {
+        "x": 2,
+        "y": 6,
+        "width": 116,
+        "height": 32
+      }
+    },
+    {
+      "name": "undeclared difference against a controlled variant",
+      "a": "rest.1x.png",
+      "b": "rest.variant.png",
+      "masks": [],
+      "gating": true,
+      "verdict": "undeclared-differences",
+      "differingPixels": 247,
+      "maskedDifferingPixels": 0,
+      "unmaskedDifferingPixels": 247,
+      "boundingBox": {
+        "x": 12,
+        "y": 36,
+        "width": 19,
+        "height": 13
+      },
+      "review": "/Users/memo/projects/active/apps/mobile/navirox/packages/visual-benchmark/scenario-artifacts/records-list/review-undeclared/index.html"
+    },
+    {
+      "name": "the same difference inside a declared mask",
+      "a": "rest.1x.png",
+      "b": "rest.variant.png",
+      "masks": [
+        {
+          "captures": [
+            "rest"
+          ],
+          "x": 40,
+          "y": 120,
+          "width": 60,
+          "height": 40,
+          "reason": "controlled comparison variant painted into the capture"
+        }
+      ],
+      "gating": true,
+      "verdict": "masked-differences",
+      "differingPixels": 247,
+      "maskedDifferingPixels": 247,
+      "unmaskedDifferingPixels": 0,
+      "boundingBox": null,
+      "review": "/Users/memo/projects/active/apps/mobile/navirox/packages/visual-benchmark/scenario-artifacts/records-list/review-masked/index.html"
+    }
+  ],
+  "strict": true,
+  "chrome": {
+    "oneX": "/Users/memo/projects/active/apps/mobile/navirox/packages/visual-benchmark/scenario-artifacts/records-list/rest.1x.png",
+    "repeatX": "/Users/memo/projects/active/apps/mobile/navirox/packages/visual-benchmark/scenario-artifacts/records-list/rest.1x.repeat.png",
+    "twoX": "/Users/memo/projects/active/apps/mobile/navirox/packages/visual-benchmark/scenario-artifacts/records-list/rest.2x.png",
+    "variant": "/Users/memo/projects/active/apps/mobile/navirox/packages/visual-benchmark/scenario-artifacts/records-list/rest.variant.png"
+  },
+  "commands": [
+    "node packages/visual-benchmark/scripts/run-records-scenario.mjs",
+    "node packages/visual-benchmark/scripts/compare-records-scenario.mjs"
+  ]
+}

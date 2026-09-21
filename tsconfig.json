@@ -48,10 +48,16 @@
       "path": "./packages/cli"
     },
     {
+      "path": "./packages/navirox"
+    },
+    {
       "path": "./packages/create-navirox"
     },
     {
       "path": "./packages/source-vue"
+    },
+    {
+      "path": "./packages/target-vue"
     },
     {
       "path": "./packages/source-svelte"
@@ -88,6 +94,9 @@
     },
     {
       "path": "./packages/source-vanilla"
+    },
+    {
+      "path": "./packages/visual-benchmark"
     }
   ]
 }

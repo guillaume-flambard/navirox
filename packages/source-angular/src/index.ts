@@ -34,3 +34,5 @@ export { ROUTES_FILE_PATTERN, isRoutesFile, readRoutes, routePattern } from './r
 export type { FindingDraft, RouteReading } from './routes.js'
 export { buildGraph } from './graph.js'
 export { inspect } from './inspect.js'
+export { READINESS_STATES, classifyReadiness } from './readiness.js'
+export type { MobileReadiness, ReadinessInput, ReadinessState } from './readiness.js'

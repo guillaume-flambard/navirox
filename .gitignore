@@ -26,3 +26,11 @@ navirox-repositioning-pack/
 **/android/build/
 **/android/app/build/
 **/android/local.properties
+
+# Visual benchmark run output. The committed evidence is the JSON report under
+# docs/evidence/, which names the artifact directory, the capture verdicts and
+# the reasons a capture was unavailable. The capture images and the generated
+# review pages are rewritten on every run, so the whole directory stays local.
+# The pattern needs the leading **/ to match the package-level path: a pattern
+# with a slash and no leading ** is anchored to the repository root.
+**/scenario-artifacts/

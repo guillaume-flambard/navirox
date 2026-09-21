@@ -1,0 +1,514 @@
+{
+  "project": "baserow",
+  "revision": "81e094a1f4b3a62625c218d78fe319ba44098617",
+  "adapterId": "nuxt",
+  "sourceDirectory": "web-frontend",
+  "compilerVersion": "0.1.1",
+  "targetPackage": "@memolabs-apps/target-vue",
+  "attempts": {
+    "available": 41,
+    "limit": 12,
+    "compiled": 12
+  },
+  "countsByCode": {
+    "unsupported-directive": 20,
+    "unsupported-element": 41
+  },
+  "fullySupported": 2,
+  "documents": [
+    {
+      "path": "modules/automation/pages/automationWorkflow.vue",
+      "present": true,
+      "findings": 1
+    },
+    {
+      "path": "modules/builder/pages/pageEditor.vue",
+      "present": true,
+      "findings": 1
+    },
+    {
+      "path": "modules/builder/pages/publicPage.vue",
+      "present": true,
+      "findings": 1
+    },
+    {
+      "path": "modules/core/components/RouterViewPlaceholder.vue",
+      "present": true,
+      "findings": 0
+    },
+    {
+      "path": "modules/core/pages/_health.vue",
+      "present": true,
+      "findings": 0
+    },
+    {
+      "path": "modules/core/pages/admin/aiProviders.vue",
+      "present": true,
+      "findings": 10
+    },
+    {
+      "path": "modules/core/pages/admin/dashboard.vue",
+      "present": true,
+      "findings": 19
+    },
+    {
+      "path": "modules/core/pages/admin/health.vue",
+      "present": true,
+      "findings": 6
+    },
+    {
+      "path": "modules/core/pages/admin/settings.vue",
+      "present": true,
+      "findings": 14
+    },
+    {
+      "path": "modules/core/pages/admin/users.vue",
+      "present": true,
+      "findings": 1
+    },
+    {
+      "path": "modules/core/pages/admin/workspaces.vue",
+      "present": true,
+      "findings": 1
+    },
+    {
+      "path": "modules/core/pages/changeEmail.vue",
+      "present": true,
+      "findings": 7
+    }
+  ],
+  "findings": [
+    {
+      "path": "modules/automation/pages/automationWorkflow.vue",
+      "code": "unsupported-element",
+      "line": 2,
+      "column": 3,
+      "message": "<AutomationWorkflowContent> has no native primitive mapping."
+    },
+    {
+      "path": "modules/builder/pages/pageEditor.vue",
+      "code": "unsupported-element",
+      "line": 2,
+      "column": 3,
+      "message": "<PageEditorContent> has no native primitive mapping."
+    },
+    {
+      "path": "modules/builder/pages/publicPage.vue",
+      "code": "unsupported-element",
+      "line": 2,
+      "column": 3,
+      "message": "<PublicPageContent> has no native primitive mapping."
+    },
+    {
+      "path": "modules/core/pages/admin/aiProviders.vue",
+      "code": "unsupported-element",
+      "line": 9,
+      "column": 9,
+      "message": "<Button> has no native primitive mapping."
+    },
+    {
+      "path": "modules/core/pages/admin/aiProviders.vue",
+      "code": "unsupported-element",
+      "line": 18,
+      "column": 7,
+      "message": "<AIProviderFeatureSettings> has no native primitive mapping."
+    },
+    {
+      "path": "modules/core/pages/admin/aiProviders.vue",
+      "code": "unsupported-element",
+      "line": 22,
+      "column": 7,
+      "message": "<AIProviderAdminSkeleton> has no native primitive mapping."
+    },
+    {
+      "path": "modules/core/pages/admin/aiProviders.vue",
+      "code": "unsupported-element",
+      "line": 27,
+      "column": 11,
+      "message": "<i> has no native primitive mapping."
+    },
+    {
+      "path": "modules/core/pages/admin/aiProviders.vue",
+      "code": "unsupported-element",
+      "line": 35,
+      "column": 9,
+      "message": "<Button> has no native primitive mapping."
+    },
+    {
+      "path": "modules/core/pages/admin/aiProviders.vue",
+      "code": "unsupported-element",
+      "line": 40,
+      "column": 40,
+      "message": "<i> has no native primitive mapping."
+    },
+    {
+      "path": "modules/core/pages/admin/aiProviders.vue",
+      "code": "unsupported-element",
+      "line": 49,
+      "column": 9,
+      "message": "<AIProviderItem> has no native primitive mapping."
+    },
+    {
+      "path": "modules/core/pages/admin/aiProviders.vue",
+      "code": "unsupported-element",
+      "line": 67,
+      "column": 7,
+      "message": "<AIProviderFormModal> has no native primitive mapping."
+    },
+    {
+      "path": "modules/core/pages/admin/aiProviders.vue",
+      "code": "unsupported-element",
+      "line": 75,
+      "column": 7,
+      "message": "<AIProviderModelFormModal> has no native primitive mapping."
+    },
+    {
+      "path": "modules/core/pages/admin/aiProviders.vue",
+      "code": "unsupported-element",
+      "line": 83,
+      "column": 7,
+      "message": "<AIProviderConfirmModal> has no native primitive mapping."
+    },
+    {
+      "path": "modules/core/pages/admin/dashboard.vue",
+      "code": "unsupported-directive",
+      "line": 16,
+      "column": 17,
+      "message": "v-skeleton is not a native template directive."
+    },
+    {
+      "path": "modules/core/pages/admin/dashboard.vue",
+      "code": "unsupported-element",
+      "line": 22,
+      "column": 17,
+      "message": "<nuxt-link> has no native primitive mapping."
+    },
+    {
+      "path": "modules/core/pages/admin/dashboard.vue",
+      "code": "unsupported-directive",
+      "line": 32,
+      "column": 17,
+      "message": "v-skeleton is not a native template directive."
+    },
+    {
+      "path": "modules/core/pages/admin/dashboard.vue",
+      "code": "unsupported-element",
+      "line": 38,
+      "column": 17,
+      "message": "<nuxt-link> has no native primitive mapping."
+    },
+    {
+      "path": "modules/core/pages/admin/dashboard.vue",
+      "code": "unsupported-directive",
+      "line": 48,
+      "column": 17,
+      "message": "v-skeleton is not a native template directive."
+    },
+    {
+      "path": "modules/core/pages/admin/dashboard.vue",
+      "code": "unsupported-directive",
+      "line": 66,
+      "column": 17,
+      "message": "v-skeleton is not a native template directive."
+    },
+    {
+      "path": "modules/core/pages/admin/dashboard.vue",
+      "code": "unsupported-directive",
+      "line": 72,
+      "column": 17,
+      "message": "v-skeleton is not a native template directive."
+    },
+    {
+      "path": "modules/core/pages/admin/dashboard.vue",
+      "code": "unsupported-directive",
+      "line": 90,
+      "column": 17,
+      "message": "v-skeleton is not a native template directive."
+    },
+    {
+      "path": "modules/core/pages/admin/dashboard.vue",
+      "code": "unsupported-directive",
+      "line": 96,
+      "column": 17,
+      "message": "v-skeleton is not a native template directive."
+    },
+    {
+      "path": "modules/core/pages/admin/dashboard.vue",
+      "code": "unsupported-directive",
+      "line": 114,
+      "column": 17,
+      "message": "v-skeleton is not a native template directive."
+    },
+    {
+      "path": "modules/core/pages/admin/dashboard.vue",
+      "code": "unsupported-directive",
+      "line": 120,
+      "column": 17,
+      "message": "v-skeleton is not a native template directive."
+    },
+    {
+      "path": "modules/core/pages/admin/dashboard.vue",
+      "code": "unsupported-directive",
+      "line": 145,
+      "column": 17,
+      "message": "v-skeleton is not a native template directive."
+    },
+    {
+      "path": "modules/core/pages/admin/dashboard.vue",
+      "code": "unsupported-directive",
+      "line": 151,
+      "column": 17,
+      "message": "v-skeleton is not a native template directive."
+    },
+    {
+      "path": "modules/core/pages/admin/dashboard.vue",
+      "code": "unsupported-directive",
+      "line": 169,
+      "column": 17,
+      "message": "v-skeleton is not a native template directive."
+    },
+    {
+      "path": "modules/core/pages/admin/dashboard.vue",
+      "code": "unsupported-directive",
+      "line": 175,
+      "column": 17,
+      "message": "v-skeleton is not a native template directive."
+    },
+    {
+      "path": "modules/core/pages/admin/dashboard.vue",
+      "code": "unsupported-directive",
+      "line": 193,
+      "column": 17,
+      "message": "v-skeleton is not a native template directive."
+    },
+    {
+      "path": "modules/core/pages/admin/dashboard.vue",
+      "code": "unsupported-directive",
+      "line": 199,
+      "column": 17,
+      "message": "v-skeleton is not a native template directive."
+    },
+    {
+      "path": "modules/core/pages/admin/dashboard.vue",
+      "code": "unsupported-element",
+      "line": 217,
+      "column": 11,
+      "message": "<ActiveUsers> has no native primitive mapping."
+    },
+    {
+      "path": "modules/core/pages/admin/dashboard.vue",
+      "code": "unsupported-directive",
+      "line": 216,
+      "column": 14,
+      "message": "v-skeleton is not a native template directive."
+    },
+    {
+      "path": "modules/core/pages/admin/health.vue",
+      "code": "unsupported-element",
+      "line": 12,
+      "column": 11,
+      "message": "<template> has no native primitive mapping."
+    },
+    {
+      "path": "modules/core/pages/admin/health.vue",
+      "code": "unsupported-element",
+      "line": 47,
+      "column": 15,
+      "message": "<i> has no native primitive mapping."
+    },
+    {
+      "path": "modules/core/pages/admin/health.vue",
+      "code": "unsupported-directive",
+      "line": 66,
+      "column": 19,
+      "message": "v-skeleton is not a native template directive."
+    },
+    {
+      "path": "modules/core/pages/admin/health.vue",
+      "code": "unsupported-directive",
+      "line": 76,
+      "column": 19,
+      "message": "v-skeleton is not a native template directive."
+    },
+    {
+      "path": "modules/core/pages/admin/health.vue",
+      "code": "unsupported-element",
+      "line": 83,
+      "column": 9,
+      "message": "<EmailTester> has no native primitive mapping."
+    },
+    {
+      "path": "modules/core/pages/admin/health.vue",
+      "code": "unsupported-element",
+      "line": 87,
+      "column": 9,
+      "message": "<Button> has no native primitive mapping."
+    },
+    {
+      "path": "modules/core/pages/admin/settings.vue",
+      "code": "unsupported-element",
+      "line": 16,
+      "column": 13,
+      "message": "<SkeletonBlock> has no native primitive mapping."
+    },
+    {
+      "path": "modules/core/pages/admin/settings.vue",
+      "code": "unsupported-element",
+      "line": 21,
+      "column": 13,
+      "message": "<template> has no native primitive mapping."
+    },
+    {
+      "path": "modules/core/pages/admin/settings.vue",
+      "code": "unsupported-element",
+      "line": 56,
+      "column": 13,
+      "message": "<SwitchInput> has no native primitive mapping."
+    },
+    {
+      "path": "modules/core/pages/admin/settings.vue",
+      "code": "unsupported-element",
+      "line": 73,
+      "column": 13,
+      "message": "<SwitchInput> has no native primitive mapping."
+    },
+    {
+      "path": "modules/core/pages/admin/settings.vue",
+      "code": "unsupported-element",
+      "line": 95,
+      "column": 13,
+      "message": "<SwitchInput> has no native primitive mapping."
+    },
+    {
+      "path": "modules/core/pages/admin/settings.vue",
+      "code": "unsupported-element",
+      "line": 118,
+      "column": 13,
+      "message": "<SwitchInput> has no native primitive mapping."
+    },
+    {
+      "path": "modules/core/pages/admin/settings.vue",
+      "code": "unsupported-element",
+      "line": 139,
+      "column": 13,
+      "message": "<SwitchInput> has no native primitive mapping."
+    },
+    {
+      "path": "modules/core/pages/admin/settings.vue",
+      "code": "unsupported-directive",
+      "line": 145,
+      "column": 18,
+      "message": "v-show is not a native template directive."
+    },
+    {
+      "path": "modules/core/pages/admin/settings.vue",
+      "code": "unsupported-element",
+      "line": 164,
+      "column": 13,
+      "message": "<SwitchInput> has no native primitive mapping."
+    },
+    {
+      "path": "modules/core/pages/admin/settings.vue",
+      "code": "unsupported-directive",
+      "line": 172,
+      "column": 15,
+      "message": "v-show is not a native template directive."
+    },
+    {
+      "path": "modules/core/pages/admin/settings.vue",
+      "code": "unsupported-element",
+      "line": 198,
+      "column": 13,
+      "message": "<RadioGroup> has no native primitive mapping."
+    },
+    {
+      "path": "modules/core/pages/admin/settings.vue",
+      "code": "unsupported-element",
+      "line": 215,
+      "column": 13,
+      "message": "<FormGroup> has no native primitive mapping."
+    },
+    {
+      "path": "modules/core/pages/admin/settings.vue",
+      "code": "unsupported-element",
+      "line": 247,
+      "column": 13,
+      "message": "<SwitchInput> has no native primitive mapping."
+    },
+    {
+      "path": "modules/core/pages/admin/settings.vue",
+      "code": "unsupported-element",
+      "line": 255,
+      "column": 7,
+      "message": "<component> has no native primitive mapping."
+    },
+    {
+      "path": "modules/core/pages/admin/users.vue",
+      "code": "unsupported-element",
+      "line": 2,
+      "column": 3,
+      "message": "<UsersAdminTable> has no native primitive mapping."
+    },
+    {
+      "path": "modules/core/pages/admin/workspaces.vue",
+      "code": "unsupported-element",
+      "line": 2,
+      "column": 3,
+      "message": "<WorkspacesAdminTable> has no native primitive mapping."
+    },
+    {
+      "path": "modules/core/pages/changeEmail.vue",
+      "code": "unsupported-element",
+      "line": 5,
+      "column": 9,
+      "message": "<nuxt-link> has no native primitive mapping."
+    },
+    {
+      "path": "modules/core/pages/changeEmail.vue",
+      "code": "unsupported-element",
+      "line": 12,
+      "column": 9,
+      "message": "<LangPicker> has no native primitive mapping."
+    },
+    {
+      "path": "modules/core/pages/changeEmail.vue",
+      "code": "unsupported-element",
+      "line": 16,
+      "column": 9,
+      "message": "<Error> has no native primitive mapping."
+    },
+    {
+      "path": "modules/core/pages/changeEmail.vue",
+      "code": "unsupported-element",
+      "line": 18,
+      "column": 11,
+      "message": "<Button> has no native primitive mapping."
+    },
+    {
+      "path": "modules/core/pages/changeEmail.vue",
+      "code": "unsupported-element",
+      "line": 32,
+      "column": 15,
+      "message": "<nuxt-link> has no native primitive mapping."
+    },
+    {
+      "path": "modules/core/pages/changeEmail.vue",
+      "code": "unsupported-element",
+      "line": 41,
+      "column": 7,
+      "message": "<ButtonIcon> has no native primitive mapping."
+    },
+    {
+      "path": "modules/core/pages/changeEmail.vue",
+      "code": "unsupported-element",
+      "line": 46,
+      "column": 7,
+      "message": "<Button> has no native primitive mapping."
+    }
+  ],
+  "notes": [
+    "This is a diagnostic. A screen counts as fully supported only when the target compiler returned native code for it, and no file was written for any screen, so the repository was not modified.",
+    "No conversion, partnership or visual-parity claim is made for this repository.",
+    "Only 12 of 41 analyzed screens were attempted."
+  ]
+}

@@ -1,4 +1,4 @@
-import type { UnitKind } from '@memolabs-apps/graph'
+import type { UnitKind, UnitNode } from '@memolabs-apps/graph'
 import type { InspectOutcome, InspectReport } from './types.js'
 
 /**
@@ -10,7 +10,9 @@ import type { InspectOutcome, InspectReport } from './types.js'
  * report that only lists what it found is a report that hides its own limits.
  */
 
-const NEXT_STEP = 'Run `navirox inspect --json` for the full graph.'
+function nextStep(command: 'analyze' | 'inspect'): string {
+  return `Run \`navirox ${command} --json\` for the full graph.`
+}
 
 function unitBreakdown(units: readonly { readonly kind: UnitKind }[]): string {
   const counts = new Map<UnitKind, number>()
@@ -25,7 +27,62 @@ function unitBreakdown(units: readonly { readonly kind: UnitKind }[]): string {
     .join(', ')
 }
 
-export function renderReport(report: InspectReport): string {
+interface AdapterObservation {
+  readonly unit: string
+  readonly key: string
+  readonly state?: string
+  readonly reason: string
+}
+
+/**
+ * What an adapter noticed about a unit, in the adapter's own words.
+ *
+ * This renderer interprets none of it: it prints the entry an adapter attached to
+ * a unit's metadata and the reason that adapter gave. An entry is shown only when
+ * it carries a reason string, because an observation nobody can justify is not
+ * worth printing. An observation is a statement about the source, never a
+ * statement that a unit can be moved as it is.
+ */
+function adapterObservations(units: readonly UnitNode[]): AdapterObservation[] {
+  const observations: AdapterObservation[] = []
+
+  for (const unit of units) {
+    const metadata = unit.metadata
+
+    if (metadata === undefined) {
+      continue
+    }
+
+    for (const [key, value] of Object.entries(metadata)) {
+      if (typeof value !== 'object' || value === null || Array.isArray(value)) {
+        continue
+      }
+
+      const entry = value as Record<string, unknown>
+      const reason = entry.reason
+
+      if (typeof reason !== 'string') {
+        continue
+      }
+
+      observations.push({
+        unit: unit.source.file,
+        key,
+        reason,
+        ...(typeof entry.state === 'string' ? { state: entry.state } : {}),
+      })
+    }
+  }
+
+  return observations.sort((left, right) =>
+    `${left.unit}:${left.key}`.localeCompare(`${right.unit}:${right.key}`),
+  )
+}
+
+export function renderReport(
+  report: InspectReport,
+  command: 'analyze' | 'inspect' = 'inspect',
+): string {
   const lines: string[] = []
   const { summary, source, graph } = report
 
@@ -45,6 +102,17 @@ export function renderReport(report: InspectReport): string {
   lines.push(`  capabilities ${summary.capabilities}`)
   lines.push(`  dependencies ${summary.dependencies}`)
   lines.push(`  routes       ${summary.routes}`)
+
+  const observations = adapterObservations(graph.units)
+
+  if (observations.length > 0) {
+    lines.push('')
+    lines.push(`Observations (${observations.length})`)
+    for (const observation of observations) {
+      lines.push(`  ${observation.state ?? 'observed'} ${observation.unit} (${observation.key})`)
+      lines.push(`          ${observation.reason}`)
+    }
+  }
 
   lines.push('')
   if (graph.findings.length === 0) {
@@ -75,7 +143,7 @@ export function renderReport(report: InspectReport): string {
 
   lines.push('')
   lines.push('Next')
-  lines.push(`  ${NEXT_STEP}`)
+  lines.push(`  ${nextStep(command)}`)
 
   return lines.join('\n')
 }

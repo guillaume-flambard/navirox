@@ -1,3 +1,7 @@
+import { createHash } from 'node:crypto'
+import { readFileSync } from 'node:fs'
+import { dirname, join } from 'node:path'
+import { fileURLToPath } from 'node:url'
 import { parse as parseTemplate, NodeTypes } from '@vue/compiler-dom'
 import { parse as parseSfc } from '@vue/compiler-sfc'
 import type { ElementNode, TemplateChildNode } from '@vue/compiler-dom'
@@ -8,6 +12,8 @@ export const PACKAGE_ROLE =
   'The narrow Vue target provider: it compiles an auditable subset of Vue SFC templates to Navirox native primitives and reports every unsupported construct.'
 
 export const TARGET_VIEW_SCHEMA_VERSION = 1 as const
+
+export const TARGET_PROVENANCE_SCHEMA_VERSION = 1 as const
 
 export type NativePrimitive = 'view' | 'text' | 'pressable' | 'text-input' | 'scroll-view' | 'image'
 
@@ -23,6 +29,7 @@ export interface TargetViewNode {
   readonly primitive: NativePrimitive
   readonly sourceTag: string
   readonly line: number
+  readonly column: number
   readonly children: readonly TargetViewNode[]
 }
 
@@ -34,12 +41,63 @@ export interface VueTargetReport {
 
 export interface VueTargetOutput {
   readonly report: VueTargetReport
+  readonly manifest: TargetProvenanceManifest
   /**
    * Native Vue SFC source when the template is fully in the supported subset.
    * Undefined is intentional: emitting a plausible but incomplete screen would
    * make an unsupported web construct look migrated.
    */
   readonly code?: string
+}
+
+export interface TargetProvenanceInput {
+  readonly path: string
+  readonly sha256: string
+}
+
+export interface TargetProvenanceManifest {
+  readonly schemaVersion: typeof TARGET_PROVENANCE_SCHEMA_VERSION
+  readonly input: TargetProvenanceInput
+  /**
+   * Intended generated file path. Present only when code was emitted: a
+   * manifest for an unsupported screen must not name a path that looks
+   * generated.
+   */
+  readonly outputPath?: string
+  readonly compilerVersion: string
+  readonly nodes: readonly TargetViewNode[]
+  readonly findings: readonly TargetFinding[]
+}
+
+const HERE = dirname(fileURLToPath(import.meta.url))
+const OWN_MANIFEST_PATH = join(HERE, '..', 'package.json')
+
+function readCompilerVersion(): string {
+  const manifest = JSON.parse(readFileSync(OWN_MANIFEST_PATH, 'utf8')) as {
+    readonly version?: unknown
+  }
+  if (typeof manifest.version !== 'string' || manifest.version === '') {
+    throw new Error(
+      `The target-vue manifest at "${OWN_MANIFEST_PATH}" has no version, so compiled screens cannot record which compiler produced them.`,
+    )
+  }
+  return manifest.version
+}
+
+function hashSource(source: string): string {
+  return createHash('sha256').update(source, 'utf8').digest('hex')
+}
+
+/**
+ * Stable manifest serialisation: fields are set in declaration order and the
+ * compiler output is deterministic, so the same input always hashes alike.
+ */
+export function serializeProvenanceManifest(manifest: TargetProvenanceManifest): string {
+  return `${JSON.stringify(manifest, undefined, 2)}\n`
+}
+
+export function hashProvenanceManifest(manifest: TargetProvenanceManifest): string {
+  return hashSource(serializeProvenanceManifest(manifest))
 }
 
 const TAGS: Readonly<Record<string, NativePrimitive>> = {
@@ -125,6 +183,13 @@ function properties(element: ElementNode, findings?: TargetFinding[]): string {
   return element.props
     .map((property) => {
       const source = property.loc.source
+      if (property.type === NodeTypes.ATTRIBUTE) {
+        // Web authors mark test hooks as data-testid. The native primitives
+        // take React Native's exact camelCase prop name, so the compiler owns
+        // this rename and the generated screen exposes a real testID.
+        if (property.name === 'data-testid') return source.replace(/^data-testid\b/, 'testID')
+        return source
+      }
       if (property.type === NodeTypes.DIRECTIVE) {
         if (property.name === 'on' && property.arg?.type === NodeTypes.SIMPLE_EXPRESSION) {
           if (property.arg.content === 'click') return source.replace(/^@click\b/, '@press')
@@ -167,6 +232,7 @@ function readNodes(
       primitive,
       sourceTag: node.tag,
       line: node.loc.start.line,
+      column: node.loc.start.column,
       children: readNodes(node.children, findings),
     })
     properties(node, findings)
@@ -244,11 +310,19 @@ function validateStyle(
  * Compile one Vue SFC through the target-provider seam.
  *
  * The small interface is deliberate: callers receive a serialisable target
- * report and, only when every source construct is known, generated source.
- * Parsing, element mapping, event translation and failure accounting remain
- * local to this module.
+ * report, a provenance manifest and, only when every source construct is
+ * known, generated source. Parsing, element mapping, event translation and
+ * failure accounting remain local to this module. Pass the intended generated
+ * file path as outputPath so the manifest names it; the manifest omits the
+ * path whenever findings exist.
  */
-export function compileVueTarget(source: string, filename = 'Component.vue'): VueTargetOutput {
+export function compileVueTarget(
+  source: string,
+  filename = 'Component.vue',
+  outputPath?: string,
+): VueTargetOutput {
+  const compilerVersion = readCompilerVersion()
+  const input: TargetProvenanceInput = { path: filename, sha256: hashSource(source) }
   const parsed = parseSfc(source, { filename })
   const findings: TargetFinding[] = []
   for (const error of parsed.errors) {
@@ -258,7 +332,21 @@ export function compileVueTarget(source: string, filename = 'Component.vue'): Vu
 
   const template = parsed.descriptor.template
   if (template === null || parsed.errors.length > 0) {
-    return { report: { schemaVersion: TARGET_VIEW_SCHEMA_VERSION, nodes: [], findings } }
+    const report: VueTargetReport = {
+      schemaVersion: TARGET_VIEW_SCHEMA_VERSION,
+      nodes: [],
+      findings,
+    }
+    return {
+      report,
+      manifest: {
+        schemaVersion: TARGET_PROVENANCE_SCHEMA_VERSION,
+        input,
+        compilerVersion,
+        nodes: report.nodes,
+        findings,
+      },
+    }
   }
 
   const root = parseTemplate(template.content, {
@@ -279,15 +367,43 @@ export function compileVueTarget(source: string, filename = 'Component.vue'): Vu
   }
 
   const report: VueTargetReport = { schemaVersion: TARGET_VIEW_SCHEMA_VERSION, nodes, findings }
-  if (findings.length > 0) return { report }
+  if (findings.length > 0) {
+    return {
+      report,
+      manifest: {
+        schemaVersion: TARGET_PROVENANCE_SCHEMA_VERSION,
+        input,
+        compilerVersion,
+        nodes,
+        findings,
+      },
+    }
+  }
 
-  const script = parsed.descriptor.scriptSetup ?? parsed.descriptor.script
-  const scriptBlock = script === null ? '' : `${script.loc.source}\n`
+  const scriptSetup = parsed.descriptor.scriptSetup
+  const script = scriptSetup ?? parsed.descriptor.script
+  let scriptBlock = ''
+  if (script !== null) {
+    const kind = scriptSetup === null ? 'script' : 'script setup'
+    const lang = script.lang === undefined ? '' : ` lang="${script.lang}"`
+    scriptBlock = `<${kind}${lang}>\n${script.content}\n</script>\n`
+  }
   const styles = parsed.descriptor.styles
     .map(
       (style) =>
         `<style${style.scoped ? ' scoped' : ''}${style.lang === undefined ? '' : ` lang="${style.lang}"`}>${style.content}</style>`,
     )
     .join('\n')
-  return { report, code: `${scriptBlock}<template>${rendered}</template>\n${styles}` }
+  return {
+    report,
+    manifest: {
+      schemaVersion: TARGET_PROVENANCE_SCHEMA_VERSION,
+      input,
+      ...(outputPath === undefined ? {} : { outputPath }),
+      compilerVersion,
+      nodes,
+      findings,
+    },
+    code: `${scriptBlock}<template>${rendered}</template>\n${styles}`,
+  }
 }

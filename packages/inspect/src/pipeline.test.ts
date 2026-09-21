@@ -130,6 +130,20 @@ describe('running an inspection', () => {
     }
   })
 
+  it('requires an explicit adapter for unrelated equal-confidence detections', async () => {
+    const outcome = await runInspection({
+      rootDir: project(),
+      registry: registryOf(fakeAdapter({ id: 'angular' }), fakeAdapter({ id: 'react' })),
+    })
+
+    expect(outcome.ok).toBe(false)
+    if (!outcome.ok) {
+      expect(outcome.reason).toBe('ambiguous-adapter')
+      expect(outcome.message).toContain('--framework angular')
+      expect(outcome.message).toContain('--framework react')
+    }
+  })
+
   it('turns an adapter that throws into a failure rather than an exception', async () => {
     const broken = fakeAdapter({
       inspect: () => Promise.reject(new Error('the parser exploded')),
@@ -268,5 +282,63 @@ describe('rendering a report', () => {
 
     expect(rendered.reason).toBe('no-adapter')
     expect(renderFailure(outcome, false)).toContain('No source adapters are registered')
+  })
+
+  it('renders an adapter observation in the adapter own words', async () => {
+    const file = 'src/app/thing.component.ts'
+    const adapter = fakeAdapter({
+      inspect: () =>
+        Promise.resolve({
+          ...inspection('fake', 'Fake'),
+          units: [{ key: 'default', kind: 'component', source: { file, adapterId: 'fake' } }],
+        }),
+      buildGraph: () =>
+        Promise.resolve({
+          ...emptyFragment(),
+          units: [
+            {
+              id: `fake:${file}:component:default`,
+              kind: 'component',
+              source: { file, adapterId: 'fake' },
+              dependencies: [],
+              metadata: {
+                mobileReadiness: {
+                  state: 'candidate',
+                  rule: 'attachment-signal',
+                  reason: 'An attachment control was observed in this unit.',
+                  evidence: [file],
+                },
+                externalTemplate: true,
+              },
+            },
+          ],
+        }),
+    })
+
+    const outcome = await runInspection({ rootDir: project(), registry: registryOf(adapter) })
+
+    expect(outcome.ok).toBe(true)
+    if (!outcome.ok) {
+      return
+    }
+
+    const text = renderReport(outcome.report)
+
+    expect(text).toContain('Observations (1)')
+    expect(text).toContain(`candidate ${file} (mobileReadiness)`)
+    expect(text).toContain('An attachment control was observed in this unit.')
+    expect(text).not.toContain('portable')
+    expect(text).not.toContain('externalTemplate')
+  })
+
+  it('prints no observation section when no adapter attached one', async () => {
+    const outcome = await runInspection({ rootDir: project(), registry: registryOf(fakeAdapter()) })
+
+    expect(outcome.ok).toBe(true)
+    if (!outcome.ok) {
+      return
+    }
+
+    expect(renderReport(outcome.report)).not.toContain('Observations')
   })
 })

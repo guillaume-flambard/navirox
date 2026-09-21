@@ -1,0 +1,135 @@
+
+== Packing 31 Navirox packages
+   31 artifacts
+
+== Scaffolding "records-fixture-app" into /var/folders/9l/jsy6rgt160v3z3vrkqqjhdyh0000gn/T/navirox-records-5RvDWd/app
+   81 files
+
+== Compiling the records screen fresh from the web fixture
+   manifest 4e556ef30b20b25aa3d41209e26e4c4bf492cc2f750752760038704e0394002a compiler 0.1.1
+
+== Pointing the app at the artifacts
+   5 direct, 31 overridden
+
+== Installing the app
+Progress: resolved 1, reused 0, downloaded 0, added 0
+Progress: resolved 450, reused 404, downloaded 25, added 0
+[WARN] 1 deprecated subdependencies found: glob@10.5.0
+Packages: +699
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+Packages are cloned from the content-addressable store to the virtual store.
+  Content-addressable store is at: /Users/memo/Library/pnpm/store/v11
+  Virtual store is at:             node_modules/.pnpm
+Progress: resolved 720, reused 674, downloaded 25, added 389
+Progress: resolved 720, reused 674, downloaded 25, added 697
+Progress: resolved 720, reused 674, downloaded 25, added 699, done
+
+dependencies:
++ @memolabs-apps/metro-preset 0.1.1
++ @memolabs-apps/native 0.1.1
++ @memolabs-apps/runtime-symbiote 0.1.1
++ @memolabs-apps/ui 0.1.1
++ @symbiote-native/css-parser 0.5.0
++ @symbiote-native/engine 0.5.0
++ @symbiote-native/vue 2.0.0
++ @vue/devtools-api 8.2.1
++ @vue/runtime-core 3.5.43
++ pinia 4.0.3
++ react 19.2.3 (19.3.0 is available)
++ react-native 0.86.0 (0.87.1 is available)
++ react-native-haptic-feedback 3.0.0
++ react-native-keychain 10.0.0
+
+devDependencies:
++ @babel/core 7.29.7 (8.0.6 is available)
++ @babel/preset-env 7.29.7 (8.0.6 is available)
++ @babel/runtime 7.29.7 (8.0.5 is available)
++ @memolabs-apps/cli 0.1.1
++ @react-native-community/cli 20.1.0 (20.2.0 is available)
++ @react-native-community/cli-platform-android 20.1.0 (20.2.0 is available)
++ @react-native-community/cli-platform-ios 20.1.0 (20.2.0 is available)
++ @react-native/babel-preset 0.86.0 (0.87.1 is available)
++ @react-native/codegen 0.86.0 (0.87.1 is available)
++ @react-native/gradle-plugin 0.86.0 (0.87.1 is available)
++ @react-native/metro-config 0.86.0 (0.87.1 is available)
++ @react-native/typescript-config 0.86.0 (0.87.1 is available)
++ @types/node 26.6.2
++ @types/react 19.3.0
++ @typescript-eslint/parser 8.70.0
++ eslint 10.11.0
++ eslint-config-prettier 10.1.8
++ eslint-plugin-vue 10.11.0
++ less 4.9.1
++ prettier 3.9.8
++ sass 1.104.1
++ stylus 0.64.0
++ typescript 6.0.3 (7.0.2 is available)
++ typescript-eslint 8.70.0
++ vue 3.5.43
++ vue-eslint-parser 10.4.1
++ vue-tsc 3.3.11
+
+Done in 4s using pnpm v11.27.0
+
+== Linting the app with the generated root screen
+$ eslint .
+
+== Checking the packages came from the artifacts
+   5 inside the app
+
+== Checking one copy of each runtime package
+   5 packages, one copy each
+
+== Bundling ios
+
+                        ▒▒▓▓▓▓▒▒
+                     ▒▓▓▓▒▒░░▒▒▓▓▓▒
+                  ▒▓▓▓▓░░░▒▒▒▒░░░▓▓▓▓▒
+                 ▓▓▒▒▒▓▓▓▓▓▓▓▓▓▓▓▓▒▒▒▓▓
+                 ▓▓░░░░░▒▓▓▓▓▓▓▒░░░░░▓▓
+                 ▓▓░░▓▓▒░░░▒▒░░░▒▓▒░░▓▓
+                 ▓▓░░▓▓▓▓▓▒▒▒▒▓▓▓▓▒░░▓▓
+                 ▓▓░░▓▓▓▓▓▓▓▓▓▓▓▓▓▒░░▓▓
+                 ▓▓▒░░▒▒▓▓▓▓▓▓▓▓▒░░░▒▓▓
+                  ▒▓▓▓▒░░░▒▓▓▒░░░▒▓▓▓▒
+                     ▒▓▓▓▒░░░░▒▓▓▓▒
+                        ▒▒▓▓▓▓▒▒
+
+
+                Welcome to Metro v0.84.6
+              Fast - Scalable - Integrated
+
+
+LOG:Writing bundle output to: /var/folders/9l/jsy6rgt160v3z3vrkqqjhdyh0000gn/T/navirox-records-5RvDWd/records.ios.bundle
+LOG:Done writing bundle output
+Warning: Assets destination folder is not set, skipping...
+   ios: 6576 kB
+
+== Bundling android
+
+                        ▒▒▓▓▓▓▒▒
+                     ▒▓▓▓▒▒░░▒▒▓▓▓▒
+                  ▒▓▓▓▓░░░▒▒▒▒░░░▓▓▓▓▒
+                 ▓▓▒▒▒▓▓▓▓▓▓▓▓▓▓▓▓▒▒▒▓▓
+                 ▓▓░░░░░▒▓▓▓▓▓▓▒░░░░░▓▓
+                 ▓▓░░▓▓▒░░░▒▒░░░▒▓▒░░▓▓
+                 ▓▓░░▓▓▓▓▓▒▒▒▒▓▓▓▓▒░░▓▓
+                 ▓▓░░▓▓▓▓▓▓▓▓▓▓▓▓▓▒░░▓▓
+                 ▓▓▒░░▒▒▓▓▓▓▓▓▓▓▒░░░▒▓▓
+                  ▒▓▓▓▒░░░▒▓▓▒░░░▒▓▓▓▒
+                     ▒▓▓▓▒░░░░▒▓▓▓▒
+                        ▒▒▓▓▓▓▒▒
+
+
+                Welcome to Metro v0.84.6
+              Fast - Scalable - Integrated
+
+
+LOG:Writing bundle output to: /var/folders/9l/jsy6rgt160v3z3vrkqqjhdyh0000gn/T/navirox-records-5RvDWd/records.android.bundle
+LOG:Done writing bundle output
+Warning: Assets destination folder is not set, skipping...
+   android: 6596 kB
+   ios: 9/9 testIDs present
+   android: 9/9 testIDs present
+
+Done. Workspace: /var/folders/9l/jsy6rgt160v3z3vrkqqjhdyh0000gn/T/navirox-records-5RvDWd (kept)

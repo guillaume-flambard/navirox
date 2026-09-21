@@ -1,0 +1,76 @@
+{
+  "version": 1,
+  "projects": [
+    {
+      "id": "baserow",
+      "repository": "https://github.com/baserow/baserow.git",
+      "commit": "81e094a1f4b3a62625c218d78fe319ba44098617",
+      "sourceDirectory": "web-frontend",
+      "adapterId": "nuxt",
+      "minimumRoutes": 46,
+      "minimumScreens": 41,
+      "targetDiagnostic": {
+        "package": "@memolabs-apps/target-vue",
+        "maximumDocuments": 12,
+        "evidencePath": "docs/evidence/vue-target-baserow-diagnostic.json"
+      }
+    },
+    {
+      "id": "cal-com",
+      "repository": "https://github.com/calcom/cal.com.git",
+      "commit": "54343aa685ae8f33159d2f485ec4a57bad5c574a",
+      "sourceDirectory": "apps/web",
+      "adapterId": "next",
+      "minimumRoutes": 81,
+      "minimumScreens": 80,
+      "mobileReference": {
+        "repository": "https://github.com/calcom/companion.git",
+        "commit": "8ee5b15921e93ad121356a9d830cb0723842835d",
+        "sourceDirectory": "apps/mobile",
+        "framework": "expo",
+        "workflows": [
+          {
+            "id": "bookings-list",
+            "webRoute": "/bookings/:status",
+            "webFile": "app/(use-page-wrapper)/(main-nav)/bookings/[status]/page.tsx",
+            "mobileFile": "app/(tabs)/(bookings)/index.tsx"
+          },
+          {
+            "id": "availability-list",
+            "webRoute": "/availability",
+            "webFile": "app/(use-page-wrapper)/(main-nav)/availability/page.tsx",
+            "mobileFile": "app/(tabs)/(availability)/index.tsx"
+          },
+          {
+            "id": "availability-detail",
+            "webRoute": "/availability/:schedule",
+            "webFile": "app/(use-page-wrapper)/availability/[schedule]/page.tsx",
+            "mobileFile": "app/(tabs)/(availability)/availability-detail.tsx"
+          },
+          {
+            "id": "event-types-list",
+            "webRoute": "/event-types",
+            "webFile": "app/(use-page-wrapper)/(main-nav)/event-types/page.tsx",
+            "mobileFile": "app/(tabs)/(event-types)/index.tsx"
+          },
+          {
+            "id": "event-types-detail",
+            "webRoute": "/event-types/:type",
+            "webFile": "app/(use-page-wrapper)/event-types/[type]/page.tsx",
+            "mobileFile": "app/(tabs)/(event-types)/event-type-detail.tsx"
+          }
+        ]
+      }
+    },
+    {
+      "id": "suitecrm",
+      "repository": "https://github.com/salesagility/SuiteCRM-Core.git",
+      "commit": "2cd77380bc838b8bd6c80f9fbe25855d73ef860c",
+      "sourceDirectory": ".",
+      "adapterId": "angular",
+      "minimumRoutes": 0,
+      "minimumScreens": 0,
+      "minimumUnits": 1588
+    }
+  ]
+}

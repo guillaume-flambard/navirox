@@ -1,4 +1,4 @@
-import { mkdtempSync, writeFileSync } from 'node:fs'
+import { existsSync, mkdtempSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { fileURLToPath } from 'node:url'
@@ -87,17 +87,21 @@ describe('reading routes', () => {
       '/',
       '/about',
       '/blog/:slug',
+      '/profile',
     ])
   })
 
-  it('reports children and lazy loading without producing routes for them', async () => {
+  it('reads literal child routes and reports lazy loading without guessing it', async () => {
     const inspection = await adapter.inspect(createProjectFiles(fixture('angular-bad')))
     const codes = inspection.findings.map((finding) => finding.code)
 
-    // `admin` is a path the file states, and it is reported; what is not resolved
-    // is the child underneath it.
-    expect(inspection.routes.map((route) => route.pathPattern)).toEqual(['/', '/admin'])
-    expect(codes).toContain('angular-route-children')
+    expect(inspection.routes.map((route) => route.pathPattern)).toEqual([
+      '/',
+      '/admin',
+      '/admin/users',
+      '/reports',
+    ])
+    expect(codes).not.toContain('angular-route-children')
     expect(codes).toContain('angular-lazy-route')
   })
 })
@@ -161,6 +165,13 @@ describe('the vocabulary the other adapters use', () => {
       'utility',
       'utility',
     ])
+    expect(graph.screens).toHaveLength(2)
+    expect(graph.screens[0]?.unitId).toBe('angular:src/app/app.component.ts:component:default')
+    expect(graph.screens[0]?.routeIds).toHaveLength(1)
+    expect(graph.screens[1]?.unitId).toBe(
+      'angular:src/app/views/profile.component.ts:component:default',
+    )
+    expect(graph.screens[1]?.routeIds).toHaveLength(1)
   })
 })
 
@@ -169,5 +180,95 @@ describe('the Angular adapter against the adapter contract', () => {
     expect(
       await verifyAdapterContract(adapter, createProjectFiles(fixture('angular-app'))),
     ).toEqual([])
+  })
+})
+
+describe('the SuiteCRM shape', () => {
+  it('reads a routing module as a route table without losing its module finding', async () => {
+    const inspection = await adapter.inspect(createProjectFiles(fixture('suitecrm-app')))
+
+    expect(inspection.routes.map((route) => route.pathPattern)).toEqual([
+      '/',
+      '/admin/configuration',
+      '/portal/cases',
+      '/records/:id',
+      '/records/:id/attachments',
+      '/records/:id/edit',
+      '/records/:id/history',
+    ])
+    expect(
+      inspection.findings
+        .filter((entry) => entry.code === 'angular-module')
+        .map((entry) => entry.source?.file),
+    ).toEqual(['src/app/app-routing.module.ts', 'src/app/app.module.ts'])
+  })
+
+  it('reports the surfaces it cannot read instead of guessing them', async () => {
+    const inspection = await adapter.inspect(createProjectFiles(fixture('suitecrm-app')))
+    const codes = (file: string): string[] =>
+      inspection.findings.filter((entry) => entry.source?.file === file).map((entry) => entry.code)
+
+    expect(codes('extensions/portal/src/app/portal-extension.service.ts')).toContain(
+      'angular-remote-configuration',
+    )
+    expect(codes('extensions/portal/src/app/dynamic.routes.ts')).toEqual([
+      'angular-route-path-not-literal',
+    ])
+    expect(codes('src/records/record-history.component.ts')).toContain('angular-external-template')
+    expect(inspection.routes.every((route) => !route.pathPattern.includes('${'))).toBe(true)
+  })
+
+  it('loads the fixture without an Angular runtime', async () => {
+    expect(existsSync(join(fixture('suitecrm-app'), 'node_modules'))).toBe(false)
+    expect(existsSync(join(fixture('suitecrm-app'), 'package.json'))).toBe(true)
+  })
+
+  it('classifies mobile readiness with a source location and a reason', async () => {
+    const inspection = await adapter.inspect(createProjectFiles(fixture('suitecrm-app')))
+    const readinessOf = (file: string): Record<string, unknown> | undefined => {
+      const unit = inspection.units.find((entry) => entry.source.file === file)
+
+      return unit?.metadata?.mobileReadiness as Record<string, unknown> | undefined
+    }
+    const states = inspection.units.map(
+      (unit) => (unit.metadata?.mobileReadiness as Record<string, unknown> | undefined)?.state,
+    )
+
+    expect(new Set(states)).toEqual(new Set(['candidate', 'desktop-only', 'unknown']))
+
+    expect(readinessOf('src/records/record-attachments.component.ts')).toMatchObject({
+      state: 'candidate',
+      rule: 'attachment-signal',
+    })
+    expect(readinessOf('src/records/record-detail.component.ts')).toMatchObject({
+      state: 'candidate',
+      rule: 'device-capability-signal',
+    })
+    expect(readinessOf('src/records/record-update-form.component.ts')).toMatchObject({
+      state: 'candidate',
+      rule: 'record-update-signal',
+    })
+    expect(readinessOf('src/configuration/configuration.component.ts')).toMatchObject({
+      state: 'desktop-only',
+      rule: 'administration-surface',
+    })
+    expect(readinessOf('src/records/record-history.component.ts')).toMatchObject({
+      state: 'unknown',
+      rule: 'unread-template',
+    })
+    expect(readinessOf('src/records/record-list.component.ts')).toMatchObject({
+      state: 'unknown',
+      rule: 'no-mobile-signal',
+    })
+
+    for (const unit of inspection.units) {
+      const readiness = readinessOf(unit.source.file)
+
+      expect(unit.source.file).toEqual(expect.any(String))
+      expect(readiness?.reason).toEqual(expect.any(String))
+      expect(readiness?.evidence).toContain(unit.source.file)
+    }
+
+    expect(JSON.stringify(inspection.units)).not.toContain('portable')
   })
 })
