@@ -35,10 +35,34 @@
 
 ## 5. Evidence and documentation
 
-- [ ] 5.1 Write `docs/evidence/records-native-capture.md` with the device profiles, every capture file and its sha256, the compiler manifest hash, and the measured web-against-device differences. Verify the document names every capture and states in its opening line and in a closing section that it makes no visual-parity claim.
-- [ ] 5.2 Update `docs/VISUAL-FIDELITY.md` so V1 is complete with the driver named and V2 still reads not started. Verify the gate table says V1 is complete, points at the evidence document, and does not claim any measured visual fidelity.
+- [x] 5.1 Write `docs/evidence/records-native-capture.md` with the device profiles, every capture file and its sha256, the compiler manifest hash, and the measured web-against-device differences. Verify the document names every capture and states in its opening line and in a closing section that it makes no visual-parity claim.
+
+  The document opens by saying it is a capture report and that it makes no visual parity claim, because no scenario declares a cross-platform tolerance, and closes with a "What this does not claim" section that repeats it. It names the run that produced the captures (`node packages/visual-benchmark/scripts/capture-records-native.mjs --platform ios --workspace /tmp/navirox-capture-final`), the device profile `{ platform: 'ios', deviceName: 'iPhone 17' }`, the 1206 x 2622 device screen against the 390 x 844 browser viewport, the target compiler `@memolabs-apps/target-vue` 0.1.1 and the manifest hash `e18712f368212b2481a868a3e6fa3fd5e42a58449fc099e1f503648b7eab4c48`, and it records that the run recompiles the web fixture and refuses a stale emitted file before it installs anything. It lists every capture with its bytes and sha256: one `records-list` frame (`rest.ios.png`, 82864 bytes, `3cb6fb6a...`) and the five `records-motion` frames in order (`rest` 82864, `first-meaningful` 93240, and `midpoint`/`settled`/`interrupted` sharing 90617 and one hash), with the coincidence explained as a discrete state machine rather than presented as three measurements. It records the measured web-against-device comparison (`rest.web.png` 390 x 844 against `rest.ios.png` 1206 x 2622, normalized to a 118 x 256 grid, 27782 of 30208 pixels differing, unmasked ratio 0.9197, bounding box the whole frame, verdict `undeclared-differences`) and explains why the difference is expected while stating that the verdict is undeclared because no tolerance is declared, so no pass is reported and V2 stays not started. It records the compiler gap found by the device run (bare text inside a `pressable` accepted by the safe subset and thrown at mount), the four pipeline defects fixed, and the Android captures as unavailable rather than omitted. The capture bytes and hashes were refreshed from the final gate run, because an iOS screenshot is not byte-identical between runs (the status bar clock moves); the measurement is stable across those runs, which is why its numbers did not change.
+- [x] 5.2 Update `docs/VISUAL-FIDELITY.md` so V1 is complete with the driver named and V2 still reads not started. Verify the gate table says V1 is complete, points at the evidence document, and does not claim any measured visual fidelity.
+
+  The V1 row now reads "Complete: the web capture and the native capture driver are verified on the records fixture", names what the driver does (builds and installs the screen the target compiler emitted on the declared device profile, drives the scenario declared actions, records the device profile and the compiler manifest hash beside every capture) and points at `docs/evidence/records-native-capture.md`. The V2 row still reads "Not started" and now says why in the terms the comparison rule uses: the captures exist on a device, but no scenario declares a cross-platform tolerance, so the comparison stays a measurement and is reported as an undeclared difference rather than a pass. V3 and V4 are unchanged, and the paragraph below the table still reserves a measured-fidelity claim for V2 and a scoped adapter claim for V4, so nothing in the document claims measured visual fidelity.
 
 ## 6. Verify and close
 
-- [ ] 6.1 Run `pnpm build`, `pnpm typecheck`, `pnpm test`, `pnpm lint`, `pnpm format:check`, `pnpm deps:check` and `node packages/visual-benchmark/scripts/capture-records-native.mjs --platform ios`. Verify every command exits 0.
+- [x] 6.1 Run `pnpm build`, `pnpm typecheck`, `pnpm test`, `pnpm lint`,
+      `pnpm format:check`, `pnpm deps:check` and
+      `node packages/visual-benchmark/scripts/capture-records-native.mjs --platform ios`.
+      Verify every command exits 0.
+
+  Every command exits 0. The six workspace commands were run after the driver, the
+  harness and the capture script were finished, and `format:check` covers the new
+  evidence document and the CI workflow. The capture script was then run exactly as
+  the task writes it, without the `--workspace` flag, and it captured both
+  scenarios on the simulator and ended with `Done. Workspace: <path>` and no
+  failure line, so a run that leaves its workspace to a temporary directory and
+  deletes it works as well as a named one. One honest note about the bytes: an iOS
+  screenshot is not byte-identical between runs, because the capture is taken
+  immediately after the last declared tap and the status bar clock or a residual
+  pressed state can still be on screen. The committed reports therefore record the
+  numbers of the final kept run (`records-list` `rest.ios.png` 82864 bytes
+  `3cb6fb6a...`, `records-motion` `rest` 82864, `first-meaningful` 93240, and
+  `midpoint`/`settled`/`interrupted` sharing 90617 and one hash), which is also the
+  run the evidence document describes. The normalized measurement did not move
+  across any of the runs.
+
 - [ ] 6.2 Run `openspec validate native-visual-capture --strict` before implementation and before archival, then archive the change. Verify no task is marked complete until its stated command or artifact exists.

@@ -1,7 +1,7 @@
 {
   "scenario": "records-list",
   "platform": "ios",
-  "artifactDirectory": "/tmp/navirox-capture-check/app/scenario-artifacts/records-list",
+  "artifactDirectory": "/tmp/navirox-capture-final/app/scenario-artifacts/records-list",
   "device": {
     "platform": "ios",
     "deviceName": "iPhone 17"
@@ -26,8 +26,8 @@
       "key": "rest",
       "moment": "rest",
       "file": "rest.ios.png",
-      "bytes": 82509,
-      "sha256": "d9a53ff91e202230f888ca7117b520cccc06733cb67d600016fe913cc3c8c7c3"
+      "bytes": 82864,
+      "sha256": "3cb6fb6a808d4ea1e3996c20100f4bb111b0ca133351106f0905a3a4daad9cbf"
     }
   ],
   "coincidentFrames": [],
@@ -41,14 +41,14 @@
   ],
   "report": {
     "scenario": "records-list",
-    "artifactDir": "/tmp/navirox-capture-check/app/scenario-artifacts/records-list",
+    "artifactDir": "/tmp/navirox-capture-final/app/scenario-artifacts/records-list",
     "outcomes": [
       {
         "capture": "rest",
         "moment": "rest",
-        "web": "/tmp/navirox-capture-check/app/scenario-artifacts/records-list/rest.web.png",
+        "web": "/tmp/navirox-capture-final/app/scenario-artifacts/records-list/rest.web.png",
         "native": {
-          "ios": "/tmp/navirox-capture-check/app/scenario-artifacts/records-list/rest.ios.png"
+          "ios": "/tmp/navirox-capture-final/app/scenario-artifacts/records-list/rest.ios.png"
         },
         "devices": {
           "ios": {

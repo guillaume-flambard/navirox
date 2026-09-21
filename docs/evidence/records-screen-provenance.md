@@ -8,7 +8,7 @@ manifest at `packages/target-vue/fixtures/records/RecordsScreen.provenance.json`
 
 - Web fixture: `packages/target-vue/fixtures/records/RecordsScreen.web.vue`
 - Compiler: `@memolabs-apps/target-vue` 0.1.1 (`compileVueTarget`)
-- Manifest hash: `4e556ef30b20b25aa3d41209e26e4c4bf492cc2f750752760038704e0394002a`
+- Manifest hash: `e18712f368212b2481a868a3e6fa3fd5e42a58449fc099e1f503648b7eab4c48`
 - Findings: none. The fixture stays inside the supported subset on purpose;
   anything outside it must fail closed, which the target unit tests prove
   separately (RouterLink, transition, v-model, descendant selectors,
@@ -30,7 +30,7 @@ manifest at `packages/target-vue/fixtures/records/RecordsScreen.provenance.json`
 
 ## Verification (task 2.2)
 
-`scripts/verify-records-screen.mjs` packs the 31 candidate tarballs,
+`scripts/verify-records-screen.mjs` packs the 32 candidate tarballs,
 scaffolds a fresh app outside the checkout, recompiles the web fixture, and
 refuses to continue unless the fresh output hashes exactly to the checked-in
 `RecordsScreen.native.vue`. It then installs the app from the tarballs, lints
@@ -38,18 +38,21 @@ it with the generated screen as root, and Metro-bundles both platforms.
 
 Run of 2026-09-21 (transcript: `records-verify-transcript.txt`):
 
-- 31 artifacts packed, 81 scaffolded files
-- manifest `4e556e...94002a`, compiler 0.1.1, zero findings
+- 32 artifacts packed, 81 scaffolded files
+- manifest `e18712f...b4c48`, compiler 0.1.1, zero findings
 - `pnpm install` exit 0; app lint exit 0
 - 5 Navirox packages resolve inside the app; react, react-native, vue,
   `@symbiote-native/vue`, `@symbiote-native/engine` one copy each
-- iOS bundle 6,575,828 bytes; Android bundle 6,596,359 bytes
+- iOS bundle 6,576,437 bytes; Android bundle 6,596,968 bytes
 - 9/9 stable test identifiers present in both bundles:
   `records-screen`, `records-loading`, `records-empty`, `records-error`,
   `records-retry`, `records-list`, `record-row`, `record-select`,
   `record-detail`
 
 What this does not claim: the bundles prove the screen compiles into the app
-and exposes its identifiers, not that pixels match. Pixel comparison is
-section 3 work. Device journeys stay blocked on the pre-existing Detox
-`stream-json` runner failure documented in `release-candidate-0.1.1.md`.
+and exposes its identifiers, not that pixels match. The pixel comparison is
+measured and reported as an undeclared difference rather than a pass, in
+`records-native-capture.md`. Device journeys are no longer blocked: the Detox
+`stream-json` runner failure recorded in `release-candidate-0.1.1.md` was fixed by
+removing a broken dependency override, and the journeys plus a native capture job
+now run in continuous integration.

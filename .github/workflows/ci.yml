@@ -400,7 +400,11 @@ jobs:
       # The workspace is named so the upload below knows what to upload before
       # the run starts. A temporary directory would be a path the workflow cannot
       # name, and uploading the whole workspace would upload a node_modules.
+      # The device is named explicitly because the harness default is a local
+      # machine's simulator and a runner's simulator list is its own.
       - run: node packages/visual-benchmark/scripts/capture-records-native.mjs --platform ios --workspace "$RUNNER_TEMP/capture-ios"
+        env:
+          NAVIROX_DEVICE: iPhone 17
 
       # The captures are the point of the job, so they are kept whether the run
       # passed or failed. A failed run is exactly when the screenshot is worth
@@ -469,6 +473,9 @@ jobs:
       - name: Run the native capture against the emulator
         env:
           NAVIROX_ANDROID_AVD: navirox-e2e
+          # The harness reads NAVIROX_DEVICE first and falls back to the AVD
+          # variable above, so naming it here keeps the two jobs symmetric.
+          NAVIROX_DEVICE: navirox-e2e
           # The web half of the run screenshots the served page, and a Linux
           # runner installs the browser as a command rather than an application
           # bundle.

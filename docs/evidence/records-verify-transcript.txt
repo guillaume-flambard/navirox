@@ -1,28 +1,28 @@
 
-== Packing 31 Navirox packages
-   31 artifacts
+== Packing 32 Navirox packages
+   32 artifacts
 
-== Scaffolding "records-fixture-app" into /var/folders/9l/jsy6rgt160v3z3vrkqqjhdyh0000gn/T/navirox-records-5RvDWd/app
+== Scaffolding "records-fixture-app" into /var/folders/9l/jsy6rgt160v3z3vrkqqjhdyh0000gn/T/navirox-records-gysvOu/app
    81 files
 
 == Compiling the records screen fresh from the web fixture
-   manifest 4e556ef30b20b25aa3d41209e26e4c4bf492cc2f750752760038704e0394002a compiler 0.1.1
+   manifest e18712f368212b2481a868a3e6fa3fd5e42a58449fc099e1f503648b7eab4c48 compiler 0.1.1
 
 == Pointing the app at the artifacts
-   5 direct, 31 overridden
+   5 direct, 32 overridden
 
 == Installing the app
 Progress: resolved 1, reused 0, downloaded 0, added 0
-Progress: resolved 450, reused 404, downloaded 25, added 0
+Progress: resolved 453, reused 407, downloaded 25, added 0
 [WARN] 1 deprecated subdependencies found: glob@10.5.0
-Packages: +699
+Packages: +700
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 Packages are cloned from the content-addressable store to the virtual store.
   Content-addressable store is at: /Users/memo/Library/pnpm/store/v11
   Virtual store is at:             node_modules/.pnpm
-Progress: resolved 720, reused 674, downloaded 25, added 389
-Progress: resolved 720, reused 674, downloaded 25, added 697
-Progress: resolved 720, reused 674, downloaded 25, added 699, done
+Progress: resolved 721, reused 675, downloaded 25, added 279
+Progress: resolved 721, reused 675, downloaded 25, added 699
+Progress: resolved 721, reused 675, downloaded 25, added 700, done
 
 dependencies:
 + @memolabs-apps/metro-preset 0.1.1
@@ -69,7 +69,7 @@ devDependencies:
 + vue-eslint-parser 10.4.1
 + vue-tsc 3.3.11
 
-Done in 4s using pnpm v11.27.0
+Done in 3.7s using pnpm v11.27.0
 
 == Linting the app with the generated root screen
 $ eslint .
@@ -100,7 +100,7 @@ $ eslint .
               Fast - Scalable - Integrated
 
 
-LOG:Writing bundle output to: /var/folders/9l/jsy6rgt160v3z3vrkqqjhdyh0000gn/T/navirox-records-5RvDWd/records.ios.bundle
+LOG:Writing bundle output to: /var/folders/9l/jsy6rgt160v3z3vrkqqjhdyh0000gn/T/navirox-records-gysvOu/records.ios.bundle
 LOG:Done writing bundle output
 Warning: Assets destination folder is not set, skipping...
    ios: 6576 kB
@@ -125,11 +125,11 @@ Warning: Assets destination folder is not set, skipping...
               Fast - Scalable - Integrated
 
 
-LOG:Writing bundle output to: /var/folders/9l/jsy6rgt160v3z3vrkqqjhdyh0000gn/T/navirox-records-5RvDWd/records.android.bundle
+LOG:Writing bundle output to: /var/folders/9l/jsy6rgt160v3z3vrkqqjhdyh0000gn/T/navirox-records-gysvOu/records.android.bundle
 LOG:Done writing bundle output
 Warning: Assets destination folder is not set, skipping...
-   android: 6596 kB
+   android: 6597 kB
    ios: 9/9 testIDs present
    android: 9/9 testIDs present
 
-Done. Workspace: /var/folders/9l/jsy6rgt160v3z3vrkqqjhdyh0000gn/T/navirox-records-5RvDWd (kept)
+Done. Workspace: /var/folders/9l/jsy6rgt160v3z3vrkqqjhdyh0000gn/T/navirox-records-gysvOu (kept)

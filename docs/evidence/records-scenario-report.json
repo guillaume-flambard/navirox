@@ -7,14 +7,15 @@
       "moment": "rest",
       "web": "/Users/memo/projects/active/apps/mobile/navirox/packages/visual-benchmark/scenario-artifacts/records-list/rest.web.png",
       "native": {},
+      "devices": {},
       "unavailable": [
         {
           "platform": "ios",
-          "reason": "capture 'rest' unavailable: no ios device driver in this runner: the simulator is never built, installed or launched, and Detox fails during install with MODULE_NOT_FOUND stream-json"
+          "reason": "capture 'rest' unavailable: this runner captures the web side only, so the ios capture is produced by packages/visual-benchmark/scripts/capture-records-native.mjs"
         },
         {
           "platform": "android",
-          "reason": "capture 'rest' unavailable: no android device driver in this runner: the emulator is never built, installed or launched, and Detox fails during install with MODULE_NOT_FOUND stream-json"
+          "reason": "capture 'rest' unavailable: this runner captures the web side only, so the android capture is produced by packages/visual-benchmark/scripts/capture-records-native.mjs"
         }
       ]
     }
@@ -25,5 +26,6 @@
     "labels": [
       "rest"
     ]
-  }
+  },
+  "devices": {}
 }

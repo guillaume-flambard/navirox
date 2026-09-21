@@ -76,6 +76,13 @@ describe('the device harness', () => {
     expect(config).toContain('reversePorts')
   })
 
+  it('falls back to the variable each platform already names its device with', () => {
+    const config = deviceHarnessFile('detox.config.js')
+
+    expect(config).toContain('NAVIROX_IOS_SIMULATOR')
+    expect(config).toContain('NAVIROX_ANDROID_AVD')
+  })
+
   it('names the dependencies the harness needs installed', () => {
     expect(Object.keys(DEVICE_HARNESS_DEPENDENCIES).sort()).toEqual([
       '@types/jest',

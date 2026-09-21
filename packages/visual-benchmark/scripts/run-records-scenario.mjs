@@ -21,7 +21,7 @@ const CHROME = '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome'
 const PORT = 5199
 
 const { validateScenario } = await import(join(PKG, 'dist', 'scenario.js'))
-const { captureNativeDevice, captureWebChrome } = await import(join(PKG, 'dist', 'drivers.js'))
+const { CaptureUnavailableError, captureWebChrome } = await import(join(PKG, 'dist', 'drivers.js'))
 const { ScenarioRunError, runScenario } = await import(join(PKG, 'dist', 'run.js'))
 
 const scenario = {
@@ -78,10 +78,18 @@ try {
         web: (s, capture, outPath) =>
           captureWebChrome(s, capture, outPath, { chromePath: CHROME, baseUrl }),
         native: {
-          ios: (s, capture, outPath) =>
-            captureNativeDevice(s, capture, outPath, { platform: 'ios' }),
-          android: (s, capture, outPath) =>
-            captureNativeDevice(s, capture, outPath, { platform: 'android' }),
+          ios: (_s, capture) => {
+            throw new CaptureUnavailableError(
+              capture.key,
+              'this runner captures the web side only, so the ios capture is produced by packages/visual-benchmark/scripts/capture-records-native.mjs',
+            )
+          },
+          android: (_s, capture) => {
+            throw new CaptureUnavailableError(
+              capture.key,
+              'this runner captures the web side only, so the android capture is produced by packages/visual-benchmark/scripts/capture-records-native.mjs',
+            )
+          },
         },
       },
       artifactDir,
