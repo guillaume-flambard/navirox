@@ -1,0 +1,93 @@
+{
+  "scenario": "records-list",
+  "platform": "ios",
+  "artifactDirectory": "/tmp/navirox-capture-check/app/scenario-artifacts/records-list",
+  "device": {
+    "platform": "ios",
+    "deviceName": "iPhone 17"
+  },
+  "screen": {
+    "compilerVersion": "0.1.1",
+    "manifestHash": "e18712f368212b2481a868a3e6fa3fd5e42a58449fc099e1f503648b7eab4c48"
+  },
+  "motion": {
+    "declared": false,
+    "interruptible": false,
+    "labels": [
+      "rest"
+    ]
+  },
+  "labels": [
+    "rest"
+  ],
+  "labelsInOrder": true,
+  "frames": [
+    {
+      "key": "rest",
+      "moment": "rest",
+      "file": "rest.ios.png",
+      "bytes": 82509,
+      "sha256": "d9a53ff91e202230f888ca7117b520cccc06733cb67d600016fe913cc3c8c7c3"
+    }
+  ],
+  "coincidentFrames": [],
+  "missing": [],
+  "unavailable": [
+    {
+      "capture": "rest",
+      "platform": "android",
+      "reason": "capture 'rest' unavailable: the run prepared one platform, so the android capture is recorded unavailable rather than guessed"
+    }
+  ],
+  "report": {
+    "scenario": "records-list",
+    "artifactDir": "/tmp/navirox-capture-check/app/scenario-artifacts/records-list",
+    "outcomes": [
+      {
+        "capture": "rest",
+        "moment": "rest",
+        "web": "/tmp/navirox-capture-check/app/scenario-artifacts/records-list/rest.web.png",
+        "native": {
+          "ios": "/tmp/navirox-capture-check/app/scenario-artifacts/records-list/rest.ios.png"
+        },
+        "devices": {
+          "ios": {
+            "platform": "ios",
+            "deviceName": "iPhone 17"
+          }
+        },
+        "unavailable": [
+          {
+            "platform": "android",
+            "reason": "capture 'rest' unavailable: the run prepared one platform, so the android capture is recorded unavailable rather than guessed"
+          }
+        ]
+      }
+    ],
+    "motion": {
+      "declared": false,
+      "interruptible": false,
+      "labels": [
+        "rest"
+      ]
+    },
+    "devices": {
+      "ios": {
+        "platform": "ios",
+        "deviceName": "iPhone 17"
+      }
+    },
+    "screen": {
+      "compilerVersion": "0.1.1",
+      "manifestHash": "e18712f368212b2481a868a3e6fa3fd5e42a58449fc099e1f503648b7eab4c48"
+    }
+  },
+  "commands": [
+    "node packages/visual-benchmark/scripts/capture-records-native.mjs --platform ios --scenario records-list"
+  ],
+  "notes": [
+    "The device capture comes from the application the target compiler emitted; the emitted screen file is recompiled and compared before anything is installed.",
+    "A frame is a state of the fixture, not a claim of visual parity: the comparison stays a measurement until a scenario declares a cross-platform tolerance.",
+    "The fixture application replaces the template root screen, so the captured screen carries no safe-area padding. That is a property of the fixture, not of the platform."
+  ]
+}

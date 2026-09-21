@@ -8,10 +8,27 @@ export {
   CaptureUnavailableError,
   captureNativeDevice,
   captureWebChrome,
+  type DeviceProcessRunner,
+  type DeviceProfile,
+  type DeviceRunOptions,
+  type DeviceRunResult,
   type NativeDriverOptions,
   type NativePlatform,
   type WebDriverOptions,
 } from './drivers.js'
+export {
+  DEVICE_HARNESS_DEPENDENCIES,
+  DEVICE_HARNESS_DIRECTORY,
+  DEVICE_HARNESS_FILES,
+  deviceHarnessFile,
+  writeDeviceHarness,
+} from './device-harness.js'
+export {
+  StaleFixtureScreenError,
+  compileFixtureScreen,
+  type FixtureScreenCompilation,
+  type FixtureScreenOptions,
+} from './fixture-screen.js'
 export {
   PngDecodeError,
   compareImages,
@@ -34,6 +51,8 @@ export {
   type CaptureDriver,
   type CaptureOutcome,
   type ScenarioDrivers,
+  type ScenarioRunContext,
+  type ScenarioScreenRevision,
   type ScenarioMotionReport,
   type ScenarioRunReport,
 } from './run.js'

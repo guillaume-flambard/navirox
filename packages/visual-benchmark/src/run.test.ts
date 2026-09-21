@@ -128,4 +128,58 @@ describe('runScenario', () => {
     )
     expect(report.motion).toEqual({ declared: false, interruptible: false, labels: ['rest'] })
   })
+
+  it('records the device profile of a produced capture and the reason of an absent one', () => {
+    const unavailable: CaptureDriver = (_scenario, capture) => {
+      throw new CaptureUnavailableError(capture.key, 'the android emulator was not reachable')
+    }
+    let caught: unknown
+    try {
+      runScenario(
+        recordsScenario(),
+        { web: writingDriver('web'), native: { ios: writingDriver('ios'), android: unavailable } },
+        freshDir('device-profile'),
+        {
+          screen: { compilerVersion: '0.1.1', manifestHash: 'hash-abc' },
+          devices: {
+            ios: { platform: 'ios', deviceName: 'iPhone 17', osVersion: '26.5' },
+            android: { platform: 'android', deviceName: 'navirox-e2e' },
+          },
+        },
+      )
+    } catch (error) {
+      caught = error
+    }
+    expect(caught).toBeInstanceOf(ScenarioRunError)
+    const report = (caught as ScenarioRunError).report
+    expect(report.screen).toEqual({ compilerVersion: '0.1.1', manifestHash: 'hash-abc' })
+    expect(report.devices.ios).toEqual({
+      platform: 'ios',
+      deviceName: 'iPhone 17',
+      osVersion: '26.5',
+    })
+    expect(report.devices.android).toEqual({ platform: 'android', deviceName: 'navirox-e2e' })
+    expect(report.outcomes[0].devices.ios?.deviceName).toBe('iPhone 17')
+    expect(report.outcomes[0].devices.android).toBeUndefined()
+    expect(report.outcomes[0].unavailable).toEqual([
+      {
+        platform: 'android',
+        reason: "capture 'rest' unavailable: the android emulator was not reachable",
+      },
+    ])
+  })
+
+  it('records no device profile when the caller knows of none', () => {
+    const report = runScenario(
+      recordsScenario(),
+      {
+        web: writingDriver('web'),
+        native: { ios: writingDriver('ios'), android: writingDriver('android') },
+      },
+      freshDir('no-profile'),
+    )
+    expect(report.devices).toEqual({})
+    expect(report.screen).toBeUndefined()
+    expect(report.outcomes[0].devices).toEqual({})
+  })
 })

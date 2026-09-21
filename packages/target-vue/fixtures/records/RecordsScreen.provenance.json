@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "input": {
     "path": "RecordsScreen.web.vue",
-    "sha256": "05dba446ae5841044ca38bc1e0695530046dd9dfe7cc363f6b4928355f66dce1"
+    "sha256": "073164f804e953d53f1cd41b7eebbbceb99dd7ccf276912b9399bb0e6b034774"
   },
   "outputPath": "packages/target-vue/fixtures/records/RecordsScreen.native.vue",
   "compilerVersion": "0.1.1",
@@ -52,48 +52,64 @@
               "sourceTag": "button",
               "line": 12,
               "column": 7,
-              "children": []
+              "children": [
+                {
+                  "primitive": "text",
+                  "sourceTag": "span",
+                  "line": 13,
+                  "column": 9,
+                  "children": []
+                }
+              ]
             }
           ]
         },
         {
           "primitive": "view",
           "sourceTag": "div",
-          "line": 14,
+          "line": 16,
           "column": 5,
           "children": [
             {
               "primitive": "view",
               "sourceTag": "div",
-              "line": 15,
+              "line": 17,
               "column": 7,
               "children": [
                 {
                   "primitive": "pressable",
                   "sourceTag": "button",
-                  "line": 16,
+                  "line": 18,
                   "column": 9,
-                  "children": []
+                  "children": [
+                    {
+                      "primitive": "text",
+                      "sourceTag": "span",
+                      "line": 19,
+                      "column": 11,
+                      "children": []
+                    }
+                  ]
                 }
               ]
             },
             {
               "primitive": "view",
               "sourceTag": "div",
-              "line": 20,
+              "line": 22,
               "column": 7,
               "children": [
                 {
                   "primitive": "text",
                   "sourceTag": "h2",
-                  "line": 21,
+                  "line": 23,
                   "column": 9,
                   "children": []
                 },
                 {
                   "primitive": "text",
                   "sourceTag": "p",
-                  "line": 22,
+                  "line": 24,
                   "column": 9,
                   "children": []
                 }

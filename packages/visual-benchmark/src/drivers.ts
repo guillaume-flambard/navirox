@@ -2,12 +2,14 @@
  * Capture drivers for visual scenarios.
  *
  * The web driver screenshots a served page with headless Chrome. The native
- * drivers expose the same interface but report unavailability on machines
- * without a working device pipeline, so a run records the absence instead of
- * pretending the capture exists.
+ * drivers build and install the prepared fixture application on a simulator or
+ * emulator, drive the capture's declared actions and screenshot the result, so
+ * a native capture is produced by the application the target compiler emitted
+ * rather than by a hand-written replacement screen.
  */
 import { existsSync } from 'node:fs'
 import { spawnSync } from 'node:child_process'
+import { join } from 'node:path'
 import type { ScenarioCapture, VisualScenario } from './scenario.js'
 
 export type NativePlatform = 'ios' | 'android'
@@ -102,33 +104,219 @@ export function captureWebChrome(
   }
 }
 
+export interface DeviceRunOptions {
+  /** Working directory of the command. */
+  cwd?: string
+  /** Environment entries added to the current process environment. */
+  env?: Readonly<Record<string, string>>
+  /** Hard timeout for the command, in milliseconds. */
+  timeoutMs: number
+}
+
+export interface DeviceRunResult {
+  status: number | null
+  stdout: string
+  stderr: string
+  error?: Error
+}
+
+/** Runs one device command. Tests inject a fake so no device is needed. */
+export type DeviceProcessRunner = (
+  command: string,
+  args: readonly string[],
+  options: DeviceRunOptions,
+) => DeviceRunResult
+
+function runDeviceProcess(
+  command: string,
+  args: readonly string[],
+  options: DeviceRunOptions,
+): DeviceRunResult {
+  const result = spawnSync(command, [...args], {
+    cwd: options.cwd,
+    env: { ...process.env, ...options.env },
+    timeout: options.timeoutMs,
+    encoding: 'utf8',
+    maxBuffer: DEVICE_OUTPUT_LIMIT_BYTES,
+  })
+
+  return {
+    status: result.status,
+    stdout: result.stdout ?? '',
+    stderr: result.stderr ?? '',
+    ...(result.error === undefined ? {} : { error: result.error as Error }),
+  }
+}
+
+export interface DeviceProfile {
+  readonly platform: NativePlatform
+  readonly deviceName: string
+  readonly osVersion?: string
+}
+
 export interface NativeDriverOptions {
   platform: NativePlatform
+  /** Absolute path of the prepared fixture application. */
+  appDirectory: string
+  /**
+   * Absolute path of the application binary Detox installs. When it is absent
+   * the driver runs the Detox build for the platform first, so the run is
+   * reproducible on a fresh checkout instead of depending on a previous build.
+   */
+  binaryPath: string
+  /** Simulator or emulator name the capture test must use. */
+  deviceName: string
+  /** Scenario file the capture test reads. */
+  scenarioPath: string
+  /**
+   * Test identifier the capture test waits for before it captures. Without it
+   * a run cannot tell a rendered screen from a blank one, so the capture test
+   * refuses to run.
+   */
+  rootTestId: string
+  /** Directory the capture test writes the screenshot files into. */
+  artifactDirectory: string
+  /** Capture test path relative to the application. Defaults to `e2e/capture.test.ts`. */
+  captureTest?: string
+  /** Overrides the process runner. Tests inject a fake so no device is needed. */
+  run?: DeviceProcessRunner
+  /** Hard timeout for the build and for the test run, in milliseconds. */
+  timeoutMs?: number
+}
+
+const DEFAULT_CAPTURE_TEST = 'e2e/capture.test.ts'
+const DEFAULT_DEVICE_TIMEOUT_MS = 20 * 60_000
+// An Xcode build prints tens of megabytes. The default buffer of a synchronous
+// spawn is one megabyte, and it kills the child with ENOBUFS instead of
+// reporting a build error, so the limit is raised deliberately.
+const DEVICE_OUTPUT_LIMIT_BYTES = 256 * 1024 * 1024
+
+function nativeConfiguration(platform: NativePlatform): string {
+  return platform === 'ios' ? 'ios.sim.debug' : 'android.emu.debug'
+}
+
+function deviceEnvironment(
+  options: NativeDriverOptions,
+  capture: ScenarioCapture,
+): Record<string, string> {
+  return {
+    NAVIROX_PLATFORM: options.platform,
+    NAVIROX_DEVICE: options.deviceName,
+    NAVIROX_SCENARIO: options.scenarioPath,
+    NAVIROX_ROOT_ID: options.rootTestId,
+    NAVIROX_ARTIFACTS: options.artifactDirectory,
+    NAVIROX_CAPTURE: capture.key,
+    NAVIROX_CAPTURE_TEST: options.captureTest ?? DEFAULT_CAPTURE_TEST,
+    // Detox runs the application's start command through a shell, and that
+    // command is the package manager script (`react-native start`). The
+    // application's own binaries are only on PATH when the caller happens to be
+    // a package manager script itself, so the driver puts them there.
+    PATH: `${join(options.appDirectory, 'node_modules', '.bin')}:${process.env.PATH ?? ''}`,
+  }
 }
 
 /**
- * Native capture placeholder. This runner has no device driver: it never
- * builds, installs or launches the generated application, so a native capture
- * cannot be produced from here. The device toolchain that does exist on this
- * machine, Detox, fails before any app code runs on the pre-existing
- * stream-json install issue. Every native capture is therefore reported
- * unavailable with the reason attached rather than skipped.
+ * Capture one declared moment from the prepared fixture application on a real
+ * device. The driver builds the application when its binary is absent, runs
+ * the capture test for the requested capture, and refuses to report a capture
+ * the device never produced: a device that cannot be reached, a build that
+ * produced no binary and a test run that wrote no screenshot each fail with
+ * the reason attached.
  */
 export function captureNativeDevice(
   scenario: VisualScenario,
   capture: ScenarioCapture,
-  _outPath: string,
+  outPath: string,
   options: NativeDriverOptions,
 ): void {
   void scenario
-  if (options.platform === 'ios') {
+  const appDirectory = options.appDirectory
+  const binaryPath = options.binaryPath
+  const deviceName = options.deviceName
+  const rootTestId = options.rootTestId
+  const missing = [
+    ['appDirectory', appDirectory],
+    ['binaryPath', binaryPath],
+    ['deviceName', deviceName],
+    ['rootTestId', rootTestId],
+  ].filter(([, value]) => typeof value !== 'string' || value.length === 0)
+
+  if (missing.length > 0) {
     throw new CaptureUnavailableError(
       capture.key,
-      'no ios device driver in this runner: the simulator is never built, installed or launched, and Detox fails during install with MODULE_NOT_FOUND stream-json',
+      `the native driver was given no ${missing.map(([name]) => name).join(', ')}; a capture needs the prepared application, its built binary, the device name and the test identifier the screen renders`,
     )
   }
-  throw new CaptureUnavailableError(
-    capture.key,
-    'no android device driver in this runner: the emulator is never built, installed or launched, and Detox fails during install with MODULE_NOT_FOUND stream-json',
+
+  const run = options.run ?? runDeviceProcess
+  const configuration = nativeConfiguration(options.platform)
+  const detox = join(appDirectory, 'node_modules', '.bin', 'detox')
+  const timeoutMs = options.timeoutMs ?? DEFAULT_DEVICE_TIMEOUT_MS
+
+  if (options.run === undefined && !existsSync(detox)) {
+    throw new CaptureUnavailableError(
+      capture.key,
+      `Detox is not installed in ${appDirectory}, so the ${options.platform} application cannot be built or launched`,
+    )
+  }
+
+  if (!existsSync(binaryPath)) {
+    const build = run(detox, ['build', '--configuration', configuration], {
+      cwd: appDirectory,
+      env: deviceEnvironment(options, capture),
+      timeoutMs,
+    })
+
+    if (build.error) {
+      throw new CaptureUnavailableError(
+        capture.key,
+        `the ${options.platform} build could not start: ${build.error.message}`,
+      )
+    }
+
+    if (build.status !== 0) {
+      throw new CaptureUnavailableError(
+        capture.key,
+        `the ${options.platform} build exited with status ${build.status}: ${build.stderr.trim()}`,
+      )
+    }
+
+    if (!existsSync(binaryPath)) {
+      throw new CaptureUnavailableError(
+        capture.key,
+        `the ${options.platform} build exited 0 but no application binary exists at ${binaryPath}`,
+      )
+    }
+  }
+
+  const result = run(
+    detox,
+    ['test', '--configuration', configuration, '--testNamePattern', capture.key],
+    {
+      cwd: appDirectory,
+      env: deviceEnvironment(options, capture),
+      timeoutMs,
+    },
   )
+
+  if (result.error) {
+    throw new CaptureUnavailableError(
+      capture.key,
+      `the ${options.platform} device run on ${deviceName} could not start: ${result.error.message}`,
+    )
+  }
+
+  if (result.status !== 0) {
+    throw new CaptureMissingError(
+      capture.key,
+      `the ${options.platform} device run on ${deviceName} exited with status ${result.status}: ${result.stderr.trim()}`,
+    )
+  }
+
+  if (!existsSync(outPath)) {
+    throw new CaptureMissingError(
+      capture.key,
+      `the ${options.platform} device run exited 0 but wrote no screenshot at ${outPath}`,
+    )
+  }
 }

@@ -8,7 +8,7 @@
  */
 import { existsSync, mkdirSync, rmSync } from 'node:fs'
 import { join } from 'node:path'
-import type { NativePlatform } from './drivers.js'
+import type { DeviceProfile, NativePlatform } from './drivers.js'
 import type { ScenarioCapture, VisualScenario } from './scenario.js'
 
 export type CaptureDriver = (
@@ -22,6 +22,8 @@ export interface CaptureOutcome {
   moment: ScenarioCapture['moment']
   web: string
   native: Partial<Record<NativePlatform, string>>
+  /** Profile of the device that produced each native capture. */
+  devices: Partial<Record<NativePlatform, DeviceProfile>>
   unavailable: { platform: NativePlatform; reason: string }[]
 }
 
@@ -32,11 +34,30 @@ export interface ScenarioMotionReport {
   labels: ScenarioCapture['moment'][]
 }
 
+/**
+ * Target compiler revision and the manifest hash of the screen the run
+ * captured. A capture without its compiler revision is not evidence of what
+ * the compiler produced.
+ */
+export interface ScenarioScreenRevision {
+  compilerVersion: string
+  manifestHash: string
+}
+
+/** What the caller knows about the run beyond the captures themselves. */
+export interface ScenarioRunContext {
+  screen?: ScenarioScreenRevision
+  /** Declared device profile per platform, recorded whether or not it captured. */
+  devices?: Partial<Record<NativePlatform, DeviceProfile>>
+}
+
 export interface ScenarioRunReport {
   scenario: string
   artifactDir: string
   outcomes: CaptureOutcome[]
   motion: ScenarioMotionReport
+  devices: Partial<Record<NativePlatform, DeviceProfile>>
+  screen?: ScenarioScreenRevision
 }
 
 export class ScenarioRunError extends Error {
@@ -65,6 +86,7 @@ export function runScenario(
   scenario: VisualScenario,
   drivers: ScenarioDrivers,
   artifactDir: string,
+  context: ScenarioRunContext = {},
 ): ScenarioRunReport {
   rmSync(artifactDir, { recursive: true, force: true })
   mkdirSync(artifactDir, { recursive: true })
@@ -84,6 +106,7 @@ export function runScenario(
       moment: capture.moment,
       web: webPath,
       native: {},
+      devices: {},
       unavailable: [],
     }
     for (const platform of ['ios', 'android'] as const) {
@@ -92,6 +115,10 @@ export function runScenario(
         drivers.native[platform](scenario, capture, nativePath)
         if (existsSync(nativePath)) {
           outcome.native[platform] = nativePath
+          const profile = context.devices?.[platform]
+          if (profile !== undefined) {
+            outcome.devices[platform] = profile
+          }
         } else {
           outcome.unavailable.push({ platform, reason: 'driver returned without writing a file' })
           missing.push(`${capture.key}.${platform}`)
@@ -116,7 +143,14 @@ export function runScenario(
     motion.interaction = scenario.motion.interaction
   }
 
-  const report: ScenarioRunReport = { scenario: scenario.name, artifactDir, outcomes, motion }
+  const report: ScenarioRunReport = {
+    scenario: scenario.name,
+    artifactDir,
+    outcomes,
+    motion,
+    devices: context.devices ?? {},
+    ...(context.screen === undefined ? {} : { screen: context.screen }),
+  }
   if (missing.length > 0) {
     throw new ScenarioRunError(report, missing)
   }

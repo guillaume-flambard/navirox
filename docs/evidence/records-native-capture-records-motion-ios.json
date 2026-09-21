@@ -1,0 +1,237 @@
+{
+  "scenario": "records-motion",
+  "platform": "ios",
+  "artifactDirectory": "/tmp/navirox-capture-check/app/scenario-artifacts/records-motion",
+  "device": {
+    "platform": "ios",
+    "deviceName": "iPhone 17"
+  },
+  "screen": {
+    "compilerVersion": "0.1.1",
+    "manifestHash": "e18712f368212b2481a868a3e6fa3fd5e42a58449fc099e1f503648b7eab4c48"
+  },
+  "motion": {
+    "declared": true,
+    "interruptible": true,
+    "labels": [
+      "rest",
+      "first-meaningful",
+      "midpoint",
+      "settled",
+      "interrupted"
+    ],
+    "interaction": "select a record, then replace the selection with a second press"
+  },
+  "labels": [
+    "rest",
+    "first-meaningful",
+    "midpoint",
+    "settled",
+    "interrupted"
+  ],
+  "labelsInOrder": true,
+  "frames": [
+    {
+      "key": "rest",
+      "moment": "rest",
+      "file": "rest.ios.png",
+      "bytes": 82509,
+      "sha256": "d9a53ff91e202230f888ca7117b520cccc06733cb67d600016fe913cc3c8c7c3"
+    },
+    {
+      "key": "first-meaningful",
+      "moment": "first-meaningful",
+      "file": "first-meaningful.ios.png",
+      "bytes": 92934,
+      "sha256": "117afe4c30b1f5fbd555c18efc1584c5b8d189350a5cab0d19d91a130142c721"
+    },
+    {
+      "key": "midpoint",
+      "moment": "midpoint",
+      "file": "midpoint.ios.png",
+      "bytes": 90804,
+      "sha256": "758318105299765debcda340943a5a307a1e5698e2275670f7713e2477f33eab"
+    },
+    {
+      "key": "settled",
+      "moment": "settled",
+      "file": "settled.ios.png",
+      "bytes": 90804,
+      "sha256": "758318105299765debcda340943a5a307a1e5698e2275670f7713e2477f33eab"
+    },
+    {
+      "key": "interrupted",
+      "moment": "interrupted",
+      "file": "interrupted.ios.png",
+      "bytes": 90804,
+      "sha256": "758318105299765debcda340943a5a307a1e5698e2275670f7713e2477f33eab"
+    }
+  ],
+  "coincidentFrames": [
+    "midpoint and settled and interrupted"
+  ],
+  "missing": [],
+  "unavailable": [
+    {
+      "capture": "rest",
+      "platform": "android",
+      "reason": "capture 'rest' unavailable: the run prepared one platform, so the android capture is recorded unavailable rather than guessed"
+    },
+    {
+      "capture": "first-meaningful",
+      "platform": "android",
+      "reason": "capture 'rest' unavailable: the run prepared one platform, so the android capture is recorded unavailable rather than guessed"
+    },
+    {
+      "capture": "midpoint",
+      "platform": "android",
+      "reason": "capture 'rest' unavailable: the run prepared one platform, so the android capture is recorded unavailable rather than guessed"
+    },
+    {
+      "capture": "settled",
+      "platform": "android",
+      "reason": "capture 'rest' unavailable: the run prepared one platform, so the android capture is recorded unavailable rather than guessed"
+    },
+    {
+      "capture": "interrupted",
+      "platform": "android",
+      "reason": "capture 'rest' unavailable: the run prepared one platform, so the android capture is recorded unavailable rather than guessed"
+    }
+  ],
+  "report": {
+    "scenario": "records-motion",
+    "artifactDir": "/tmp/navirox-capture-check/app/scenario-artifacts/records-motion",
+    "outcomes": [
+      {
+        "capture": "rest",
+        "moment": "rest",
+        "web": "/tmp/navirox-capture-check/app/scenario-artifacts/records-motion/rest.web.png",
+        "native": {
+          "ios": "/tmp/navirox-capture-check/app/scenario-artifacts/records-motion/rest.ios.png"
+        },
+        "devices": {
+          "ios": {
+            "platform": "ios",
+            "deviceName": "iPhone 17"
+          }
+        },
+        "unavailable": [
+          {
+            "platform": "android",
+            "reason": "capture 'rest' unavailable: the run prepared one platform, so the android capture is recorded unavailable rather than guessed"
+          }
+        ]
+      },
+      {
+        "capture": "first-meaningful",
+        "moment": "first-meaningful",
+        "web": "/tmp/navirox-capture-check/app/scenario-artifacts/records-motion/first-meaningful.web.png",
+        "native": {
+          "ios": "/tmp/navirox-capture-check/app/scenario-artifacts/records-motion/first-meaningful.ios.png"
+        },
+        "devices": {
+          "ios": {
+            "platform": "ios",
+            "deviceName": "iPhone 17"
+          }
+        },
+        "unavailable": [
+          {
+            "platform": "android",
+            "reason": "capture 'rest' unavailable: the run prepared one platform, so the android capture is recorded unavailable rather than guessed"
+          }
+        ]
+      },
+      {
+        "capture": "midpoint",
+        "moment": "midpoint",
+        "web": "/tmp/navirox-capture-check/app/scenario-artifacts/records-motion/midpoint.web.png",
+        "native": {
+          "ios": "/tmp/navirox-capture-check/app/scenario-artifacts/records-motion/midpoint.ios.png"
+        },
+        "devices": {
+          "ios": {
+            "platform": "ios",
+            "deviceName": "iPhone 17"
+          }
+        },
+        "unavailable": [
+          {
+            "platform": "android",
+            "reason": "capture 'rest' unavailable: the run prepared one platform, so the android capture is recorded unavailable rather than guessed"
+          }
+        ]
+      },
+      {
+        "capture": "settled",
+        "moment": "settled",
+        "web": "/tmp/navirox-capture-check/app/scenario-artifacts/records-motion/settled.web.png",
+        "native": {
+          "ios": "/tmp/navirox-capture-check/app/scenario-artifacts/records-motion/settled.ios.png"
+        },
+        "devices": {
+          "ios": {
+            "platform": "ios",
+            "deviceName": "iPhone 17"
+          }
+        },
+        "unavailable": [
+          {
+            "platform": "android",
+            "reason": "capture 'rest' unavailable: the run prepared one platform, so the android capture is recorded unavailable rather than guessed"
+          }
+        ]
+      },
+      {
+        "capture": "interrupted",
+        "moment": "interrupted",
+        "web": "/tmp/navirox-capture-check/app/scenario-artifacts/records-motion/interrupted.web.png",
+        "native": {
+          "ios": "/tmp/navirox-capture-check/app/scenario-artifacts/records-motion/interrupted.ios.png"
+        },
+        "devices": {
+          "ios": {
+            "platform": "ios",
+            "deviceName": "iPhone 17"
+          }
+        },
+        "unavailable": [
+          {
+            "platform": "android",
+            "reason": "capture 'rest' unavailable: the run prepared one platform, so the android capture is recorded unavailable rather than guessed"
+          }
+        ]
+      }
+    ],
+    "motion": {
+      "declared": true,
+      "interruptible": true,
+      "labels": [
+        "rest",
+        "first-meaningful",
+        "midpoint",
+        "settled",
+        "interrupted"
+      ],
+      "interaction": "select a record, then replace the selection with a second press"
+    },
+    "devices": {
+      "ios": {
+        "platform": "ios",
+        "deviceName": "iPhone 17"
+      }
+    },
+    "screen": {
+      "compilerVersion": "0.1.1",
+      "manifestHash": "e18712f368212b2481a868a3e6fa3fd5e42a58449fc099e1f503648b7eab4c48"
+    }
+  },
+  "commands": [
+    "node packages/visual-benchmark/scripts/capture-records-native.mjs --platform ios --scenario records-motion"
+  ],
+  "notes": [
+    "The device capture comes from the application the target compiler emitted; the emitted screen file is recompiled and compared before anything is installed.",
+    "A frame is a state of the fixture, not a claim of visual parity: the comparison stays a measurement until a scenario declares a cross-platform tolerance.",
+    "The fixture application replaces the template root screen, so the captured screen carries no safe-area padding. That is a property of the fixture, not of the platform."
+  ]
+}

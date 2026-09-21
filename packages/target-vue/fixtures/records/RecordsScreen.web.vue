@@ -33,12 +33,14 @@ function retry(): void {
     </p>
     <div v-else-if="status === 'error'" data-testid="records-error">
       <p class="error">Records failed to load.</p>
-      <button class="retry" data-testid="records-retry" @click="retry()">Try again</button>
+      <button class="retry" data-testid="records-retry" @click="retry()">
+        <span class="retry-label">Try again</span>
+      </button>
     </div>
     <div v-else data-testid="records-list">
       <div v-for="record in records" :key="record.id" class="row" data-testid="record-row">
         <button class="row-button" data-testid="record-select" @click="select(record)">
-          {{ record.name }}
+          <span class="row-button-label">{{ record.name }}</span>
         </button>
       </div>
       <div v-if="selected !== null" class="detail" data-testid="record-detail">
@@ -72,6 +74,9 @@ function retry(): void {
   margin-top: 8;
   padding: 8;
   background-color: #2f6bff;
+}
+.retry-label {
+  font-size: 15;
   color: #ffffff;
 }
 .row {
@@ -79,7 +84,7 @@ function retry(): void {
   border-width: 1;
   border-color: #2a3352;
 }
-.row-button {
+.row-button-label {
   font-size: 16;
   color: #ffffff;
 }
