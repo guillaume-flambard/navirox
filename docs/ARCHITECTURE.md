@@ -60,6 +60,16 @@ The short version:
    prop name. Our public API is ours; if a renderer concept leaks into our types,
    the engine stops being swappable.
 
+## External runtime dependencies
+
+`AGENTS.md` requires every runtime dependency Navirox ships to be recorded with
+its version and the reason it exists. This is that record for the ones outside
+the workspace.
+
+| Dependency         | Version  | Why it exists                                                                                                                                                                                                                                                                                                                                                                 |
+| ------------------ | -------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `@typesafe-ai/sdk` | `^0.6.0` | The transport for `navirox plan --semantic`, the second opinion the planner asks TypeSafe for on subjects the rules cannot decide. Only `@memolabs-apps/planner` depends on it, and it stays behind the `SemanticJudge` interface, so no SDK type reaches our public API. On a 0.x version the caret is bounded to the 0.6 minor line, so it tracks patches without floating. |
+
 ## How the runtime reaches a component
 
 The adapter installs the runtime into the Vue application under

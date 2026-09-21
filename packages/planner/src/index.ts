@@ -18,6 +18,23 @@ export {
 export type { MigrationRule, RuleContext, RuleDecision, RuleLayer } from './rules.js'
 export type { AppGraph, AppGraphFragment } from '@memolabs-apps/graph'
 export { compatibilityEvidence, compatibilityRule } from './compatibility.js'
-export { PLAN_SCHEMA_VERSION, plan } from './plan.js'
+export { PLAN_SCHEMA_VERSION, contextForSubject, plan } from './plan.js'
 export { planToJson, renderPlan } from './render.js'
 export type { ClassificationOverride, MigrationPlan, PlanOptions, PlanSummary } from './plan.js'
+export {
+  HIGH_SEMANTIC_CONFIDENCE,
+  MEDIUM_SEMANTIC_CONFIDENCE,
+  MissingTypesafeKeyError,
+  SEMANTIC_MODEL,
+  TYPESAFE_API_KEY_ENV,
+  createTypeSafeJudge,
+  renderSemanticSuggestions,
+  suggestForUndecided,
+} from './semantics.js'
+export type {
+  SemanticAnswer,
+  SemanticJudge,
+  SemanticQuestion,
+  SemanticSubjectState,
+  SemanticSuggestion,
+} from './semantics.js'

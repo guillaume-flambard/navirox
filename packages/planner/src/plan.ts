@@ -80,7 +80,13 @@ function overrideRule(overrides: readonly ClassificationOverride[]): MigrationRu
   }))
 }
 
-function contextFor(graph: AppGraph, subject: NodeId): RuleContext {
+/**
+ * The rule context for one subject.
+ *
+ * Exported for the semantic second-opinion layer, which judges the subjects
+ * the rules could not decide. Reading a context changes no decision.
+ */
+export function contextForSubject(graph: AppGraph, subject: NodeId): RuleContext {
   const unit = graph.units.find((node) => node.id === subject)
   const capability = graph.capabilities.find((node) => node.id === subject)
 
@@ -183,7 +189,7 @@ export function plan(graph: AppGraph, options: PlanOptions = {}): MigrationPlan 
   ])
 
   const decided = subjects(graph).flatMap((subject) => {
-    const context = contextFor(graph, subject)
+    const context = contextForSubject(graph, subject)
     const rule = rules.find((candidate) => candidate.applies(context))
 
     if (rule === undefined) {

@@ -26,7 +26,8 @@
   },
   "dependencies": {
     "@memolabs-apps/compat": "workspace:*",
-    "@memolabs-apps/graph": "workspace:*"
+    "@memolabs-apps/graph": "workspace:*",
+    "@typesafe-ai/sdk": "^0.6.0"
   },
   "devDependencies": {
     "@types/node": "^26.6.1",
