@@ -1,0 +1,270 @@
+{
+  "scenario": "records-motion",
+  "platform": "android",
+  "artifactDirectory": "/home/runner/work/_temp/capture-android/app/scenario-artifacts/records-motion",
+  "device": {
+    "platform": "android",
+    "deviceName": "navirox-e2e"
+  },
+  "screen": {
+    "compilerVersion": "0.1.1",
+    "manifestHash": "e18712f368212b2481a868a3e6fa3fd5e42a58449fc099e1f503648b7eab4c48"
+  },
+  "motion": {
+    "declared": true,
+    "interruptible": true,
+    "labels": [
+      "rest",
+      "first-meaningful",
+      "midpoint",
+      "settled",
+      "interrupted"
+    ],
+    "interaction": "select a record, then replace the selection with a second press"
+  },
+  "labels": [
+    "rest",
+    "first-meaningful",
+    "midpoint",
+    "settled",
+    "interrupted"
+  ],
+  "labelsInOrder": true,
+  "tolerance": {
+    "gridSize": 0.05,
+    "identifiers": [
+      "records-screen",
+      "records-list",
+      "record-row",
+      "record-select"
+    ]
+  },
+  "verdict": {
+    "scenario": "records-motion",
+    "verdict": "pass",
+    "checks": [
+      {
+        "name": "captures",
+        "verdict": "pass",
+        "detail": "all 5 declared captures exist on the web and on android"
+      },
+      {
+        "name": "grid",
+        "verdict": "pass",
+        "detail": "the largest grid difference is 2.54 percent, inside the declared 5.00 percent"
+      },
+      {
+        "name": "identifiers",
+        "verdict": "pass",
+        "detail": "all 4 declared identifiers were asserted on the web and on android"
+      },
+      {
+        "name": "motion",
+        "verdict": "pass",
+        "detail": "the motion labels were rest, first-meaningful, midpoint, settled, interrupted in the required order"
+      }
+    ]
+  },
+  "frames": [
+    {
+      "key": "rest",
+      "moment": "rest",
+      "file": "rest.android.png",
+      "bytes": 33455,
+      "sha256": "67f1403195502de55e7be0708b7a54d34e3838c8d053e797af66f963a765cc75"
+    },
+    {
+      "key": "first-meaningful",
+      "moment": "first-meaningful",
+      "file": "first-meaningful.android.png",
+      "bytes": 40908,
+      "sha256": "ecc2d6106dec9d91be1b5a22574f06239cd17e11d46dd5c680792a3e6c3e3576"
+    },
+    {
+      "key": "midpoint",
+      "moment": "midpoint",
+      "file": "midpoint.android.png",
+      "bytes": 41072,
+      "sha256": "a275ff96165b550e1579f00e2e51ec75f7871092a4ed07f6c28a28635e460519"
+    },
+    {
+      "key": "settled",
+      "moment": "settled",
+      "file": "settled.android.png",
+      "bytes": 40428,
+      "sha256": "3d52ac68c8ce71b92bf25800dc7e639998aafbcaefc1db24115ef7b4ce064313"
+    },
+    {
+      "key": "interrupted",
+      "moment": "interrupted",
+      "file": "interrupted.android.png",
+      "bytes": 40376,
+      "sha256": "dc9b40723a3017208c480ec3b6625c6ec1ff6e6ff2d946555008a7cb1e66e6df"
+    }
+  ],
+  "coincidentFrames": [],
+  "missing": [],
+  "unavailable": [
+    {
+      "capture": "rest",
+      "platform": "ios",
+      "reason": "capture 'rest' unavailable: the run prepared one platform, so the ios capture is recorded unavailable rather than guessed"
+    },
+    {
+      "capture": "first-meaningful",
+      "platform": "ios",
+      "reason": "capture 'first-meaningful' unavailable: the run prepared one platform, so the ios capture is recorded unavailable rather than guessed"
+    },
+    {
+      "capture": "midpoint",
+      "platform": "ios",
+      "reason": "capture 'midpoint' unavailable: the run prepared one platform, so the ios capture is recorded unavailable rather than guessed"
+    },
+    {
+      "capture": "settled",
+      "platform": "ios",
+      "reason": "capture 'settled' unavailable: the run prepared one platform, so the ios capture is recorded unavailable rather than guessed"
+    },
+    {
+      "capture": "interrupted",
+      "platform": "ios",
+      "reason": "capture 'interrupted' unavailable: the run prepared one platform, so the ios capture is recorded unavailable rather than guessed"
+    }
+  ],
+  "report": {
+    "scenario": "records-motion",
+    "artifactDir": "/home/runner/work/_temp/capture-android/app/scenario-artifacts/records-motion",
+    "outcomes": [
+      {
+        "capture": "rest",
+        "moment": "rest",
+        "web": "/home/runner/work/_temp/capture-android/app/scenario-artifacts/records-motion/rest.web.png",
+        "native": {
+          "android": "/home/runner/work/_temp/capture-android/app/scenario-artifacts/records-motion/rest.android.png"
+        },
+        "devices": {
+          "android": {
+            "platform": "android",
+            "deviceName": "navirox-e2e"
+          }
+        },
+        "unavailable": [
+          {
+            "platform": "ios",
+            "reason": "capture 'rest' unavailable: the run prepared one platform, so the ios capture is recorded unavailable rather than guessed"
+          }
+        ]
+      },
+      {
+        "capture": "first-meaningful",
+        "moment": "first-meaningful",
+        "web": "/home/runner/work/_temp/capture-android/app/scenario-artifacts/records-motion/first-meaningful.web.png",
+        "native": {
+          "android": "/home/runner/work/_temp/capture-android/app/scenario-artifacts/records-motion/first-meaningful.android.png"
+        },
+        "devices": {
+          "android": {
+            "platform": "android",
+            "deviceName": "navirox-e2e"
+          }
+        },
+        "unavailable": [
+          {
+            "platform": "ios",
+            "reason": "capture 'first-meaningful' unavailable: the run prepared one platform, so the ios capture is recorded unavailable rather than guessed"
+          }
+        ]
+      },
+      {
+        "capture": "midpoint",
+        "moment": "midpoint",
+        "web": "/home/runner/work/_temp/capture-android/app/scenario-artifacts/records-motion/midpoint.web.png",
+        "native": {
+          "android": "/home/runner/work/_temp/capture-android/app/scenario-artifacts/records-motion/midpoint.android.png"
+        },
+        "devices": {
+          "android": {
+            "platform": "android",
+            "deviceName": "navirox-e2e"
+          }
+        },
+        "unavailable": [
+          {
+            "platform": "ios",
+            "reason": "capture 'midpoint' unavailable: the run prepared one platform, so the ios capture is recorded unavailable rather than guessed"
+          }
+        ]
+      },
+      {
+        "capture": "settled",
+        "moment": "settled",
+        "web": "/home/runner/work/_temp/capture-android/app/scenario-artifacts/records-motion/settled.web.png",
+        "native": {
+          "android": "/home/runner/work/_temp/capture-android/app/scenario-artifacts/records-motion/settled.android.png"
+        },
+        "devices": {
+          "android": {
+            "platform": "android",
+            "deviceName": "navirox-e2e"
+          }
+        },
+        "unavailable": [
+          {
+            "platform": "ios",
+            "reason": "capture 'settled' unavailable: the run prepared one platform, so the ios capture is recorded unavailable rather than guessed"
+          }
+        ]
+      },
+      {
+        "capture": "interrupted",
+        "moment": "interrupted",
+        "web": "/home/runner/work/_temp/capture-android/app/scenario-artifacts/records-motion/interrupted.web.png",
+        "native": {
+          "android": "/home/runner/work/_temp/capture-android/app/scenario-artifacts/records-motion/interrupted.android.png"
+        },
+        "devices": {
+          "android": {
+            "platform": "android",
+            "deviceName": "navirox-e2e"
+          }
+        },
+        "unavailable": [
+          {
+            "platform": "ios",
+            "reason": "capture 'interrupted' unavailable: the run prepared one platform, so the ios capture is recorded unavailable rather than guessed"
+          }
+        ]
+      }
+    ],
+    "motion": {
+      "declared": true,
+      "interruptible": true,
+      "labels": [
+        "rest",
+        "first-meaningful",
+        "midpoint",
+        "settled",
+        "interrupted"
+      ],
+      "interaction": "select a record, then replace the selection with a second press"
+    },
+    "devices": {
+      "android": {
+        "platform": "android",
+        "deviceName": "navirox-e2e"
+      }
+    },
+    "screen": {
+      "compilerVersion": "0.1.1",
+      "manifestHash": "e18712f368212b2481a868a3e6fa3fd5e42a58449fc099e1f503648b7eab4c48"
+    }
+  },
+  "commands": [
+    "node packages/visual-benchmark/scripts/capture-records-native.mjs --platform android --scenario records-motion"
+  ],
+  "notes": [
+    "The device capture comes from the application the target compiler emitted; the emitted screen file is recompiled and compared before anything is installed.",
+    "A frame is a state of the fixture, not a claim of visual parity: the verdict above is the declared tolerance being evaluated, and the pixel difference ratio is a measurement reported beside it rather than the value that decides it.",
+    "The fixture application replaces the template root screen, so the captured screen carries no safe-area padding. That is a property of the fixture, not of the platform."
+  ]
+}

@@ -1,10 +1,10 @@
 {
   "scenario": "records-list",
-  "platform": "ios",
-  "artifactDirectory": "/Users/runner/work/_temp/capture-ios/app/scenario-artifacts/records-list",
+  "platform": "android",
+  "artifactDirectory": "/home/runner/work/_temp/capture-android/app/scenario-artifacts/records-list",
   "device": {
-    "platform": "ios",
-    "deviceName": "iPhone 17"
+    "platform": "android",
+    "deviceName": "navirox-e2e"
   },
   "screen": {
     "compilerVersion": "0.1.1",
@@ -37,17 +37,17 @@
       {
         "name": "captures",
         "verdict": "pass",
-        "detail": "all 1 declared captures exist on the web and on ios"
+        "detail": "all 1 declared captures exist on the web and on android"
       },
       {
         "name": "grid",
         "verdict": "pass",
-        "detail": "the largest grid difference is 0.00 percent, inside the declared 5.00 percent"
+        "detail": "the largest grid difference is 2.54 percent, inside the declared 5.00 percent"
       },
       {
         "name": "identifiers",
         "verdict": "pass",
-        "detail": "all 4 declared identifiers were asserted on the web and on ios"
+        "detail": "all 4 declared identifiers were asserted on the web and on android"
       }
     ]
   },
@@ -55,9 +55,9 @@
     {
       "key": "rest",
       "moment": "rest",
-      "file": "rest.ios.png",
-      "bytes": 85793,
-      "sha256": "85455bbeb6defbc0a2250512f4d1995c9cb4419131b3c213ab80b8edceb155a4"
+      "file": "rest.android.png",
+      "bytes": 34349,
+      "sha256": "7830f8a992952000476ac3e4f247b6fbc748ef13bb5ff029c01310261a64cc81"
     }
   ],
   "coincidentFrames": [],
@@ -65,31 +65,31 @@
   "unavailable": [
     {
       "capture": "rest",
-      "platform": "android",
-      "reason": "capture 'rest' unavailable: the run prepared one platform, so the android capture is recorded unavailable rather than guessed"
+      "platform": "ios",
+      "reason": "capture 'rest' unavailable: the run prepared one platform, so the ios capture is recorded unavailable rather than guessed"
     }
   ],
   "report": {
     "scenario": "records-list",
-    "artifactDir": "/Users/runner/work/_temp/capture-ios/app/scenario-artifacts/records-list",
+    "artifactDir": "/home/runner/work/_temp/capture-android/app/scenario-artifacts/records-list",
     "outcomes": [
       {
         "capture": "rest",
         "moment": "rest",
-        "web": "/Users/runner/work/_temp/capture-ios/app/scenario-artifacts/records-list/rest.web.png",
+        "web": "/home/runner/work/_temp/capture-android/app/scenario-artifacts/records-list/rest.web.png",
         "native": {
-          "ios": "/Users/runner/work/_temp/capture-ios/app/scenario-artifacts/records-list/rest.ios.png"
+          "android": "/home/runner/work/_temp/capture-android/app/scenario-artifacts/records-list/rest.android.png"
         },
         "devices": {
-          "ios": {
-            "platform": "ios",
-            "deviceName": "iPhone 17"
+          "android": {
+            "platform": "android",
+            "deviceName": "navirox-e2e"
           }
         },
         "unavailable": [
           {
-            "platform": "android",
-            "reason": "capture 'rest' unavailable: the run prepared one platform, so the android capture is recorded unavailable rather than guessed"
+            "platform": "ios",
+            "reason": "capture 'rest' unavailable: the run prepared one platform, so the ios capture is recorded unavailable rather than guessed"
           }
         ]
       }
@@ -102,9 +102,9 @@
       ]
     },
     "devices": {
-      "ios": {
-        "platform": "ios",
-        "deviceName": "iPhone 17"
+      "android": {
+        "platform": "android",
+        "deviceName": "navirox-e2e"
       }
     },
     "screen": {
@@ -113,7 +113,7 @@
     }
   },
   "commands": [
-    "node packages/visual-benchmark/scripts/capture-records-native.mjs --platform ios --scenario records-list"
+    "node packages/visual-benchmark/scripts/capture-records-native.mjs --platform android --scenario records-list"
   ],
   "notes": [
     "The device capture comes from the application the target compiler emitted; the emitted screen file is recompiled and compared before anything is installed.",

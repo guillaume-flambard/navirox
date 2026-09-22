@@ -1,7 +1,7 @@
 {
   "scenario": "records-motion",
   "platform": "ios",
-  "artifactDirectory": "/tmp/navirox-tolerance4/app/scenario-artifacts/records-motion",
+  "artifactDirectory": "/Users/runner/work/_temp/capture-ios/app/scenario-artifacts/records-motion",
   "device": {
     "platform": "ios",
     "deviceName": "iPhone 17"
@@ -70,36 +70,36 @@
       "key": "rest",
       "moment": "rest",
       "file": "rest.ios.png",
-      "bytes": 82010,
-      "sha256": "c2314e39eb3a52d0be2c78f6a0ca14f537f4ede779df3c9c5a5a8a750db1edd4"
+      "bytes": 85495,
+      "sha256": "2fed4abfe129d131964a131543cf51778e76e569290e71d4d6cb219fe4bc85d5"
     },
     {
       "key": "first-meaningful",
       "moment": "first-meaningful",
       "file": "first-meaningful.ios.png",
-      "bytes": 92486,
-      "sha256": "a6e5470fed4b0d73b96a41ea8a6c8ea8be707c1c2cef6193f375df481d5c3a92"
+      "bytes": 95562,
+      "sha256": "1079cfd5d0a89eddff6bb490b906bd44e71914c2f0718ad3c505f046196c2d26"
     },
     {
       "key": "midpoint",
       "moment": "midpoint",
       "file": "midpoint.ios.png",
-      "bytes": 90042,
-      "sha256": "996d0a641cd0b9d016ff8102448634529eab5a33e3ffaa8c2a75b703c37c90fa"
+      "bytes": 92915,
+      "sha256": "673630338c2f123228f507a21dbe3fe0b88333f1b80ebdac16ffa5e32e08cc80"
     },
     {
       "key": "settled",
       "moment": "settled",
       "file": "settled.ios.png",
-      "bytes": 90042,
-      "sha256": "996d0a641cd0b9d016ff8102448634529eab5a33e3ffaa8c2a75b703c37c90fa"
+      "bytes": 92915,
+      "sha256": "673630338c2f123228f507a21dbe3fe0b88333f1b80ebdac16ffa5e32e08cc80"
     },
     {
       "key": "interrupted",
       "moment": "interrupted",
       "file": "interrupted.ios.png",
-      "bytes": 90018,
-      "sha256": "1b7fc1d8f548910a33b832d330a00c33426e3cddd423386ad4bfcc635c7d4fd5"
+      "bytes": 93169,
+      "sha256": "8ee300ebe94e23df43b2dc0cb71d646858ef6280f4e2bc27c0678361675d62b1"
     }
   ],
   "coincidentFrames": [
@@ -135,14 +135,14 @@
   ],
   "report": {
     "scenario": "records-motion",
-    "artifactDir": "/tmp/navirox-tolerance4/app/scenario-artifacts/records-motion",
+    "artifactDir": "/Users/runner/work/_temp/capture-ios/app/scenario-artifacts/records-motion",
     "outcomes": [
       {
         "capture": "rest",
         "moment": "rest",
-        "web": "/tmp/navirox-tolerance4/app/scenario-artifacts/records-motion/rest.web.png",
+        "web": "/Users/runner/work/_temp/capture-ios/app/scenario-artifacts/records-motion/rest.web.png",
         "native": {
-          "ios": "/tmp/navirox-tolerance4/app/scenario-artifacts/records-motion/rest.ios.png"
+          "ios": "/Users/runner/work/_temp/capture-ios/app/scenario-artifacts/records-motion/rest.ios.png"
         },
         "devices": {
           "ios": {
@@ -160,9 +160,9 @@
       {
         "capture": "first-meaningful",
         "moment": "first-meaningful",
-        "web": "/tmp/navirox-tolerance4/app/scenario-artifacts/records-motion/first-meaningful.web.png",
+        "web": "/Users/runner/work/_temp/capture-ios/app/scenario-artifacts/records-motion/first-meaningful.web.png",
         "native": {
-          "ios": "/tmp/navirox-tolerance4/app/scenario-artifacts/records-motion/first-meaningful.ios.png"
+          "ios": "/Users/runner/work/_temp/capture-ios/app/scenario-artifacts/records-motion/first-meaningful.ios.png"
         },
         "devices": {
           "ios": {
@@ -180,9 +180,9 @@
       {
         "capture": "midpoint",
         "moment": "midpoint",
-        "web": "/tmp/navirox-tolerance4/app/scenario-artifacts/records-motion/midpoint.web.png",
+        "web": "/Users/runner/work/_temp/capture-ios/app/scenario-artifacts/records-motion/midpoint.web.png",
         "native": {
-          "ios": "/tmp/navirox-tolerance4/app/scenario-artifacts/records-motion/midpoint.ios.png"
+          "ios": "/Users/runner/work/_temp/capture-ios/app/scenario-artifacts/records-motion/midpoint.ios.png"
         },
         "devices": {
           "ios": {
@@ -200,9 +200,9 @@
       {
         "capture": "settled",
         "moment": "settled",
-        "web": "/tmp/navirox-tolerance4/app/scenario-artifacts/records-motion/settled.web.png",
+        "web": "/Users/runner/work/_temp/capture-ios/app/scenario-artifacts/records-motion/settled.web.png",
         "native": {
-          "ios": "/tmp/navirox-tolerance4/app/scenario-artifacts/records-motion/settled.ios.png"
+          "ios": "/Users/runner/work/_temp/capture-ios/app/scenario-artifacts/records-motion/settled.ios.png"
         },
         "devices": {
           "ios": {
@@ -220,9 +220,9 @@
       {
         "capture": "interrupted",
         "moment": "interrupted",
-        "web": "/tmp/navirox-tolerance4/app/scenario-artifacts/records-motion/interrupted.web.png",
+        "web": "/Users/runner/work/_temp/capture-ios/app/scenario-artifacts/records-motion/interrupted.web.png",
         "native": {
-          "ios": "/tmp/navirox-tolerance4/app/scenario-artifacts/records-motion/interrupted.ios.png"
+          "ios": "/Users/runner/work/_temp/capture-ios/app/scenario-artifacts/records-motion/interrupted.ios.png"
         },
         "devices": {
           "ios": {
