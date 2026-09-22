@@ -1,7 +1,12 @@
 # suitecrm-benchmark Specification
 
 ## Purpose
-TBD - created by archiving change angular-suitecrm-readiness. Update Purpose after archive.
+Keep one large real-world application analyzable from a pinned revision alone.
+The SuiteCRM benchmark MUST pin one public full commit SHA, MUST analyze only the
+configured frontend source without installation, execution, credentials or writes
+to the external project, and MUST derive its counts from the analysis rather than
+from a hand-written expectation, so that a number in a report always traces back
+to the revision and command that produced it.
 
 ## Requirements
 

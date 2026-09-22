@@ -1,7 +1,11 @@
 # visual-benchmark Specification
 
 ## Purpose
-TBD - created by archiving change vue-visual-fidelity-benchmark. Update Purpose after archive.
+Make a visual comparison repeatable enough to be evidence. A visual scenario MUST
+declare its source identity, route, data, browser profile, native device profiles,
+actions, capture moments and permitted masks, so that a capture can be reproduced
+from its declaration and a difference between mobile and web is attributed to the
+port rather than to an undocumented change of setup.
 
 ## Requirements
 

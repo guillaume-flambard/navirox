@@ -1,7 +1,12 @@
 # angular-neutral-seam-proof Specification
 
 ## Purpose
-TBD - created by archiving change angular-neutral-seam-proof. Update Purpose after archive.
+Show that the Angular side of the platform reaches the engine through the neutral
+seam rather than through the renderer. An Angular proof companion MUST trace at
+least one declared workflow input from an immutable Angular source through the
+source adapter and a neutral inspection, planning or migration output into the
+companion's behavior, so that framework knowledge stays on one side of the seam
+and the seam itself is demonstrated by a running path instead of asserted.
 
 ## Requirements
 

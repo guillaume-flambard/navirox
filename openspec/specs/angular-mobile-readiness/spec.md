@@ -1,7 +1,12 @@
 # angular-mobile-readiness Specification
 
 ## Purpose
-TBD - created by archiving change angular-suitecrm-readiness. Update Purpose after archive.
+Report what an Angular application is ready for without overclaiming it. The
+Angular adapter or its report renderer SHALL classify an observed route or unit as
+candidate, desktop-only or unknown only when the classification names its source
+location and rule, and no classification MAY imply automatic portability, so that
+a readiness report is a set of attributable observations rather than a promise
+about the port.
 
 ## Requirements
 

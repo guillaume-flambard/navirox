@@ -1,7 +1,12 @@
 # workflow-value-evidence Specification
 
 ## Purpose
-TBD - created by archiving change workflow-value-evidence. Update Purpose after archive.
+Force a proof workflow to justify itself before anyone builds it. Before an
+independent proof companion is implemented, its workflow MUST record the source
+finding, the operator and mobile context, the trigger, the success result and the
+ordered actions it performs with the minimum data each action reads or writes, so
+that a demonstration proves a workflow worth having rather than a screen worth
+photographing.
 
 ## Requirements
 

@@ -1,7 +1,11 @@
 # vue-target-provenance Specification
 
 ## Purpose
-TBD - created by archiving change vue-visual-fidelity-benchmark. Update Purpose after archive.
+Keep generated output traceable back to its input. The Vue target MUST emit a
+deterministic provenance manifest for every fully supported generated screen, and
+the manifest MUST identify the input, output path, compiler version and source
+location of each generated view node, so that a reviewer can tell which part of a
+generated application came from the analysed source and which part was added.
 
 ## Requirements
 
