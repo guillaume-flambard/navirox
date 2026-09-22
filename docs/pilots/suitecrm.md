@@ -63,6 +63,17 @@ provenance, the native-versus-PWA/WebView/Capacitor decision, and its validation
 status. Until practitioner feedback exists it stays an `unvalidated hypothesis`
 and must not be described as customer demand.
 
+The completed record is
+[`docs/evidence/workflow-suitecrm-record-workflow.md`](../evidence/workflow-suitecrm-record-workflow.md).
+It names the immutable revision above, the readable fixture the workflow was
+selected from, the ordered actions and the identifiers they act on, and the
+failure state the companion has to surface. It is this project's own hypothesis,
+not SuiteCRM's chosen workflow, and the unread federated routing stays a finding
+in it: no route, screen or unit is claimed that the analysis did not establish,
+and the actions are marked not yet executable because the Angular journey has no
+target path. Navirox has no affiliation with SuiteCRM, which has not requested,
+reviewed or endorsed any of this.
+
 ## Excluded until discovery confirms them
 
 Authentication, offline synchronisation and compliance are open questions, not

@@ -1,0 +1,8 @@
+{
+  "name": "fixture-record-workflow",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "@angular/core": "^20.0.0"
+  }
+}
