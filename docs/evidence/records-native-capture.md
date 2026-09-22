@@ -1,15 +1,18 @@
 # Native capture of the records fixture
 
 This is a capture report. It records screenshots of the screen the target compiler
-emitted, taken on a real simulator through a device driver, and the measurement of
-that screen against the browser render of the same fixture. It makes no visual
-parity claim: no scenario declares a cross-platform tolerance, so the comparison
-below is a measurement and not a pass.
+emitted, taken on a real simulator and a real emulator through a device driver, and
+the measurement of that screen against the browser render of the same fixture. It
+makes no visual parity claim: no scenario declares a cross-platform tolerance, so
+the comparison below is a measurement and not a pass.
 
-The machine readable record is
+The machine readable record of the local run is
 `docs/evidence/records-native-capture-records-list-ios.json` and
-`docs/evidence/records-native-capture-records-motion-ios.json`, written by the run
-that produced the captures.
+`docs/evidence/records-native-capture-records-motion-ios.json`. A platform run
+writes `records-native-capture-<scenario>-<platform>.json` beside them, and the
+continuous integration job uploads the captures and those reports as build
+artifacts, so the record of a platform run is the artifact of the run that produced
+it.
 
 ## What produced the captures
 
@@ -59,21 +62,54 @@ measurements, and no frame is an in-flight interpolation: the target compiler
 accepts no CSS transition, animation or transform, so the fixture has no
 interpolated state to capture.
 
-That coincidence is the expected result rather than a guarantee. The same two
-scenarios captured on the same device profile in continuous integration produced
-five distinct hashes, and in one of the local runs the `interrupted` frame differed
-from `midpoint` by a few hundred bytes, while the fixture state after the declared
-actions was the same in every case. A capture is taken immediately after the last
-tap, so a residual pressed state or a status bar clock tick can still be on screen.
-Screenshots of the same frame are therefore never byte-identical between runs,
-which is exactly why the comparison normalizes before it measures and why this
-report records the bytes and the hash of the run it is about rather than a stable
-per-frame fingerprint. What the frames mean is the declared action sequence, and
-that is the same everywhere.
+That coincidence is the expected result rather than a guarantee. Across the runs
+recorded during this work the shared-hash set was `settled and interrupted`,
+`midpoint and settled`, `midpoint and settled and interrupted`, and once five
+distinct hashes, while the fixture state after the declared actions was the same in
+every case. A capture is taken immediately after the last tap, so a residual pressed
+state or a status bar clock tick can still be on screen. Screenshots of the same
+frame are therefore never byte-identical between runs, which is exactly why the
+comparison normalizes before it measures and why this report records the bytes and
+the hash of the run it is about rather than a stable per-frame fingerprint. What the
+frames mean is the declared action sequence, and that is the same everywhere.
 
-The same run recorded every Android capture as unavailable, with the reason that
-the run prepared one platform. That is an absence, not a result, and it is the
-state of the iOS only run recorded here.
+## The same capture in continuous integration
+
+The local run recorded above prepared one platform only, so its Android entries are
+absences rather than results. One dispatched continuous integration run captures both
+platforms: run `35667060785`, whose `capture the records fixture on a simulator` job
+(`106555069347`) and `capture the records fixture on an emulator` job (`106555068910`)
+each build the prepared application, run the harness and upload
+`records-native-capture-ios` and `records-native-capture-android`. Every job in that
+run was green. Each artifact holds the web capture and the device capture for every
+declared moment of both scenarios, plus the two reports naming the device.
+
+`records-list`:
+
+| Platform | Device profile | File | Bytes | sha256 |
+| --- | --- | --- | --- | --- |
+| ios | `{ platform: 'ios', deviceName: 'iPhone 17' }` | `rest.ios.png` | 84727 | `3e5cd85f1eca86522ae97e7ecebafe9296303c190052ccd3a57142f246f7fce9` |
+| android | `{ platform: 'android', deviceName: 'navirox-e2e' }` | `rest.android.png` | 32220 | `9190fc401565756028c70f3a22a34f1b7ec6932ff4f6ed9e074356c3cd57ee44` |
+
+`records-motion`:
+
+| Platform | Moment | File | Bytes | sha256 |
+| --- | --- | --- | --- | --- |
+| ios | rest | `rest.ios.png` | 85194 | `c95fdc78e1144a5a071502f4e52c0a04e8a24744881c9a757d691e12cf63b24a` |
+| ios | first-meaningful | `first-meaningful.ios.png` | 95523 | `6914138052481fe112ab04e0ee92c556f616fd99bb336e28e6e90ab288512abb` |
+| ios | midpoint | `midpoint.ios.png` | 93095 | `fa8d6a9e60849e986ada3d8cae348ff5d3330de9608ca728c7a3d0b100cd5855` |
+| ios | settled | `settled.ios.png` | 93333 | `d703de292de6b23c2d67d869ffa324608f9490ae600bfee8bae6c34b657d6636` |
+| ios | interrupted | `interrupted.ios.png` | 93333 | `d703de292de6b23c2d67d869ffa324608f9490ae600bfee8bae6c34b657d6636` |
+| android | rest | `rest.android.png` | 32220 | `9190fc401565756028c70f3a22a34f1b7ec6932ff4f6ed9e074356c3cd57ee44` |
+| android | first-meaningful | `first-meaningful.android.png` | 40160 | `8aa1c97ffb4505dc89bb3c3a9001f1f027fbb304f28f6d88892deba0cf866778` |
+| android | midpoint | `midpoint.android.png` | 40335 | `54dd8a7d219a189d2952d08c1a912cdb1ef041c6dee69da88c2b076ea66af8f0` |
+| android | settled | `settled.android.png` | 40335 | `54dd8a7d219a189d2952d08c1a912cdb1ef041c6dee69da88c2b076ea66af8f0` |
+| android | interrupted | `interrupted.android.png` | 40270 | `8e19207222b643c0d44c3edc75782b908e3dffcea97ad3856010983ab45ce51f` |
+
+Every report names its platform, its device, its labels in order and its missing
+captures, which is none. The Android job also reported a Gradle cache hit
+(`Cache restored from key: Linux-gradle-1dbe1434...`), so the second run of that job
+reuses the distribution instead of downloading it again.
 
 ## Web against device, measured
 
@@ -101,6 +137,14 @@ the two renderers rasterise the same text with different fonts. The verdict is
 tolerance, which is exactly what the comparison rule requires it to say. A pass
 here would be a parity claim with no basis, so no pass is reported and V2 stays
 not started.
+
+The Android pair does not even normalize to the same grid. The emulator screen is
+1080 x 2400 while the browser viewport is 390 x 844, so at the longest side 256 the
+device grid is 115 x 256 against the browser's 118 x 256, and the comparison reports
+`undeclared-differences` with a size mismatch instead of counting pixels. That is a
+statement about the two profiles rather than about the two screens, and making it
+measurable is a scenario decision (a viewport whose aspect ratio matches the declared
+device, or a declared mask), which belongs to the tolerance work V2 needs.
 
 ## A compiler gap this run found
 
@@ -147,9 +191,10 @@ existed:
 - No measured visual fidelity for any scenario or adapter. V1 records the capture
   harness; V2, the gate that would let Navirox claim measured fidelity, is not
   started because no scenario has a declared cross-platform tolerance yet.
-- Nothing about Android. The Android captures in these runs are recorded as
-  unavailable, and the continuous integration job that produces them is what
-  turns them into results.
+- Nothing about Android beyond the captures themselves. The continuous integration
+  run above produces them, but no scenario declares a cross-platform tolerance and
+  the Android pair does not normalize to the same grid, so nothing is claimed about
+  how the two platforms compare.
 - Nothing about the fixture's safe area. The captured screen draws from the top of
   the window because the fixture application replaces the template root screen.
   That is a property of the fixture, not of the platform or of the compiler.
