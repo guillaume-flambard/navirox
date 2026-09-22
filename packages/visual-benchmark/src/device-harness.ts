@@ -200,6 +200,14 @@ const artifacts = required('NAVIROX_ARTIFACTS')
 const captureKey = required('NAVIROX_CAPTURE')
 const rootTestId = required('NAVIROX_ROOT_ID')
 
+// Identifiers the scenario declares. They are asserted after the declared
+// actions so a screen that did not render fails the capture instead of being
+// handed to the comparison as if it had.
+const identifiers = (process.env.NAVIROX_IDENTIFIERS ?? '')
+  .split(',')
+  .map((identifier) => identifier.trim())
+  .filter((identifier) => identifier.length > 0)
+
 const scenario = JSON.parse(readFileSync(scenarioPath, 'utf8')) as DeclaredScenario
 const capture = scenario.captures.find((entry) => entry.key === captureKey)
 
@@ -271,6 +279,12 @@ it('captures ' + captureKey + ' on ' + platform, async () => {
   await waitFor(element(by.id(rootTestId)))
     .toExist()
     .withTimeout(SETTLE_TIMEOUT)
+
+  for (const identifier of identifiers) {
+    await waitFor(element(by.id(identifier)))
+      .toExist()
+      .withTimeout(SETTLE_TIMEOUT)
+  }
 
   mkdirSync(artifacts, { recursive: true })
 

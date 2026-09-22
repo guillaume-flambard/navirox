@@ -65,5 +65,16 @@ export {
   type ScenarioIssue,
   type ScenarioMask,
   type ScenarioMotion,
+  type ScenarioTolerance,
   type VisualScenario,
 } from './scenario.js'
+export {
+  evaluateTolerance,
+  type ToleranceCapture,
+  type ToleranceCheck,
+  type ToleranceCheckName,
+  type ToleranceGrid,
+  type ToleranceIdentifier,
+  type ToleranceRun,
+  type ToleranceVerdict,
+} from './tolerance.js'

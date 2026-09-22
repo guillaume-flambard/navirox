@@ -184,4 +184,44 @@ describe('validateScenario', () => {
     scenario.captures = [{ key: 'rest', moment: 'rest', actions: [{ press: '' }] }]
     expect(pathsOf(scenario)).toContain('captures[0].actions[0].press')
   })
+
+  it('keeps the measurement-only behaviour when no tolerance is declared', () => {
+    expect(validateScenario(validScenario())).toEqual([])
+  })
+
+  it('accepts a declared cross-platform tolerance', () => {
+    const scenario = validScenario()
+    scenario.tolerance = { gridSize: 0.05, identifiers: ['records-screen', 'records-list'] }
+    expect(validateScenario(scenario)).toEqual([])
+  })
+
+  it('rejects a grid tolerance outside the range a relative difference can have', () => {
+    for (const gridSize of [-0.1, 1, 2]) {
+      const scenario = validScenario()
+      scenario.tolerance = { gridSize, identifiers: ['records-screen'] }
+      expect(pathsOf(scenario)).toContain('tolerance.gridSize')
+    }
+  })
+
+  it('rejects a tolerance with no identifier list', () => {
+    const missing = validScenario()
+    missing.tolerance = { gridSize: 0.05 } as never
+    expect(pathsOf(missing)).toContain('tolerance.identifiers')
+
+    const empty = validScenario()
+    empty.tolerance = { gridSize: 0.05, identifiers: [] }
+    expect(pathsOf(empty)).toContain('tolerance.identifiers')
+  })
+
+  it('rejects an identifier that is not a name', () => {
+    const scenario = validScenario()
+    scenario.tolerance = { gridSize: 0.05, identifiers: ['records-screen', ''] }
+    expect(pathsOf(scenario)).toContain('tolerance.identifiers[1]')
+  })
+
+  it('rejects a tolerance that is not an object', () => {
+    const scenario = validScenario()
+    scenario.tolerance = 'five percent' as never
+    expect(pathsOf(scenario)).toContain('tolerance')
+  })
 })

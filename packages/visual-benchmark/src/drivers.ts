@@ -47,6 +47,78 @@ export interface WebDriverOptions {
    * is obtained without changing the fixture state.
    */
   deviceScaleFactor?: number
+  /**
+   * Test identifiers the scenario declares. When present, the served page is
+   * inspected for each of them and a capture that does not render one fails.
+   */
+  identifiers?: readonly string[]
+  /** Runs the browser. Tests inject a fake so no browser is needed. */
+  run?: WebProcessRunner
+}
+
+/** Runs one web command. Tests inject a fake so no browser is needed. */
+export type WebProcessRunner = (
+  command: string,
+  args: readonly string[],
+  options: { timeoutMs: number },
+) => DeviceRunResult
+
+function runWebProcess(
+  command: string,
+  args: readonly string[],
+  options: { timeoutMs: number },
+): DeviceRunResult {
+  const result = spawnSync(command, args, { timeout: options.timeoutMs, encoding: 'utf8' })
+
+  return {
+    status: result.status,
+    stdout: typeof result.stdout === 'string' ? result.stdout : '',
+    stderr: typeof result.stderr === 'string' ? result.stderr : '',
+    ...(result.error === undefined ? {} : { error: result.error as Error }),
+  }
+}
+
+/**
+ * A declared identifier is checked where it exists rather than inferred from an
+ * image: the served page is rendered again and its DOM read, so a missing label
+ * fails the capture instead of reaching the comparison. The query string is the
+ * one the screenshot used, so the actions that produced the capture are the
+ * actions that produced this DOM.
+ */
+function checkWebIdentifiers(
+  captureKey: string,
+  url: string,
+  identifiers: readonly string[],
+  options: WebDriverOptions,
+  run: WebProcessRunner,
+): void {
+  const result = run(options.chromePath, ['--headless', '--dump-dom', url], {
+    timeoutMs: options.timeoutMs ?? 60_000,
+  })
+
+  if (result.error) {
+    throw new CaptureMissingError(
+      captureKey,
+      `chrome failed to render the page for an identifier check: ${result.error.message}`,
+    )
+  }
+  if (result.status !== 0) {
+    throw new CaptureMissingError(
+      captureKey,
+      `chrome exited with status ${result.status} while checking the declared identifiers: ${result.stderr.trim()}`,
+    )
+  }
+
+  const missing = identifiers.filter(
+    (identifier) => !result.stdout.includes(`data-testid="${identifier}"`),
+  )
+
+  if (missing.length > 0) {
+    throw new CaptureMissingError(
+      captureKey,
+      `the served page does not render ${missing.join(', ')}`,
+    )
+  }
 }
 
 /**
@@ -75,7 +147,8 @@ export function captureWebChrome(
   }
   const url = `${options.baseUrl}${scenario.route}?${query.toString()}`
   const scaleFactor = options.deviceScaleFactor ?? 1
-  const result = spawnSync(
+  const run = options.run ?? runWebProcess
+  const result = run(
     options.chromePath,
     [
       '--headless',
@@ -85,13 +158,10 @@ export function captureWebChrome(
       '--hide-scrollbars',
       url,
     ],
-    { timeout: options.timeoutMs ?? 60_000, encoding: 'utf8' },
+    { timeoutMs: options.timeoutMs ?? 60_000 },
   )
   if (result.error) {
-    throw new CaptureMissingError(
-      capture.key,
-      `chrome failed to start: ${(result.error as Error).message}`,
-    )
+    throw new CaptureMissingError(capture.key, `chrome failed to start: ${result.error.message}`)
   }
   if (result.status !== 0) {
     throw new CaptureMissingError(
@@ -101,6 +171,11 @@ export function captureWebChrome(
   }
   if (!existsSync(outPath)) {
     throw new CaptureMissingError(capture.key, 'chrome exited 0 but wrote no screenshot')
+  }
+
+  const identifiers = options.identifiers ?? []
+  if (identifiers.length > 0) {
+    checkWebIdentifiers(capture.key, url, identifiers, options, run)
   }
 }
 
@@ -174,6 +249,12 @@ export interface NativeDriverOptions {
    * refuses to run.
    */
   rootTestId: string
+  /**
+   * Test identifiers the scenario declares. The capture test asserts each of
+   * them after the declared actions, so a screen that did not render fails the
+   * capture instead of reaching the comparison.
+   */
+  identifiers?: readonly string[]
   /** Directory the capture test writes the screenshot files into. */
   artifactDirectory: string
   /** Capture test path relative to the application. Defaults to `e2e/capture.test.ts`. */
@@ -218,6 +299,7 @@ function deviceEnvironment(
     NAVIROX_DEVICE: options.deviceName,
     NAVIROX_SCENARIO: options.scenarioPath,
     NAVIROX_ROOT_ID: options.rootTestId,
+    NAVIROX_IDENTIFIERS: (options.identifiers ?? []).join(','),
     NAVIROX_ARTIFACTS: options.artifactDirectory,
     NAVIROX_CAPTURE: capture.key,
     NAVIROX_CAPTURE_TEST: options.captureTest ?? DEFAULT_CAPTURE_TEST,

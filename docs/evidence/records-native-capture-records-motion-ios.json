@@ -1,7 +1,7 @@
 {
   "scenario": "records-motion",
   "platform": "ios",
-  "artifactDirectory": "/tmp/navirox-capture-warm/app/scenario-artifacts/records-motion",
+  "artifactDirectory": "/tmp/navirox-tolerance4/app/scenario-artifacts/records-motion",
   "device": {
     "platform": "ios",
     "deviceName": "iPhone 17"
@@ -30,45 +30,80 @@
     "interrupted"
   ],
   "labelsInOrder": true,
+  "tolerance": {
+    "gridSize": 0.05,
+    "identifiers": [
+      "records-screen",
+      "records-list",
+      "record-row",
+      "record-select"
+    ]
+  },
+  "verdict": {
+    "scenario": "records-motion",
+    "verdict": "pass",
+    "checks": [
+      {
+        "name": "captures",
+        "verdict": "pass",
+        "detail": "all 5 declared captures exist on the web and on ios"
+      },
+      {
+        "name": "grid",
+        "verdict": "pass",
+        "detail": "the largest grid difference is 0.00 percent, inside the declared 5.00 percent"
+      },
+      {
+        "name": "identifiers",
+        "verdict": "pass",
+        "detail": "all 4 declared identifiers were asserted on the web and on ios"
+      },
+      {
+        "name": "motion",
+        "verdict": "pass",
+        "detail": "the motion labels were rest, first-meaningful, midpoint, settled, interrupted in the required order"
+      }
+    ]
+  },
   "frames": [
     {
       "key": "rest",
       "moment": "rest",
       "file": "rest.ios.png",
-      "bytes": 83236,
-      "sha256": "2738142bbbf1dd0f64b4446dfaedf0a74ba3dc33205ac3de5bd187ddfa85f118"
+      "bytes": 82010,
+      "sha256": "c2314e39eb3a52d0be2c78f6a0ca14f537f4ede779df3c9c5a5a8a750db1edd4"
     },
     {
       "key": "first-meaningful",
       "moment": "first-meaningful",
       "file": "first-meaningful.ios.png",
-      "bytes": 93578,
-      "sha256": "c8f23830e8b8246987bc425c9b37ce83814c0e30c333b0f32df7985727d66953"
+      "bytes": 92486,
+      "sha256": "a6e5470fed4b0d73b96a41ea8a6c8ea8be707c1c2cef6193f375df481d5c3a92"
     },
     {
       "key": "midpoint",
       "moment": "midpoint",
       "file": "midpoint.ios.png",
-      "bytes": 91151,
-      "sha256": "fa17b597192fe9ddc0c21499d720401918aca8acaeac39407ead43aacb3fe966"
+      "bytes": 90042,
+      "sha256": "996d0a641cd0b9d016ff8102448634529eab5a33e3ffaa8c2a75b703c37c90fa"
     },
     {
       "key": "settled",
       "moment": "settled",
       "file": "settled.ios.png",
-      "bytes": 90827,
-      "sha256": "7a197898aec1ffd555c202aaca670a7108c3a86915d631056427275e89b26794"
+      "bytes": 90042,
+      "sha256": "996d0a641cd0b9d016ff8102448634529eab5a33e3ffaa8c2a75b703c37c90fa"
     },
     {
       "key": "interrupted",
       "moment": "interrupted",
       "file": "interrupted.ios.png",
-      "bytes": 90827,
-      "sha256": "7a197898aec1ffd555c202aaca670a7108c3a86915d631056427275e89b26794"
+      "bytes": 90018,
+      "sha256": "1b7fc1d8f548910a33b832d330a00c33426e3cddd423386ad4bfcc635c7d4fd5"
     }
   ],
   "coincidentFrames": [
-    "settled and interrupted"
+    "midpoint and settled"
   ],
   "missing": [],
   "unavailable": [
@@ -100,14 +135,14 @@
   ],
   "report": {
     "scenario": "records-motion",
-    "artifactDir": "/tmp/navirox-capture-warm/app/scenario-artifacts/records-motion",
+    "artifactDir": "/tmp/navirox-tolerance4/app/scenario-artifacts/records-motion",
     "outcomes": [
       {
         "capture": "rest",
         "moment": "rest",
-        "web": "/tmp/navirox-capture-warm/app/scenario-artifacts/records-motion/rest.web.png",
+        "web": "/tmp/navirox-tolerance4/app/scenario-artifacts/records-motion/rest.web.png",
         "native": {
-          "ios": "/tmp/navirox-capture-warm/app/scenario-artifacts/records-motion/rest.ios.png"
+          "ios": "/tmp/navirox-tolerance4/app/scenario-artifacts/records-motion/rest.ios.png"
         },
         "devices": {
           "ios": {
@@ -125,9 +160,9 @@
       {
         "capture": "first-meaningful",
         "moment": "first-meaningful",
-        "web": "/tmp/navirox-capture-warm/app/scenario-artifacts/records-motion/first-meaningful.web.png",
+        "web": "/tmp/navirox-tolerance4/app/scenario-artifacts/records-motion/first-meaningful.web.png",
         "native": {
-          "ios": "/tmp/navirox-capture-warm/app/scenario-artifacts/records-motion/first-meaningful.ios.png"
+          "ios": "/tmp/navirox-tolerance4/app/scenario-artifacts/records-motion/first-meaningful.ios.png"
         },
         "devices": {
           "ios": {
@@ -145,9 +180,9 @@
       {
         "capture": "midpoint",
         "moment": "midpoint",
-        "web": "/tmp/navirox-capture-warm/app/scenario-artifacts/records-motion/midpoint.web.png",
+        "web": "/tmp/navirox-tolerance4/app/scenario-artifacts/records-motion/midpoint.web.png",
         "native": {
-          "ios": "/tmp/navirox-capture-warm/app/scenario-artifacts/records-motion/midpoint.ios.png"
+          "ios": "/tmp/navirox-tolerance4/app/scenario-artifacts/records-motion/midpoint.ios.png"
         },
         "devices": {
           "ios": {
@@ -165,9 +200,9 @@
       {
         "capture": "settled",
         "moment": "settled",
-        "web": "/tmp/navirox-capture-warm/app/scenario-artifacts/records-motion/settled.web.png",
+        "web": "/tmp/navirox-tolerance4/app/scenario-artifacts/records-motion/settled.web.png",
         "native": {
-          "ios": "/tmp/navirox-capture-warm/app/scenario-artifacts/records-motion/settled.ios.png"
+          "ios": "/tmp/navirox-tolerance4/app/scenario-artifacts/records-motion/settled.ios.png"
         },
         "devices": {
           "ios": {
@@ -185,9 +220,9 @@
       {
         "capture": "interrupted",
         "moment": "interrupted",
-        "web": "/tmp/navirox-capture-warm/app/scenario-artifacts/records-motion/interrupted.web.png",
+        "web": "/tmp/navirox-tolerance4/app/scenario-artifacts/records-motion/interrupted.web.png",
         "native": {
-          "ios": "/tmp/navirox-capture-warm/app/scenario-artifacts/records-motion/interrupted.ios.png"
+          "ios": "/tmp/navirox-tolerance4/app/scenario-artifacts/records-motion/interrupted.ios.png"
         },
         "devices": {
           "ios": {
@@ -231,7 +266,7 @@
   ],
   "notes": [
     "The device capture comes from the application the target compiler emitted; the emitted screen file is recompiled and compared before anything is installed.",
-    "A frame is a state of the fixture, not a claim of visual parity: the comparison stays a measurement until a scenario declares a cross-platform tolerance.",
+    "A frame is a state of the fixture, not a claim of visual parity: the verdict above is the declared tolerance being evaluated, and the pixel difference ratio is a measurement reported beside it rather than the value that decides it.",
     "The fixture application replaces the template root screen, so the captured screen carries no safe-area padding. That is a property of the fixture, not of the platform."
   ]
 }

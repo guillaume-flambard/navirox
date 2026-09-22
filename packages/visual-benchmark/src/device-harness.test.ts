@@ -129,6 +129,14 @@ describe('the device harness', () => {
     }
   })
 
+  it('asserts the declared identifiers after the declared actions', () => {
+    const capture = deviceHarnessFile('capture.test.ts')
+
+    expect(capture).toContain('NAVIROX_IDENTIFIERS')
+    expect(capture).toContain('for (const identifier of identifiers)')
+    expect(capture).toContain('waitFor(element(by.id(identifier)))')
+  })
+
   it('gives the launch a budget larger than the settle wait it performs', () => {
     const capture = deviceHarnessFile('capture.test.ts')
 

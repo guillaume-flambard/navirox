@@ -1,7 +1,7 @@
 {
   "scenario": "records-list",
   "platform": "ios",
-  "artifactDirectory": "/tmp/navirox-capture-warm/app/scenario-artifacts/records-list",
+  "artifactDirectory": "/tmp/navirox-tolerance4/app/scenario-artifacts/records-list",
   "device": {
     "platform": "ios",
     "deviceName": "iPhone 17"
@@ -21,13 +21,43 @@
     "rest"
   ],
   "labelsInOrder": true,
+  "tolerance": {
+    "gridSize": 0.05,
+    "identifiers": [
+      "records-screen",
+      "records-list",
+      "record-row",
+      "record-select"
+    ]
+  },
+  "verdict": {
+    "scenario": "records-list",
+    "verdict": "pass",
+    "checks": [
+      {
+        "name": "captures",
+        "verdict": "pass",
+        "detail": "all 1 declared captures exist on the web and on ios"
+      },
+      {
+        "name": "grid",
+        "verdict": "pass",
+        "detail": "the largest grid difference is 0.00 percent, inside the declared 5.00 percent"
+      },
+      {
+        "name": "identifiers",
+        "verdict": "pass",
+        "detail": "all 4 declared identifiers were asserted on the web and on ios"
+      }
+    ]
+  },
   "frames": [
     {
       "key": "rest",
       "moment": "rest",
       "file": "rest.ios.png",
-      "bytes": 83236,
-      "sha256": "2738142bbbf1dd0f64b4446dfaedf0a74ba3dc33205ac3de5bd187ddfa85f118"
+      "bytes": 82057,
+      "sha256": "0873aae25e5de0a0d462753094cfd07a82f52ea034836cce6de8f6fa4f539f5d"
     }
   ],
   "coincidentFrames": [],
@@ -41,14 +71,14 @@
   ],
   "report": {
     "scenario": "records-list",
-    "artifactDir": "/tmp/navirox-capture-warm/app/scenario-artifacts/records-list",
+    "artifactDir": "/tmp/navirox-tolerance4/app/scenario-artifacts/records-list",
     "outcomes": [
       {
         "capture": "rest",
         "moment": "rest",
-        "web": "/tmp/navirox-capture-warm/app/scenario-artifacts/records-list/rest.web.png",
+        "web": "/tmp/navirox-tolerance4/app/scenario-artifacts/records-list/rest.web.png",
         "native": {
-          "ios": "/tmp/navirox-capture-warm/app/scenario-artifacts/records-list/rest.ios.png"
+          "ios": "/tmp/navirox-tolerance4/app/scenario-artifacts/records-list/rest.ios.png"
         },
         "devices": {
           "ios": {
@@ -87,7 +117,7 @@
   ],
   "notes": [
     "The device capture comes from the application the target compiler emitted; the emitted screen file is recompiled and compared before anything is installed.",
-    "A frame is a state of the fixture, not a claim of visual parity: the comparison stays a measurement until a scenario declares a cross-platform tolerance.",
+    "A frame is a state of the fixture, not a claim of visual parity: the verdict above is the declared tolerance being evaluated, and the pixel difference ratio is a measurement reported beside it rather than the value that decides it.",
     "The fixture application replaces the template root screen, so the captured screen carries no safe-area padding. That is a property of the fixture, not of the platform."
   ]
 }

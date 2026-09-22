@@ -72,6 +72,16 @@ const ROOT_TEST_ID = 'records-screen'
 const PLATFORMS = ['ios', 'android']
 const MOTION_ORDER = ['rest', 'first-meaningful', 'midpoint', 'settled', 'interrupted']
 
+// The differences these scenarios accept across platforms. The identifiers are
+// the ones every capture of these scenarios renders, so a capture whose screen
+// did not render fails instead of reaching the comparison, and the grid
+// tolerance is declared because the emulator screen does not normalize to the
+// browser's grid exactly (1080x2400 against 390x844 viewport).
+const SCENARIO_TOLERANCE = {
+  gridSize: 0.05,
+  identifiers: ['records-screen', 'records-list', 'record-row', 'record-select'],
+}
+
 const RECORDS_SCENARIO = {
   name: 'records-list',
   route: '/records',
@@ -85,6 +95,7 @@ const RECORDS_SCENARIO = {
   actions: [],
   captures: [{ key: 'rest', moment: 'rest' }],
   masks: [],
+  tolerance: SCENARIO_TOLERANCE,
 }
 
 // The same fixture driven through its own interaction, so the five temporal
@@ -125,6 +136,7 @@ const MOTION_SCENARIO = {
     interaction: 'select a record, then replace the selection with a second press',
     interruptible: true,
   },
+  tolerance: SCENARIO_TOLERANCE,
 }
 
 const SCENARIOS = [RECORDS_SCENARIO, MOTION_SCENARIO]
@@ -172,6 +184,17 @@ function parseArguments(argv) {
 
 function digest(path) {
   return createHash('sha256').update(readFileSync(path)).digest('hex')
+}
+
+// The size a capture reduces to when both sides are normalized the same way.
+// The tolerance compares these sizes, because a raw pixel difference between a
+// browser and a device describes the two profiles rather than the screen. The
+// decoders are passed in because the benchmark modules are imported inside the
+// run, where they are only reachable through the dynamic import.
+function gridOf(decoders, path) {
+  const normalized = decoders.normalizeImage(decoders.decodePng(readFileSync(path)))
+
+  return { width: normalized.width, height: normalized.height }
 }
 
 /**
@@ -330,6 +353,9 @@ async function main() {
     ScenarioRunError,
     captureNativeDevice,
     captureWebChrome,
+    decodePng,
+    evaluateTolerance,
+    normalizeImage,
     runScenario,
     validateScenario,
     writeDeviceHarness,
@@ -414,6 +440,7 @@ async function main() {
               captureWebChrome(scenario, capture, outPath, {
                 chromePath: CHROME_PATH,
                 baseUrl: BASE_URL,
+                identifiers: scenario.tolerance?.identifiers,
               }),
             native: {
               [platform]: (scenario, capture, outPath) =>
@@ -424,6 +451,7 @@ async function main() {
                   deviceName: name,
                   scenarioPath,
                   rootTestId: ROOT_TEST_ID,
+                  identifiers: scenario.tolerance?.identifiers,
                   artifactDirectory,
                   skipStart: true,
                 }),
@@ -485,6 +513,68 @@ async function main() {
         labels.length === expectedLabels.length &&
         expectedLabels.every((moment, index) => labels[index] === moment)
 
+      // The tolerance this run is evaluated against. It is declared per
+      // scenario, and a scenario that declares none keeps the measurement-only
+      // behaviour: there is nothing declared to pass or fail against.
+      const toleranceRun =
+        scenario.tolerance === undefined
+          ? undefined
+          : {
+              scenario: scenario.name,
+              tolerance: scenario.tolerance,
+              platforms: [platform],
+              captures: report.outcomes.map((outcome) => {
+                const webPath = join(artifactDirectory, `${outcome.capture}.web.png`)
+                const devicePath = join(artifactDirectory, `${outcome.capture}.${platform}.png`)
+                const sides = [
+                  existsSync(webPath) ? 'web' : undefined,
+                  existsSync(devicePath) ? platform : undefined,
+                ].filter((side) => side !== undefined)
+
+                let grid
+
+                if (existsSync(webPath) && existsSync(devicePath)) {
+                  try {
+                    grid = {
+                      web: gridOf({ normalizeImage, decodePng }, webPath),
+                      device: gridOf({ normalizeImage, decodePng }, devicePath),
+                    }
+                  } catch (error) {
+                    process.stderr.write(
+                      `the grid of ${outcome.capture} could not be read: ${error.message}\n`,
+                    )
+                  }
+                }
+
+                return { key: outcome.capture, produced: sides, grid }
+              }),
+              identifiers: (scenario.tolerance.identifiers ?? []).map((identifier) => ({
+                name: identifier,
+                // A capture only succeeds once its driver found every declared
+                // identifier, so a capture that exists is an assertion that the
+                // identifier was rendered there.
+                asserted: [
+                  ...new Set(
+                    report.outcomes.flatMap((outcome) =>
+                      [
+                        existsSync(join(artifactDirectory, `${outcome.capture}.web.png`))
+                          ? 'web'
+                          : undefined,
+                        existsSync(join(artifactDirectory, `${outcome.capture}.${platform}.png`))
+                          ? platform
+                          : undefined,
+                      ].filter((side) => side !== undefined),
+                    ),
+                  ),
+                ],
+              })),
+              motion: report.motion.declared
+                ? { declared: true, required: expectedLabels, labels }
+                : undefined,
+            }
+
+      const verdict = toleranceRun === undefined ? undefined : evaluateTolerance(toleranceRun)
+
       const byHash = new Map()
 
       for (const frame of frames) {
@@ -510,6 +600,8 @@ async function main() {
         motion: report.motion,
         labels,
         labelsInOrder,
+        tolerance: scenario.tolerance ?? null,
+        verdict: verdict ?? null,
         frames,
         coincidentFrames,
         missing,
@@ -526,7 +618,7 @@ async function main() {
         ],
         notes: [
           'The device capture comes from the application the target compiler emitted; the emitted screen file is recompiled and compared before anything is installed.',
-          'A frame is a state of the fixture, not a claim of visual parity: the comparison stays a measurement until a scenario declares a cross-platform tolerance.',
+          'A frame is a state of the fixture, not a claim of visual parity: the verdict above is the declared tolerance being evaluated, and the pixel difference ratio is a measurement reported beside it rather than the value that decides it.',
           'The fixture application replaces the template root screen, so the captured screen carries no safe-area padding. That is a property of the fixture, not of the platform.',
         ],
       }
@@ -552,6 +644,14 @@ async function main() {
         process.stdout.write(`Coincident frames: ${coincidentFrames.join('; ')}\n`)
       }
 
+      if (verdict !== undefined) {
+        process.stdout.write(`Verdict: ${verdict.verdict}\n`)
+
+        for (const check of verdict.checks) {
+          process.stdout.write(`  ${check.verdict} ${check.name}: ${check.detail}\n`)
+        }
+      }
+
       for (const entry of evidence.unavailable) {
         process.stdout.write(`Unavailable: ${entry.capture}.${entry.platform} (${entry.reason})\n`)
       }
@@ -565,6 +665,12 @@ async function main() {
       if (!labelsInOrder) {
         failures.push(
           `${scenario.name}: the motion labels are not in the required order: ${labels.join(', ')}`,
+        )
+      }
+
+      if (verdict !== undefined && verdict.verdict === 'fail') {
+        failures.push(
+          `${scenario.name}: the declared tolerance failed at ${verdict.decidedBy ?? 'a check'}`,
         )
       }
     }

@@ -42,6 +42,16 @@ export interface ScenarioMotion {
   interruptible: boolean
 }
 
+export interface ScenarioTolerance {
+  /**
+   * Maximum relative difference between the two normalized grid sizes the
+   * scenario accepts, as a fraction of the larger side (0.05 is five percent).
+   */
+  gridSize: number
+  /** Test identifiers the scenario requires on both platforms. */
+  identifiers: string[]
+}
+
 export interface ScenarioMask {
   /** Capture keys this mask applies to. Every entry must name a capture. */
   captures: string[]
@@ -79,6 +89,8 @@ export interface VisualScenario {
   masks: ScenarioMask[]
   /** Present only when the scenario captures a temporal interaction. */
   motion?: ScenarioMotion
+  /** Present only when the scenario declares the differences it accepts across platforms. */
+  tolerance?: ScenarioTolerance
 }
 
 export interface ScenarioIssue {
@@ -111,6 +123,7 @@ export function validateScenario(value: unknown): ScenarioIssue[] {
   const captureKeys = checkCaptures(scenario.captures, issues)
   checkMasks(scenario.masks, captureKeys, issues)
   checkMotion(scenario, issues)
+  checkTolerance(scenario, issues)
 
   return issues
 }
@@ -293,6 +306,47 @@ function checkMotion(scenario: Record<string, unknown>, issues: ScenarioIssue[])
       message: `captures must declare the moments ${required.join(', ')} in that order when motion is declared`,
     })
   }
+}
+
+/**
+ * A declared tolerance is the only thing that can turn a cross-platform
+ * comparison into a pass, so it is validated as strictly as the rest of the
+ * scenario: a grid bound outside zero and one, or an identifier list that is
+ * empty or not made of names, would let a run pass on a declaration nobody can
+ * read.
+ */
+function checkTolerance(scenario: Record<string, unknown>, issues: ScenarioIssue[]): void {
+  const tolerance = scenario.tolerance
+  if (tolerance === undefined) {
+    return
+  }
+  if (typeof tolerance !== 'object' || tolerance === null || Array.isArray(tolerance)) {
+    issues.push({ path: 'tolerance', message: 'tolerance must be an object' })
+    return
+  }
+  const entry = tolerance as Record<string, unknown>
+  const gridSize = entry.gridSize
+  if (typeof gridSize !== 'number' || !(gridSize >= 0) || !(gridSize < 1)) {
+    issues.push({
+      path: 'tolerance.gridSize',
+      message: 'tolerance.gridSize must be a number >= 0 and < 1',
+    })
+  }
+  if (!Array.isArray(entry.identifiers) || entry.identifiers.length === 0) {
+    issues.push({
+      path: 'tolerance.identifiers',
+      message: 'tolerance.identifiers must be a non-empty array of test identifiers',
+    })
+    return
+  }
+  entry.identifiers.forEach((identifier, index) => {
+    if (typeof identifier !== 'string' || identifier.length === 0) {
+      issues.push({
+        path: `tolerance.identifiers[${index}]`,
+        message: `tolerance.identifiers[${index}] must be a non-empty string`,
+      })
+    }
+  })
 }
 
 function checkMasks(masks: unknown, captureKeys: Set<string>, issues: ScenarioIssue[]): void {

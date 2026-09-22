@@ -1,4 +1,4 @@
-import { mkdirSync, mkdtempSync, writeFileSync } from 'node:fs'
+import { existsSync, mkdirSync, mkdtempSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { describe, expect, it } from 'vitest'
@@ -6,7 +6,9 @@ import {
   CaptureMissingError,
   CaptureUnavailableError,
   captureNativeDevice,
+  captureWebChrome,
   type DeviceProcessRunner,
+  type WebProcessRunner,
 } from './drivers.js'
 import type { ScenarioCapture, VisualScenario } from './scenario.js'
 
@@ -206,5 +208,89 @@ describe('the native capture driver', () => {
         artifactDirectory: options.artifactDirectory,
       }),
     ).toThrow(/Detox is not installed in/)
+  })
+
+  it('passes the declared identifiers to the device run', () => {
+    const device = fakeDevice('identifiers')
+    let environment: Readonly<Record<string, string>> | undefined
+    const runner: DeviceProcessRunner = (command, args, options) => {
+      if (args[0] === 'test') {
+        environment = options.env
+        writeFileSync(device.outPath, 'png')
+      } else {
+        writeFileSync(device.binaryPath, 'apk')
+      }
+
+      return { status: 0, stdout: '', stderr: '' }
+    }
+
+    captureNativeDevice(scenario(), capture, device.outPath, {
+      ...optionsFor(device, runner),
+      identifiers: ['records-screen', 'records-list'],
+    })
+
+    expect(environment?.NAVIROX_IDENTIFIERS).toBe('records-screen,records-list')
+  })
+})
+
+interface FakeBrowser {
+  readonly outPath: string
+  readonly calls: string[]
+}
+
+function fakeBrowser(name: string): FakeBrowser {
+  const root = mkdtempSync(join(tmpdir(), `web-driver-${name}-`))
+
+  return { outPath: join(root, 'rest.web.png'), calls: [] }
+}
+
+function webOptions(browser: FakeBrowser, dom: string): Parameters<typeof captureWebChrome>[3] {
+  const run: WebProcessRunner = (_command, args) => {
+    const dumping = args.includes('--dump-dom')
+
+    browser.calls.push(dumping ? '--dump-dom' : '--screenshot')
+
+    if (!dumping) {
+      writeFileSync(browser.outPath, 'png')
+    }
+
+    return { status: 0, stdout: dumping ? dom : '', stderr: '' }
+  }
+
+  return { chromePath: '/fake/chrome', baseUrl: 'http://127.0.0.1:5202', run }
+}
+
+describe('the web capture driver', () => {
+  it('writes a capture without inspecting the page when no identifier is declared', () => {
+    const browser = fakeBrowser('plain')
+
+    captureWebChrome(scenario(), capture, browser.outPath, webOptions(browser, '<main></main>'))
+
+    expect(existsSync(browser.outPath)).toBe(true)
+    expect(browser.calls).toEqual(['--screenshot'])
+  })
+
+  it('checks a declared identifier on the served page', () => {
+    const browser = fakeBrowser('checked')
+    const options = webOptions(browser, '<main data-testid="records-screen"></main>')
+
+    captureWebChrome(scenario(), capture, browser.outPath, {
+      ...options,
+      identifiers: ['records-screen'],
+    })
+
+    expect(browser.calls).toEqual(['--screenshot', '--dump-dom'])
+  })
+
+  it('fails the capture when the served page lacks a declared identifier', () => {
+    const browser = fakeBrowser('missing')
+    const options = webOptions(browser, '<main data-testid="records-screen"></main>')
+
+    expect(() =>
+      captureWebChrome(scenario(), capture, browser.outPath, {
+        ...options,
+        identifiers: ['records-screen', 'record-detail'],
+      }),
+    ).toThrow(/does not render record-detail/)
   })
 })
