@@ -1,0 +1,133 @@
+{
+  "schemaVersion": 1,
+  "journey": "angular-record-workflow",
+  "scenario": "angular-companion",
+  "platform": "ios",
+  "device": {
+    "platform": "ios",
+    "deviceName": "iPhone 17 Pro"
+  },
+  "source": {
+    "fixture": "packages/source-angular/fixtures/record-workflow",
+    "adapterId": "angular",
+    "benchmarkRevision": "2cd77380bc838b8bd6c80f9fbe25855d73ef860c"
+  },
+  "screen": {
+    "path": "packages/source-angular/companion/App.vue",
+    "sha256": "e322ec779cc3b8b1b7c3a52c11f821a901a1dde0ec1f6865975ae2543b25d6e8",
+    "producedByCompiler": false,
+    "note": "The Angular journey has no target compiler, so this screen is hand-written work and no compiler version or manifest hash exists."
+  },
+  "consumed": {
+    "path": "record-workflow.data.ts",
+    "sourcePath": "packages/source-angular/fixtures/record-workflow/src/app/record-workflow.data.ts",
+    "sha256": "12e2933bdf871127f0d625614fe8bd65ae8f43fb54d620588739f18ca9c6a94d",
+    "decision": "shared",
+    "rule": "unit-shared-logic"
+  },
+  "identifiers": [
+    "record-workflow-screen",
+    "record-workflow-queue",
+    "record-workflow-row",
+    "record-workflow-select"
+  ],
+  "captures": [
+    {
+      "key": "rest",
+      "moment": "rest",
+      "file": "rest.ios.png",
+      "bytes": 100627,
+      "sha256": "0512c5ae370231a762b8d8063b1f5a669fb41ab63422790db7977cdd70e8fe76",
+      "actions": []
+    },
+    {
+      "key": "first-meaningful",
+      "moment": "first-meaningful",
+      "file": "first-meaningful.ios.png",
+      "bytes": 129528,
+      "sha256": "94be3fb56b23edbacaf4bcb90e15d31d3b6685aa06ce8a123cdb854abe559562",
+      "actions": [
+        {
+          "press": "record-workflow-select"
+        }
+      ]
+    },
+    {
+      "key": "midpoint",
+      "moment": "midpoint",
+      "file": "midpoint.ios.png",
+      "bytes": 131331,
+      "sha256": "46800505fbf260ddb7cc706293ad9ebf0d42db32faed0a5c320b005bf9152e28",
+      "actions": [
+        {
+          "press": "record-workflow-select"
+        },
+        {
+          "press": "record-workflow-field"
+        },
+        {
+          "press": "record-workflow-status"
+        },
+        {
+          "press": "record-workflow-attach"
+        }
+      ]
+    },
+    {
+      "key": "settled",
+      "moment": "settled",
+      "file": "settled.ios.png",
+      "bytes": 135940,
+      "sha256": "67c3e4d9c6cb267bf22770f4355a8e2785de2b95c7f462cf4fa7cfa465951e44",
+      "actions": [
+        {
+          "press": "record-workflow-select"
+        },
+        {
+          "press": "record-workflow-field"
+        },
+        {
+          "press": "record-workflow-status"
+        },
+        {
+          "press": "record-workflow-attach"
+        },
+        {
+          "press": "record-workflow-save"
+        }
+      ]
+    },
+    {
+      "key": "interrupted",
+      "moment": "interrupted",
+      "file": "interrupted.ios.png",
+      "bytes": 131482,
+      "sha256": "8ed30a6aebb063628f55583fc1a0c4d9241ce32b4677d2ade1fe5f21a5d11a9b",
+      "actions": [
+        {
+          "press": "record-workflow-select"
+        },
+        {
+          "press": "record-workflow-select",
+          "nth": 1
+        }
+      ]
+    }
+  ],
+  "missing": [],
+  "comparison": {
+    "webCounterpart": false,
+    "note": "There is no served web page for this journey, so no comparison is reported."
+  },
+  "commands": [
+    "node scripts/capture-angular-companion.mjs --platform ios"
+  ],
+  "limits": [
+    "The journey has no served web page, so no web capture exists and no comparison is reported.",
+    "No target compiler produced the screen, so no compiler version or manifest hash is recorded.",
+    "The pinned SuiteCRM routing could not be read, so no route, screen or unit is claimed.",
+    "The declared @angular/core version is outside the tested range, so it stays untested.",
+    "The workflow is an unvalidated hypothesis and Navirox has no affiliation with SuiteCRM.",
+    "Nothing here is a visual-fidelity or parity claim."
+  ]
+}

@@ -175,6 +175,26 @@ export function fixtureDirectory(fixture) {
 }
 
 /**
+ * Writes a fixture's declared screen into the prepared application as its app
+ * root. A journey with no target compiler has no emitted screen, so the screen
+ * the companion shows is hand-written work and the provenance record has to say
+ * so. Returns the content hash of the screen that was written.
+ */
+export function installFixtureScreen(appDir, fixture) {
+  assert(
+    typeof fixture.screen === 'string' && fixture.screen.length > 0,
+    `The ${fixture.appName ?? 'fixture'} record declares no screen to install.`,
+  )
+
+  const source = readFileSync(fixture.screen, 'utf8')
+
+  writeFileSync(join(appDir, 'App.vue'), source, 'utf8')
+  process.stdout.write(`   wrote the hand-written screen from ${fixture.screen}\n`)
+
+  return sha256(source)
+}
+
+/**
  * Reads the fixture with the real source adapter, in the same read-only way the
  * benchmark does. The analysis is the evidence that a fixture is what the
  * adapter sees, not what a test author hoped it saw.

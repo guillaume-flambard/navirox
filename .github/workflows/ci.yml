@@ -453,6 +453,22 @@ jobs:
         env:
           NAVIROX_DEVICE: iPhone 17
 
+      # The Angular companion has no target compiler and no served web page, so
+      # its own command captures it on the device and records that no web
+      # counterpart exists.
+      - name: Capture the Angular companion on a simulator
+        run: |
+          for attempt in 1 2; do
+            if node scripts/capture-angular-companion.mjs --platform ios --workspace "$RUNNER_TEMP/capture-angular-companion-ios"; then
+              exit 0
+            fi
+            echo "the Angular companion capture failed on attempt $attempt of 2"
+          done
+          echo "::error::the Angular companion capture failed on two attempts"
+          exit 1
+        env:
+          NAVIROX_DEVICE: iPhone 17
+
       # The captures are the point of the job, so they are kept whether the run
       # passed or failed. A failed run is exactly when the screenshot is worth
       # looking at.
@@ -464,6 +480,8 @@ jobs:
           path: |
             ${{ runner.temp }}/capture-ios/app/scenario-artifacts
             ${{ runner.temp }}/capture-field-workflow-ios/app/scenario-artifacts
+            ${{ runner.temp }}/capture-angular-companion-ios/app/scenario-artifacts
+            docs/evidence/angular-companion-device-evidence-*.json
             docs/evidence/records-native-capture-*.json
             docs/evidence/native-capture-*.json
 
@@ -627,6 +645,14 @@ jobs:
             --workspace "$RUNNER_TEMP/capture-field-workflow-android" ||
             fail "the field-workflow capture failed on the emulator"
 
+          # The Angular companion has no target compiler and no served web page,
+          # so its own command captures it on the device and records that no web
+          # counterpart exists.
+          node scripts/capture-angular-companion.mjs \
+            --platform android \
+            --workspace "$RUNNER_TEMP/capture-angular-companion-android" ||
+            fail "the Angular companion capture failed on the emulator"
+
       # Same reasoning as the iOS capture: the captures are the point of the job,
       # so they are kept whether the run passed or failed.
       - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
@@ -637,5 +663,7 @@ jobs:
           path: |
             ${{ runner.temp }}/capture-android/app/scenario-artifacts
             ${{ runner.temp }}/capture-field-workflow-android/app/scenario-artifacts
+            ${{ runner.temp }}/capture-angular-companion-android/app/scenario-artifacts
             docs/evidence/records-native-capture-*.json
             docs/evidence/native-capture-*.json
+            docs/evidence/angular-companion-device-evidence-*.json

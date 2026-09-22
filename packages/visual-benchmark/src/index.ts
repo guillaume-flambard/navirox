@@ -91,3 +91,8 @@ export {
   type ToleranceVerdict,
 } from './tolerance.js'
 export { FIELD_WORKFLOW_IDENTIFIERS, fieldWorkflowScenario } from './scenarios/field-workflow.js'
+export {
+  ANGULAR_COMPANION_IDENTIFIERS,
+  angularCompanionScenario,
+  type DeviceScenario,
+} from './scenarios/angular-companion.js'
