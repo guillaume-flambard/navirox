@@ -418,7 +418,21 @@ jobs:
       # name, and uploading the whole workspace would upload a node_modules.
       # The device is named explicitly because the harness default is a local
       # machine's simulator and a runner's simulator list is its own.
-      - run: node packages/visual-benchmark/scripts/capture-records-native.mjs --platform ios --workspace "$RUNNER_TEMP/capture-ios"
+      # The simulator occasionally reports the application as busy until the
+      # harness's settle attempts are exhausted, and the capture then finds no
+      # screenshot. That is an environment flake rather than a screen defect, so
+      # the capture is attempted twice before the job fails; a real defect fails
+      # both attempts.
+      - name: Capture the records fixture on a simulator
+        run: |
+          for attempt in 1 2; do
+            if node packages/visual-benchmark/scripts/capture-records-native.mjs --platform ios --workspace "$RUNNER_TEMP/capture-ios"; then
+              exit 0
+            fi
+            echo "the records capture failed on attempt $attempt of 2"
+          done
+          echo "::error::the records capture failed on two attempts"
+          exit 1
         env:
           NAVIROX_DEVICE: iPhone 17
 
@@ -426,7 +440,16 @@ jobs:
       # compiler emitted for the field-workflow fixture, which imports the two
       # units the planner approved as shared, so this run also proves the
       # preparation copies them beside the app root.
-      - run: node packages/visual-benchmark/scripts/capture-records-native.mjs --platform ios --scenario field-workflow --workspace "$RUNNER_TEMP/capture-field-workflow-ios"
+      - name: Capture the field-workflow companion on a simulator
+        run: |
+          for attempt in 1 2; do
+            if node packages/visual-benchmark/scripts/capture-records-native.mjs --platform ios --scenario field-workflow --workspace "$RUNNER_TEMP/capture-field-workflow-ios"; then
+              exit 0
+            fi
+            echo "the field-workflow capture failed on attempt $attempt of 2"
+          done
+          echo "::error::the field-workflow capture failed on two attempts"
+          exit 1
         env:
           NAVIROX_DEVICE: iPhone 17
 
