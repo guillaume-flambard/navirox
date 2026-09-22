@@ -7,6 +7,7 @@ import {
   FIELD_STATUSES,
   type FieldRecord,
 } from './fieldRecords'
+import { nextIn, saveOutcome } from './fieldLogic'
 
 const records = ref<FieldRecord[]>([...FIELD_RECORDS])
 const selected = ref<FieldRecord | null>(null)
@@ -23,11 +24,6 @@ function select(record: FieldRecord): void {
   notes.value = record.notes
   attached.value = false
   saveState.value = 'idle'
-}
-
-function nextIn(values: readonly string[], current: string): string {
-  const index = values.indexOf(current)
-  return values[(index + 1) % values.length] ?? ''
 }
 
 function cycleStatus(): void {
@@ -47,7 +43,7 @@ function attach(): void {
 }
 
 function save(): void {
-  saveState.value = status.value.trim().length === 0 ? 'error' : 'saved'
+  saveState.value = saveOutcome(status.value)
 }
 </script>
 <template>

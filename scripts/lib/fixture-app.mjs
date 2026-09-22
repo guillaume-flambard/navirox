@@ -23,13 +23,14 @@ import {
   writeFileSync,
 } from 'node:fs'
 import { tmpdir } from 'node:os'
-import { join, sep } from 'node:path'
+import { dirname, join, sep } from 'node:path'
 
 export const ROOT = new URL('../../', import.meta.url).pathname.replace(/\/$/, '')
 export const PACKAGES_DIRECTORY = join(ROOT, 'packages')
 export const SCAFFOLDER = join(ROOT, 'packages', 'create-navirox', 'dist', 'bin.js')
 export const COMPILER = join(ROOT, 'packages', 'target-vue', 'dist', 'index.js')
 export const BENCHMARK = join(ROOT, 'packages', 'visual-benchmark', 'dist', 'index.js')
+export const LAUNCHER = join(ROOT, 'packages', 'navirox', 'dist', 'bin.js')
 export const FIXTURES_DIRECTORY = join(ROOT, 'packages', 'target-vue', 'fixtures')
 
 /**
@@ -66,6 +67,37 @@ export const APP_NAME = RECORDS_FIXTURE.appName
 
 export const TEST_IDS = RECORDS_FIXTURE.testIds
 
+/**
+ * The field-workflow fixture, the Vue proof journey's own screen. It shares the
+ * shape above so the same helpers prepare it: the difference is which screen is
+ * compiled into the app root and which identifiers the bundle has to carry.
+ */
+export const FIELD_WORKFLOW_FIXTURE = {
+  appName: 'field-workflow-app',
+  webFixture: join(FIXTURES_DIRECTORY, 'field-workflow', 'FieldWorkflowScreen.web.vue'),
+  emittedScreen: join(FIXTURES_DIRECTORY, 'field-workflow', 'FieldWorkflowScreen.native.vue'),
+  outputPath: 'packages/target-vue/fixtures/field-workflow/FieldWorkflowScreen.native.vue',
+  sourceName: 'FieldWorkflowScreen.web.vue',
+  bundleName: 'field-workflow',
+  testIds: [
+    'field-screen',
+    'field-list',
+    'field-row',
+    'field-select',
+    'field-detail',
+    'field-status',
+    'field-status-toggle',
+    'field-status-clear',
+    'field-notes',
+    'field-notes-edit',
+    'field-attachment',
+    'field-attach',
+    'field-save',
+    'field-saved',
+    'field-error',
+  ],
+}
+
 export function step(message) {
   process.stdout.write(`\n== ${message}\n`)
 }
@@ -97,12 +129,76 @@ export function sha256(text) {
 }
 
 export function requireBuild() {
-  for (const artifact of [SCAFFOLDER, COMPILER, BENCHMARK]) {
+  for (const artifact of [SCAFFOLDER, COMPILER, BENCHMARK, LAUNCHER]) {
     assert(
       existsSync(artifact),
       `${artifact} is missing. Build the workspace first with \`pnpm build\`.`,
     )
   }
+}
+
+/** The directory a fixture's source files live in. */
+export function fixtureDirectory(fixture) {
+  return dirname(fixture.webFixture)
+}
+
+/**
+ * Reads the fixture with the real source adapter, in the same read-only way the
+ * benchmark does. The analysis is the evidence that a fixture is what the
+ * adapter sees, not what a test author hoped it saw.
+ */
+export function analyzeFixture(fixture) {
+  step('Analyzing the fixture with the source adapter')
+
+  const result = capture(
+    process.execPath,
+    [LAUNCHER, 'analyze', fixtureDirectory(fixture), '--json'],
+    ROOT,
+  )
+
+  assert(result.status === 0, `The analyze command exited ${result.status}.\n${result.stderr}`)
+
+  return JSON.parse(result.stdout.trim())
+}
+
+/** Reads the planner's decisions for a fixture, which is what approves a move. */
+export function planFixture(fixture) {
+  step('Asking the planner which units may move')
+
+  const result = capture(
+    process.execPath,
+    [LAUNCHER, 'plan', '-C', fixtureDirectory(fixture), '--json'],
+    ROOT,
+  )
+
+  assert(result.status === 0, `The plan command exited ${result.status}.\n${result.stderr}`)
+
+  return JSON.parse(result.stdout.trim())
+}
+
+/** The planner decision for one subject, or a loud failure when there is none. */
+export function decisionFor(plan, subject) {
+  const decision = plan.decisions.find((entry) => entry.subject === subject)
+
+  assert(decision !== undefined, `The planner decided nothing about ${subject}.`)
+
+  return decision
+}
+
+/**
+ * Copies one source file into the prepared application unchanged. A unit that
+ * moves is copied, never rewritten: the planner approved the behaviour, so the
+ * bytes it approved are the bytes that travel.
+ */
+export function copyFixtureUnit(sourceDirectory, appDir, file) {
+  const source = join(sourceDirectory, file)
+  const target = join(appDir, file)
+
+  assert(existsSync(source), `${source} does not exist, so it cannot move.`)
+  mkdirSync(dirname(target), { recursive: true })
+  writeFileSync(target, readFileSync(source, 'utf8'))
+
+  return target
 }
 
 export function newWorkspace(prefix) {

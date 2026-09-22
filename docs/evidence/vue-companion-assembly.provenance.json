@@ -1,0 +1,35 @@
+{
+  "schemaVersion": 1,
+  "fixture": "field-workflow",
+  "compilerVersion": "0.1.1",
+  "manifestHash": "3ae83ea130a3bdb80d17649cdf79f1bdf12a3881937e8870d8d3a9a525cf7e32",
+  "screen": "packages/target-vue/fixtures/field-workflow/FieldWorkflowScreen.native.vue",
+  "files": [
+    {
+      "path": "packages/target-vue/fixtures/field-workflow/FieldWorkflowScreen.native.vue",
+      "origin": "generated",
+      "reason": "The target compiler emitted this screen from the web fixture."
+    },
+    {
+      "path": "fieldLogic.ts",
+      "origin": "moved",
+      "reason": "The planner classified it shared, so its behaviour moves unchanged.",
+      "decision": "shared",
+      "sourcePath": "packages/target-vue/fixtures/field-workflow/fieldLogic.ts",
+      "sha256": "d04758454df68c3eff185da56b7cc8c36e0bc5b893973fd0a84ec2b02e7a182c"
+    },
+    {
+      "path": "fieldRecords.ts",
+      "origin": "moved",
+      "reason": "The planner classified it shared, so its behaviour moves unchanged.",
+      "decision": "shared",
+      "sourcePath": "packages/target-vue/fixtures/field-workflow/fieldRecords.ts",
+      "sha256": "064a841473a3ceed60e5b1e9a07e98043db718ec329466a39b15206a4bc242c9"
+    },
+    {
+      "path": "index.js",
+      "origin": "manual",
+      "reason": "The scaffolder template writes the runtime bootstrap and mounts the app root."
+    }
+  ]
+}

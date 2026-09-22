@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "input": {
     "path": "FieldWorkflowScreen.web.vue",
-    "sha256": "d80e100857a11bfed688442f0812e97824f550bd1bdd9f842bd45a71296847d9"
+    "sha256": "0ee2a92dcf6a6c917ec0521d28d8ebdca8041fb7ebc5571af347e4f71e87cde6"
   },
   "outputPath": "packages/target-vue/fixtures/field-workflow/FieldWorkflowScreen.native.vue",
   "compilerVersion": "0.1.1",

@@ -17,6 +17,18 @@ export {
   type WebDriverOptions,
 } from './drivers.js'
 export {
+  COMPANION_PROVENANCE_SCHEMA_VERSION,
+  CompanionProvenanceError,
+  buildCompanionProvenance,
+  refreshCompanionScreen,
+  serializeCompanionProvenance,
+  type CompanionFileEntry,
+  type CompanionFileOrigin,
+  type CompanionProvenance,
+  type CompanionProvenanceInput,
+  type CompanionScreenRefreshOptions,
+} from './companion.js'
+export {
   DEVICE_HARNESS_DEPENDENCIES,
   DEVICE_HARNESS_DIRECTORY,
   DEVICE_HARNESS_FILES,
