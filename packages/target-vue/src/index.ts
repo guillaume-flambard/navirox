@@ -19,7 +19,11 @@ export type NativePrimitive = 'view' | 'text' | 'pressable' | 'text-input' | 'sc
 
 export interface TargetFinding {
   readonly code:
-    'template-parse-failed' | 'unsupported-element' | 'unsupported-directive' | 'unsupported-style'
+    | 'template-parse-failed'
+    | 'unsupported-element'
+    | 'unsupported-directive'
+    | 'unsupported-style'
+    | 'unsupported-text'
   readonly message: string
   readonly line: number
   readonly column: number
@@ -219,6 +223,16 @@ function properties(element: ElementNode, findings?: TargetFinding[]): string {
     .join('')
 }
 
+/**
+ * Whether a child is text native cannot render on its own. Whitespace between
+ * elements is not text: every multi-line template has it, and refusing it would
+ * refuse nearly every real screen.
+ */
+function bareText(node: TemplateChildNode): boolean {
+  if (node.type === NodeTypes.INTERPOLATION) return true
+  return node.type === NodeTypes.TEXT && node.content.trim().length > 0
+}
+
 function readNodes(
   nodes: readonly TemplateChildNode[],
   findings: TargetFinding[],
@@ -228,6 +242,21 @@ function readNodes(
     if (node.type !== NodeTypes.ELEMENT) continue
     const primitive = targetTag(node, findings)
     if (primitive === undefined) continue
+    if (primitive !== 'text') {
+      // Native renders a string only inside a text primitive. Text emitted
+      // straight into a view or a pressable mounts and then throws, so the
+      // compiler refuses it rather than generating a screen that crashes.
+      const bare = node.children.find((child) => bareText(child))
+      if (bare !== undefined) {
+        findings.push(
+          finding(
+            'unsupported-text',
+            `Text directly inside <${node.tag}> is not rendered natively. Wrap it in a text element such as <span>.`,
+            bare,
+          ),
+        )
+      }
+    }
     result.push({
       primitive,
       sourceTag: node.tag,

@@ -13,7 +13,7 @@ describe('compileVueTarget', () => {
   it('maps the safe Vue template subset to native primitives', () => {
     const output = compileVueTarget(`
       <script setup lang="ts">const count = 1</script>
-      <template><main><h1>Count {{ count }}</h1><button @click="count += 1">Add</button></main></template>
+      <template><main><h1>Count {{ count }}</h1><button @click="count += 1"><span>Add</span></button></main></template>
     `)
 
     expect(output.report.findings).toEqual([])
@@ -25,12 +25,18 @@ describe('compileVueTarget', () => {
         column: 1,
         children: [
           { primitive: 'text', sourceTag: 'h1', line: 1, column: 7, children: [] },
-          { primitive: 'pressable', sourceTag: 'button', line: 1, column: 33, children: [] },
+          {
+            primitive: 'pressable',
+            sourceTag: 'button',
+            line: 1,
+            column: 33,
+            children: [{ primitive: 'text', sourceTag: 'span', line: 1, column: 61, children: [] }],
+          },
         ],
       },
     ])
     expect(output.code).toContain(
-      '<view><text>Count {{ count }}</text><pressable @press="count += 1">Add</pressable></view>',
+      '<view><text>Count {{ count }}</text><pressable @press="count += 1"><text>Add</text></pressable></view>',
     )
   })
 
@@ -130,5 +136,44 @@ describe('compileVueTarget', () => {
 
     expect(output.code).toBeUndefined()
     expect(output.report.findings.map((finding) => finding.code)).toContain('unsupported-style')
+  })
+
+  it('refuses text native cannot render directly inside a non text element', () => {
+    const label = compileVueTarget(`<template><button @click="select()">Alpha</button></template>`)
+    const interpolation = compileVueTarget(`<template><div class="row">{{ name }}</div></template>`)
+
+    expect(label.code).toBeUndefined()
+    expect(label.report.findings.map((finding) => finding.code)).toEqual(['unsupported-text'])
+    expect(interpolation.code).toBeUndefined()
+    expect(interpolation.report.findings.map((finding) => finding.code)).toEqual([
+      'unsupported-text',
+    ])
+  })
+
+  it('accepts text inside a text element and whitespace between elements', () => {
+    const labelled = compileVueTarget(
+      `<template><div class="row"><span class="label">Alpha</span></div></template>`,
+    )
+    const spaced = compileVueTarget(`
+      <template>
+        <div class="row">
+          <span class="label">Alpha</span>
+        </div>
+      </template>
+    `)
+
+    expect(labelled.report.findings).toEqual([])
+    expect(labelled.code).toContain('<text class="label">Alpha</text>')
+    expect(spaced.report.findings).toEqual([])
+    expect(spaced.code).toBeDefined()
+  })
+
+  it('accepts a nested element inside a container', () => {
+    const output = compileVueTarget(
+      `<template><div class="row"><span class="label">Alpha</span><button @click="select()"><span class="label">Beta</span></button></div></template>`,
+    )
+
+    expect(output.report.findings).toEqual([])
+    expect(output.code).toBeDefined()
   })
 })

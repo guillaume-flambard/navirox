@@ -155,18 +155,22 @@ Uncaught Error: Text string "Alpha" must be rendered inside a <Text>
 ```
 
 The web fixture put bare text inside a button, so the compiler emitted
-`<pressable>Alpha</pressable>`. Bare text inside a non-text element is accepted by
-the safe subset and produces code that throws when it mounts, so the fixture was
-corrected (`<span class="row-button-label">` and `<span class="retry-label">`
-around the two labels) and the emitted file and its manifest were regenerated.
-The manifest hash moved from
+`<pressable>Alpha</pressable>`. Bare text inside a non-text element was accepted by
+the safe subset at the time and produced code that throws when it mounts, so the
+fixture was corrected (`<span class="row-button-label">` and
+`<span class="retry-label">` around the two labels) and the emitted file and its
+manifest were regenerated. The manifest hash moved from
 `4e556ef30b20b25aa3d41209e26e4c4bf492cc2f750752760038704e0394002a` to
 `e18712f368212b2481a868a3e6fa3fd5e42a58449fc099e1f503648b7eab4c48`.
 
-The gap itself is in `@memolabs-apps/target-vue` and is outside this change's
-declared impact, so it is recorded here as a discovered defect with its
-reproduction rather than fixed in this change. It is a real one: a fixture that
-compiles cleanly can still produce a screen that crashes on the first mount.
+The gap itself is in `@memolabs-apps/target-vue`. It is a real one: a fixture that
+compiled cleanly could still produce a screen that crashed on the first mount. It is
+now closed there: the compiler refuses a text or interpolation child placed directly
+inside an element whose native primitive is not a text primitive, with the
+`unsupported-text` finding, and a refused screen produces no generated source and no
+output path, exactly as every other finding already does. Whitespace between
+elements is still accepted, and the records fixture above compiles to the same bytes
+and the same manifest hash it did before the refusal was added.
 
 ## Pipeline defects this run fixed
 
