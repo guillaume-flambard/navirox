@@ -80,7 +80,10 @@ Authentication, offline synchronisation and compliance are open questions, not
 promises. Nothing in this brief claims that a companion app can sign in against
 a real instance, queue changes without connectivity, or satisfy data residency,
 retention, audit or regulatory requirements. Those answers come from the
-discovery days above and from the instance owner.
+discovery days above and from the instance owner. Every operational and
+accessibility condition of this journey, with its outcome and the deferred or
+excluded items named, is recorded in
+[`docs/READINESS-MATRIX.md`](../READINESS-MATRIX.md).
 
 ## What is not promised
 

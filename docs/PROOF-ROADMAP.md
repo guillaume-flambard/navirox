@@ -40,6 +40,10 @@ A journey is complete only when all of the following are true:
 7. Any public wording stays within `docs/GO-TO-MARKET.md`, the applicable pilot
    brief, and `docs/VISUAL-FIDELITY.md`.
 
+8. Its operational and accessibility conditions are recorded in
+   [`docs/READINESS-MATRIX.md`](READINESS-MATRIX.md) with an outcome for each,
+   and nothing deferred or excluded is presented as supported.
+
 ## Stop conditions
 
 Stop the active stage and create a new, bounded proposal when any of these is

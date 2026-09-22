@@ -37,7 +37,9 @@ That workflow is selected and recorded per
 provenance, the native-versus-PWA/WebView/Capacitor decision, and its validation
 status. The record names its immutable input, the public revision
 `81e094a1f4b3a62625c218d78fe319ba44098617` pinned in
-[`benchmarks/catalog.json`](../../benchmarks/catalog.json).
+[`benchmarks/catalog.json`](../../benchmarks/catalog.json). Its operational and
+accessibility conditions, including the deferred authentication and offline
+items, are recorded in [`docs/READINESS-MATRIX.md`](../READINESS-MATRIX.md).
 
 The workflow is this project's own hypothesis about a useful mobile task, drawn
 from the reproducible analysis of that revision. It is not Baserow's chosen
