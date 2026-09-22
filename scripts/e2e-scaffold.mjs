@@ -532,9 +532,24 @@ function buildIos(appDir) {
 
   step('Installing CocoaPods for iOS')
 
-  const pods = run('pod', ['install'], join(appDir, 'ios'))
+  // CocoaPods 1.17 can fail while it generates the Pods project with
+  // `ArgumentError - pathname contains null byte` (cocoapods/cocoapods issues
+  // 12798 and 12866, both open). It is intermittent and upstream, so the
+  // install is retried before the scaffold is called broken.
+  const iosDirectory = join(appDir, 'ios')
+  let pods = 1
 
-  assert(pods === 0, `pod install exited ${pods}, so the iOS build cannot start.`)
+  for (let attempt = 1; attempt <= 3; attempt += 1) {
+    pods = run('pod', ['install'], iosDirectory)
+
+    if (pods === 0) {
+      break
+    }
+
+    process.stdout.write(`   pod install exited ${pods} on attempt ${attempt} of 3\n`)
+  }
+
+  assert(pods === 0, `pod install exited ${pods} on three attempts, so the iOS build cannot start.`)
 
   step('Building iOS')
 

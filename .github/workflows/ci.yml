@@ -358,9 +358,25 @@ jobs:
 
       # Pods are not committed, and adding a devDependency is enough to move the
       # lock the build checks the manifest against.
+      #
+      # CocoaPods 1.17 intermittently fails while it generates the Pods project
+      # with `ArgumentError - pathname contains null byte`
+      # (cocoapods/cocoapods issues 12798 and 12866, both open). The failure is
+      # upstream and intermittent, so the install is retried before the job is
+      # failed.
       - run: |
           cd "examples/$NAVIROX_E2E_APP/ios"
-          pod install
+
+          for attempt in 1 2 3; do
+            if pod install; then
+              exit 0
+            fi
+
+            echo "pod install failed on attempt $attempt of 3"
+          done
+
+          echo "::error::pod install failed on three attempts"
+          exit 1
 
       - run: pnpm --filter "$NAVIROX_E2E_APP" e2e:build:ios
       - run: pnpm --filter "$NAVIROX_E2E_APP" e2e:test:ios

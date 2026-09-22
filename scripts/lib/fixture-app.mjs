@@ -354,13 +354,35 @@ export function install(appDir) {
  * a Podfile and a Podfile.lock but no Pods directory, so xcodebuild has nothing
  * to link against until this runs. It is preparation rather than capture: the
  * device driver builds whatever the caller prepared.
+ *
+ * CocoaPods 1.17 can fail while it generates the Pods project with
+ * `ArgumentError - pathname contains null byte` (cocoapods/cocoapods issues
+ * 12798 and 12866, both open). The failure is inside CocoaPods' own file
+ * reference generation, before any code of this project runs, and it is
+ * intermittent: the same tree installs on the next attempt. Three attempts keep
+ * a run from failing on someone else's race while still failing loudly when the
+ * Podfile itself is wrong.
  */
 export function installIosPods(appDir) {
   step('Installing the iOS dependencies')
 
-  const status = run('pod', ['install'], join(appDir, 'ios'))
+  const iosDirectory = join(appDir, 'ios')
+  let status = 1
 
-  assert(status === 0, `pod install exited ${status}, so the iOS build cannot start.`)
+  for (let attempt = 1; attempt <= 3; attempt += 1) {
+    status = run('pod', ['install'], iosDirectory)
+
+    if (status === 0) {
+      return
+    }
+
+    process.stdout.write(`   pod install exited ${status} on attempt ${attempt} of 3\n`)
+  }
+
+  assert(
+    status === 0,
+    `pod install exited ${status} on three attempts, so the iOS build cannot start.`,
+  )
 }
 
 export function lintApp(appDir) {
