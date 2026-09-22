@@ -18,6 +18,7 @@ full-application converter.
 | Migration engine                 | Explicitly shared or portable units can be copied with recorded limits. | That copied code works without adaptation.             |
 | Native/device evidence           | A bounded Vue journey and capture harness have evidence.                | General visual fidelity or an external-app conversion. |
 | Distribution                     | Packed tarballs have a verified path.                                   | A fresh public `npx navirox` installation.             |
+| External validation              | The report was read on public repositories we do not own.               | A support upgrade, customer demand or a partnership.   |
 
 The current Baserow diagnostic is source-analysis evidence, not a Baserow mobile
 application, partnership, or authority to reuse Baserow data, assets, or
