@@ -1,9 +1,4 @@
-# workflow-value-evidence Specification
-
-## Purpose
-TBD - created by archiving change workflow-value-evidence. Update Purpose after archive.
-
-## Requirements
+## MODIFIED Requirements
 
 ### Requirement: A proof workflow has explicit value evidence
 
@@ -23,27 +18,7 @@ the desktop-only remainder, confidence, and unresolved risks.
 - **WHEN** the workflow record is reviewed before implementation begins
 - **THEN** it names the ordered actions, the minimum data and the failure state, so implementation does not have to decide product scope
 
-### Requirement: Native is an evidence-led decision
-
-A workflow record MUST compare the native companion with viable PWA, WebView,
-or Capacitor alternatives against declared workflow criteria and MUST record the
-resulting decision.
-
-#### Scenario: Native has no evidenced advantage
-
-- **WHEN** the alternative comparison does not establish a material native advantage
-- **THEN** the record recommends the alternative or stops the native proof rather than assuming native is preferable
-
-### Requirement: Practitioner evidence preserves boundaries
-
-Any practitioner feedback used in a workflow record MUST be consented,
-minimized, and synthesized without credentials, customer data, or an implied
-customer relationship.
-
-#### Scenario: Feedback has not been obtained
-
-- **WHEN** a workflow has no practitioner feedback
-- **THEN** the record labels the value hypothesis unvalidated and does not state it as customer demand
+## ADDED Requirements
 
 ### Requirement: A proof workflow fixture is original and credential-free
 

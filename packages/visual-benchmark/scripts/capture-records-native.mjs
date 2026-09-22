@@ -35,6 +35,7 @@ import { fileURLToPath, pathToFileURL } from 'node:url'
 
 import {
   ROOT,
+  RECORDS_FIXTURE,
   assert,
   assertInstalledFromArtifacts,
   assertSingleRuntime,
@@ -385,9 +386,9 @@ async function main() {
 
     const artifacts = pack(artifactsDir, packages)
 
-    const appDirectory = scaffold(join(workspace, 'app'))
+    const appDirectory = scaffold(join(workspace, 'app'), RECORDS_FIXTURE.appName)
 
-    const screen = await installGeneratedScreen(appDirectory)
+    const screen = await installGeneratedScreen(appDirectory, RECORDS_FIXTURE)
 
     step('Install the device harness')
 

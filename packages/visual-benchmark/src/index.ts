@@ -78,3 +78,4 @@ export {
   type ToleranceRun,
   type ToleranceVerdict,
 } from './tolerance.js'
+export { FIELD_WORKFLOW_IDENTIFIERS, fieldWorkflowScenario } from './scenarios/field-workflow.js'

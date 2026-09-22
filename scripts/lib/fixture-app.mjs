@@ -30,35 +30,41 @@ export const PACKAGES_DIRECTORY = join(ROOT, 'packages')
 export const SCAFFOLDER = join(ROOT, 'packages', 'create-navirox', 'dist', 'bin.js')
 export const COMPILER = join(ROOT, 'packages', 'target-vue', 'dist', 'index.js')
 export const BENCHMARK = join(ROOT, 'packages', 'visual-benchmark', 'dist', 'index.js')
-export const WEB_FIXTURE = join(
-  ROOT,
-  'packages',
-  'target-vue',
-  'fixtures',
-  'records',
-  'RecordsScreen.web.vue',
-)
-export const EMITTED_SCREEN = join(
-  ROOT,
-  'packages',
-  'target-vue',
-  'fixtures',
-  'records',
-  'RecordsScreen.native.vue',
-)
-export const APP_NAME = 'records-fixture-app'
+export const FIXTURES_DIRECTORY = join(ROOT, 'packages', 'target-vue', 'fixtures')
 
-export const TEST_IDS = [
-  'records-screen',
-  'records-loading',
-  'records-empty',
-  'records-error',
-  'records-retry',
-  'records-list',
-  'record-row',
-  'record-select',
-  'record-detail',
-]
+/**
+ * Everything a caller has to name to prepare one fixture application: which
+ * compiled screen becomes the app root, what the application is called, what
+ * its bundles are named and which test identifiers the bundles must carry. A
+ * second fixture passes its own record instead of these helpers growing a copy
+ * of themselves. The values below are the records fixture, the first one this
+ * project proved end to end.
+ */
+export const RECORDS_FIXTURE = {
+  appName: 'records-fixture-app',
+  webFixture: join(FIXTURES_DIRECTORY, 'records', 'RecordsScreen.web.vue'),
+  emittedScreen: join(FIXTURES_DIRECTORY, 'records', 'RecordsScreen.native.vue'),
+  outputPath: 'packages/target-vue/fixtures/records/RecordsScreen.native.vue',
+  sourceName: 'RecordsScreen.web.vue',
+  bundleName: 'records',
+  testIds: [
+    'records-screen',
+    'records-loading',
+    'records-empty',
+    'records-error',
+    'records-retry',
+    'records-list',
+    'record-row',
+    'record-select',
+    'record-detail',
+  ],
+}
+
+export const WEB_FIXTURE = RECORDS_FIXTURE.webFixture
+export const EMITTED_SCREEN = RECORDS_FIXTURE.emittedScreen
+export const APP_NAME = RECORDS_FIXTURE.appName
+
+export const TEST_IDS = RECORDS_FIXTURE.testIds
 
 export function step(message) {
   process.stdout.write(`\n== ${message}\n`)
@@ -109,10 +115,10 @@ export function newWorkspace(prefix) {
 }
 
 /** Scaffolds the app and returns its directory. */
-export function scaffold(targetDir) {
-  step(`Scaffolding "${APP_NAME}" into ${targetDir}`)
+export function scaffold(targetDir, appName = APP_NAME) {
+  step(`Scaffolding "${appName}" into ${targetDir}`)
 
-  const result = capture(process.execPath, [SCAFFOLDER, APP_NAME, '-d', targetDir, '--json'])
+  const result = capture(process.execPath, [SCAFFOLDER, appName, '-d', targetDir, '--json'])
   assert(result.status === 0, `The scaffolder exited ${result.status}.\n${result.stderr}`)
 
   const report = JSON.parse(result.stdout.trim())
@@ -169,16 +175,16 @@ export function pack(destination, packages) {
  * that the fresh output hashes to the checked-in emitted file is what keeps a
  * hand-written screen from passing as generated output.
  */
-export async function installGeneratedScreen(appDir) {
-  step('Compiling the records screen fresh from the web fixture')
+export async function installGeneratedScreen(appDir, fixture = RECORDS_FIXTURE) {
+  step(`Compiling the ${fixture.sourceName} fresh from the web fixture`)
 
   const { compileFixtureScreen } = await import(BENCHMARK)
   const result = await compileFixtureScreen({
     compilerEntry: COMPILER,
-    webFixture: WEB_FIXTURE,
-    emittedScreen: EMITTED_SCREEN,
-    outputPath: 'packages/target-vue/fixtures/records/RecordsScreen.native.vue',
-    sourceName: 'RecordsScreen.web.vue',
+    webFixture: fixture.webFixture,
+    emittedScreen: fixture.emittedScreen,
+    outputPath: fixture.outputPath,
+    sourceName: fixture.sourceName,
   })
 
   writeFileSync(join(appDir, 'App.vue'), result.code)
@@ -327,10 +333,10 @@ export function assertSingleRuntime(appDir) {
   process.stdout.write(`   ${SINGLE_COPY_PACKAGES.length} packages, one copy each\n`)
 }
 
-export function bundle(appDir, workspace, platform) {
+export function bundle(appDir, workspace, platform, bundleName = RECORDS_FIXTURE.bundleName) {
   step(`Bundling ${platform}`)
 
-  const output = join(workspace, `records.${platform}.bundle`)
+  const output = join(workspace, `${bundleName}.${platform}.bundle`)
   const status = run(
     join(appDir, 'node_modules', '.bin', 'react-native'),
     [
@@ -357,15 +363,15 @@ export function bundle(appDir, workspace, platform) {
   return output
 }
 
-export function assertTestIds(bundlePath, platform) {
+export function assertTestIds(bundlePath, platform, testIds = TEST_IDS) {
   const bundleText = readFileSync(bundlePath, 'utf8')
-  const missing = TEST_IDS.filter((id) => !bundleText.includes(id))
+  const missing = testIds.filter((id) => !bundleText.includes(id))
 
   assert(
     missing.length === 0,
     `The ${platform} bundle is missing test identifiers: ${missing.join(', ')}.`,
   )
-  process.stdout.write(`   ${platform}: ${TEST_IDS.length}/${TEST_IDS.length} testIDs present\n`)
+  process.stdout.write(`   ${platform}: ${testIds.length}/${testIds.length} testIDs present\n`)
 }
 
 export function removeWorkspace(workspace, artifactsDir) {

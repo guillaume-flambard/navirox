@@ -52,6 +52,13 @@ packages/source-vue/fixtures/vue-broken/
 # records. Re-running the compiler puts the difference back.
 packages/target-vue/fixtures/records/RecordsScreen.native.vue
 
+# The same, for the workflow fixture. It is compiler output on purpose and the
+# fixture test compares it byte for byte, so prettier has the same reason to stay
+# away. Its asset carries no parser at all: prettier cannot infer one from an
+# .svg, and a file it cannot parse aborts the whole format check.
+packages/target-vue/fixtures/field-workflow/FieldWorkflowScreen.native.vue
+packages/target-vue/fixtures/field-workflow/site-photo.svg
+
 # And once more, for the OpenSpec artifacts, archived and live. Prettier has no
 # stable fixed point on a long requirement or task line with continuation lines:
 # writing the file leaves it in a shape the next check still reports, so the gate

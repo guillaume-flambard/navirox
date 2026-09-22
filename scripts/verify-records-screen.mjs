@@ -18,6 +18,7 @@
 import { join } from 'node:path'
 
 import {
+  RECORDS_FIXTURE,
   assertInstalledFromArtifacts,
   assertSingleRuntime,
   assertTestIds,
@@ -42,18 +43,18 @@ async function main() {
 
   const packages = publishablePackages()
   const artifacts = pack(artifactsDir, packages)
-  const appDir = scaffold(join(workspace, 'app'))
-  await installGeneratedScreen(appDir)
+  const appDir = scaffold(join(workspace, 'app'), RECORDS_FIXTURE.appName)
+  await installGeneratedScreen(appDir, RECORDS_FIXTURE)
   consumeFromArtifacts(appDir, artifacts)
   install(appDir)
   lintApp(appDir)
   assertInstalledFromArtifacts(appDir, packages)
   assertSingleRuntime(appDir)
 
-  const iosBundle = bundle(appDir, workspace, 'ios')
-  const androidBundle = bundle(appDir, workspace, 'android')
-  assertTestIds(iosBundle, 'ios')
-  assertTestIds(androidBundle, 'android')
+  const iosBundle = bundle(appDir, workspace, 'ios', RECORDS_FIXTURE.bundleName)
+  const androidBundle = bundle(appDir, workspace, 'android', RECORDS_FIXTURE.bundleName)
+  assertTestIds(iosBundle, 'ios', RECORDS_FIXTURE.testIds)
+  assertTestIds(androidBundle, 'android', RECORDS_FIXTURE.testIds)
 
   process.stdout.write(`\nDone. Workspace: ${workspace}${keep ? ' (kept)' : ''}\n`)
 

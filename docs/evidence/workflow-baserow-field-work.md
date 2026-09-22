@@ -21,6 +21,12 @@ installs or modifies it, and the target diagnostic writes no file into it. The
 analysis is an input, not a customer engagement, not an endorsement, and not an
 application of that product.
 
+The workflow below is this project's own hypothesis about a useful mobile task,
+drawn from the reproducible analysis of that revision. It is not Baserow's chosen
+workflow, not a statement about Baserow's product direction, and not customer
+demand. Baserow has not requested, reviewed or endorsed it, and Navirox has no
+affiliation with Baserow.
+
 Reproducible findings from the run that produced this record: 46 routes and 41
 screens, 2751 files, 1609 units and 259 capability usages; the target diagnostic
 attempted 12 of the 41 analyzed screens and reported 113 findings
@@ -41,6 +47,42 @@ detail, forms, attachments), not an observed fact.
 
 Opening the application to update a record immediately after a visit or an
 inspection, while still on site.
+
+## Workflow contract
+
+The ordered actions, so implementation does not have to decide product scope:
+
+1. Open the record queue.
+2. Select one record.
+3. Change its status.
+4. Edit one field.
+5. Attach one photo or document.
+6. Save the record.
+
+Minimum data, per action:
+
+| Action | Reads | Writes |
+| --- | --- | --- |
+| Open the queue | The fixed synthetic record set: an identifier and a title per record | Nothing |
+| Select one record | The chosen record's identifier, status and field value | Which record is open |
+| Change the status | The current status | The record's status |
+| Edit one field | The current field value | The record's field value |
+| Attach a photo or document | One local attachment reference created for this project | The record's attachment state |
+| Save the record | The status, the field value and the attachment state | Whether the change is saved |
+
+Failure state: the save reports that it did not complete and the change stays
+unsaved rather than appearing to have succeeded. It is reached by the declared
+actions alone, with no service and no credential: when the record has no status,
+saving surfaces that the change was not saved. A device proof asserts the visible
+failure state instead of only the happy path.
+
+The acceptance scenario that drives this contract is
+`packages/visual-benchmark/src/scenarios/field-workflow.ts`. Its ordered actions
+select the test identifiers `field-select`, `field-status-toggle`,
+`field-notes-edit` and `field-attach`, then `field-save` for the settled capture
+and `field-status-clear` before `field-save` for the interrupted one. The
+identifiers every capture renders, and therefore the ones the declared tolerance
+requires, are `field-screen`, `field-list`, `field-row` and `field-select`.
 
 ## Success state
 

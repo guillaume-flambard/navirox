@@ -35,8 +35,16 @@ table editor.
 That workflow is selected and recorded per
 [`docs/WORKFLOW-EVIDENCE.md`](../WORKFLOW-EVIDENCE.md), which states its source
 provenance, the native-versus-PWA/WebView/Capacitor decision, and its validation
-status. Until practitioner feedback exists it stays an `unvalidated hypothesis`
-and must not be described as customer demand.
+status. The record names its immutable input, the public revision
+`81e094a1f4b3a62625c218d78fe319ba44098617` pinned in
+[`benchmarks/catalog.json`](../../benchmarks/catalog.json).
+
+The workflow is this project's own hypothesis about a useful mobile task, drawn
+from the reproducible analysis of that revision. It is not Baserow's chosen
+workflow, not a statement about Baserow's product direction, and not customer
+demand. Baserow has not requested, reviewed or endorsed it, and Navirox has no
+affiliation with Baserow. Until practitioner feedback exists it stays an
+`unvalidated hypothesis` and must not be described as customer demand.
 
 An optional connector may talk directly to an instance that its user administers,
 using the documented Baserow API and a token whose permissions are restricted by

@@ -1,5 +1,14 @@
 import { createApp } from 'vue'
+import FieldWorkflowScreen from '../../../target-vue/fixtures/field-workflow/FieldWorkflowScreen.web.vue'
 import RecordsScreen from '../../../target-vue/fixtures/records/RecordsScreen.web.vue'
+
+// The harness serves more than one fixture, so the path decides which screen is
+// mounted and the actions query parameter stays the one description of what runs
+// before a capture.
+const SCREENS: Record<string, object> = {
+  '/records': RecordsScreen,
+  '/field-work': FieldWorkflowScreen,
+}
 
 type RecordedAction = {
   press: string
@@ -28,7 +37,13 @@ const press = (action: RecordedAction): void => {
   target.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true }))
 }
 
-createApp(RecordsScreen).mount('#app')
+const screen = SCREENS[window.location.pathname]
+
+if (screen === undefined) {
+  throw new Error(`the harness has no fixture for the path ${window.location.pathname}`)
+}
+
+createApp(screen).mount('#app')
 
 for (const action of readActions(new URLSearchParams(window.location.search))) {
   press(action)

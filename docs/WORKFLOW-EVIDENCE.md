@@ -60,6 +60,15 @@ with an assumption presented as a fact.
 
 - What starts the workflow: <the observable event or user intent>
 
+## Workflow contract
+
+- Ordered actions: <the actions in the order the workflow performs them>
+- Minimum data: <for each action, the data it reads or writes>
+- Failure state: <the visible state the workflow must surface when an action cannot
+  complete, and how it is reached>
+- Drive identifiers: <the test identifiers the acceptance scenario drives, and the
+  identifiers every capture renders>
+
 ## Success state
 
 - The workflow is complete when: <observable end state>
