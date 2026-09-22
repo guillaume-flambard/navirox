@@ -134,7 +134,16 @@ describe('the device harness', () => {
 
     expect(capture).toContain('NAVIROX_IDENTIFIERS')
     expect(capture).toContain('for (const identifier of identifiers)')
-    expect(capture).toContain('waitFor(element(by.id(identifier)))')
+    expect(capture).toContain('waitFor(first(identifier))')
+  })
+
+  it('indexes every wait so a repeated identifier cannot fail the capture', () => {
+    const capture = deviceHarnessFile('capture.test.ts')
+
+    // Detox refuses a matcher that matches more than one view, and a list row
+    // identifier is carried by every row, so no wait may use a bare element id.
+    expect(capture).not.toContain('waitFor(element(by.id(')
+    expect(capture).toContain('.atIndex(0)')
   })
 
   it('gives the launch a budget larger than the settle wait it performs', () => {

@@ -229,6 +229,15 @@ if (!MOMENTS.includes(capture.moment)) {
   )
 }
 
+// A test identifier can be carried by several views at once (a list row, for
+// example) and Detox refuses an element matcher that matches more than one
+// view, so the first match is addressed explicitly instead of relying on an
+// implicit choice. Waiting on an unindexed matcher fails the capture with
+// 'matches N views in the hierarchy' on a screen that rendered correctly.
+function first(identifier: string) {
+  return element(by.id(identifier)).atIndex(0)
+}
+
 // The renderer registers an idling resource while the first bundle arrives, so
 // synchronization is switched off for the launch and switched back on once the
 // screen is up. Every wait below then covers the render it precedes.
@@ -243,7 +252,7 @@ async function launchAndSettle(): Promise<void> {
   for (let attempt = 0; attempt < 3; attempt += 1) {
     try {
       await device.disableSynchronization()
-      await waitFor(element(by.id(rootTestId)))
+      await waitFor(first(rootTestId))
         .toExist()
         .withTimeout(SETTLE_TIMEOUT)
 
@@ -256,9 +265,6 @@ async function launchAndSettle(): Promise<void> {
   throw lastError
 }
 
-// A test identifier that appears several times has to be indexed: Detox refuses
-// an element matcher that matches more than one view, so the first match is
-// addressed explicitly instead of relying on an implicit choice.
 function target(action: DeclaredAction) {
   return element(by.id(action.press)).atIndex(action.nth ?? 0)
 }
@@ -276,12 +282,12 @@ it('captures ' + captureKey + ' on ' + platform, async () => {
   }
 
   await device.enableSynchronization()
-  await waitFor(element(by.id(rootTestId)))
+  await waitFor(first(rootTestId))
     .toExist()
     .withTimeout(SETTLE_TIMEOUT)
 
   for (const identifier of identifiers) {
-    await waitFor(element(by.id(identifier)))
+    await waitFor(first(identifier))
       .toExist()
       .withTimeout(SETTLE_TIMEOUT)
   }
