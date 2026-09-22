@@ -19,7 +19,9 @@ coverage/
 navirox-repositioning-pack/
 
 # Native build output. The generated projects themselves are committed once an
-# app exists; their build products never are.
+# app exists; their build products never are. Each native tree carries its own
+# .gitignore, and that nearer file is the rule that actually applies; the
+# patterns below are a fallback for a tree that ships without one.
 **/ios/Pods/
 **/ios/build/
 **/android/.gradle/
