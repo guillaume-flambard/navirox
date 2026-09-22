@@ -35,11 +35,13 @@ import { fileURLToPath, pathToFileURL } from 'node:url'
 
 import {
   ROOT,
+  FIELD_WORKFLOW_FIXTURE,
   RECORDS_FIXTURE,
   assert,
   assertInstalledFromArtifacts,
   assertSingleRuntime,
   consumeFromArtifacts,
+  copyFixtureUnits,
   install,
   installGeneratedScreen,
   installIosPods,
@@ -69,7 +71,6 @@ const BASE_URL = `http://127.0.0.1:${VITE_PORT}`
 // there.
 const PACKAGER_PORT = 8081
 const BUNDLE_TIMEOUT_MS = 10 * 60_000
-const ROOT_TEST_ID = 'records-screen'
 const PLATFORMS = ['ios', 'android']
 const MOTION_ORDER = ['rest', 'first-meaningful', 'midpoint', 'settled', 'interrupted']
 
@@ -140,14 +141,18 @@ const MOTION_SCENARIO = {
   tolerance: SCENARIO_TOLERANCE,
 }
 
-const SCENARIOS = [RECORDS_SCENARIO, MOTION_SCENARIO]
+// The records scenarios keep their inline definition: they are the first proof
+// this repository recorded, and a run with no --scenario has to reproduce that
+// evidence exactly. The field-workflow scenario is declared once in the built
+// package and consumed from there, so a capture and a bundle check cannot drift.
+const DEFAULT_SCENARIO_NAMES = [RECORDS_SCENARIO.name, MOTION_SCENARIO.name]
 
-function parseArguments(argv) {
+function parseArguments(argv, entries) {
   const options = {
     platform: 'ios',
     keep: false,
     workspace: undefined,
-    scenarios: SCENARIOS.map(({ name }) => name),
+    scenarios: DEFAULT_SCENARIO_NAMES,
   }
 
   for (let index = 0; index < argv.length; index += 1) {
@@ -173,7 +178,7 @@ function parseArguments(argv) {
     throw new Error(`--platform must be one of ${PLATFORMS.join(', ')}.`)
   }
 
-  const names = SCENARIOS.map((scenario) => scenario.name)
+  const names = entries.map((entry) => entry.scenario.name)
   const unknown = options.scenarios.filter((name) => !names.includes(name))
 
   if (unknown.length > 0) {
@@ -246,7 +251,7 @@ function addHarnessDependencies(appDirectory, dependencies) {
   writeFileSync(manifestPath, `${JSON.stringify(manifest, null, 2)}\n`, 'utf8')
 }
 
-async function startVite() {
+async function startVite(route) {
   const viteBin = join(PKG, 'node_modules', '.bin', 'vite')
   const vite = spawn(
     viteBin,
@@ -262,7 +267,7 @@ async function startVite() {
 
   for (let attempt = 0; attempt < 50; attempt += 1) {
     try {
-      const response = await fetch(`${BASE_URL}/records`)
+      const response = await fetch(`${BASE_URL}${route}`)
 
       if (response.ok) {
         return vite
@@ -276,7 +281,7 @@ async function startVite() {
 
   vite.kill()
 
-  throw new Error(`the vite harness never answered at ${BASE_URL}/records`)
+  throw new Error(`the vite harness never answered at ${BASE_URL}${route}`)
 }
 
 // The packager is started once for the whole run and the bundle is requested
@@ -342,9 +347,6 @@ async function startPackager(appDirectory, platform) {
 }
 
 async function main() {
-  const options = parseArguments(process.argv.slice(2))
-  const platform = options.platform
-
   requireBuild()
 
   const benchmark = await import(pathToFileURL(join(PKG, 'dist', 'index.js')).href)
@@ -356,13 +358,37 @@ async function main() {
     captureWebChrome,
     decodePng,
     evaluateTolerance,
+    fieldWorkflowScenario,
     normalizeImage,
     runScenario,
     validateScenario,
     writeDeviceHarness,
   } = benchmark
 
-  const issues = validateScenario(RECORDS_SCENARIO)
+  // The records scenarios are declared here because they are the first proof
+  // this repository recorded. The field-workflow scenario is declared in the
+  // package and consumed from its built output, so a capture and a bundle check
+  // cannot describe two different screens.
+  const entries = [
+    { scenario: RECORDS_SCENARIO, fixture: RECORDS_FIXTURE },
+    { scenario: MOTION_SCENARIO, fixture: RECORDS_FIXTURE },
+    { scenario: fieldWorkflowScenario, fixture: FIELD_WORKFLOW_FIXTURE },
+  ]
+
+  const options = parseArguments(process.argv.slice(2), entries)
+  const platform = options.platform
+  const selected = entries.filter((entry) => options.scenarios.includes(entry.scenario.name))
+  const fixture = selected[0].fixture
+
+  // One run prepares one application, so every selected scenario has to come
+  // from the same fixture. Two fixtures would need two applications.
+  for (const entry of selected) {
+    if (entry.fixture !== fixture) {
+      throw new Error('One run prepares one application, so its scenarios must share a fixture.')
+    }
+  }
+
+  const issues = selected.flatMap((entry) => validateScenario(entry.scenario))
 
   if (issues.length > 0) {
     for (const issue of issues) {
@@ -386,9 +412,14 @@ async function main() {
 
     const artifacts = pack(artifactsDir, packages)
 
-    const appDirectory = scaffold(join(workspace, 'app'), RECORDS_FIXTURE.appName)
+    const appDirectory = scaffold(join(workspace, 'app'), fixture.appName)
 
-    const screen = await installGeneratedScreen(appDirectory, RECORDS_FIXTURE)
+    const screen = await installGeneratedScreen(appDirectory, fixture)
+
+    // The compiled screen imports the units the planner approved as shared, so
+    // they have to sit beside the screen the compiler wrote to the app root or
+    // the bundle cannot resolve them.
+    copyFixtureUnits(appDirectory, fixture)
 
     step('Install the device harness')
 
@@ -407,15 +438,15 @@ async function main() {
     step('Capture the scenarios')
 
     packager = await startPackager(appDirectory, platform)
-    vite = await startVite()
+    vite = await startVite(selected[0].scenario.route)
 
     const name = deviceName(platform)
     const device = { platform, deviceName: name }
     const otherPlatform = PLATFORMS.find((candidate) => candidate !== platform)
     const failures = []
 
-    for (const scenarioName of options.scenarios) {
-      const scenario = SCENARIOS.find((entry) => entry.name === scenarioName)
+    for (const entry of selected) {
+      const scenario = entry.scenario
       const scenarioPath = join(appDirectory, 'e2e', `${scenario.name}.json`)
 
       writeFileSync(scenarioPath, `${JSON.stringify(scenario, null, 2)}\n`, 'utf8')
@@ -451,7 +482,7 @@ async function main() {
                   binaryPath: binaryPath(appDirectory, platform),
                   deviceName: name,
                   scenarioPath,
-                  rootTestId: ROOT_TEST_ID,
+                  rootTestId: fixture.rootTestId,
                   identifiers: scenario.tolerance?.identifiers,
                   artifactDirectory,
                   skipStart: true,
@@ -628,7 +659,7 @@ async function main() {
 
       const evidencePath = join(
         EVIDENCE_DIRECTORY,
-        `records-native-capture-${scenario.name}-${platform}.json`,
+        `${fixture.evidencePrefix}-${scenario.name}-${platform}.json`,
       )
 
       writeFileSync(evidencePath, `${JSON.stringify(evidence, null, 2)}\n`, 'utf8')

@@ -48,6 +48,9 @@ export const RECORDS_FIXTURE = {
   outputPath: 'packages/target-vue/fixtures/records/RecordsScreen.native.vue',
   sourceName: 'RecordsScreen.web.vue',
   bundleName: 'records',
+  rootTestId: 'records-screen',
+  evidencePrefix: 'records-native-capture',
+  movedUnits: [],
   testIds: [
     'records-screen',
     'records-loading',
@@ -79,6 +82,9 @@ export const FIELD_WORKFLOW_FIXTURE = {
   outputPath: 'packages/target-vue/fixtures/field-workflow/FieldWorkflowScreen.native.vue',
   sourceName: 'FieldWorkflowScreen.web.vue',
   bundleName: 'field-workflow',
+  rootTestId: 'field-screen',
+  evidencePrefix: 'native-capture',
+  movedUnits: ['fieldLogic.ts', 'fieldRecords.ts'],
   testIds: [
     'field-screen',
     'field-list',
@@ -199,6 +205,22 @@ export function copyFixtureUnit(sourceDirectory, appDir, file) {
   writeFileSync(target, readFileSync(source, 'utf8'))
 
   return target
+}
+
+/**
+ * Copies every unit a fixture declares as moved into the prepared application,
+ * beside the screen the compiler wrote to the app root. The generated screen
+ * imports them, so an application without them cannot bundle.
+ */
+export function copyFixtureUnits(appDir, fixture) {
+  const sourceDirectory = fixtureDirectory(fixture)
+  const copied = []
+
+  for (const file of fixture.movedUnits ?? []) {
+    copied.push(copyFixtureUnit(sourceDirectory, appDir, file))
+  }
+
+  return copied
 }
 
 export function newWorkspace(prefix) {

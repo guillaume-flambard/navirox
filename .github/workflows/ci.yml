@@ -406,6 +406,14 @@ jobs:
         env:
           NAVIROX_DEVICE: iPhone 17
 
+      # The proof companion's own scenario. It drives the screen the target
+      # compiler emitted for the field-workflow fixture, which imports the two
+      # units the planner approved as shared, so this run also proves the
+      # preparation copies them beside the app root.
+      - run: node packages/visual-benchmark/scripts/capture-records-native.mjs --platform ios --scenario field-workflow --workspace "$RUNNER_TEMP/capture-field-workflow-ios"
+        env:
+          NAVIROX_DEVICE: iPhone 17
+
       # The captures are the point of the job, so they are kept whether the run
       # passed or failed. A failed run is exactly when the screenshot is worth
       # looking at.
@@ -416,7 +424,9 @@ jobs:
           if-no-files-found: warn
           path: |
             ${{ runner.temp }}/capture-ios/app/scenario-artifacts
+            ${{ runner.temp }}/capture-field-workflow-ios/app/scenario-artifacts
             docs/evidence/records-native-capture-*.json
+            docs/evidence/native-capture-*.json
 
   capture-android:
     name: capture the records fixture on an emulator
@@ -570,6 +580,14 @@ jobs:
             --platform android --workspace "$RUNNER_TEMP/capture-android" ||
             fail "the native capture failed on the emulator"
 
+          # The proof companion's own scenario, driven on the same emulator. A
+          # second application is prepared because the scenario belongs to a
+          # different fixture, and the emulator is already awake.
+          node packages/visual-benchmark/scripts/capture-records-native.mjs \
+            --platform android --scenario field-workflow \
+            --workspace "$RUNNER_TEMP/capture-field-workflow-android" ||
+            fail "the field-workflow capture failed on the emulator"
+
       # Same reasoning as the iOS capture: the captures are the point of the job,
       # so they are kept whether the run passed or failed.
       - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
@@ -579,4 +597,6 @@ jobs:
           if-no-files-found: warn
           path: |
             ${{ runner.temp }}/capture-android/app/scenario-artifacts
+            ${{ runner.temp }}/capture-field-workflow-android/app/scenario-artifacts
             docs/evidence/records-native-capture-*.json
+            docs/evidence/native-capture-*.json
