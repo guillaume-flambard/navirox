@@ -9,7 +9,7 @@
  * hand-written screen), installs the device harness, drives the declared action
  * sequence and writes one screenshot per capture plus a provenance record.
  *
- * Usage: node scripts/capture-angular-companion.mjs [--platform ios|android] [--keep]
+ * Usage: node scripts/capture-angular-companion.mjs [--platform ios|android] [--workspace <path>] [--keep]
  *
  * Exits 0 when every declared capture exists and the record is written, 1 when a
  * declared capture is missing. Android runs in continuous integration, where the
@@ -18,7 +18,7 @@
 import { spawn } from 'node:child_process'
 import { createHash } from 'node:crypto'
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs'
-import { dirname, join } from 'node:path'
+import { dirname, join, resolve } from 'node:path'
 import { fileURLToPath, pathToFileURL } from 'node:url'
 
 import {
@@ -85,8 +85,22 @@ const LIMITS = [
   'Nothing here is a visual-fidelity or parity claim.',
 ]
 
+/**
+ * Prepares a named workspace instead of a temporary one. Continuous integration
+ * uploads the captures after the run, so the directory it uploads has to be the
+ * one the run wrote, and it has to be known before the run starts.
+ */
+function namedWorkspace(path) {
+  const workspace = resolve(path)
+  const artifactsDir = join(workspace, 'artifacts')
+
+  mkdirSync(artifactsDir, { recursive: true })
+
+  return { workspace, artifactsDir }
+}
+
 function parseArguments(argv) {
-  const options = { platform: 'ios', keep: false }
+  const options = { platform: 'ios', keep: false, workspace: undefined }
 
   for (let index = 0; index < argv.length; index += 1) {
     const argument = argv[index]
@@ -98,6 +112,12 @@ function parseArguments(argv) {
 
     if (argument === '--platform') {
       options.platform = argv[index + 1]
+      index += 1
+      continue
+    }
+
+    if (argument === '--workspace') {
+      options.workspace = argv[index + 1]
       index += 1
       continue
     }
@@ -257,7 +277,10 @@ async function main() {
 
   step(`Preparing the companion for "${ANGULAR_COMPANION_FIXTURE.appName}"`)
 
-  const { workspace, artifactsDir } = newWorkspace('navirox-angular-companion-')
+  const { workspace, artifactsDir } =
+    options.workspace === undefined
+      ? newWorkspace('navirox-angular-companion-')
+      : namedWorkspace(options.workspace)
   const appDirectory = scaffold(join(workspace, 'app'), ANGULAR_COMPANION_FIXTURE.appName)
   let packager
 
@@ -402,7 +425,7 @@ async function main() {
       packager.kill()
     }
 
-    if (!options.keep) {
+    if (!options.keep && options.workspace === undefined) {
       removeWorkspace(workspace, artifactsDir)
     }
   }
