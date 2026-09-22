@@ -1,7 +1,7 @@
 {
   "scenario": "field-workflow",
   "platform": "ios",
-  "artifactDirectory": "/tmp/navirox-fw-capture2/app/scenario-artifacts/field-workflow",
+  "artifactDirectory": "/tmp/navirox-fw-gate/app/scenario-artifacts/field-workflow",
   "device": {
     "platform": "ios",
     "deviceName": "iPhone 17 Pro"
@@ -70,36 +70,36 @@
       "key": "rest",
       "moment": "rest",
       "file": "rest.ios.png",
-      "bytes": 98814,
-      "sha256": "974fbc03ac938ad34fd287f1c4d92e91fb07e9a2a152aa34dbcd64f44817609d"
+      "bytes": 89229,
+      "sha256": "9ee451cbc693d2524d579cc6d0b1f15438f2448800c321725cd69b40a9229f22"
     },
     {
       "key": "first-meaningful",
       "moment": "first-meaningful",
       "file": "first-meaningful.ios.png",
-      "bytes": 138966,
-      "sha256": "589066ade8119327897ada40263e678ca3d6cea795b9449d159f39b0e44b11c7"
+      "bytes": 139371,
+      "sha256": "61e9808cbdc21c8e0c71ee8d675270b167e3f305ccdcfb123c317812502f7bab"
     },
     {
       "key": "midpoint",
       "moment": "midpoint",
       "file": "midpoint.ios.png",
-      "bytes": 139987,
-      "sha256": "b63aebc3941251952e15fe1b15b4a23e87f9fd192799566bac92065910ce9269"
+      "bytes": 140085,
+      "sha256": "4c26c38afe4aace4fe7be8483772ed6e669822bda2b8c63ba3d5486ad62da506"
     },
     {
       "key": "settled",
       "moment": "settled",
       "file": "settled.ios.png",
-      "bytes": 144875,
-      "sha256": "c1d68fe4477bc103cb06288aa194d9123bbbbaef2f762fcff7d92b5ef1ef7ce1"
+      "bytes": 145339,
+      "sha256": "9f67d8cf854e36ed622eb6e8e7a4c8de4d92f245444e97d96fcd48cf01f54123"
     },
     {
       "key": "interrupted",
       "moment": "interrupted",
       "file": "interrupted.ios.png",
-      "bytes": 146338,
-      "sha256": "910f9859f5f4074fd3781e72c5a04e17de6e602aad75ada2c85116e0b32cd593"
+      "bytes": 146815,
+      "sha256": "3f6ec6a36675999420ddcf0de60148bf84aa8f5e6969d598dd5793da493fb9f3"
     }
   ],
   "coincidentFrames": [],
@@ -133,14 +133,14 @@
   ],
   "report": {
     "scenario": "field-workflow",
-    "artifactDir": "/tmp/navirox-fw-capture2/app/scenario-artifacts/field-workflow",
+    "artifactDir": "/tmp/navirox-fw-gate/app/scenario-artifacts/field-workflow",
     "outcomes": [
       {
         "capture": "rest",
         "moment": "rest",
-        "web": "/tmp/navirox-fw-capture2/app/scenario-artifacts/field-workflow/rest.web.png",
+        "web": "/tmp/navirox-fw-gate/app/scenario-artifacts/field-workflow/rest.web.png",
         "native": {
-          "ios": "/tmp/navirox-fw-capture2/app/scenario-artifacts/field-workflow/rest.ios.png"
+          "ios": "/tmp/navirox-fw-gate/app/scenario-artifacts/field-workflow/rest.ios.png"
         },
         "devices": {
           "ios": {
@@ -158,9 +158,9 @@
       {
         "capture": "first-meaningful",
         "moment": "first-meaningful",
-        "web": "/tmp/navirox-fw-capture2/app/scenario-artifacts/field-workflow/first-meaningful.web.png",
+        "web": "/tmp/navirox-fw-gate/app/scenario-artifacts/field-workflow/first-meaningful.web.png",
         "native": {
-          "ios": "/tmp/navirox-fw-capture2/app/scenario-artifacts/field-workflow/first-meaningful.ios.png"
+          "ios": "/tmp/navirox-fw-gate/app/scenario-artifacts/field-workflow/first-meaningful.ios.png"
         },
         "devices": {
           "ios": {
@@ -178,9 +178,9 @@
       {
         "capture": "midpoint",
         "moment": "midpoint",
-        "web": "/tmp/navirox-fw-capture2/app/scenario-artifacts/field-workflow/midpoint.web.png",
+        "web": "/tmp/navirox-fw-gate/app/scenario-artifacts/field-workflow/midpoint.web.png",
         "native": {
-          "ios": "/tmp/navirox-fw-capture2/app/scenario-artifacts/field-workflow/midpoint.ios.png"
+          "ios": "/tmp/navirox-fw-gate/app/scenario-artifacts/field-workflow/midpoint.ios.png"
         },
         "devices": {
           "ios": {
@@ -198,9 +198,9 @@
       {
         "capture": "settled",
         "moment": "settled",
-        "web": "/tmp/navirox-fw-capture2/app/scenario-artifacts/field-workflow/settled.web.png",
+        "web": "/tmp/navirox-fw-gate/app/scenario-artifacts/field-workflow/settled.web.png",
         "native": {
-          "ios": "/tmp/navirox-fw-capture2/app/scenario-artifacts/field-workflow/settled.ios.png"
+          "ios": "/tmp/navirox-fw-gate/app/scenario-artifacts/field-workflow/settled.ios.png"
         },
         "devices": {
           "ios": {
@@ -218,9 +218,9 @@
       {
         "capture": "interrupted",
         "moment": "interrupted",
-        "web": "/tmp/navirox-fw-capture2/app/scenario-artifacts/field-workflow/interrupted.web.png",
+        "web": "/tmp/navirox-fw-gate/app/scenario-artifacts/field-workflow/interrupted.web.png",
         "native": {
-          "ios": "/tmp/navirox-fw-capture2/app/scenario-artifacts/field-workflow/interrupted.ios.png"
+          "ios": "/tmp/navirox-fw-gate/app/scenario-artifacts/field-workflow/interrupted.ios.png"
         },
         "devices": {
           "ios": {

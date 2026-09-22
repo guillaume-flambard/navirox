@@ -1,0 +1,270 @@
+{
+  "scenario": "field-workflow",
+  "platform": "android",
+  "artifactDirectory": "/home/runner/work/_temp/capture-field-workflow-android/app/scenario-artifacts/field-workflow",
+  "device": {
+    "platform": "android",
+    "deviceName": "navirox-e2e"
+  },
+  "screen": {
+    "compilerVersion": "0.1.1",
+    "manifestHash": "3ae83ea130a3bdb80d17649cdf79f1bdf12a3881937e8870d8d3a9a525cf7e32"
+  },
+  "motion": {
+    "declared": true,
+    "interruptible": true,
+    "labels": [
+      "rest",
+      "first-meaningful",
+      "midpoint",
+      "settled",
+      "interrupted"
+    ],
+    "interaction": "select a record, change the status and save it"
+  },
+  "labels": [
+    "rest",
+    "first-meaningful",
+    "midpoint",
+    "settled",
+    "interrupted"
+  ],
+  "labelsInOrder": true,
+  "tolerance": {
+    "gridSize": 0.05,
+    "identifiers": [
+      "field-screen",
+      "field-list",
+      "field-row",
+      "field-select"
+    ]
+  },
+  "verdict": {
+    "scenario": "field-workflow",
+    "verdict": "pass",
+    "checks": [
+      {
+        "name": "captures",
+        "verdict": "pass",
+        "detail": "all 5 declared captures exist on the web and on android"
+      },
+      {
+        "name": "grid",
+        "verdict": "pass",
+        "detail": "the largest grid difference is 2.54 percent, inside the declared 5.00 percent"
+      },
+      {
+        "name": "identifiers",
+        "verdict": "pass",
+        "detail": "all 4 declared identifiers were asserted on the web and on android"
+      },
+      {
+        "name": "motion",
+        "verdict": "pass",
+        "detail": "the motion labels were rest, first-meaningful, midpoint, settled, interrupted in the required order"
+      }
+    ]
+  },
+  "frames": [
+    {
+      "key": "rest",
+      "moment": "rest",
+      "file": "rest.android.png",
+      "bytes": 36196,
+      "sha256": "4c73d4361c22d2aaa886f49eddda74d188bada3a33b17ad5e28f1b0e85cbbb81"
+    },
+    {
+      "key": "first-meaningful",
+      "moment": "first-meaningful",
+      "file": "first-meaningful.android.png",
+      "bytes": 77169,
+      "sha256": "926e9e817d9ab005cbf4498ed493ab83e7aa8e323fa00c036e1f760df3e0433e"
+    },
+    {
+      "key": "midpoint",
+      "moment": "midpoint",
+      "file": "midpoint.android.png",
+      "bytes": 79612,
+      "sha256": "72899c5ae4e71a3517fce13beee1c7206f5971b101fa26e4e2eed7f69a3fde3b"
+    },
+    {
+      "key": "settled",
+      "moment": "settled",
+      "file": "settled.android.png",
+      "bytes": 83527,
+      "sha256": "611123615cd08bbc4af3eabebed63f1abdf145f77364ad5c99cf5a253438c803"
+    },
+    {
+      "key": "interrupted",
+      "moment": "interrupted",
+      "file": "interrupted.android.png",
+      "bytes": 87167,
+      "sha256": "bb5cc7c54e177627df3f86756d5b0e68f9c0120f40a418f93153cc26d953b293"
+    }
+  ],
+  "coincidentFrames": [],
+  "missing": [],
+  "unavailable": [
+    {
+      "capture": "rest",
+      "platform": "ios",
+      "reason": "capture 'rest' unavailable: the run prepared one platform, so the ios capture is recorded unavailable rather than guessed"
+    },
+    {
+      "capture": "first-meaningful",
+      "platform": "ios",
+      "reason": "capture 'first-meaningful' unavailable: the run prepared one platform, so the ios capture is recorded unavailable rather than guessed"
+    },
+    {
+      "capture": "midpoint",
+      "platform": "ios",
+      "reason": "capture 'midpoint' unavailable: the run prepared one platform, so the ios capture is recorded unavailable rather than guessed"
+    },
+    {
+      "capture": "settled",
+      "platform": "ios",
+      "reason": "capture 'settled' unavailable: the run prepared one platform, so the ios capture is recorded unavailable rather than guessed"
+    },
+    {
+      "capture": "interrupted",
+      "platform": "ios",
+      "reason": "capture 'interrupted' unavailable: the run prepared one platform, so the ios capture is recorded unavailable rather than guessed"
+    }
+  ],
+  "report": {
+    "scenario": "field-workflow",
+    "artifactDir": "/home/runner/work/_temp/capture-field-workflow-android/app/scenario-artifacts/field-workflow",
+    "outcomes": [
+      {
+        "capture": "rest",
+        "moment": "rest",
+        "web": "/home/runner/work/_temp/capture-field-workflow-android/app/scenario-artifacts/field-workflow/rest.web.png",
+        "native": {
+          "android": "/home/runner/work/_temp/capture-field-workflow-android/app/scenario-artifacts/field-workflow/rest.android.png"
+        },
+        "devices": {
+          "android": {
+            "platform": "android",
+            "deviceName": "navirox-e2e"
+          }
+        },
+        "unavailable": [
+          {
+            "platform": "ios",
+            "reason": "capture 'rest' unavailable: the run prepared one platform, so the ios capture is recorded unavailable rather than guessed"
+          }
+        ]
+      },
+      {
+        "capture": "first-meaningful",
+        "moment": "first-meaningful",
+        "web": "/home/runner/work/_temp/capture-field-workflow-android/app/scenario-artifacts/field-workflow/first-meaningful.web.png",
+        "native": {
+          "android": "/home/runner/work/_temp/capture-field-workflow-android/app/scenario-artifacts/field-workflow/first-meaningful.android.png"
+        },
+        "devices": {
+          "android": {
+            "platform": "android",
+            "deviceName": "navirox-e2e"
+          }
+        },
+        "unavailable": [
+          {
+            "platform": "ios",
+            "reason": "capture 'first-meaningful' unavailable: the run prepared one platform, so the ios capture is recorded unavailable rather than guessed"
+          }
+        ]
+      },
+      {
+        "capture": "midpoint",
+        "moment": "midpoint",
+        "web": "/home/runner/work/_temp/capture-field-workflow-android/app/scenario-artifacts/field-workflow/midpoint.web.png",
+        "native": {
+          "android": "/home/runner/work/_temp/capture-field-workflow-android/app/scenario-artifacts/field-workflow/midpoint.android.png"
+        },
+        "devices": {
+          "android": {
+            "platform": "android",
+            "deviceName": "navirox-e2e"
+          }
+        },
+        "unavailable": [
+          {
+            "platform": "ios",
+            "reason": "capture 'midpoint' unavailable: the run prepared one platform, so the ios capture is recorded unavailable rather than guessed"
+          }
+        ]
+      },
+      {
+        "capture": "settled",
+        "moment": "settled",
+        "web": "/home/runner/work/_temp/capture-field-workflow-android/app/scenario-artifacts/field-workflow/settled.web.png",
+        "native": {
+          "android": "/home/runner/work/_temp/capture-field-workflow-android/app/scenario-artifacts/field-workflow/settled.android.png"
+        },
+        "devices": {
+          "android": {
+            "platform": "android",
+            "deviceName": "navirox-e2e"
+          }
+        },
+        "unavailable": [
+          {
+            "platform": "ios",
+            "reason": "capture 'settled' unavailable: the run prepared one platform, so the ios capture is recorded unavailable rather than guessed"
+          }
+        ]
+      },
+      {
+        "capture": "interrupted",
+        "moment": "interrupted",
+        "web": "/home/runner/work/_temp/capture-field-workflow-android/app/scenario-artifacts/field-workflow/interrupted.web.png",
+        "native": {
+          "android": "/home/runner/work/_temp/capture-field-workflow-android/app/scenario-artifacts/field-workflow/interrupted.android.png"
+        },
+        "devices": {
+          "android": {
+            "platform": "android",
+            "deviceName": "navirox-e2e"
+          }
+        },
+        "unavailable": [
+          {
+            "platform": "ios",
+            "reason": "capture 'interrupted' unavailable: the run prepared one platform, so the ios capture is recorded unavailable rather than guessed"
+          }
+        ]
+      }
+    ],
+    "motion": {
+      "declared": true,
+      "interruptible": true,
+      "labels": [
+        "rest",
+        "first-meaningful",
+        "midpoint",
+        "settled",
+        "interrupted"
+      ],
+      "interaction": "select a record, change the status and save it"
+    },
+    "devices": {
+      "android": {
+        "platform": "android",
+        "deviceName": "navirox-e2e"
+      }
+    },
+    "screen": {
+      "compilerVersion": "0.1.1",
+      "manifestHash": "3ae83ea130a3bdb80d17649cdf79f1bdf12a3881937e8870d8d3a9a525cf7e32"
+    }
+  },
+  "commands": [
+    "node packages/visual-benchmark/scripts/capture-records-native.mjs --platform android --scenario field-workflow"
+  ],
+  "notes": [
+    "The device capture comes from the application the target compiler emitted; the emitted screen file is recompiled and compared before anything is installed.",
+    "A frame is a state of the fixture, not a claim of visual parity: the verdict above is the declared tolerance being evaluated, and the pixel difference ratio is a measurement reported beside it rather than the value that decides it.",
+    "The fixture application replaces the template root screen, so the captured screen carries no safe-area padding. That is a property of the fixture, not of the platform."
+  ]
+}
