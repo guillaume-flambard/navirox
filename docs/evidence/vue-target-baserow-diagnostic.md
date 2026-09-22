@@ -39,35 +39,45 @@ the 41 analyzed screens were attempted.
 | `modules/builder/pages/pageEditor.vue` | 1 |
 | `modules/builder/pages/publicPage.vue` | 1 |
 | `modules/core/components/RouterViewPlaceholder.vue` | 0 |
-| `modules/core/pages/_health.vue` | 0 |
+| `modules/core/pages/_health.vue` | 1 |
 | `modules/core/pages/admin/aiProviders.vue` | 10 |
-| `modules/core/pages/admin/dashboard.vue` | 19 |
-| `modules/core/pages/admin/health.vue` | 6 |
-| `modules/core/pages/admin/settings.vue` | 14 |
+| `modules/core/pages/admin/dashboard.vue` | 40 |
+| `modules/core/pages/admin/health.vue` | 11 |
+| `modules/core/pages/admin/settings.vue` | 39 |
 | `modules/core/pages/admin/users.vue` | 1 |
 | `modules/core/pages/admin/workspaces.vue` | 1 |
 | `modules/core/pages/changeEmail.vue` | 7 |
 
 ## Blocker codes and counts
 
-61 findings over 12 screens:
+113 findings over 12 screens:
 
 | Blocker code | Count |
 | --- | --- |
+| `unsupported-text` | 52 |
 | `unsupported-element` | 41 |
 | `unsupported-directive` | 20 |
 | `template-parse-failed` | 0 |
 | `unsupported-style` | 0 |
 
-The most frequent blockers are `v-skeleton` (18 occurrences), the `<SwitchInput>`
-component (7), `<Button>` (5), `<nuxt-link>` (4), `<i>` (3), `<template>` (2) and
-`v-show` (2). The remaining 20 occurrences are single findings for
-`<AutomationWorkflowContent>`, `<PageEditorContent>`, `<PublicPageContent>`,
-`<AIProviderFeatureSettings>`, `<AIProviderAdminSkeleton>`, `<AIProviderItem>`,
-`<AIProviderFormModal>`, `<AIProviderModelFormModal>`, `<AIProviderConfirmModal>`,
-`<ActiveUsers>`, `<EmailTester>`, `<SkeletonBlock>`, `<RadioGroup>`, `<FormGroup>`,
-`<component>`, `<UsersAdminTable>`, `<WorkspacesAdminTable>`, `<LangPicker>`,
-`<Error>` and `<ButtonIcon>`.
+The most frequent blocker is `unsupported-text` (52 occurrences, all a text node
+placed directly inside a `<div>` rather than inside a text element), followed by
+`v-skeleton` (18 occurrences), the `<SwitchInput>` component (7), `<Button>` (5),
+`<nuxt-link>` (4), `<i>` (3), `<template>` (2) and `v-show` (2). The remaining 20
+occurrences are single findings for `<AutomationWorkflowContent>`,
+`<PageEditorContent>`, `<PublicPageContent>`, `<AIProviderFeatureSettings>`,
+`<AIProviderAdminSkeleton>`, `<AIProviderItem>`, `<AIProviderFormModal>`,
+`<AIProviderModelFormModal>`, `<AIProviderConfirmModal>`, `<ActiveUsers>`,
+`<EmailTester>`, `<SkeletonBlock>`, `<RadioGroup>`, `<FormGroup>`, `<component>`,
+`<UsersAdminTable>`, `<WorkspacesAdminTable>`, `<LangPicker>`, `<Error>` and
+`<ButtonIcon>`.
+
+The counts are higher than the first run of this diagnostic recorded for two
+reasons: the target compiler now refuses text it cannot render (the
+`unsupported-text` finding), which is a refusal of a construct that previously
+produced a screen that throws on mount, and the attempt limit is unchanged. The
+counts are a statement about the current supported subset, so they move whenever
+the subset does.
 
 An earlier run of this diagnostic selected the analyzed route sources instead of
 the analyzed screens. For a Nuxt project those route sources are JavaScript route
@@ -76,12 +86,11 @@ said nothing about the templates. The selection now uses the analyzed screens.
 
 ## Screens inside the supported subset
 
-Two of the 12 attempted screens compiled with no finding:
-`modules/core/components/RouterViewPlaceholder.vue` and
-`modules/core/pages/_health.vue`. The compiler returned source for them and no
-file was written, because the diagnostic passes no output path. Those two screens
-are the only ones in the sample that the current supported subset covers end to
-end, and they are not evidence that a full Baserow screen is reachable.
+One of the 12 attempted screens compiled with no finding:
+`modules/core/components/RouterViewPlaceholder.vue`. The compiler returned source
+for it and no file was written, because the diagnostic passes no output path. That
+screen is the only one in the sample that the current supported subset covers end
+to end, and it is not evidence that a full Baserow screen is reachable.
 
 ## What this document does not say
 

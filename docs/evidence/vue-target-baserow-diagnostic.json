@@ -12,9 +12,10 @@
   },
   "countsByCode": {
     "unsupported-directive": 20,
-    "unsupported-element": 41
+    "unsupported-element": 41,
+    "unsupported-text": 52
   },
-  "fullySupported": 2,
+  "fullySupported": 1,
   "documents": [
     {
       "path": "modules/automation/pages/automationWorkflow.vue",
@@ -39,7 +40,7 @@
     {
       "path": "modules/core/pages/_health.vue",
       "present": true,
-      "findings": 0
+      "findings": 1
     },
     {
       "path": "modules/core/pages/admin/aiProviders.vue",
@@ -49,17 +50,17 @@
     {
       "path": "modules/core/pages/admin/dashboard.vue",
       "present": true,
-      "findings": 19
+      "findings": 40
     },
     {
       "path": "modules/core/pages/admin/health.vue",
       "present": true,
-      "findings": 6
+      "findings": 11
     },
     {
       "path": "modules/core/pages/admin/settings.vue",
       "present": true,
-      "findings": 14
+      "findings": 39
     },
     {
       "path": "modules/core/pages/admin/users.vue",
@@ -98,6 +99,13 @@
       "line": 2,
       "column": 3,
       "message": "<PublicPageContent> has no native primitive mapping."
+    },
+    {
+      "path": "modules/core/pages/_health.vue",
+      "code": "unsupported-text",
+      "line": 2,
+      "column": 8,
+      "message": "Text directly inside <div> is not rendered natively. Wrap it in a text element such as <span>."
     },
     {
       "path": "modules/core/pages/admin/aiProviders.vue",
@@ -171,6 +179,27 @@
     },
     {
       "path": "modules/core/pages/admin/dashboard.vue",
+      "code": "unsupported-text",
+      "line": 9,
+      "column": 15,
+      "message": "Text directly inside <div> is not rendered natively. Wrap it in a text element such as <span>."
+    },
+    {
+      "path": "modules/core/pages/admin/dashboard.vue",
+      "code": "unsupported-text",
+      "line": 13,
+      "column": 17,
+      "message": "Text directly inside <div> is not rendered natively. Wrap it in a text element such as <span>."
+    },
+    {
+      "path": "modules/core/pages/admin/dashboard.vue",
+      "code": "unsupported-text",
+      "line": 19,
+      "column": 17,
+      "message": "Text directly inside <div> is not rendered natively. Wrap it in a text element such as <span>."
+    },
+    {
+      "path": "modules/core/pages/admin/dashboard.vue",
       "code": "unsupported-directive",
       "line": 16,
       "column": 17,
@@ -182,6 +211,20 @@
       "line": 22,
       "column": 17,
       "message": "<nuxt-link> has no native primitive mapping."
+    },
+    {
+      "path": "modules/core/pages/admin/dashboard.vue",
+      "code": "unsupported-text",
+      "line": 29,
+      "column": 17,
+      "message": "Text directly inside <div> is not rendered natively. Wrap it in a text element such as <span>."
+    },
+    {
+      "path": "modules/core/pages/admin/dashboard.vue",
+      "code": "unsupported-text",
+      "line": 35,
+      "column": 17,
+      "message": "Text directly inside <div> is not rendered natively. Wrap it in a text element such as <span>."
     },
     {
       "path": "modules/core/pages/admin/dashboard.vue",
@@ -199,10 +242,45 @@
     },
     {
       "path": "modules/core/pages/admin/dashboard.vue",
+      "code": "unsupported-text",
+      "line": 45,
+      "column": 17,
+      "message": "Text directly inside <div> is not rendered natively. Wrap it in a text element such as <span>."
+    },
+    {
+      "path": "modules/core/pages/admin/dashboard.vue",
+      "code": "unsupported-text",
+      "line": 51,
+      "column": 17,
+      "message": "Text directly inside <div> is not rendered natively. Wrap it in a text element such as <span>."
+    },
+    {
+      "path": "modules/core/pages/admin/dashboard.vue",
       "code": "unsupported-directive",
       "line": 48,
       "column": 17,
       "message": "v-skeleton is not a native template directive."
+    },
+    {
+      "path": "modules/core/pages/admin/dashboard.vue",
+      "code": "unsupported-text",
+      "line": 59,
+      "column": 15,
+      "message": "Text directly inside <div> is not rendered natively. Wrap it in a text element such as <span>."
+    },
+    {
+      "path": "modules/core/pages/admin/dashboard.vue",
+      "code": "unsupported-text",
+      "line": 63,
+      "column": 17,
+      "message": "Text directly inside <div> is not rendered natively. Wrap it in a text element such as <span>."
+    },
+    {
+      "path": "modules/core/pages/admin/dashboard.vue",
+      "code": "unsupported-text",
+      "line": 69,
+      "column": 17,
+      "message": "Text directly inside <div> is not rendered natively. Wrap it in a text element such as <span>."
     },
     {
       "path": "modules/core/pages/admin/dashboard.vue",
@@ -220,6 +298,20 @@
     },
     {
       "path": "modules/core/pages/admin/dashboard.vue",
+      "code": "unsupported-text",
+      "line": 87,
+      "column": 17,
+      "message": "Text directly inside <div> is not rendered natively. Wrap it in a text element such as <span>."
+    },
+    {
+      "path": "modules/core/pages/admin/dashboard.vue",
+      "code": "unsupported-text",
+      "line": 93,
+      "column": 17,
+      "message": "Text directly inside <div> is not rendered natively. Wrap it in a text element such as <span>."
+    },
+    {
+      "path": "modules/core/pages/admin/dashboard.vue",
       "code": "unsupported-directive",
       "line": 90,
       "column": 17,
@@ -231,6 +323,20 @@
       "line": 96,
       "column": 17,
       "message": "v-skeleton is not a native template directive."
+    },
+    {
+      "path": "modules/core/pages/admin/dashboard.vue",
+      "code": "unsupported-text",
+      "line": 111,
+      "column": 17,
+      "message": "Text directly inside <div> is not rendered natively. Wrap it in a text element such as <span>."
+    },
+    {
+      "path": "modules/core/pages/admin/dashboard.vue",
+      "code": "unsupported-text",
+      "line": 117,
+      "column": 17,
+      "message": "Text directly inside <div> is not rendered natively. Wrap it in a text element such as <span>."
     },
     {
       "path": "modules/core/pages/admin/dashboard.vue",
@@ -248,6 +354,27 @@
     },
     {
       "path": "modules/core/pages/admin/dashboard.vue",
+      "code": "unsupported-text",
+      "line": 138,
+      "column": 15,
+      "message": "Text directly inside <div> is not rendered natively. Wrap it in a text element such as <span>."
+    },
+    {
+      "path": "modules/core/pages/admin/dashboard.vue",
+      "code": "unsupported-text",
+      "line": 142,
+      "column": 17,
+      "message": "Text directly inside <div> is not rendered natively. Wrap it in a text element such as <span>."
+    },
+    {
+      "path": "modules/core/pages/admin/dashboard.vue",
+      "code": "unsupported-text",
+      "line": 148,
+      "column": 17,
+      "message": "Text directly inside <div> is not rendered natively. Wrap it in a text element such as <span>."
+    },
+    {
+      "path": "modules/core/pages/admin/dashboard.vue",
       "code": "unsupported-directive",
       "line": 145,
       "column": 17,
@@ -262,6 +389,20 @@
     },
     {
       "path": "modules/core/pages/admin/dashboard.vue",
+      "code": "unsupported-text",
+      "line": 166,
+      "column": 17,
+      "message": "Text directly inside <div> is not rendered natively. Wrap it in a text element such as <span>."
+    },
+    {
+      "path": "modules/core/pages/admin/dashboard.vue",
+      "code": "unsupported-text",
+      "line": 172,
+      "column": 17,
+      "message": "Text directly inside <div> is not rendered natively. Wrap it in a text element such as <span>."
+    },
+    {
+      "path": "modules/core/pages/admin/dashboard.vue",
       "code": "unsupported-directive",
       "line": 169,
       "column": 17,
@@ -273,6 +414,20 @@
       "line": 175,
       "column": 17,
       "message": "v-skeleton is not a native template directive."
+    },
+    {
+      "path": "modules/core/pages/admin/dashboard.vue",
+      "code": "unsupported-text",
+      "line": 190,
+      "column": 17,
+      "message": "Text directly inside <div> is not rendered natively. Wrap it in a text element such as <span>."
+    },
+    {
+      "path": "modules/core/pages/admin/dashboard.vue",
+      "code": "unsupported-text",
+      "line": 196,
+      "column": 17,
+      "message": "Text directly inside <div> is not rendered natively. Wrap it in a text element such as <span>."
     },
     {
       "path": "modules/core/pages/admin/dashboard.vue",
@@ -304,10 +459,24 @@
     },
     {
       "path": "modules/core/pages/admin/health.vue",
+      "code": "unsupported-text",
+      "line": 9,
+      "column": 11,
+      "message": "Text directly inside <div> is not rendered natively. Wrap it in a text element such as <span>."
+    },
+    {
+      "path": "modules/core/pages/admin/health.vue",
       "code": "unsupported-element",
       "line": 12,
       "column": 11,
       "message": "<template> has no native primitive mapping."
+    },
+    {
+      "path": "modules/core/pages/admin/health.vue",
+      "code": "unsupported-text",
+      "line": 40,
+      "column": 17,
+      "message": "Text directly inside <div> is not rendered natively. Wrap it in a text element such as <span>."
     },
     {
       "path": "modules/core/pages/admin/health.vue",
@@ -318,10 +487,31 @@
     },
     {
       "path": "modules/core/pages/admin/health.vue",
+      "code": "unsupported-text",
+      "line": 58,
+      "column": 17,
+      "message": "Text directly inside <div> is not rendered natively. Wrap it in a text element such as <span>."
+    },
+    {
+      "path": "modules/core/pages/admin/health.vue",
+      "code": "unsupported-text",
+      "line": 64,
+      "column": 58,
+      "message": "Text directly inside <div> is not rendered natively. Wrap it in a text element such as <span>."
+    },
+    {
+      "path": "modules/core/pages/admin/health.vue",
       "code": "unsupported-directive",
       "line": 66,
       "column": 19,
       "message": "v-skeleton is not a native template directive."
+    },
+    {
+      "path": "modules/core/pages/admin/health.vue",
+      "code": "unsupported-text",
+      "line": 72,
+      "column": 58,
+      "message": "Text directly inside <div> is not rendered natively. Wrap it in a text element such as <span>."
     },
     {
       "path": "modules/core/pages/admin/health.vue",
@@ -346,6 +536,20 @@
     },
     {
       "path": "modules/core/pages/admin/settings.vue",
+      "code": "unsupported-text",
+      "line": 9,
+      "column": 15,
+      "message": "Text directly inside <div> is not rendered natively. Wrap it in a text element such as <span>."
+    },
+    {
+      "path": "modules/core/pages/admin/settings.vue",
+      "code": "unsupported-text",
+      "line": 12,
+      "column": 15,
+      "message": "Text directly inside <div> is not rendered natively. Wrap it in a text element such as <span>."
+    },
+    {
+      "path": "modules/core/pages/admin/settings.vue",
       "code": "unsupported-element",
       "line": 16,
       "column": 13,
@@ -360,10 +564,59 @@
     },
     {
       "path": "modules/core/pages/admin/settings.vue",
+      "code": "unsupported-text",
+      "line": 36,
+      "column": 15,
+      "message": "Text directly inside <div> is not rendered natively. Wrap it in a text element such as <span>."
+    },
+    {
+      "path": "modules/core/pages/admin/settings.vue",
+      "code": "unsupported-text",
+      "line": 39,
+      "column": 15,
+      "message": "Text directly inside <div> is not rendered natively. Wrap it in a text element such as <span>."
+    },
+    {
+      "path": "modules/core/pages/admin/settings.vue",
+      "code": "unsupported-text",
+      "line": 43,
+      "column": 13,
+      "message": "Text directly inside <div> is not rendered natively. Wrap it in a text element such as <span>."
+    },
+    {
+      "path": "modules/core/pages/admin/settings.vue",
+      "code": "unsupported-text",
+      "line": 49,
+      "column": 15,
+      "message": "Text directly inside <div> is not rendered natively. Wrap it in a text element such as <span>."
+    },
+    {
+      "path": "modules/core/pages/admin/settings.vue",
+      "code": "unsupported-text",
+      "line": 52,
+      "column": 15,
+      "message": "Text directly inside <div> is not rendered natively. Wrap it in a text element such as <span>."
+    },
+    {
+      "path": "modules/core/pages/admin/settings.vue",
       "code": "unsupported-element",
       "line": 56,
       "column": 13,
       "message": "<SwitchInput> has no native primitive mapping."
+    },
+    {
+      "path": "modules/core/pages/admin/settings.vue",
+      "code": "unsupported-text",
+      "line": 66,
+      "column": 15,
+      "message": "Text directly inside <div> is not rendered natively. Wrap it in a text element such as <span>."
+    },
+    {
+      "path": "modules/core/pages/admin/settings.vue",
+      "code": "unsupported-text",
+      "line": 69,
+      "column": 15,
+      "message": "Text directly inside <div> is not rendered natively. Wrap it in a text element such as <span>."
     },
     {
       "path": "modules/core/pages/admin/settings.vue",
@@ -374,10 +627,38 @@
     },
     {
       "path": "modules/core/pages/admin/settings.vue",
+      "code": "unsupported-text",
+      "line": 88,
+      "column": 15,
+      "message": "Text directly inside <div> is not rendered natively. Wrap it in a text element such as <span>."
+    },
+    {
+      "path": "modules/core/pages/admin/settings.vue",
+      "code": "unsupported-text",
+      "line": 91,
+      "column": 15,
+      "message": "Text directly inside <div> is not rendered natively. Wrap it in a text element such as <span>."
+    },
+    {
+      "path": "modules/core/pages/admin/settings.vue",
       "code": "unsupported-element",
       "line": 95,
       "column": 13,
       "message": "<SwitchInput> has no native primitive mapping."
+    },
+    {
+      "path": "modules/core/pages/admin/settings.vue",
+      "code": "unsupported-text",
+      "line": 105,
+      "column": 15,
+      "message": "Text directly inside <div> is not rendered natively. Wrap it in a text element such as <span>."
+    },
+    {
+      "path": "modules/core/pages/admin/settings.vue",
+      "code": "unsupported-text",
+      "line": 110,
+      "column": 15,
+      "message": "Text directly inside <div> is not rendered natively. Wrap it in a text element such as <span>."
     },
     {
       "path": "modules/core/pages/admin/settings.vue",
@@ -388,10 +669,31 @@
     },
     {
       "path": "modules/core/pages/admin/settings.vue",
+      "code": "unsupported-text",
+      "line": 132,
+      "column": 15,
+      "message": "Text directly inside <div> is not rendered natively. Wrap it in a text element such as <span>."
+    },
+    {
+      "path": "modules/core/pages/admin/settings.vue",
+      "code": "unsupported-text",
+      "line": 135,
+      "column": 15,
+      "message": "Text directly inside <div> is not rendered natively. Wrap it in a text element such as <span>."
+    },
+    {
+      "path": "modules/core/pages/admin/settings.vue",
       "code": "unsupported-element",
       "line": 139,
       "column": 13,
       "message": "<SwitchInput> has no native primitive mapping."
+    },
+    {
+      "path": "modules/core/pages/admin/settings.vue",
+      "code": "unsupported-text",
+      "line": 146,
+      "column": 15,
+      "message": "Text directly inside <div> is not rendered natively. Wrap it in a text element such as <span>."
     },
     {
       "path": "modules/core/pages/admin/settings.vue",
@@ -402,10 +704,31 @@
     },
     {
       "path": "modules/core/pages/admin/settings.vue",
+      "code": "unsupported-text",
+      "line": 153,
+      "column": 15,
+      "message": "Text directly inside <div> is not rendered natively. Wrap it in a text element such as <span>."
+    },
+    {
+      "path": "modules/core/pages/admin/settings.vue",
+      "code": "unsupported-text",
+      "line": 156,
+      "column": 15,
+      "message": "Text directly inside <div> is not rendered natively. Wrap it in a text element such as <span>."
+    },
+    {
+      "path": "modules/core/pages/admin/settings.vue",
       "code": "unsupported-element",
       "line": 164,
       "column": 13,
       "message": "<SwitchInput> has no native primitive mapping."
+    },
+    {
+      "path": "modules/core/pages/admin/settings.vue",
+      "code": "unsupported-text",
+      "line": 175,
+      "column": 15,
+      "message": "Text directly inside <div> is not rendered natively. Wrap it in a text element such as <span>."
     },
     {
       "path": "modules/core/pages/admin/settings.vue",
@@ -416,6 +739,20 @@
     },
     {
       "path": "modules/core/pages/admin/settings.vue",
+      "code": "unsupported-text",
+      "line": 191,
+      "column": 15,
+      "message": "Text directly inside <div> is not rendered natively. Wrap it in a text element such as <span>."
+    },
+    {
+      "path": "modules/core/pages/admin/settings.vue",
+      "code": "unsupported-text",
+      "line": 194,
+      "column": 15,
+      "message": "Text directly inside <div> is not rendered natively. Wrap it in a text element such as <span>."
+    },
+    {
+      "path": "modules/core/pages/admin/settings.vue",
       "code": "unsupported-element",
       "line": 198,
       "column": 13,
@@ -423,10 +760,38 @@
     },
     {
       "path": "modules/core/pages/admin/settings.vue",
+      "code": "unsupported-text",
+      "line": 208,
+      "column": 15,
+      "message": "Text directly inside <div> is not rendered natively. Wrap it in a text element such as <span>."
+    },
+    {
+      "path": "modules/core/pages/admin/settings.vue",
+      "code": "unsupported-text",
+      "line": 211,
+      "column": 15,
+      "message": "Text directly inside <div> is not rendered natively. Wrap it in a text element such as <span>."
+    },
+    {
+      "path": "modules/core/pages/admin/settings.vue",
       "code": "unsupported-element",
       "line": 215,
       "column": 13,
       "message": "<FormGroup> has no native primitive mapping."
+    },
+    {
+      "path": "modules/core/pages/admin/settings.vue",
+      "code": "unsupported-text",
+      "line": 240,
+      "column": 15,
+      "message": "Text directly inside <div> is not rendered natively. Wrap it in a text element such as <span>."
+    },
+    {
+      "path": "modules/core/pages/admin/settings.vue",
+      "code": "unsupported-text",
+      "line": 243,
+      "column": 15,
+      "message": "Text directly inside <div> is not rendered natively. Wrap it in a text element such as <span>."
     },
     {
       "path": "modules/core/pages/admin/settings.vue",

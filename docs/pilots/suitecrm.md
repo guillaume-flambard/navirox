@@ -57,6 +57,12 @@ photo. That is the shape the fixture classifies as `candidate` on three
 separately observable signals, and it is deliberately not the desktop
 configuration surface, which the analysis classifies `desktop-only`.
 
+This workflow is selected and recorded per
+[`docs/WORKFLOW-EVIDENCE.md`](../WORKFLOW-EVIDENCE.md), which states its source
+provenance, the native-versus-PWA/WebView/Capacitor decision, and its validation
+status. Until practitioner feedback exists it stays an `unvalidated hypothesis`
+and must not be described as customer demand.
+
 ## Excluded until discovery confirms them
 
 Authentication, offline synchronisation and compliance are open questions, not

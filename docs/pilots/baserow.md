@@ -32,6 +32,12 @@ original visual assets and synthetic demonstration data. This proves a mobile
 delivery path and a useful native experience rather than reproducing a desktop
 table editor.
 
+That workflow is selected and recorded per
+[`docs/WORKFLOW-EVIDENCE.md`](../WORKFLOW-EVIDENCE.md), which states its source
+provenance, the native-versus-PWA/WebView/Capacitor decision, and its validation
+status. Until practitioner feedback exists it stays an `unvalidated hypothesis`
+and must not be described as customer demand.
+
 An optional connector may talk directly to an instance that its user administers,
 using the documented Baserow API and a token whose permissions are restricted by
 that instance's administrator. It must never proxy customer data through Navirox,

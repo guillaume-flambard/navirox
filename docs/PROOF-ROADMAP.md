@@ -24,7 +24,9 @@ A journey is complete only when all of the following are true:
 
 1. The analyzed benchmark revision is immutable and named in the evidence.
 2. The chosen workflow is bounded, independently named, and has user intent,
-   trigger, success state, data assumptions, non-goals, and acceptance actions.
+   trigger, success state, data assumptions, non-goals, and acceptance actions,
+   recorded per [`docs/WORKFLOW-EVIDENCE.md`](WORKFLOW-EVIDENCE.md) with a
+   validation status and an explicit native-versus-alternative decision.
 3. The companion is native and independent: no WebView fallback, copied brand
    assets, credentials, benchmark data, or unapproved connector is hidden in it.
 4. The evidence separates generated output, safely migrated portable/shared
