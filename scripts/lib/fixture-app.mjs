@@ -144,8 +144,34 @@ export function requireBuild() {
 }
 
 /** The directory a fixture's source files live in. */
+/**
+ * The Angular proof fixture. It has no compiled screen: the Angular journey has
+ * no target compiler, so the companion's screen is hand-written work and this
+ * record names the directory the adapter reads and the screen to install.
+ */
+export const ANGULAR_COMPANION_FIXTURE = {
+  appName: 'angular-companion-app',
+  directory: join(ROOT, 'packages', 'source-angular', 'fixtures', 'record-workflow'),
+  screen: join(ROOT, 'packages', 'source-angular', 'companion', 'App.vue'),
+  bundleName: 'angular-companion',
+  testIds: [
+    'record-workflow-screen',
+    'record-workflow-queue',
+    'record-workflow-row',
+    'record-workflow-select',
+    'record-workflow-detail',
+    'record-workflow-field',
+    'record-workflow-status',
+    'record-workflow-attach',
+    'record-workflow-attachment',
+    'record-workflow-save',
+    'record-workflow-saved',
+    'record-workflow-error',
+  ],
+}
+
 export function fixtureDirectory(fixture) {
-  return dirname(fixture.webFixture)
+  return fixture.directory ?? dirname(fixture.webFixture)
 }
 
 /**

@@ -47,7 +47,11 @@ export interface CompanionProvenance {
   readonly fixture: string
   readonly compilerVersion: string
   readonly manifestHash: string
-  /** Path of the generated screen inside the companion. */
+  /**
+   * Path of the screen inside the companion. It is compiler output on a journey
+   * with a target compiler and hand-written work on a journey without one, and
+   * the entry that names it says which.
+   */
   readonly screen: string
   readonly files: readonly CompanionFileEntry[]
 }
@@ -79,8 +83,9 @@ function nonEmpty(value: string | undefined): boolean {
 
 /**
  * Builds the record, refusing any entry that would hide where a file came from.
- * The generated screen has to be named as generated, a moved entry has to name
- * the planner decision that approved it, and every entry has to give a reason.
+ * The screen has to be named, as compiler output or as hand-written work, a
+ * moved entry has to name the planner decision that approved it and the hash of
+ * the bytes that moved, and every entry has to give a reason.
  */
 export function buildCompanionProvenance(input: CompanionProvenanceInput): CompanionProvenance {
   if (!nonEmpty(input.fixture)) {
@@ -131,9 +136,15 @@ export function buildCompanionProvenance(input: CompanionProvenanceInput): Compa
 
   const screen = input.files.find((file) => file.path === input.screen)
 
-  if (screen === undefined || screen.origin !== 'generated') {
+  if (screen === undefined) {
     throw new CompanionProvenanceError(
-      `The screen ${input.screen} is not named as generated, so a hand-written screen could pass as compiler output.`,
+      `The screen ${input.screen} is not named in the record, so a reviewer cannot tell what the companion shows.`,
+    )
+  }
+
+  if (screen.origin === 'moved') {
+    throw new CompanionProvenanceError(
+      `The screen ${input.screen} is marked moved, but a screen is either compiler output or hand-written work.`,
     )
   }
 
@@ -155,7 +166,7 @@ export function serializeCompanionProvenance(provenance: CompanionProvenance): s
 /**
  * Compiles the fixture again and refuses a generated screen whose fresh output
  * no longer matches the emitted file. The provenance is read first so a record
- * that does not name the screen as generated is rejected before compiling, and
+ * that does not name a generated screen is rejected before compiling, and
  * the existing fixture rule does the byte comparison.
  */
 export async function refreshCompanionScreen(

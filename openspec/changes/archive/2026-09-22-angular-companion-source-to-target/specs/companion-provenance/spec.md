@@ -1,11 +1,4 @@
-# companion-provenance Specification
-
-## Purpose
-Defines how a proof companion application is assembled from traceable origins, so
-a reviewer can tell generated output, moved shared units and hand-written files
-apart, and no manual replacement passes as generated.
-
-## Requirements
+## MODIFIED Requirements
 
 ### Requirement: A companion is assembled from named origins
 
@@ -26,17 +19,6 @@ be listed with its origin.
 
 - **WHEN** the journey has no target compiler
 - **THEN** the assembly records the screen as manual with its reason and marks no file generated
-
-### Requirement: A manual replacement is never concealed
-
-A companion provenance record MUST NOT mark a hand-written screen as generated.
-A generated file whose fresh compilation differs from the recorded one MUST fail
-the run before anything is built.
-
-#### Scenario: A generated file stops the run when it drifted
-
-- **WHEN** a fresh compilation of the fixture source differs from the recorded generated file
-- **THEN** the assembly fails and names the file instead of building a companion that no longer matches its source
 
 ### Requirement: The companion builds and is tested before device automation
 

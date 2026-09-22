@@ -113,12 +113,36 @@ describe('building the companion provenance', () => {
     ).toThrow(/names no content hash/)
   })
 
-  it('refuses a screen that is not named as generated', () => {
+  it('accepts a hand-written screen that says so', () => {
+    const record = entry({
+      files: [{ path: OUTPUT_PATH, origin: 'manual', reason: 'Written by hand.' }],
+    })
+
+    expect(record.screen).toBe(OUTPUT_PATH)
+  })
+
+  it('refuses a record that names no screen', () => {
     expect(() =>
       entry({
-        files: [{ path: OUTPUT_PATH, origin: 'manual', reason: 'Written by hand.' }],
+        files: [{ path: 'src/fieldLogic.ts', origin: 'manual', reason: 'Written by hand.' }],
       }),
-    ).toThrow(/could pass as compiler output/)
+    ).toThrow(/is not named in the record/)
+  })
+
+  it('refuses a screen that is marked moved', () => {
+    expect(() =>
+      entry({
+        files: [
+          {
+            path: OUTPUT_PATH,
+            origin: 'moved',
+            reason: 'Copied from the source.',
+            decision: 'shared',
+            sha256: 'hash-screen',
+          },
+        ],
+      }),
+    ).toThrow(/is marked moved/)
   })
 
   it('refuses the same path twice', () => {
@@ -258,5 +282,64 @@ describe('the assembled companion', () => {
     for (const file of record.files.filter((entry) => entry.origin === 'manual')) {
       expect(file.reason.length).toBeGreaterThan(0)
     }
+  })
+})
+
+const ANGULAR_PROVENANCE = join(
+  REPOSITORY_ROOT,
+  'docs',
+  'evidence',
+  'angular-companion.provenance.json',
+)
+
+/**
+ * The Angular record. Its journey has no target compiler, so it must name a
+ * hand-written screen and mark no file generated, and its moved hash is the only
+ * check that notices an edit to the copied module.
+ */
+describe('the assembled Angular companion', () => {
+  const record = JSON.parse(readFileSync(ANGULAR_PROVENANCE, 'utf8')) as {
+    readonly screen: string
+    readonly compilerVersion: string
+    readonly manifestHash: string
+    readonly files: readonly {
+      readonly path: string
+      readonly origin: string
+      readonly reason: string
+      readonly decision?: string
+      readonly sourcePath?: string
+      readonly sha256?: string
+    }[]
+  }
+
+  it('rebuilds through the provenance builder', () => {
+    expect(buildCompanionProvenance(record)).toEqual(record)
+  })
+
+  it('names a hand-written screen and marks nothing generated', () => {
+    expect(record.files.length).toBeGreaterThan(0)
+    expect(
+      record.files.every((file) => ['generated', 'moved', 'manual'].includes(file.origin)),
+    ).toBe(true)
+    expect(record.files.every((file) => file.reason.length > 0)).toBe(true)
+    expect(record.files.some((file) => file.origin === 'generated')).toBe(false)
+    expect(record.files.find((file) => file.path === record.screen)?.origin).toBe('manual')
+  })
+
+  it('moves only the unit a planner decision approved', () => {
+    for (const file of record.files.filter((entry) => entry.origin === 'moved')) {
+      expect(['shared', 'portable']).toContain(file.decision)
+    }
+  })
+
+  it('carries the bytes the record says it moved', () => {
+    for (const file of record.files.filter((entry) => entry.origin === 'moved')) {
+      expect(digest(join(REPOSITORY_ROOT, file.sourcePath ?? ''))).toBe(file.sha256)
+    }
+  })
+
+  it('records that no compiler produced this screen', () => {
+    expect(record.compilerVersion).toBe('none')
+    expect(record.manifestHash).toBe('none')
   })
 })

@@ -1,0 +1,27 @@
+{
+  "schemaVersion": 1,
+  "fixture": "packages/source-angular/fixtures/record-workflow",
+  "compilerVersion": "none",
+  "manifestHash": "none",
+  "screen": "App.vue",
+  "files": [
+    {
+      "path": "record-workflow.data.ts",
+      "origin": "moved",
+      "reason": "The planner classified it shared by unit-shared-logic, so its behaviour moves unchanged.",
+      "decision": "shared",
+      "sourcePath": "packages/source-angular/fixtures/record-workflow/src/app/record-workflow.data.ts",
+      "sha256": "12e2933bdf871127f0d625614fe8bd65ae8f43fb54d620588739f18ca9c6a94d"
+    },
+    {
+      "path": "App.vue",
+      "origin": "manual",
+      "reason": "The Angular journey has no target compiler, so this screen is hand-written for this project and is not generated from Angular templates."
+    },
+    {
+      "path": "index.js",
+      "origin": "manual",
+      "reason": "The scaffolder template writes the runtime bootstrap and mounts the app root."
+    }
+  ]
+}
