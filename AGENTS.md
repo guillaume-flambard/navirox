@@ -82,6 +82,10 @@ opening the next change. These documents narrow the current execution sequence;
 they do not weaken any architectural rule below or replace the canonical product
 direction in `docs/repositioning/`.
 
+For the narrower Vue/Nuxt developer-preview promise, read
+[`docs/DEVELOPER-PREVIEW.md`](docs/DEVELOPER-PREVIEW.md) before changing public
+wording or selecting preview work.
+
 ## Toolchain decisions that are deliberate
 
 - **pnpm is pinned to the 11.x line** via `packageManager` in `package.json`.

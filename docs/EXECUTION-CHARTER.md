@@ -103,3 +103,7 @@ report live under `docs/evidence/`.
 The staged exits and the proposed change sequence are in
 [`docs/PROOF-ROADMAP.md`](PROOF-ROADMAP.md) and
 [`docs/OPENSPEC-BACKLOG.md`](OPENSPEC-BACKLOG.md).
+
+For the separate, narrower Vue/Nuxt developer-preview promise, read
+[`docs/DEVELOPER-PREVIEW.md`](DEVELOPER-PREVIEW.md) before selecting work or
+changing public language.

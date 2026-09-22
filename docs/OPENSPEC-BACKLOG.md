@@ -163,6 +163,14 @@ and update the relevant evidence beside the behavior. A new stable requirement
 belongs in a spec delta; a one-off execution report does not invent a public
 capability.
 
+## Separate developer-preview sequence
+
+The `vue-nuxt-developer-preview-contract` change governs the narrower public
+readiness promise. Its dependency-ordered CI, distribution, external-validation,
+deterministic-transform and optional-LLM changes live in
+[`docs/DEVELOPER-PREVIEW.md`](DEVELOPER-PREVIEW.md). They do not replace the
+proof-journeys program or advance its companion-evidence gates.
+
 ## Cross-cutting proposals now ready for review
 
 These proposals refine the proof program without authorizing their
