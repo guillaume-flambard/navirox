@@ -107,9 +107,20 @@
   Both continuous integration capture jobs now run it, so the evidence is
   produced there.
 
-- [ ] 3.3 Run `openspec validate angular-companion-device-evidence --strict`
+- [x] 3.3 Run `openspec validate angular-companion-device-evidence --strict`
       before implementation and before archival, then archive the change. Verify
       no task is marked complete until its stated command or artifact exists.
       Note that `companion-operational-readiness` and
       `proof-artifact-governance` must be complete before a device-evidence
       change is archived, so archival may have to wait for them.
+
+  `openspec validate angular-companion-device-evidence --strict` reported the
+  change valid before implementation and again before archival. Both stated
+  preconditions were completed first: `companion-operational-readiness` (the
+  readiness matrix and its guard test) and `proof-artifact-governance` (the
+  artifact manifest, the hygiene check and the requalification report). Archival
+  then ran with the seven other tasks complete and this one as the eighth,
+  producing
+  `openspec/changes/archive/2026-09-22-angular-companion-device-evidence/` and
+  updating the `companion-device-evidence` spec with one added and one modified
+  requirement. Every task above cites the command or artifact that proves it.
