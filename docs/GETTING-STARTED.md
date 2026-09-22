@@ -106,10 +106,12 @@ before and after, and `openspec/specs/vue-fast-refresh/spec.md` states the limit
 
 **Some Navirox packages are not on a registry yet.** This is the one that costs
 you time if nobody says it, so here it is plainly. The scaffolder and most
-`@memolabs-apps/*` packages resolve at `0.1.0`, but `@memolabs-apps/cli`,
-`@memolabs-apps/source-lit` and `@memolabs-apps/source-solid` are not on the
-public registry, so `npx navirox` does not resolve against it today. Until the set
-is complete, an app gets the packages by being pointed at a checkout or at packed
+`@memolabs-apps/*` packages resolve at `0.1.0`, but five are not on the public
+registry: `@memolabs-apps/cli`, `@memolabs-apps/source-lit`,
+`@memolabs-apps/source-solid`, `@memolabs-apps/target-vue` and
+`@memolabs-apps/visual-benchmark`. `navirox` itself is not published either, so
+`npx navirox` does not resolve against the registry today. Until the set is
+complete, an app gets the packages by being pointed at a checkout or at packed
 tarballs, and those states behave differently:
 
 | State                      | Installs | Builds | Runs   |

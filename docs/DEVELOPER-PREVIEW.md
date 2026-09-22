@@ -23,6 +23,25 @@ The current Baserow diagnostic is source-analysis evidence, not a Baserow mobile
 application, partnership, or authority to reuse Baserow data, assets, or
 credentials.
 
+### Installation path
+
+The only verified consumer installation path is the packed tarballs of
+`pnpm test:e2e`, which scaffold, install and build Navirox without the registry.
+The documented public path does not work today: `navirox` is not published, and
+five workspace packages are absent from the registry
+(`@memolabs-apps/cli`, `@memolabs-apps/source-lit`,
+`@memolabs-apps/source-solid`, `@memolabs-apps/target-vue` and
+`@memolabs-apps/visual-benchmark`). Because `navirox` depends on
+`@memolabs-apps/cli`, and `@memolabs-apps/cli` depends on
+`@memolabs-apps/source-lit` and `@memolabs-apps/source-solid`, the public path
+fails at two links. `npx navirox doctor` reports `404 Not Found` for `navirox`,
+and `npx @memolabs-apps/cli --help` reports `404 Not Found` for
+`@memolabs-apps/cli`. No sentence here claims a working public `npx navirox`
+installation while those five packages remain unpublished.
+`node scripts/check-public-distribution.mjs` resolves each documented package
+against the registry and fails when this stated limitation and the registry
+disagree, so the gap cannot drift out of date without a failure.
+
 ## Preview acceptance bar
 
 The preview may be announced only with fresh evidence for all of the following:
