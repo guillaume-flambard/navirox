@@ -11,13 +11,15 @@ context: |
   identity. Symbiote, React Native/Fabric and Expo are infrastructure,
   providers or integrations, and none of them define the product.
 
-  Product direction, architecture invariants and the layer-classification rules
-  live in docs/repositioning/ (AGENT-GUIDE.md, ARCHITECTURE.md, MIGRATION-PLAN.md,
+  Start every task with docs/EXECUTION-CHARTER.md. It gives the current
+  proof-journeys sequence, a source-of-truth order, decision rules and links to
+  docs/PROOF-ROADMAP.md and docs/OPENSPEC-BACKLOG.md. Product direction,
+  architecture invariants and the layer-classification rules live in
+  docs/repositioning/ (AGENT-GUIDE.md, ARCHITECTURE.md, MIGRATION-PLAN.md,
   PRD.md, BLUEPRINT.md, ROADMAP.md, 00-START-HERE.md). Read AGENT-GUIDE.md
-  section 4 before deciding which package a change belongs to, and section 17
-  for the intended order of work. The old PLAN.md and blueprint.md remain the
-  implementation evidence for the current Vue/runtime path; they do not override
-  the direction above.
+  section 4 before deciding which package a change belongs to. PLAN.md and
+  blueprint.md remain implementation evidence for the Vue/runtime path; neither
+  overrides the product direction or a higher-priority safety constraint.
 
   Two seams, and they are different things:
   - the source seam, being added now: source frameworks -> source adapters ->

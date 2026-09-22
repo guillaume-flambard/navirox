@@ -70,6 +70,18 @@ pnpm changeset        # record a change for release
 
 `pnpm build && pnpm test` green is the baseline. Do not leave the workspace red.
 
+## Agent execution entry point
+
+Before selecting or implementing work, read
+[`docs/EXECUTION-CHARTER.md`](docs/EXECUTION-CHARTER.md). It separates verified
+current capability from aspiration, sets the source-of-truth order for the
+active proof-journeys program, and points to the smallest applicable OpenSpec
+change. Read [`docs/PROOF-ROADMAP.md`](docs/PROOF-ROADMAP.md) before changing
+priority, and [`docs/OPENSPEC-BACKLOG.md`](docs/OPENSPEC-BACKLOG.md) before
+opening the next change. These documents narrow the current execution sequence;
+they do not weaken any architectural rule below or replace the canonical product
+direction in `docs/repositioning/`.
+
 ## Toolchain decisions that are deliberate
 
 - **pnpm is pinned to the 11.x line** via `packageManager` in `package.json`.
