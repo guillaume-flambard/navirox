@@ -114,8 +114,8 @@ describe('the migrated pilot journey', () => {
       .toBeVisible()
       .withTimeout(SETTLE_TIMEOUT);
 
-    await element(by.id('product-name-1')).tap();
-    await expect(element(by.id('product-detail'))).toExist();
+    await element(by.id('product-open-1')).tap();
+    await exists('product-detail', SETTLE_TIMEOUT);
     await waitFor(element(by.id('product-name')))
       .toHaveText('Aurora Lamp')
       .withTimeout(TIMEOUT);
