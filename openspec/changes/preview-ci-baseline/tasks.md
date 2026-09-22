@@ -29,6 +29,9 @@
 
 ## 4. Validate
 
-- [ ] 4.1 Confirm a CI run in which both previously failing job families succeed.
+- [x] 4.1 Confirm a CI run in which both previously failing job families succeed.
   Verify the Angular companion captures and the pilot journey jobs conclude
-  `success` on the repair commit.
+  `success` on the repair commit. Verified: CI run `35774150595` on `abbefcb`
+  (which carries `adc90ce` and `7a0db12`) concluded `success` with all nine jobs
+  green, including `capture the records fixture on a simulator`, `capture the
+  records fixture on an emulator` and `run vue-pilot journey on a simulator`.
