@@ -469,11 +469,19 @@ jobs:
         env:
           NAVIROX_DEVICE: iPhone 17
 
+      # Nothing leaves the job before the hygiene check has seen it. The check
+      # names the artifact class and the rule, never the matched value, and the
+      # upload below is gated on it, so a finding blocks the upload.
+      - name: Check the proof artifacts before upload
+        id: proof-artifacts
+        if: always()
+        run: node scripts/check-proof-artifacts.mjs
+
       # The captures are the point of the job, so they are kept whether the run
       # passed or failed. A failed run is exactly when the screenshot is worth
       # looking at.
       - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
-        if: always()
+        if: always() && steps.proof-artifacts.outcome == 'success'
         with:
           name: records-native-capture-ios
           if-no-files-found: warn
@@ -653,10 +661,18 @@ jobs:
             --workspace "$RUNNER_TEMP/capture-angular-companion-android" ||
             fail "the Angular companion capture failed on the emulator"
 
+      # Nothing leaves the job before the hygiene check has seen it. The check
+      # names the artifact class and the rule, never the matched value, and the
+      # upload below is gated on it, so a finding blocks the upload.
+      - name: Check the proof artifacts before upload
+        id: proof-artifacts
+        if: always()
+        run: node scripts/check-proof-artifacts.mjs
+
       # Same reasoning as the iOS capture: the captures are the point of the job,
       # so they are kept whether the run passed or failed.
       - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
-        if: always()
+        if: always() && steps.proof-artifacts.outcome == 'success'
         with:
           name: records-native-capture-android
           if-no-files-found: warn
