@@ -87,6 +87,10 @@ plan.
 ## No claim
 
 Nothing in this document says that SuiteCRM has been migrated, converted, endorsed or
-partnered with. Nothing says a SuiteCRM screen reached visual parity with anything. The
-counts cover one pinned revision read as source, and the unsupported surfaces above are
-listed so that a reader can see what was not read.
+partnered with. Nothing says a SuiteCRM screen reached visual parity with anything. It
+also does not say that an Angular template can be emitted as a native screen: template to
+native screen generation is not demonstrated and no Angular target compiler exists, which
+is recorded with the rest of the Angular proof path in
+[`angular-neutral-seam-proof.md`](angular-neutral-seam-proof.md). The counts cover one
+pinned revision read as source, and the unsupported surfaces above are listed so that a
+reader can see what was not read.

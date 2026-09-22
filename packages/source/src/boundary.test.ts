@@ -94,6 +94,35 @@ describe('the source framework import boundary', () => {
     expect(violations, JSON.stringify(violations, null, 2)).toEqual([])
   })
 
+  it('scans the adapter packages, including the Angular proof path', () => {
+    const scanned = packageDirectories()
+      .filter((name) => isSourceAdapterPackageDir(name))
+      .flatMap((name) => sourceFiles(join(packagesDir, name, 'src')))
+
+    expect(scanned.length).toBeGreaterThan(5)
+    expect(scanned.some((file) => file.includes('source-angular'))).toBe(true)
+  })
+
+  it('keeps target provider imports out of the source adapters', () => {
+    // The other half of the asymmetry. An adapter may name its framework, and
+    // it may not reach for the target side: the Angular proof path is where
+    // that matters most, because a companion is close enough to tempt one.
+    const violations: IViolation[] = []
+
+    for (const directory of packageDirectories()) {
+      if (!isSourceAdapterPackageDir(directory)) continue
+
+      for (const file of sourceFiles(join(packagesDir, directory, 'src'))) {
+        const crossed = forbiddenSpecifiers('adapter', importSpecifiers(readFileSync(file, 'utf8')))
+        for (const specifier of crossed) {
+          violations.push({ file: relative(packagesDir, file), specifier })
+        }
+      }
+    }
+
+    expect(violations, JSON.stringify(violations, null, 2)).toEqual([])
+  })
+
   it('lets an adapter name its framework but never a target provider', () => {
     // The asymmetry is the seam. An adapter is where framework knowledge is
     // supposed to live, so naming one is not a violation there; reaching for the

@@ -1,0 +1,58 @@
+{
+  "schemaVersion": 1,
+  "journey": "angular-record-workflow",
+  "source": {
+    "adapterId": "angular",
+    "fixture": "packages/source-angular/fixtures/record-workflow",
+    "benchmark": "suitecrm",
+    "immutableRevision": "2cd77380bc838b8bd6c80f9fbe25855d73ef860c"
+  },
+  "handoffs": [
+    {
+      "from": "source input",
+      "to": "source-angular inspection",
+      "evidence": "packages/source-angular/fixtures/record-workflow is read as 5 files, 3 units and 1 capability with no finding."
+    },
+    {
+      "from": "source-angular inspection",
+      "to": "neutral App Graph",
+      "evidence": "The unit node for src/app/record-workflow.component.ts carries the adapter's own mobileReadiness metadata (candidate, attachment-signal) through UnitNode.metadata."
+    },
+    {
+      "from": "neutral App Graph",
+      "to": "planner decision",
+      "evidence": "The plan decides angular:src/app/record-workflow.data.ts:utility:default shared by unit-shared-logic with the source evidence src/app/record-workflow.data.ts."
+    },
+    {
+      "from": "planner decision",
+      "to": "companion behaviour",
+      "evidence": "The companion consumes that shared module: it declares the ordered actions, the identifiers they act on, the fixed record set and the save rule the workflow screen calls."
+    }
+  ],
+  "consumed": {
+    "subject": "angular:src/app/record-workflow.data.ts:utility:default",
+    "classification": "shared",
+    "rule": "unit-shared-logic",
+    "evidence": "src/app/record-workflow.data.ts"
+  },
+  "manual": [
+    {
+      "subject": "angular:src/app/record-workflow.component.ts:component:default",
+      "classification": "native-replacement",
+      "rule": "unit-view-layer",
+      "reason": "The Angular view layer is rewritten as a native screen; the behaviour behind it is what carries over, not the markup."
+    },
+    {
+      "subject": "angular:src/app/record-workflow.component.ts:capability:file-reading:read",
+      "classification": "manual",
+      "rule": "capability-no-counterpart",
+      "reason": "A file input read has no counterpart the rules can prove, so a person decides how the native attachment step is implemented."
+    }
+  ],
+  "limits": [
+    "Template to native screen generation is not demonstrated: no Angular template was emitted as a native screen and no Angular target compiler exists.",
+    "The SuiteCRM benchmark's routing could not be read, so this proof claims no route, screen or unit the analysis did not establish.",
+    "The pinned benchmark declares @angular/core 18.2.14, outside the tested ^20 and ^21 range, so the version stays untested.",
+    "The workflow itself is an unvalidated hypothesis recorded in docs/evidence/workflow-suitecrm-record-workflow.md."
+  ]
+}
