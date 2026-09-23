@@ -1,0 +1,20 @@
+# Fixture lockfile for adapter-version-governance tests. Pinned resolutions
+# only; this fixture is never installed and no network is ever touched.
+lockfileVersion: '9.0'
+
+settings:
+  autoInstallPeers: true
+  excludeLinksFromLockfile: false
+
+importers:
+
+  .:
+    dependencies:
+      svelte:
+        specifier: ^4.2.0
+        version: 4.2.19
+
+packages:
+
+  svelte@4.2.19:
+    resolution: {integrity: sha512-fixture-pinned-resolution-never-installed}

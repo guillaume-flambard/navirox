@@ -1,0 +1,26 @@
+# Fixture lockfile for adapter-version-governance tests. Pinned resolutions
+# only; this fixture is never installed and no network is ever touched.
+lockfileVersion: '9.0'
+
+settings:
+  autoInstallPeers: true
+  excludeLinksFromLockfile: false
+
+importers:
+
+  .:
+    dependencies:
+      react:
+        specifier: ^18.3.0
+        version: 18.3.1
+      react-router:
+        specifier: ^6.0.0
+        version: 6.0.0
+
+packages:
+
+  react@18.3.1:
+    resolution: {integrity: sha512-fixture-pinned-resolution-never-installed}
+
+  react-router@6.0.0:
+    resolution: {integrity: sha512-fixture-pinned-resolution-never-installed}

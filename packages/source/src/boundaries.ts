@@ -70,6 +70,7 @@ export const NEUTRAL_PACKAGE_DIRS: readonly string[] = [
   'build',
   'doctor',
   'cli',
+  'discovery',
 ]
 
 /** Adapters are the one place a source framework name is allowed to appear. */

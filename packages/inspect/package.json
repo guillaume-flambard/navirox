@@ -25,6 +25,7 @@
     "clean": "rm -rf dist"
   },
   "dependencies": {
+    "@memolabs-apps/compat": "workspace:*",
     "@memolabs-apps/graph": "workspace:*",
     "@memolabs-apps/source": "workspace:*"
   },

@@ -1,0 +1,9 @@
+{
+  "name": "fixture-react-version-refused",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "react": "^18.3.0",
+    "react-router": "^6.0.0"
+  }
+}

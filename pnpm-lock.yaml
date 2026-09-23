@@ -484,6 +484,9 @@ importers:
 
   packages/inspect:
     dependencies:
+      '@memolabs-apps/compat':
+        specifier: workspace:*
+        version: link:../compat
       '@memolabs-apps/graph':
         specifier: workspace:*
         version: link:../graph

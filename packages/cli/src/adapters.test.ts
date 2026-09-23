@@ -335,7 +335,7 @@ describe('React, the framework the target also uses', () => {
     }
   })
 
-  it('names the native dependency when it is chosen by name', async () => {
+  it('refuses a React version outside the verified range', async () => {
     const registry = await createAdapterRegistry()
     const outcome = await runInspection({
       rootDir: fixture('source-react', 'react-bad'),
@@ -343,12 +343,11 @@ describe('React, the framework the target also uses', () => {
       framework: 'react',
     })
 
-    expect(outcome.ok).toBe(true)
+    expect(outcome.ok).toBe(false)
 
-    if (outcome.ok) {
-      expect(
-        outcome.report.graph.findings.some((finding) => finding.code === 'react-native-dependency'),
-      ).toBe(true)
+    if (!outcome.ok) {
+      expect(outcome.reason).toBe('outside-verified-range')
+      expect(outcome.message).toContain('No application was generated')
     }
   })
 })

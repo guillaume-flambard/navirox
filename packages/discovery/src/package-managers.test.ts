@@ -16,7 +16,7 @@ function packageJson(extra: Record<string, unknown>): string {
   )
 }
 
-const MAIN = "import { createApp } from 'vue'\n\ncreateApp({}).mount('#app')\n"
+const MAIN = "import { createApp } from '@acme/core'\n\ncreateApp({}).mount('#app')\n"
 
 describe('package manager and workspace detection', () => {
   it('detects npm from package-lock.json and resolves the version', () => {
