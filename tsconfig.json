@@ -78,6 +78,9 @@
       "path": "./packages/planner"
     },
     {
+      "path": "./packages/workflow"
+    },
+    {
       "path": "./packages/source-angular"
     },
     {
