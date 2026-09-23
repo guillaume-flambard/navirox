@@ -24,11 +24,14 @@ import {
 } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { dirname, join, sep } from 'node:path'
+import { pathToFileURL } from 'node:url'
 
 export const ROOT = new URL('../../', import.meta.url).pathname.replace(/\/$/, '')
 export const PACKAGES_DIRECTORY = join(ROOT, 'packages')
 export const SCAFFOLDER = join(ROOT, 'packages', 'create-navirox', 'dist', 'bin.js')
 export const COMPILER = join(ROOT, 'packages', 'target-vue', 'dist', 'index.js')
+export const ANGULAR_COMPILER = join(ROOT, 'packages', 'target-angular', 'dist', 'index.js')
+export const CLI = join(ROOT, 'packages', 'cli', 'dist', 'bin.js')
 export const BENCHMARK = join(ROOT, 'packages', 'visual-benchmark', 'dist', 'index.js')
 export const LAUNCHER = join(ROOT, 'packages', 'navirox', 'dist', 'bin.js')
 export const FIXTURES_DIRECTORY = join(ROOT, 'packages', 'target-vue', 'fixtures')
@@ -135,7 +138,7 @@ export function sha256(text) {
 }
 
 export function requireBuild() {
-  for (const artifact of [SCAFFOLDER, COMPILER, BENCHMARK, LAUNCHER]) {
+  for (const artifact of [SCAFFOLDER, COMPILER, ANGULAR_COMPILER, BENCHMARK, LAUNCHER]) {
     assert(
       existsSync(artifact),
       `${artifact} is missing. Build the workspace first with \`pnpm build\`.`,
@@ -145,14 +148,28 @@ export function requireBuild() {
 
 /** The directory a fixture's source files live in. */
 /**
- * The Angular proof fixture. It has no compiled screen: the Angular journey has
- * no target compiler, so the companion's screen is hand-written work and this
- * record names the directory the adapter reads and the screen to install.
+ * The Angular proof fixture. The companion's app root is compiler output from
+ * the pinned record-workflow component; this record names the directory the
+ * adapter reads and the component the Angular target compiles.
  */
 export const ANGULAR_COMPANION_FIXTURE = {
   appName: 'angular-companion-app',
   directory: join(ROOT, 'packages', 'source-angular', 'fixtures', 'record-workflow'),
-  screen: join(ROOT, 'packages', 'source-angular', 'companion', 'App.vue'),
+  componentScript: join(
+    ROOT,
+    'packages',
+    'source-angular',
+    'fixtures',
+    'record-workflow',
+    'src',
+    'app',
+    'record-workflow.component.ts',
+  ),
+  componentPath:
+    'packages/source-angular/fixtures/record-workflow/src/app/record-workflow.component.ts',
+  compilerEntry: ANGULAR_COMPILER,
+  outputPath: 'packages/source-angular/companion/App.vue',
+  emittedScreen: join(ROOT, 'packages', 'source-angular', 'companion', 'App.vue'),
   bundleName: 'angular-companion',
   testIds: [
     'record-workflow-screen',
@@ -355,6 +372,71 @@ export async function installGeneratedScreen(appDir, fixture = RECORDS_FIXTURE) 
   process.stdout.write(`   manifest ${result.manifestHash} compiler ${result.compilerVersion}\n`)
 
   return result
+}
+
+/**
+ * Compiles the pinned Angular component fresh and installs it as the app root.
+ *
+ * The same path the convert command takes: the inline template is read from the
+ * component file, `inject(Type)` sources are resolved beside it, and only
+ * `compileAngularComponent` output is written. A finding stops the run with no
+ * screen, so a hand-written root cannot stand in for the compiler.
+ */
+export async function installGeneratedAngularScreen(appDir, fixture = ANGULAR_COMPANION_FIXTURE) {
+  step('Compiling the Angular component fresh into the app root')
+
+  const { compileAngularComponent, hashProvenanceManifest } = await import(
+    pathToFileURL(fixture.compilerEntry).href
+  )
+  const { readAngularInjectables, readAngularTemplate } = await import(
+    pathToFileURL(join(ROOT, 'packages', 'cli', 'dist', 'index.js')).href
+  )
+  const script = readFileSync(fixture.componentScript, 'utf8')
+  const componentRelative = fixture.componentPath.replace(
+    /^packages\/source-angular\/fixtures\/record-workflow\//,
+    '',
+  )
+  const readRelative = (path) => {
+    if (path === componentRelative) return script
+    const service = join(fixture.directory, 'src', 'app', path.replace(/^src\/app\//, ''))
+
+    return existsSync(service) ? readFileSync(service, 'utf8') : undefined
+  }
+  const template = readAngularTemplate(readRelative, componentRelative)
+
+  assert(
+    typeof template === 'string' && template.length > 0,
+    'The Angular component has no template.',
+  )
+
+  const injectables = readAngularInjectables(readRelative, componentRelative, script)
+  const result = compileAngularComponent({
+    template,
+    script,
+    filename: fixture.componentPath,
+    outputPath: fixture.outputPath,
+    injectables,
+  })
+
+  assert(
+    result.report.findings.length === 0,
+    `The Angular component no longer compiles cleanly: ${JSON.stringify(result.report.findings, null, 2)}`,
+  )
+  assert(
+    typeof result.code === 'string' && result.code.length > 0,
+    'The compiler reported no findings but emitted no screen.',
+  )
+
+  writeFileSync(join(appDir, 'App.vue'), result.code)
+  const manifestHash = hashProvenanceManifest(result.manifest)
+  process.stdout.write(`   manifest ${manifestHash} compiler ${result.manifest.compilerVersion}\n`)
+
+  return {
+    code: result.code,
+    compilerVersion: result.manifest.compilerVersion,
+    manifestHash,
+    findings: result.report.findings,
+  }
 }
 
 export function consumeFromArtifacts(appDir, artifacts) {

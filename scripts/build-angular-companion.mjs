@@ -2,13 +2,11 @@
 /**
  * Assembles the Angular proof companion.
  *
- * The Angular journey has no target compiler, so nothing here is generated from
- * Angular templates. The companion consumes the neutral model the planner
- * approved: the module it classified as shared by `unit-shared-logic` is copied
- * byte for byte beside a hand-written screen, and the provenance record says so.
- * Running this command is what makes the seam claim checkable, because it reads
- * the fixture with the real adapter and planner and asserts the decisions it
- * depends on before it builds anything.
+ * The assembly reads the fixture with the real adapter and planner, asserts the
+ * decisions it depends on, copies the module the planner classified as shared
+ * byte for byte, and installs `compileAngularComponent` output as the app root.
+ * The provenance record names the compiler revision and the manifest hash, so a
+ * hand-written screen cannot pass as generated output.
  *
  * Usage: node scripts/build-angular-companion.mjs [--keep]
  *
@@ -32,6 +30,7 @@ import {
   consumeFromArtifacts,
   decisionFor,
   install,
+  installGeneratedAngularScreen,
   newWorkspace,
   pack,
   planFixture,
@@ -100,9 +99,6 @@ function assertAnalyzed(analysis) {
   process.stdout.write(
     `   ${analysis.summary.files} files, ${analysis.summary.units} units, ${analysis.summary.capabilities} capabilities, 0 findings\n`,
   )
-  process.stdout.write(
-    '   No target compiler exists for this journey, so the screen is hand-written work.\n',
-  )
 }
 
 function assertPlan(plan) {
@@ -137,13 +133,6 @@ function copySharedModule(appDirectory) {
   return sha256(source)
 }
 
-function installScreen(appDirectory) {
-  const screen = readFileSync(ANGULAR_COMPANION_FIXTURE.screen, 'utf8')
-
-  writeFileSync(join(appDirectory, 'App.vue'), screen, 'utf8')
-  process.stdout.write('   wrote the hand-written screen as the app root\n')
-}
-
 async function main() {
   const options = parseArguments(process.argv.slice(2))
 
@@ -168,14 +157,14 @@ async function main() {
     step('Copying the unit the planner approved')
     const sharedHash = copySharedModule(appDirectory)
 
-    step('Installing the hand-written screen')
-    installScreen(appDirectory)
+    step('Installing the compiler-emitted screen')
+    const compilation = await installGeneratedAngularScreen(appDirectory)
 
     step('Writing the provenance record')
     const provenance = buildCompanionProvenance({
       fixture: FIXTURE_PATH,
-      compilerVersion: 'none',
-      manifestHash: 'none',
+      compilerVersion: compilation.compilerVersion,
+      manifestHash: compilation.manifestHash,
       screen: 'App.vue',
       files: [
         {
@@ -189,9 +178,11 @@ async function main() {
         },
         {
           path: 'App.vue',
-          origin: 'manual',
+          origin: 'generated',
           reason:
-            'The Angular journey has no target compiler, so this screen is hand-written for this project and is not generated from Angular templates.',
+            'Emitted by @memolabs-apps/target-angular from the pinned fixture component and its injectable sources.',
+          sourcePath: ANGULAR_COMPANION_FIXTURE.componentPath,
+          sha256: sha256(compilation.code),
         },
         {
           path: 'index.js',
@@ -203,9 +194,6 @@ async function main() {
 
     writeFileSync(PROVENANCE_PATH, serializeCompanionProvenance(provenance), 'utf8')
     process.stdout.write(`   provenance: ${PROVENANCE_PATH}\n`)
-    process.stdout.write(
-      '   no compiler revision or manifest hash is recorded: this journey has no target compiler\n',
-    )
 
     step('Installing the companion from the packed artifacts')
     const artifacts = pack(artifactsDir, publishablePackages())

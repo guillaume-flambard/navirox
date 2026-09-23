@@ -107,7 +107,7 @@ describe('the record workflow fixture', () => {
       'Reporting and export',
       'Accounts, roles and permissions',
     ])
-    expect(RECORD_WORKFLOW_EXECUTION.executable).toBe(false)
+    expect(RECORD_WORKFLOW_EXECUTION.executable).toBe(true)
     expect(RECORD_WORKFLOW_EXECUTION.reason.length).toBeGreaterThan(0)
   })
 

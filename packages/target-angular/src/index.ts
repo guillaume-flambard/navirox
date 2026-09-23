@@ -61,7 +61,14 @@ export interface TargetProvenanceInput {
 
 export interface TargetProvenanceManifest {
   readonly schemaVersion: typeof TARGET_PROVENANCE_SCHEMA_VERSION
+  /** The view source the compiler consumed (template text, or the script when a class refusal never reached the template). */
   readonly input: TargetProvenanceInput
+  /**
+   * The class script compiled beside that template. The path matches `input`
+   * when the template is inline in the component file; the hashes differ
+   * because `input` hashes the template text and `component` hashes the script.
+   */
+  readonly component?: TargetProvenanceInput
   readonly outputPath?: string
   readonly compilerVersion: string
   readonly nodes: readonly TargetViewNode[]
@@ -232,6 +239,17 @@ function translateAttribute(
 
   if (name.startsWith('(') && name.endsWith(')')) {
     const event = name.slice(1, -1)
+
+    // A text input reports its value through the native value event, not a
+    // press: a press carries no value, so a handler that reads one would bind
+    // `undefined`. Angular's `(click)`, `(change)` and `(input)` on an input
+    // all mean "the field was edited", which is what `@value-change` delivers.
+    if (
+      TAGS[element.tag] === 'text-input' &&
+      (event === 'click' || event === 'press' || event === 'change' || event === 'input')
+    ) {
+      return `@value-change="${value ?? ''}"`
+    }
 
     if (event === 'click' || event === 'press') return `@press="${value ?? ''}"`
 
@@ -747,6 +765,8 @@ export interface AngularComponentInput {
   readonly script: string
   readonly filename?: string
   readonly outputPath?: string
+  /** Sources for injectable classes, keyed by the `Type` in `inject(Type)`. */
+  readonly injectables?: Readonly<Record<string, string>>
 }
 
 /**
@@ -765,10 +785,32 @@ const CLASS_UNSUPPORTED: readonly { readonly pattern: RegExp; readonly what: str
   { pattern: /\b(?:get|set)\s+[A-Za-z_$][\w$]*\s*\(/, what: 'a getter or setter' },
 ]
 
+/**
+ * The one inject form this target translates: `name = inject(Type)`.
+ *
+ * Any other `inject(...)` still hits `CLASS_UNSUPPORTED` after these field
+ * declarations are blanked out, so the refusal rule stays in force for
+ * constructor-style, optioned, and bare `inject` calls.
+ */
+const BOUNDED_INJECT_FIELD =
+  /^[ \t]*(?:readonly[ \t]+)?([A-Za-z_$][\w$]*)[ \t]*(?::[^=\n]+)?=[ \t]*inject[ \t]*\([ \t]*([A-Za-z_$][\w$]*)[ \t]*\)[ \t]*;?/gm
+
 const FIELD = /^\s*(?:readonly\s+)?([A-Za-z_$][\w$]*)\s*(?::[^=;\n]+)?=\s*([^\n;]+);?\s*$/gm
 
 const METHOD =
   /(?:^|\n)\s*(?:(?:public|private|protected|static)\s+)*(?:async\s+)?([A-Za-z_$][\w$]*)\s*\(([^()]*)\)\s*(?::[^\{;]+)?\{/g
+
+interface BoundedInjectField {
+  readonly name: string
+  readonly type: string
+  readonly index: number
+}
+
+interface TranslatedInject {
+  readonly name: string
+  readonly properties: readonly string[]
+  readonly signals: readonly string[]
+}
 
 interface ComponentState {
   readonly setup: readonly string[]
@@ -790,6 +832,19 @@ function classBody(script: string): string | undefined {
 /** Inside a translated body, `this.x` reads the ref `x`. */
 function asRef(member: string): string {
   return member.replace(/\bthis\.([A-Za-z_$][\w$]*)/g, '$1.value')
+}
+
+/**
+ * Rewrites an Angular input value read to the native value event payload.
+ *
+ * Angular reads a field's value off the DOM, `(event.target as
+ * HTMLInputElement).value`. The native `text-input` reports it as `text` on the
+ * value event, so a handler that still read the DOM would bind `undefined`.
+ */
+function rewriteValueRead(body: string): string {
+  return body
+    .replaceAll('(event.target as HTMLInputElement).value', 'event.text')
+    .replaceAll('event.target.value', 'event.text')
 }
 
 function refusal(what: string, at: number, source: string): TargetFinding {
@@ -837,11 +892,220 @@ function stateFor(body: string): ComponentState | undefined {
     if (name === '' || close === -1) continue
 
     setup.push(
-      `function ${name}(${(match[2] ?? '').trim()}) {\n  ${asRef(body.slice(open + 1, close).trim())}\n}`,
+      `function ${name}(${(match[2] ?? '').trim()}) {\n  ${rewriteValueRead(asRef(body.slice(open + 1, close).trim()))}\n}`,
     )
   }
 
   return setup.length === 0 ? undefined : { setup, signals }
+}
+
+/** The `)` that closes the `(` at `open`, or -1 when it never closes. */
+function matchingParen(source: string, open: number): number {
+  let depth = 1
+
+  for (let index = open + 1; index < source.length; index += 1) {
+    const char = source[index]
+
+    if (char === "'" || char === '"' || char === '`') {
+      index += 1
+
+      while (index < source.length && source[index] !== char) {
+        if (source[index] === '\\') index += 1
+        index += 1
+      }
+
+      continue
+    }
+
+    if (char === '(') depth += 1
+    else if (char === ')') {
+      depth -= 1
+      if (depth === 0) return index
+    }
+  }
+
+  return -1
+}
+
+/**
+ * Rewrites one Angular service method body for a `reactive` nest.
+ *
+ * Nested refs unwrap, so `this.signal.set(v)` becomes an assignment,
+ * `this.signal.update(fn)` applies `fn` to the current value, and a no-arg
+ * `this.signal()` read drops the call. Top-level component bodies keep `asRef`
+ * instead; this path is only for members emitted inside `reactive({ ... })`.
+ */
+function rewriteReactiveBody(body: string): string {
+  let output = ''
+  let index = 0
+
+  while (index < body.length) {
+    const rest = body.slice(index)
+    const setter = /^this\.([A-Za-z_$][\w$]*)\.(set|update)\(/.exec(rest)
+
+    if (setter !== null) {
+      const name = setter[1] ?? ''
+      const operation = setter[2] ?? 'set'
+      const open = index + setter[0].length - 1
+      const close = matchingParen(body, open)
+
+      if (close !== -1) {
+        const argument = rewriteReactiveBody(body.slice(open + 1, close))
+        output +=
+          operation === 'set'
+            ? `this.${name} = ${argument}`
+            : `this.${name} = (${argument})(this.${name})`
+        index = close + 1
+        continue
+      }
+    }
+
+    const call = /^this\.([A-Za-z_$][\w$]*)\(\)/.exec(rest)
+
+    if (call !== null) {
+      output += `this.${call[1]}`
+      index += call[0].length
+      continue
+    }
+
+    output += body[index] ?? ''
+    index += 1
+  }
+
+  return output
+}
+
+/** The injectable's state as `reactive` properties, or undefined when empty. */
+function reactiveStateFor(body: string): { properties: string[]; signals: string[] } | undefined {
+  const properties: string[] = []
+  const signals: string[] = []
+
+  for (const match of body.matchAll(FIELD)) {
+    const name = match[1] ?? ''
+    const initial = (match[2] ?? '').trim()
+
+    if (name === '' || initial === '') continue
+
+    const signal = /^signal\s*(?:<[^>]*>)?\s*\(([\s\S]*)\)$/.exec(initial)
+
+    if (signal !== null) {
+      properties.push(`${name}: ref(${(signal[1] ?? 'undefined').trim()})`)
+      signals.push(name)
+      continue
+    }
+
+    const computed = /^computed\s*\(([\s\S]*)\)$/.exec(initial)
+
+    if (computed !== null) {
+      properties.push(`${name}: computed(${rewriteReactiveBody((computed[1] ?? '').trim())})`)
+      continue
+    }
+
+    properties.push(`${name}: ref(${initial})`)
+  }
+
+  for (const match of body.matchAll(METHOD)) {
+    const name = match[1] ?? ''
+    const open = (match.index ?? 0) + match[0].length - 1
+    const close = matchingBrace(body, open)
+
+    if (name === '' || close === -1) continue
+
+    const methodBody = rewriteReactiveBody(body.slice(open + 1, close).trim())
+    properties.push(`${name}(${(match[2] ?? '').trim()}) {\n  ${methodBody}\n}`)
+  }
+
+  return properties.length === 0 ? undefined : { properties, signals }
+}
+
+/** Drops `@Injectable(...)` so the decorator rule does not refuse the service. */
+function stripInjectableDecorator(source: string): string {
+  return source.replace(/(?:^|\n)[ \t]*@Injectable\s*\([^)]*\)/g, '')
+}
+
+/** Blanks bounded inject fields so leftover `inject(` still hits CLASS_UNSUPPORTED. */
+function blankBoundedInjects(script: string): {
+  readonly blanked: string
+  readonly fields: BoundedInjectField[]
+} {
+  const fields: BoundedInjectField[] = []
+  const blanked = script.replace(
+    BOUNDED_INJECT_FIELD,
+    (match, name: string, type: string, offset: number) => {
+      fields.push({ name, type, index: offset })
+      return ' '.repeat(match.length)
+    },
+  )
+
+  return { blanked, fields }
+}
+
+/** Rewrites `this.injectName...` before top-level `asRef` runs on component methods. */
+function rewriteInjectRefs(body: string, injects: readonly TranslatedInject[]): string {
+  let result = body
+
+  for (const inject of injects) {
+    for (const signal of inject.signals) {
+      result = result.replaceAll(`this.${inject.name}.${signal}()`, `${inject.name}.${signal}`)
+    }
+  }
+
+  for (const inject of injects) {
+    result = result.replaceAll(`this.${inject.name}`, inject.name)
+  }
+
+  return result
+}
+
+function translateInjectables(
+  fields: readonly BoundedInjectField[],
+  injectables: Readonly<Record<string, string>> | undefined,
+  script: string,
+): { readonly translated: TranslatedInject[]; readonly findings: TargetFinding[] } {
+  const translated: TranslatedInject[] = []
+  const findings: TargetFinding[] = []
+
+  for (const field of fields) {
+    const source = injectables?.[field.type]
+
+    if (source === undefined) {
+      findings.push(refusal(`an injectable source for ${field.type}`, field.index, script))
+      continue
+    }
+
+    const cleaned = stripInjectableDecorator(source)
+    let blocked = false
+
+    for (const rule of CLASS_UNSUPPORTED) {
+      const match = rule.pattern.exec(cleaned)
+
+      if (match !== null) {
+        findings.push(refusal(rule.what, match.index, cleaned))
+        blocked = true
+        break
+      }
+    }
+
+    if (blocked) continue
+
+    const body = classBody(cleaned)
+
+    if (body === undefined) {
+      findings.push(refusal(`the class body of ${field.type}`, field.index, script))
+      continue
+    }
+
+    const state = reactiveStateFor(body)
+
+    if (state === undefined) {
+      findings.push(refusal(`translatable state on ${field.type}`, field.index, script))
+      continue
+    }
+
+    translated.push({ name: field.name, ...state })
+  }
+
+  return { translated, findings }
 }
 
 /** A component output that carries the findings and no source. */
@@ -850,11 +1114,14 @@ function refusedComponent(
   script: string,
   findings: readonly TargetFinding[],
 ): AngularTargetOutput {
+  const component: TargetProvenanceInput = { path: filename, sha256: hashSource(script) }
+
   return {
     report: { schemaVersion: TARGET_VIEW_SCHEMA_VERSION, nodes: [], findings },
     manifest: {
       schemaVersion: TARGET_PROVENANCE_SCHEMA_VERSION,
-      input: { path: filename, sha256: hashSource(script) },
+      input: component,
+      component,
       compilerVersion: readCompilerVersion(),
       nodes: [],
       findings,
@@ -862,52 +1129,207 @@ function refusedComponent(
   }
 }
 
+interface SourceImport {
+  readonly local: string
+  readonly imported: string
+  readonly typeOnly: boolean
+  readonly module: string
+}
+
+/** Named value and type imports a source declares, with the module they come from. */
+function collectNamedImports(source: string): SourceImport[] {
+  const results: SourceImport[] = []
+  const pattern = /import\s+(type\s+)?\{([^}]+)\}\s*from\s*['"]([^'"]+)['"]/g
+
+  for (const match of source.matchAll(pattern)) {
+    const wholeType = match[1] !== undefined
+    const clause = match[2] ?? ''
+    const module = match[3] ?? ''
+
+    for (const part of clause.split(',')) {
+      const piece = part.trim()
+
+      if (piece === '') continue
+
+      const typeOnly = wholeType || /^type\s+/.test(piece)
+      const cleaned = piece.replace(/^type\s+/, '').trim()
+      const aliased = /^([A-Za-z_$][\w$]*)\s+as\s+([A-Za-z_$][\w$]*)$/.exec(cleaned)
+
+      if (aliased !== null) {
+        results.push({
+          local: aliased[2] ?? '',
+          imported: aliased[1] ?? '',
+          typeOnly,
+          module,
+        })
+      } else if (/^[A-Za-z_$][\w$]*$/.test(cleaned)) {
+        results.push({ local: cleaned, imported: cleaned, typeOnly, module })
+      }
+    }
+  }
+
+  return results
+}
+
+function identifierIn(text: string, name: string): boolean {
+  const escaped = name.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+
+  return new RegExp(`(?<![\\w$])${escaped}(?![\\w$])`).test(text)
+}
+
+/**
+ * Re-emit the library imports the translated setup still references.
+ *
+ * Method bodies and inject initialisers keep free identifiers from the source
+ * (`nextIn`, seed data, helper types). Dropping those imports would emit a
+ * screen that fails at runtime, so each named import whose local binding
+ * appears in the setup is rewritten with its original module specifier.
+ * Angular packages are never re-emitted: a name from `@angular/*` that survives
+ * translation is a bug, not an import the native screen should carry.
+ */
+function freeIdentifierImports(setup: string, sources: readonly string[]): string[] {
+  const declared = new Set<string>()
+
+  for (const match of setup.matchAll(/\b(?:const|function|let|var)\s+([A-Za-z_$][\w$]*)/g)) {
+    if (match[1] !== undefined) declared.add(match[1])
+  }
+
+  const byModule = new Map<string, SourceImport[]>()
+  const seen = new Set<string>()
+
+  for (const source of sources) {
+    for (const entry of collectNamedImports(source)) {
+      if (entry.module === 'vue' || entry.module.startsWith('@angular/')) continue
+      if (entry.local === '' || declared.has(entry.local)) continue
+      if (!identifierIn(setup, entry.local)) continue
+
+      const key = `${entry.module} ${entry.local}`
+
+      if (seen.has(key)) continue
+      seen.add(key)
+
+      const bucket = byModule.get(entry.module) ?? []
+
+      bucket.push(entry)
+      byModule.set(entry.module, bucket)
+    }
+  }
+
+  return [...byModule].map(([module, entries]) => {
+    const parts = entries.map((entry) => {
+      if (entry.imported !== entry.local) {
+        return `${entry.typeOnly ? 'type ' : ''}${entry.imported} as ${entry.local}`
+      }
+
+      return entry.typeOnly ? `type ${entry.local}` : entry.local
+    })
+
+    return `import { ${parts.join(', ')} } from '${module}'`
+  })
+}
+
 /**
  * Compile a whole Angular component: its template and the class state behind it.
  *
  * The class goes through a small, closed set (literal fields, `signal(...)`,
- * `computed(...)` and simple methods). A component whose class uses anything
+ * `computed(...)`, simple methods, and a bounded `name = inject(Type)` whose
+ * injectable source the caller supplies). A component whose class uses anything
  * else is refused with a finding and no source, because a screen that binds to a
  * value it never declares is not a screen that runs.
  */
 export function compileAngularComponent(input: AngularComponentInput): AngularTargetOutput {
   const filename = input.filename ?? 'Component.html'
   const findings: TargetFinding[] = []
+  const { blanked, fields: injectFields } = blankBoundedInjects(input.script)
 
   for (const rule of CLASS_UNSUPPORTED) {
-    const match = rule.pattern.exec(input.script)
+    const match = rule.pattern.exec(blanked)
 
-    if (match !== null) findings.push(refusal(rule.what, match.index, input.script))
+    if (match !== null) findings.push(refusal(rule.what, match.index, blanked))
   }
 
-  const body = findings.length === 0 ? classBody(input.script) : undefined
-
-  if (findings.length > 0 || body === undefined) {
+  if (findings.length > 0) {
     return refusedComponent(filename, input.script, findings)
   }
 
-  const state = stateFor(body)
+  const { translated, findings: injectFindings } = translateInjectables(
+    injectFields,
+    input.injectables,
+    input.script,
+  )
+  findings.push(...injectFindings)
 
-  if (state === undefined) {
+  if (findings.length > 0) {
+    return refusedComponent(filename, input.script, findings)
+  }
+
+  const body = classBody(blanked)
+
+  if (body === undefined) {
+    findings.push(refusal('a component class', 0, input.script))
+    return refusedComponent(filename, input.script, findings)
+  }
+
+  const state = stateFor(rewriteInjectRefs(body, translated))
+
+  if (state === undefined && translated.length === 0) {
     findings.push(refusal('a component with no translatable state', 0, input.script))
     return refusedComponent(filename, input.script, findings)
   }
 
   // Angular calls a signal in the template; Vue reads it plainly, so `name()`
-  // becomes `name` before the template is compiled.
-  const template = state.signals.reduce(
-    (text, name) => text.replace(new RegExp(`\\b${name}\\(\\)`, 'g'), name),
-    input.template,
-  )
+  // becomes `name` before the template is compiled. The inject target uses the
+  // same rule for each of its signal members under the inject field name.
+  let template =
+    state?.signals.reduce(
+      (text, name) => text.replace(new RegExp(`\\b${name}\\(\\)`, 'g'), name),
+      input.template,
+    ) ?? input.template
+
+  for (const inject of translated) {
+    for (const signal of inject.signals) {
+      template = template.replace(
+        new RegExp(`\\b${inject.name}\\.${signal}\\(\\)`, 'g'),
+        `${inject.name}.${signal}`,
+      )
+    }
+  }
+
   const compiled = compileAngularTarget(template, filename, input.outputPath)
 
   if (compiled.code === undefined) {
     return refusedComponent(filename, input.script, [...findings, ...compiled.report.findings])
   }
 
+  const injectSetup = translated.map((inject) => {
+    const lines = inject.properties.map((property) => `  ${property}`).join(',\n')
+    return `const ${inject.name} = reactive({\n${lines}\n})`
+  })
+  const setup = [...(state?.setup ?? []), ...injectSetup]
+  const setupText = setup.join('\n')
+  const vueNames: string[] = []
+
+  if (/\bcomputed\s*\(/.test(setupText)) vueNames.push('computed')
+  if (/\breactive\s*\(/.test(setupText)) vueNames.push('reactive')
+  if (/\bref\s*\(/.test(setupText)) vueNames.push('ref')
+
+  const scriptLines: string[] = []
+
+  if (vueNames.length > 0) {
+    scriptLines.push(`import { ${vueNames.join(', ')} } from 'vue'`)
+  }
+
+  scriptLines.push(
+    ...freeIdentifierImports(setupText, [input.script, ...Object.values(input.injectables ?? {})]),
+  )
+  scriptLines.push(setupText)
+
   return {
     report: compiled.report,
-    manifest: compiled.manifest,
-    code: `<script setup lang="ts">\nimport { computed, ref } from 'vue'\n${state.setup.join('\n')}\n</script>\n${compiled.code}`,
+    manifest: {
+      ...compiled.manifest,
+      component: { path: filename, sha256: hashSource(input.script) },
+    },
+    code: `<script setup lang="ts">\n${scriptLines.join('\n')}\n</script>\n${compiled.code}`,
   }
 }

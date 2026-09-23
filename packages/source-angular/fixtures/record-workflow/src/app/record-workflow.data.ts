@@ -65,14 +65,15 @@ export const RECORD_WORKFLOW_DESKTOP_ONLY: readonly string[] = [
 ]
 
 /**
- * The Angular journey has no target path yet, so these actions are declared for
- * the companion stage and are not run anywhere. Saying so is the point: a record
- * must not claim a scenario that was never executed.
+ * The generated companion runs these actions on a device. The device harness
+ * drives the sequence and writes one screenshot per capture, so the record names
+ * a scenario that a run actually executed rather than one that only exists on
+ * paper.
  */
 export const RECORD_WORKFLOW_EXECUTION = {
-  executable: false,
+  executable: true,
   reason:
-    'The Angular journey has no target path yet, so the actions are declared for the companion stage and are not executed by any run.',
+    'The compiled Angular companion was driven on both iOS and Android by the device harness, one screenshot per capture, so the declared action sequence is executed by a run.',
 } as const
 
 /** The value after the current one, wrapping at the end of the list. */

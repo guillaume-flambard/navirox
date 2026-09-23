@@ -30,6 +30,8 @@ export interface ConvertCompilation {
 export interface ConvertInput {
   readonly source: string
   readonly script?: string
+  /** Injectable module sources keyed by the `Type` in `inject(Type)`. */
+  readonly injectables?: Readonly<Record<string, string>>
 }
 
 /** The target provider a conversion runs through. */
@@ -55,6 +57,11 @@ export interface ConvertOptions {
   readonly readText: (path: string) => string | undefined
   /** The component source behind a template, when the target needs it. */
   readonly readScript?: (path: string) => string | undefined
+  /** Sources for `inject(Type)` fields declared on that component script. */
+  readonly readInjectables?: (
+    path: string,
+    script: string,
+  ) => Readonly<Record<string, string>> | undefined
   readonly target: ConvertTarget
 }
 
@@ -120,8 +127,14 @@ export function runConversion(options: ConvertOptions): ConvertReport {
 
     const to = outputPathFor(screen.file)
     const script = options.readScript?.(screen.file)
+    const injectables =
+      script === undefined ? undefined : options.readInjectables?.(screen.file, script)
     const result = options.target.compile(
-      { source, ...(script === undefined ? {} : { script }) },
+      {
+        source,
+        ...(script === undefined ? {} : { script }),
+        ...(injectables === undefined ? {} : { injectables }),
+      },
       screen.file,
       to,
     )

@@ -22,11 +22,11 @@ in
 | --- | --- |
 | Command | `node scripts/capture-angular-companion.mjs --platform ios --keep` |
 | Fixture | `packages/source-angular/fixtures/record-workflow`, read by the `angular` adapter as 5 files, 3 units and 1 capability with no finding |
-| Screen | `packages/source-angular/companion/App.vue`, hand-written for this project |
+| Screen | `packages/source-angular/companion/App.vue`, emitted by `@memolabs-apps/target-angular` |
 | Copied shared module | `record-workflow.data.ts`, the planner's `shared` decision by `unit-shared-logic`, copied byte for byte |
-| Device | `iPhone 17 Pro` (iOS simulator) |
+| Device | `iPhone 17e` (iOS simulator, UDID `35B5C999-E00F-4AE9-996D-35BFBA7D4740`) |
 | Benchmark revision | `2cd77380bc838b8bd6c80f9fbe25855d73ef860c` |
-| Compiler | none: the Angular journey has no target compiler, so no compiler version and no manifest hash exist |
+| Compiler | `@memolabs-apps/target-angular` `0.1.1`, screen manifest hash `8daa34f20f6062337fd7022bec4a0415631c171fc039cc60158ffe5e3a741513` |
 
 ## The declared workflow
 
@@ -42,11 +42,11 @@ every state renders (`record-workflow-screen`, `record-workflow-queue`,
 
 | Moment | File | Bytes | sha256 |
 | --- | --- | --- | --- |
-| rest | `rest.ios.png` | 100627 | `0512c5ae370231a762b8d8063b1f5a669fb41ab63422790db7977cdd70e8fe76` |
-| first meaningful | `first-meaningful.ios.png` | 129528 | `94be3fb56b23edbacaf4bcb90e15d31d3b6685aa06ce8a123cdb854abe559562` |
-| midpoint | `midpoint.ios.png` | 131331 | `46800505fbf260ddb7cc706293ad9ebf0d42db32faed0a5c320b005bf9152e28` |
-| settled | `settled.ios.png` | 135940 | `67c3e4d9c6cb267bf22770f4355a8e2785de2b95c7f462cf4fa7cfa465951e44` |
-| interrupted | `interrupted.ios.png` | 131482 | `8ed30a6aebb063628f55583fc1a0c4d9241ce32b4677d2ade1fe5f21a5d11a9b` |
+| rest | `rest.ios.png` | 79965 | `0aa2ebf3fa5bf243e415366a0764e6ab4b9d4f30f166b7c286a2d07fe76ba370` |
+| first meaningful | `first-meaningful.ios.png` | 103920 | `104a0cb08a3bc1eae91ccdb298a623dbfffdcbc65ac897552a833d9226ffada1` |
+| midpoint | `midpoint.ios.png` | 178189 | `d34c46c3e69589d5e3e0abee61a1df819f643806c4906fa927e55b5d13aff335` |
+| settled | `settled.ios.png` | 182221 | `651a7160e88e27c5a4372a0d1461406b033bbe291751333ba1f70483b42df63d` |
+| interrupted | `interrupted.ios.png` | 104715 | `763c81733c87a0ce66610d8a27ada5fdaa91e14b97f30712cd7df7c049ce7845` |
 
 Every run starts a fresh instance from the fixed synthetic record set, so the
 `rest` capture is the same starting state each time.
@@ -63,14 +63,15 @@ Every run starts a fresh instance from the fixed synthetic record set, so the
 
 ## Android
 
-The same command runs in continuous integration on the emulator
-(`--platform android`), and the capture job uploads its capture directory and its
-record `angular-companion-device-evidence-android.json`.
+The same command runs on the emulator (`--platform android`), and it passes: five
+captures and an empty missing list, recorded in
+[`angular-companion-device-evidence-android.json`](angular-companion-device-evidence-android.json).
 
 ## Limits
 
-- Template to native screen generation is not demonstrated: the companion's
-  screen is hand-written work, named as manual in its provenance record.
+- The generated screen is proven on one bounded workflow only: the compiler
+  accepts a closed set of Angular constructs and refuses the rest with a finding,
+  so this is not generic Angular conversion.
 - The journey has no served web page, so there is no web capture to compare with
   and no measured difference is reported.
 - The pinned SuiteCRM benchmark's routing could not be read, so this proof claims
@@ -85,7 +86,7 @@ record `angular-companion-device-evidence-android.json`.
 ## What this does not claim
 
 No visual fidelity and no parity, and no measured visual fidelity for any
-adapter. No generic Angular conversion and no Angular UI compiler. Nothing about
+adapter. No generic Angular conversion and no general Angular UI compiler. Nothing about
 the benchmarked project's direction, and no affiliation: SuiteCRM has not
 requested, reviewed or endorsed this work. Nothing about a real SuiteCRM
 instance, its data or its credentials.

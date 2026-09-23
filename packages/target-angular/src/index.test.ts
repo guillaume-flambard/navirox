@@ -1,3 +1,4 @@
+import { createHash } from 'node:crypto'
 import { describe, expect, it } from 'vitest'
 import { compileAngularComponent, compileAngularTarget } from './index.js'
 
@@ -20,6 +21,14 @@ describe('compileAngularTarget', () => {
     expect(output.code).toContain(':src="photo"')
     expect(output.code).toContain('<view')
     expect(output.code).toContain('<text-input')
+  })
+
+  it('routes an input value read to the native value event', () => {
+    const output = compileAngularTarget('<input [value]="field" (click)="onField($event)" />')
+
+    expect(output.report.findings).toEqual([])
+    expect(output.code).toContain('@value-change="onField($event)"')
+    expect(output.code).not.toContain('@press="onField($event)"')
   })
 
   it('refuses a structural directive it does not implement', () => {
@@ -60,6 +69,30 @@ describe('compileAngularTarget', () => {
     expect(first.manifest.outputPath).toBe('generated/App.native.vue')
     expect(typeof first.manifest.compilerVersion).toBe('string')
     expect(second.manifest).toEqual(first.manifest)
+  })
+
+  it('records template and component provenance for a whole component', () => {
+    const script = [
+      '@Component({ template: `<main><span>Hi</span></main>` })',
+      'export class A {',
+      '  count = 1',
+      '}',
+    ].join('\n')
+    const template = '<main><span>Hi</span></main>'
+    const output = compileAngularComponent({
+      template,
+      script,
+      filename: 'a.component.ts',
+      outputPath: 'generated/a.component.native.vue',
+    })
+
+    expect(output.code).toBeDefined()
+    expect(output.manifest.input.path).toBe('a.component.ts')
+    expect(output.manifest.component?.path).toBe('a.component.ts')
+    expect(output.manifest.component?.sha256).toBe(
+      createHash('sha256').update(script, 'utf8').digest('hex'),
+    )
+    expect(output.manifest.outputPath).toBe('generated/a.component.native.vue')
   })
 
   it('refuses the Angular block and pipe syntax rather than emitting it as text', () => {
@@ -200,6 +233,194 @@ describe('compileAngularTarget', () => {
 
       expect(output.code).toBeUndefined()
       expect(output.report.findings.map((finding) => finding.code)).toContain('unsupported-pipe')
+    })
+
+    describe('a bounded inject field', () => {
+      const service = [
+        '@Injectable({ providedIn: "root" })',
+        'export class RecordWorkflowService {',
+        '  readonly records = signal([])',
+        '  readonly status = signal("")',
+        '  select(item: string): void { this.records.set([item]) }',
+        '  cycleStatus(): void { this.status.update((current) => current + "!") }',
+        '}',
+      ].join('\n')
+
+      const withInject = (body: string): string =>
+        [
+          '@Component({ selector: "app-a" })',
+          'export class A {',
+          '  readonly workflow = inject(RecordWorkflowService)',
+          body,
+          '}',
+        ].join('\n')
+
+      it('declares the inject object and reports no finding', () => {
+        const output = compileAngularComponent({
+          script: withInject(''),
+          injectables: { RecordWorkflowService: service },
+          template:
+            '<main><span>{{ workflow.records() }}</span><button (click)="workflow.select(item)"><span>Pick</span></button></main>',
+        })
+
+        expect(output.report.findings).toEqual([])
+        expect(output.code).toContain('const workflow = reactive({')
+        expect(output.code).toContain('records: ref([])')
+        expect(output.code).toContain('status: ref("")')
+        expect(output.code).toContain('select(item: string)')
+        expect(output.code).toContain('this.records = [item]')
+        expect(output.code).toContain("import { reactive, ref } from 'vue'")
+      })
+
+      it('re-emits library imports the translated setup still references', () => {
+        const output = compileAngularComponent({
+          script: [
+            "import { RECORD_WORKFLOW_ATTACHMENT } from './record-workflow.data'",
+            '@Component({ selector: "app-a" })',
+            'export class A {',
+            '  readonly workflow = inject(RecordWorkflowService)',
+            '  attachmentLabel(): string {',
+            '    return this.workflow.attachment.length > 0',
+            '      ? RECORD_WORKFLOW_ATTACHMENT.label',
+            "      : 'No attachment'",
+            '  }',
+            '}',
+          ].join('\n'),
+          injectables: {
+            RecordWorkflowService: [
+              "import { Injectable, signal } from '@angular/core'",
+              "import { RECORD_WORKFLOW_STATUSES, nextIn, type RecordWorkflowRecord } from './record-workflow.data'",
+              '@Injectable({ providedIn: "root" })',
+              'export class RecordWorkflowService {',
+              '  readonly attachment = signal("")',
+              '  readonly status = signal("")',
+              '  cycleStatus(): void { this.status.set(nextIn(RECORD_WORKFLOW_STATUSES, this.status())) }',
+              '  select(record: RecordWorkflowRecord): void { this.attachment.set(record.field) }',
+              '}',
+            ].join('\n'),
+          },
+          template:
+            '<main><span>{{ attachmentLabel() }}</span><button (click)="workflow.cycleStatus()"><span>Go</span></button></main>',
+        })
+
+        expect(output.report.findings).toEqual([])
+        expect(output.code).toContain("import { reactive, ref } from 'vue'")
+        expect(output.code).toContain("from './record-workflow.data'")
+        expect(output.code).toContain('RECORD_WORKFLOW_ATTACHMENT')
+        expect(output.code).toContain('RECORD_WORKFLOW_STATUSES')
+        expect(output.code).toContain('nextIn')
+        expect(output.code).toContain('type RecordWorkflowRecord')
+        expect(output.code).not.toContain('@angular/core')
+        expect(output.code).not.toContain('import { computed')
+      })
+
+      it('rewrites signal reads on the inject target and keeps method calls', () => {
+        const output = compileAngularComponent({
+          script: withInject(''),
+          injectables: { RecordWorkflowService: service },
+          template:
+            '<main><span>{{ workflow.status() }}</span><button (click)="workflow.cycleStatus()"><span>Go</span></button></main>',
+        })
+
+        expect(output.report.findings).toEqual([])
+        expect(output.code).toContain('{{ workflow.status }}')
+        expect(output.code).not.toContain('{{ workflow.status() }}')
+        expect(output.code).toContain('@press="workflow.cycleStatus()"')
+        expect(output.code).toContain('cycleStatus()')
+      })
+
+      it('rewrites component methods that read through the inject target', () => {
+        const output = compileAngularComponent({
+          script: withInject(
+            ['  label(): string {', '    return this.workflow.status()', '  }'].join('\n'),
+          ),
+          injectables: { RecordWorkflowService: service },
+          template: '<main><span>{{ label() }}</span></main>',
+        })
+
+        expect(output.report.findings).toEqual([])
+        expect(output.code).toContain('function label()')
+        expect(output.code).toContain('return workflow.status')
+        expect(output.code).not.toContain('workflow.value')
+        expect(output.code).toContain('{{ label() }}')
+      })
+
+      it('reads an input value from the native value event payload', () => {
+        const output = compileAngularComponent({
+          script: [
+            '@Component({ selector: "app-a" })',
+            'export class A {',
+            '  field = ""',
+            '  onField(event: Event): void {',
+            '    this.field = (event.target as HTMLInputElement).value',
+            '  }',
+            '}',
+          ].join('\n'),
+          template: '<main><input [value]="field" (click)="onField($event)" /></main>',
+        })
+
+        expect(output.report.findings).toEqual([])
+        expect(output.code).toContain('@value-change="onField($event)"')
+        expect(output.code).toContain('event.text')
+        expect(output.code).not.toContain('event.target.value')
+      })
+
+      it('refuses when the injectable source is missing', () => {
+        const output = compileAngularComponent({
+          script: withInject(''),
+          template: '<main><span>Hi</span></main>',
+        })
+
+        expect(output.code).toBeUndefined()
+        expect(output.report.findings.length).toBeGreaterThan(0)
+        expect(output.report.findings[0]?.message).toContain('injectable source')
+      })
+
+      it('still refuses a leftover inject form that is not the bounded field', () => {
+        const output = compileAngularComponent({
+          script: [
+            '@Component({ selector: "app-a" })',
+            'export class A {',
+            '  count = 0',
+            '  setup() { inject(RecordWorkflowService) }',
+            '}',
+          ].join('\n'),
+          injectables: { RecordWorkflowService: service },
+          template: '<main><span>{{ count }}</span></main>',
+        })
+
+        expect(output.code).toBeUndefined()
+        expect(output.report.findings.map((finding) => finding.message)).toEqual(
+          expect.arrayContaining([expect.stringContaining('dependency injection')]),
+        )
+      })
+
+      it('refuses when the injectable class uses a constructor or a decorator', () => {
+        const withConstructor = compileAngularComponent({
+          script: withInject(''),
+          injectables: {
+            RecordWorkflowService: 'export class RecordWorkflowService { constructor() {} }',
+          },
+          template: '<main><span>Hi</span></main>',
+        })
+
+        expect(withConstructor.code).toBeUndefined()
+        expect(withConstructor.report.findings.length).toBeGreaterThan(0)
+
+        const withInput = compileAngularComponent({
+          script: withInject(''),
+          injectables: {
+            RecordWorkflowService: [
+              '@Input() name = ""',
+              'export class RecordWorkflowService { name = "" }',
+            ].join('\n'),
+          },
+          template: '<main><span>Hi</span></main>',
+        })
+
+        expect(withInput.code).toBeUndefined()
+        expect(withInput.report.findings.length).toBeGreaterThan(0)
+      })
     })
   })
 })

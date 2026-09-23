@@ -2,10 +2,10 @@
   "schemaVersion": 1,
   "journey": "angular-record-workflow",
   "scenario": "angular-companion",
-  "platform": "ios",
+  "platform": "android",
   "device": {
-    "platform": "ios",
-    "deviceName": "iPhone 17e"
+    "platform": "android",
+    "deviceName": "atable_pixel"
   },
   "source": {
     "fixture": "packages/source-angular/fixtures/record-workflow",
@@ -24,7 +24,7 @@
   "consumed": {
     "path": "record-workflow.data.ts",
     "sourcePath": "packages/source-angular/fixtures/record-workflow/src/app/record-workflow.data.ts",
-    "sha256": "fac1ea93f0de270ebe82d129c99a4d932dca2f4a8d74fd03bfd4d7e2e0ac982d",
+    "sha256": "12e2933bdf871127f0d625614fe8bd65ae8f43fb54d620588739f18ca9c6a94d",
     "decision": "shared",
     "rule": "unit-shared-logic"
   },
@@ -38,17 +38,17 @@
     {
       "key": "rest",
       "moment": "rest",
-      "file": "rest.ios.png",
-      "bytes": 79965,
-      "sha256": "0aa2ebf3fa5bf243e415366a0764e6ab4b9d4f30f166b7c286a2d07fe76ba370",
+      "file": "rest.android.png",
+      "bytes": 67569,
+      "sha256": "b32ea4bc5cda5305d47066b39c3edb27bc3ca05163267ced01ba7ad7c05f2548",
       "actions": []
     },
     {
       "key": "first-meaningful",
       "moment": "first-meaningful",
-      "file": "first-meaningful.ios.png",
-      "bytes": 103920,
-      "sha256": "104a0cb08a3bc1eae91ccdb298a623dbfffdcbc65ac897552a833d9226ffada1",
+      "file": "first-meaningful.android.png",
+      "bytes": 79000,
+      "sha256": "e0a23443432c27ab3a19f222afead01c17fafe9a55c6e595681503444ad11875",
       "actions": [
         {
           "press": "record-workflow-select"
@@ -58,9 +58,9 @@
     {
       "key": "midpoint",
       "moment": "midpoint",
-      "file": "midpoint.ios.png",
-      "bytes": 178189,
-      "sha256": "d34c46c3e69589d5e3e0abee61a1df819f643806c4906fa927e55b5d13aff335",
+      "file": "midpoint.android.png",
+      "bytes": 136189,
+      "sha256": "8142f777de1a7e02e698f94a59de148276521215c6e735d2ccef2a95ab5aecf1",
       "actions": [
         {
           "press": "record-workflow-select"
@@ -79,9 +79,9 @@
     {
       "key": "settled",
       "moment": "settled",
-      "file": "settled.ios.png",
-      "bytes": 182221,
-      "sha256": "651a7160e88e27c5a4372a0d1461406b033bbe291751333ba1f70483b42df63d",
+      "file": "settled.android.png",
+      "bytes": 137432,
+      "sha256": "0e43dc2d980d972b1b4729622337d4fc7f3da85281c628ca264736b647582407",
       "actions": [
         {
           "press": "record-workflow-select"
@@ -103,9 +103,9 @@
     {
       "key": "interrupted",
       "moment": "interrupted",
-      "file": "interrupted.ios.png",
-      "bytes": 104715,
-      "sha256": "763c81733c87a0ce66610d8a27ada5fdaa91e14b97f30712cd7df7c049ce7845",
+      "file": "interrupted.android.png",
+      "bytes": 80312,
+      "sha256": "2c255dfba0af3518f5a9a8aaa2d42b9db651324a5e023d737df475e1570e419b",
       "actions": [
         {
           "press": "record-workflow-select"
@@ -123,7 +123,7 @@
     "note": "There is no served web page for this journey, so no comparison is reported."
   },
   "commands": [
-    "node scripts/capture-angular-companion.mjs --platform ios"
+    "node scripts/capture-angular-companion.mjs --platform android"
   ],
   "limits": [
     "The journey has no served web page, so no web capture exists and no comparison is reported.",

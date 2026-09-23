@@ -2,12 +2,12 @@
 /**
  * Captures the Angular proof companion on a device.
  *
- * The journey has no served web page and no target compiler, so there is no web
- * capture to compare with: this run records what the companion shows on a device
- * and states that no web counterpart exists. It prepares the companion from the
- * fixture record (the planner-approved module copied byte for byte beside the
- * hand-written screen), installs the device harness, drives the declared action
- * sequence and writes one screenshot per capture plus a provenance record.
+ * The journey has no served web page, so there is no web capture to compare
+ * with: this run records what the companion shows on a device and states that no
+ * web counterpart exists. It prepares the companion from the pinned fixture
+ * (planner-approved module copied byte for byte beside a freshly compiled
+ * screen), installs the device harness, drives the declared action sequence and
+ * writes one screenshot per capture plus a provenance record.
  *
  * Usage: node scripts/capture-angular-companion.mjs [--platform ios|android] [--workspace <path>] [--keep]
  *
@@ -15,7 +15,7 @@
  * declared capture is missing. Android runs in continuous integration, where the
  * emulator exists.
  */
-import { spawn } from 'node:child_process'
+import { spawn, spawnSync } from 'node:child_process'
 import { createHash } from 'node:crypto'
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs'
 import { dirname, join, resolve } from 'node:path'
@@ -31,7 +31,7 @@ import {
   consumeFromArtifacts,
   decisionFor,
   install,
-  installFixtureScreen,
+  installGeneratedAngularScreen,
   installIosPods,
   newWorkspace,
   pack,
@@ -78,7 +78,6 @@ const DECISIONS = [
 
 const LIMITS = [
   'The journey has no served web page, so no web capture exists and no comparison is reported.',
-  'No target compiler produced the screen, so no compiler version or manifest hash is recorded.',
   'The pinned SuiteCRM routing could not be read, so no route, screen or unit is claimed.',
   'The declared @angular/core version is outside the tested range, so it stays untested.',
   'The workflow is an unvalidated hypothesis and Navirox has no affiliation with SuiteCRM.',
@@ -135,7 +134,31 @@ function deviceName(platform) {
     return process.env.NAVIROX_DEVICE
   }
 
-  return platform === 'ios' ? 'iPhone 17' : 'atable_pixel'
+  if (platform !== 'ios') {
+    return 'atable_pixel'
+  }
+
+  // Prefer the booted iPhone, then the first available one. A hard-coded model
+  // name is a coin flip: this machine has only iPhone 17e, while CI images have
+  // shipped iPhone 17 and iPhone 18 Pro under different names over time.
+  const listed = spawnSync('xcrun', ['simctl', 'list', 'devices', 'available'], {
+    encoding: 'utf8',
+  })
+  if (listed.status !== 0) {
+    return 'iPhone 17e'
+  }
+
+  const phones = [
+    ...listed.stdout.matchAll(
+      /^ {2,}(iPhone[^(\n]*?)\s+\([0-9A-Fa-f-]+\)\s+\((Booted|Shutdown)\)/gm,
+    ),
+  ]
+  if (phones.length === 0) {
+    return 'iPhone 17e'
+  }
+
+  const booted = phones.find((match) => match[2] === 'Booted')
+  return (booted ?? phones[0])[1].trim()
 }
 
 function applicationName(appDirectory) {
@@ -285,7 +308,8 @@ async function main() {
   let packager
 
   try {
-    const screenHash = installFixtureScreen(appDirectory, ANGULAR_COMPANION_FIXTURE)
+    const compilation = await installGeneratedAngularScreen(appDirectory)
+    const screenHash = sha256(compilation.code)
 
     const sharedSource = readFileSync(SHARED_SOURCE, 'utf8')
 
@@ -382,10 +406,13 @@ async function main() {
         benchmarkRevision: BENCHMARK_REVISION,
       },
       screen: {
-        path: 'packages/source-angular/companion/App.vue',
+        path: 'App.vue',
+        sourcePath: ANGULAR_COMPANION_FIXTURE.componentPath,
         sha256: screenHash,
-        producedByCompiler: false,
-        note: 'The Angular journey has no target compiler, so this screen is hand-written work and no compiler version or manifest hash exists.',
+        producedByCompiler: true,
+        compilerVersion: compilation.compilerVersion,
+        manifestHash: compilation.manifestHash,
+        note: 'Emitted by @memolabs-apps/target-angular from the pinned fixture component and its injectable sources.',
       },
       consumed: {
         path: SHARED_MODULE,

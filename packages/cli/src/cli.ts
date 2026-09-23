@@ -272,7 +272,8 @@ export async function runCli(
       const { renderMigration, runMigration } = await import('@memolabs-apps/migrate')
       const { createProjectFiles } = await import('@memolabs-apps/source')
       const { runConversion } = await import('./convert.js')
-      const { readAngularTemplate, targetFor } = await import('./targets.js')
+      const { readAngularInjectables, readAngularTemplate, targetFor } =
+        await import('./targets.js')
       const registry = context.inspect?.registry ?? (await createAdapterRegistry())
       const outcome = await runInspection({
         rootDir: directory,
@@ -328,7 +329,13 @@ export async function runCli(
         outputRoot: outRoot,
         write: parsed.write,
         readText: readSource,
-        ...(adapterId === 'angular' ? { readScript: project.readText } : {}),
+        ...(adapterId === 'angular'
+          ? {
+              readScript: project.readText,
+              readInjectables: (path: string, script: string) =>
+                readAngularInjectables(project.readText, path, script),
+            }
+          : {}),
         target,
       })
 

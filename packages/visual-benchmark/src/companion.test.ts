@@ -293,9 +293,10 @@ const ANGULAR_PROVENANCE = join(
 )
 
 /**
- * The Angular record. Its journey has no target compiler, so it must name a
- * hand-written screen and mark no file generated, and its moved hash is the only
- * check that notices an edit to the copied module.
+ * The Angular record. Its screen is compiler output from the pinned fixture
+ * component, so it must name a generated screen with a real compiler revision
+ * and manifest hash, and its moved hash is the check that notices an edit to
+ * the copied module.
  */
 describe('the assembled Angular companion', () => {
   const record = JSON.parse(readFileSync(ANGULAR_PROVENANCE, 'utf8')) as {
@@ -316,14 +317,17 @@ describe('the assembled Angular companion', () => {
     expect(buildCompanionProvenance(record)).toEqual(record)
   })
 
-  it('names a hand-written screen and marks nothing generated', () => {
+  it('names a generated screen and records the compiler that emitted it', () => {
     expect(record.files.length).toBeGreaterThan(0)
     expect(
       record.files.every((file) => ['generated', 'moved', 'manual'].includes(file.origin)),
     ).toBe(true)
     expect(record.files.every((file) => file.reason.length > 0)).toBe(true)
-    expect(record.files.some((file) => file.origin === 'generated')).toBe(false)
-    expect(record.files.find((file) => file.path === record.screen)?.origin).toBe('manual')
+    expect(record.files.find((file) => file.path === record.screen)?.origin).toBe('generated')
+    expect(record.compilerVersion).not.toBe('none')
+    expect(record.compilerVersion.length).toBeGreaterThan(0)
+    expect(record.manifestHash).not.toBe('none')
+    expect(record.manifestHash).toMatch(/^[0-9a-f]{64}$/)
   })
 
   it('moves only the unit a planner decision approved', () => {
@@ -336,10 +340,5 @@ describe('the assembled Angular companion', () => {
     for (const file of record.files.filter((entry) => entry.origin === 'moved')) {
       expect(digest(join(REPOSITORY_ROOT, file.sourcePath ?? ''))).toBe(file.sha256)
     }
-  })
-
-  it('records that no compiler produced this screen', () => {
-    expect(record.compilerVersion).toBe('none')
-    expect(record.manifestHash).toBe('none')
   })
 })

@@ -59,23 +59,23 @@ contrast; focus and navigation.
 
 ## Angular journey: record update with attachment
 
-| Condition                              | Outcome   | Evidence or reason                                                                                                                 |
-| -------------------------------------- | --------- | ---------------------------------------------------------------------------------------------------------------------------------- |
-| network available                      | excluded  | The companion performs no request, so a network changes nothing.                                                                   |
-| network unavailable                    | simulated | The companion is offline by construction: the fixture and the hand-written screen contain no request, which the device run proves. |
-| request failure                        | excluded  | No request exists in this workflow.                                                                                                |
-| request recovery                       | excluded  | No request exists in this workflow.                                                                                                |
-| authentication against a real instance | deferred  | Manual review: the discovery days in `docs/pilots/suitecrm.md` decide API and authentication ownership with the instance owner.    |
-| offline queue and synchronization      | deferred  | Manual review: the workflow keeps a change for the session only; a queue and a conflict policy need an operator decision.          |
-| data residency, retention and audit    | excluded  | Out of scope: no real instance, no customer data, no compliance claim.                                                             |
-| crash or restart with unsaved input    | deferred  | Manual review: the screen keeps state in memory, so a restart behaviour has to be decided.                                         |
-| device storage for attachments         | simulated | The attachment is a local reference created for this project; the device run proves it rendered after the declared attach action.  |
-| desktop-only remainder                 | excluded  | Administration and configuration surfaces, bulk editing, reporting and accounts stay on the desktop by the contract.               |
-| text scaling                           | deferred  | Manual review: read the screen at the largest system text size and confirm the rows stay readable and reachable.                   |
-| semantic labels                        | deferred  | Manual review: confirm each actionable element announces a meaningful label to a screen reader.                                    |
-| touch targets                          | supported | The device harness presses each declared identifier at its centre, which the five captures prove.                                  |
-| contrast                               | deferred  | Manual review: the fixture uses the project palette, and a contrast check needs a designer's review.                               |
-| focus and navigation                   | supported | The harness drives the declared sequence in order and every capture exists, which the run report proves.                           |
+| Condition                              | Outcome   | Evidence or reason                                                                                                                |
+| -------------------------------------- | --------- | --------------------------------------------------------------------------------------------------------------------------------- |
+| network available                      | excluded  | The companion performs no request, so a network changes nothing.                                                                  |
+| network unavailable                    | simulated | The companion is offline by construction: the fixture and the generated screen contain no request, which the device run proves.   |
+| request failure                        | excluded  | No request exists in this workflow.                                                                                               |
+| request recovery                       | excluded  | No request exists in this workflow.                                                                                               |
+| authentication against a real instance | deferred  | Manual review: the discovery days in `docs/pilots/suitecrm.md` decide API and authentication ownership with the instance owner.   |
+| offline queue and synchronization      | deferred  | Manual review: the workflow keeps a change for the session only; a queue and a conflict policy need an operator decision.         |
+| data residency, retention and audit    | excluded  | Out of scope: no real instance, no customer data, no compliance claim.                                                            |
+| crash or restart with unsaved input    | deferred  | Manual review: the screen keeps state in memory, so a restart behaviour has to be decided.                                        |
+| device storage for attachments         | simulated | The attachment is a local reference created for this project; the device run proves it rendered after the declared attach action. |
+| desktop-only remainder                 | excluded  | Administration and configuration surfaces, bulk editing, reporting and accounts stay on the desktop by the contract.              |
+| text scaling                           | deferred  | Manual review: read the screen at the largest system text size and confirm the rows stay readable and reachable.                  |
+| semantic labels                        | deferred  | Manual review: confirm each actionable element announces a meaningful label to a screen reader.                                   |
+| touch targets                          | supported | The device harness presses each declared identifier at its centre, which the five captures prove.                                 |
+| contrast                               | deferred  | Manual review: the fixture uses the project palette, and a contrast check needs a designer's review.                              |
+| focus and navigation                   | supported | The harness drives the declared sequence in order and every capture exists, which the run report proves.                          |
 
 ## How this is checked
 

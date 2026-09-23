@@ -49,3 +49,4 @@ export {
   type TransformResult,
   type TransformStage,
 } from './transform.js'
+export { readAngularInjectables, readAngularTemplate, targetFor } from './targets.js'

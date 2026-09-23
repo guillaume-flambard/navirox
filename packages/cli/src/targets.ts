@@ -25,6 +25,7 @@ export async function targetFor(adapterId: string): Promise<ConvertTarget> {
                 script: input.script,
                 filename,
                 ...(outputPath === undefined ? {} : { outputPath }),
+                ...(input.injectables === undefined ? {} : { injectables: input.injectables }),
               })
 
         return {
@@ -92,4 +93,55 @@ export function readAngularTemplate(
   )
 
   return readText(templatePath)
+}
+
+const BOUNDED_INJECT_FIELD =
+  /^[ \t]*(?:readonly[ \t]+)?([A-Za-z_$][\w$]*)[ \t]*(?::[^=\n]+)?=[ \t]*inject[ \t]*\([ \t]*([A-Za-z_$][\w$]*)[ \t]*\)[ \t]*;?/gm
+
+/**
+ * Sources for each `name = inject(Type)` the component declares, keyed by `Type`.
+ *
+ * Only relative import specifiers already on disk are resolved (base, `.ts`,
+ * `.js`). A missing or non-relative module stays out of the map so the target
+ * refuses with an injectable-source finding instead of inventing a service.
+ */
+export function readAngularInjectables(
+  readText: (path: string) => string | undefined,
+  file: string,
+  script: string,
+): Readonly<Record<string, string>> {
+  const types = new Set<string>()
+
+  for (const match of script.matchAll(BOUNDED_INJECT_FIELD)) {
+    const type = match[2]
+
+    if (type !== undefined) types.add(type)
+  }
+
+  if (types.size === 0) return {}
+
+  const directory = posix.dirname(file)
+  const injectables: Record<string, string> = {}
+
+  for (const type of types) {
+    const imported = new RegExp(
+      `import\\s*(?:type\\s+)?\\{[^}]*\\b${type}\\b[^}]*\\}\\s*from\\s*['"]([^'"]+)['"]`,
+    ).exec(script)
+    const specifier = imported?.[1]
+
+    if (specifier === undefined || !specifier.startsWith('.')) continue
+
+    const base = posix.normalize(directory === '.' ? specifier : posix.join(directory, specifier))
+
+    for (const candidate of [base, `${base}.ts`, `${base}.js`]) {
+      const source = readText(candidate)
+
+      if (source !== undefined) {
+        injectables[type] = source
+        break
+      }
+    }
+  }
+
+  return injectables
 }

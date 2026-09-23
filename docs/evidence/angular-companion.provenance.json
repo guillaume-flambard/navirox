@@ -1,8 +1,8 @@
 {
   "schemaVersion": 1,
   "fixture": "packages/source-angular/fixtures/record-workflow",
-  "compilerVersion": "none",
-  "manifestHash": "none",
+  "compilerVersion": "0.1.1",
+  "manifestHash": "8daa34f20f6062337fd7022bec4a0415631c171fc039cc60158ffe5e3a741513",
   "screen": "App.vue",
   "files": [
     {
@@ -11,12 +11,14 @@
       "reason": "The planner classified it shared by unit-shared-logic, so its behaviour moves unchanged.",
       "decision": "shared",
       "sourcePath": "packages/source-angular/fixtures/record-workflow/src/app/record-workflow.data.ts",
-      "sha256": "12e2933bdf871127f0d625614fe8bd65ae8f43fb54d620588739f18ca9c6a94d"
+      "sha256": "fac1ea93f0de270ebe82d129c99a4d932dca2f4a8d74fd03bfd4d7e2e0ac982d"
     },
     {
       "path": "App.vue",
-      "origin": "manual",
-      "reason": "The Angular journey has no target compiler, so this screen is hand-written for this project and is not generated from Angular templates."
+      "origin": "generated",
+      "reason": "Emitted by @memolabs-apps/target-angular from the pinned fixture component and its injectable sources.",
+      "sourcePath": "packages/source-angular/fixtures/record-workflow/src/app/record-workflow.component.ts",
+      "sha256": "12b48a1bbbf46c61876b8eccec4e35cfe98871ac2ea603de545d9755a9c6fcb9"
     },
     {
       "path": "index.js",

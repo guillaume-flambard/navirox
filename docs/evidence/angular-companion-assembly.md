@@ -1,10 +1,9 @@
 # Angular companion assembly
 
-This is an assembly record for the Angular proof companion. The Angular journey
-has no target compiler, so nothing here was generated from Angular templates. The
+This is an assembly record for the Angular proof companion. The screen is emitted
+by the Angular target compiler from the pinned fixture component, and the
 behaviour the companion shares comes from the module the planner approved, copied
-unchanged, and the screen is hand-written work that the record names as such. It
-makes no visual fidelity claim.
+unchanged. It makes no visual fidelity claim.
 
 The machine readable form is
 [`angular-companion.provenance.json`](angular-companion.provenance.json). The seam
@@ -20,10 +19,10 @@ it implements is
 | Command              | `node scripts/build-angular-companion.mjs --keep`                        |
 | Fixture              | `packages/source-angular/fixtures/record-workflow`                       |
 | Source adapter       | `angular`, 5 files, 3 units, 1 capability, 0 findings                     |
-| Screen               | `packages/source-angular/companion/App.vue`, hand-written for this project |
+| Screen               | `packages/source-angular/companion/App.vue`, emitted by `@memolabs-apps/target-angular` |
 | Provenance record    | `docs/evidence/angular-companion.provenance.json`                        |
-| Compiler revision    | none: the journey has no target compiler                                 |
-| Screen manifest hash | none: no compiler produced the screen                                    |
+| Compiler revision    | `@memolabs-apps/target-angular` `0.1.1`                                  |
+| Screen manifest hash | `8daa34f20f6062337fd7022bec4a0415631c171fc039cc60158ffe5e3a741513`       |
 | Application          | `angular-companion-app`, scaffolded outside the checkout                  |
 
 ## The seam the companion consumes
@@ -51,13 +50,14 @@ Angular, and the adapter names nothing on the target side, which
 
 | File                     | Origin   | Why                                                                                                                                                                                                                                       |
 | ------------------------ | -------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `record-workflow.data.ts` | moved    | The planner classified it `shared` by `unit-shared-logic`, so its behaviour moves unchanged. Copied from `packages/source-angular/fixtures/record-workflow/src/app/record-workflow.data.ts`, content hash `12e2933bdf871127f0d625614fe8bd65ae8f43fb54d620588739f18ca9c6a94d`. |
-| `App.vue`                 | manual   | The Angular journey has no target compiler, so the screen is hand-written work and is not generated from Angular templates.                                                                                                                |
+| `record-workflow.data.ts` | moved    | The planner classified it `shared` by `unit-shared-logic`, so its behaviour moves unchanged. Copied from `packages/source-angular/fixtures/record-workflow/src/app/record-workflow.data.ts`, content hash `fac1ea93f0de270ebe82d129c99a4d932dca2f4a8d74fd03bfd4d7e2e0ac982d`. |
+| `App.vue`                 | generated | Emitted by `@memolabs-apps/target-angular` from the pinned fixture component and its injectable sources.                                                                                                                                    |
 | `index.js`                | manual   | The scaffolder template writes the runtime bootstrap and mounts the app root.                                                                                                                                                              |
 
-No file is marked generated. A test re-reads the record and compares the moved
-entry with the file it came from, so an edit to the copied module fails the suite:
-the hash is the only check that notices.
+The screen is the compiler's output, named `generated` in its provenance record.
+A test re-reads the record and compares the moved entry with the file it came
+from, so an edit to the copied module fails the suite: the hash is the only check
+that notices.
 
 ## Manual native work
 
@@ -84,10 +84,10 @@ The declared identifiers are `record-workflow-screen`, `record-workflow-queue`,
 
 ## Limits
 
-- Template to native screen generation is not demonstrated: no Angular template
-  was emitted as a native screen and no Angular target compiler exists.
-- The companion is not driven on a device by this change. That is the next
-  backlog item.
+- The generated screen is proven on one bounded workflow only: the compiler
+  accepts a closed set of Angular constructs and refuses the rest with a finding,
+  so this is not generic Angular conversion.
+- The companion is driven on a device by the capture run, not by this assembly.
 - The SuiteCRM benchmark's routing could not be read, so this proof claims no
   route, screen or unit the analysis did not establish.
 - The pinned benchmark declares `@angular/core` 18.2.14, outside the tested `^20`
@@ -98,8 +98,8 @@ The declared identifiers are `record-workflow-screen`, `record-workflow-queue`,
 
 ## What this does not claim
 
-No visual fidelity or parity, no generic Angular conversion, no Angular UI
-compiler, and no claim about the benchmarked project's direction or any
+No visual fidelity or parity, no generic Angular conversion, no general Angular
+UI compiler, and no claim about the benchmarked project's direction or any
 relationship with it.
 
 ## How this is verified

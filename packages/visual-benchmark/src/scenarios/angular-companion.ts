@@ -1,10 +1,11 @@
 /**
  * The device-only scenario for the Angular proof companion.
  *
- * The journey has no served web page and no target compiler, so this is not a
- * `VisualScenario`: there is no route, no viewport and no cross-platform
- * comparison to make. It is the action sequence the device harness drives, and
- * its presses are the identifiers the workflow record declares.
+ * The journey has no served web page, so this is not a `VisualScenario`: there
+ * is no route, no viewport and no cross-platform comparison to make. The screen
+ * itself is emitted by the Angular target compiler. This is the action sequence
+ * the device harness drives, and its presses are the identifiers the workflow
+ * record declares.
  */
 import type { ScenarioCapture } from '../scenario.js'
 

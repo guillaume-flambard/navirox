@@ -20,7 +20,7 @@ import { RecordWorkflowService } from './record-workflow.service'
       <ul data-testid="record-workflow-queue">
         <li *ngFor="let record of workflow.records()" data-testid="record-workflow-row">
           <button data-testid="record-workflow-select" (click)="workflow.select(record)">
-            {{ record.title }}
+            <span>{{ record.title }}</span>
           </button>
         </li>
       </ul>
@@ -31,21 +31,23 @@ import { RecordWorkflowService } from './record-workflow.service'
           <input
             data-testid="record-workflow-field"
             [value]="workflow.field()"
-            (input)="onField($event)"
+            (click)="onField($event)"
           />
         </label>
 
         <button data-testid="record-workflow-status" (click)="workflow.cycleStatus()">
-          Status: {{ workflow.status() }}
+          <span>Status: {{ workflow.status() }}</span>
         </button>
 
         <label>
           Attachment
-          <input data-testid="record-workflow-attach" type="file" (change)="onFile($event)" />
+          <input data-testid="record-workflow-attach" type="file" (click)="onFile($event)" />
         </label>
         <p data-testid="record-workflow-attachment">{{ attachmentLabel() }}</p>
 
-        <button data-testid="record-workflow-save" (click)="workflow.save()">Save</button>
+        <button data-testid="record-workflow-save" (click)="workflow.save()">
+          <span>Save</span>
+        </button>
 
         <p *ngIf="workflow.saveState() === 'saved'" data-testid="record-workflow-saved">Saved</p>
         <p *ngIf="workflow.saveState() === 'error'" data-testid="record-workflow-error">
