@@ -24,5 +24,17 @@ export {
   serializeState,
 } from './state.js'
 export type { MigrationState, UnitMigrationState } from './state.js'
-export { GENERIC_TRANSFORMS, TRANSFORM_FAMILIES, copyMovableUnit } from './transforms.js'
-export type { Transform, TransformContext, TransformFamily, TransformWrite } from './transforms.js'
+export {
+  GENERIC_TRANSFORMS,
+  REWRITE_RULES,
+  TRANSFORM_FAMILIES,
+  addRelativeExtensions,
+  copyMovableUnit,
+} from './transforms.js'
+export type {
+  RewriteRule,
+  Transform,
+  TransformContext,
+  TransformFamily,
+  TransformWrite,
+} from './transforms.js'

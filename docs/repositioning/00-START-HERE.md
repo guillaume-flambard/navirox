@@ -58,7 +58,11 @@ Those may be important implementations or integrations, but none define the prod
 
 ### More precise technical positioning
 
-> **Navirox is a framework-agnostic analysis, compatibility and migration platform for moving web application codebases toward native mobile targets.**
+> **Navirox is a framework-agnostic transformation platform that turns supported web applications into faithful, runnable native mobile projects.**
+
+Discovery, compatibility and migration planning are the preflight for that
+transformation. They make the generator refuse unknown work and explain its
+limits; they are not the product endpoint.
 
 ## 3. Product wedge
 
@@ -121,7 +125,13 @@ Migration Planner
     └── manual
     │
     ▼
-Target Strategy
+Source Transform Provider
+    │
+    ▼
+Workflow IR
+    │
+    ▼
+Target Provider
     │
     ├── current native runtime path
     ├── Expo/React Native migration path
@@ -226,10 +236,12 @@ Do not:
 
 The next architectural milestone is:
 
-> **Make the current Vue path look like the first implementation of a generic SourceAdapter contract without changing its observable behavior.**
+> **Make the current Vue path the first generated, runnable native workflow
+> through a generic source-to-target contract, without changing the seams.**
 
 The milestone after that is:
 
-> **Implement enough Svelte support to prove that the same inspect / compatibility / planning core can consume a second source framework.**
+> **Implement enough Svelte support to prove that a second source framework can
+> lower through the same neutral contract and generate a runnable workflow.**
 
 Everything else follows from those two proofs.

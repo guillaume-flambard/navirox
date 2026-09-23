@@ -294,4 +294,51 @@ describe('planning with a second opinion', () => {
       }
     }
   })
+
+  it('leaves every plan decision unchanged and keeps the suggestions separate', async () => {
+    const withJudge = capture()
+    const judge = fakeJudge({
+      q0: { choice: 'adaptable', confidence: 0.9, probabilities: { adaptable: 0.9 } },
+    })
+
+    const code = await runCli(['plan', '--semantic', '--json'], withJudge.io, project(), {
+      inspect: { registry: registryOf(adapterWithUnknownCapability()) },
+      planSemantic: judge,
+    })
+
+    const plain = capture()
+    const plainCode = await runCli(['plan', '--json'], plain.io, project(), {
+      inspect: { registry: registryOf(adapterWithUnknownCapability()) },
+    })
+
+    const planned = JSON.parse(withJudge.lines.join('\n')) as {
+      decisions: readonly { subject: string; classification: string }[]
+      semantic?: { model: string; suggestions: readonly { subject: string }[] }
+    }
+    const baseline = JSON.parse(plain.lines.join('\n')) as {
+      decisions: readonly { subject: string; classification: string }[]
+    }
+
+    expect(code).toBe(0)
+    expect(plainCode).toBe(0)
+    expect(planned.decisions).toEqual(baseline.decisions)
+    expect(planned.semantic).toBeDefined()
+    expect(planned.semantic?.model).toBe('jev-latest')
+  })
+
+  it('labels the second opinion and names the model in the human report', async () => {
+    const io = capture()
+    const judge = fakeJudge({
+      q0: { choice: 'adaptable', confidence: 0.9, probabilities: { adaptable: 0.9 } },
+    })
+
+    const code = await runCli(['plan', '--semantic'], io.io, project(), {
+      inspect: { registry: registryOf(adapterWithUnknownCapability()) },
+      planSemantic: judge,
+    })
+
+    expect(code).toBe(0)
+    expect(io.lines.join('\n')).toContain('Second opinions')
+    expect(io.lines.join('\n')).toContain('jev-latest')
+  })
 })

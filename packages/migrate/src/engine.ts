@@ -15,8 +15,13 @@ import {
   type UnitMigrationState,
   serializeState,
 } from './state.js'
-import { GENERIC_TRANSFORMS, type Transform, type TransformWrite } from './transforms.js'
-import { TRANSFORM_FAMILIES } from './transforms.js'
+import {
+  GENERIC_TRANSFORMS,
+  TRANSFORM_FAMILIES,
+  type RewriteRule,
+  type Transform,
+  type TransformWrite,
+} from './transforms.js'
 
 /**
  * The engine.
@@ -52,6 +57,8 @@ export interface PlannedWrite {
   readonly transform: string
   readonly from: string
   readonly to: string
+  /** The rewrite rule that fired for this write, when the bytes changed. */
+  readonly rule?: RewriteRule
 }
 
 export interface SkippedUnit {
@@ -184,6 +191,7 @@ export function runMigration(options: MigrationOptions): MigrationReport {
           transform: transform.id,
           from: write.from,
           to: write.relativePath,
+          ...(write.rule === undefined ? {} : { rule: write.rule }),
         })
         firstOutput ??= write.relativePath
       }

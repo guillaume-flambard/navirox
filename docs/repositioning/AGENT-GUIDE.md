@@ -26,7 +26,11 @@ Do not implement every planned framework unless the assigned task explicitly req
 
 Navirox is:
 
-> A framework-agnostic analysis, compatibility and migration platform that helps teams turn existing web applications into native mobile applications.
+> A framework-agnostic transformation platform that generates faithful,
+> runnable native mobile projects from supported web applications.
+
+Analysis, compatibility and migration planning are conversion preflight. They
+must protect generated output from unknown work; they are not the product end.
 
 Navirox is not defined by:
 - Vue;

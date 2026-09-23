@@ -62,7 +62,12 @@ Navirox productizes that boundary.
 
 ## 3.3 Technical positioning
 
-> **A framework-agnostic analysis, compatibility, migration and native-target orchestration platform.**
+> **A framework-agnostic transformation platform that generates faithful,
+> runnable native mobile projects from supported web applications.**
+
+Analysis, compatibility and migration planning are preflight capabilities for
+the generated project. They expose what the transformer can prove and stop it
+before it silently emits an unfaithful application.
 
 ## 3.4 What Navirox is not
 
@@ -383,6 +388,18 @@ The report must explain why.
 ---
 
 # 9. Core product capabilities
+
+## 9.0 `navirox transform`
+
+This is the primary user journey and final deliverable. Given a selected source
+application and supported profile, it MUST discover topology and versions,
+verify eligibility, lower the workflow, generate a native workspace, carry only
+approved shared logic, write provenance and coverage, and run the profile's
+validation commands. It MUST stop without output when the preflight is refused.
+
+`inspect`, `plan`, `compat` and `migrate` remain separately callable to explain
+or review the process, but no support claim may use them as a substitute for the
+generated workspace and its device proof.
 
 ## 9.1 `navirox init`
 

@@ -2,13 +2,14 @@
 
 ## Purpose
 
-The first public developer preview is a narrow, reproducible Vue/Nuxt migration
-readiness demonstration. It helps a web team identify portable business logic,
-manual or native-replacement work, and unresolved risks before a focused native
-companion starts.
+The first public developer preview is a narrow, reproducible Vue/Nuxt conversion
+preflight. It identifies portable business logic, manual or native-replacement
+work, and unresolved risks before the future `navirox transform` journey writes
+a faithful native project.
 
-It is an open-source audit and assisted-delivery entry point, not a self-serve
-full-application converter.
+It is not the product endpoint and not a self-serve full-application converter.
+The product endpoint is a generated, runnable mobile workspace; this preview
+only proves the preflight inputs that must make that generator refuse safely.
 
 ## Verified boundary
 
@@ -48,7 +49,8 @@ disagree, so the gap cannot drift out of date without a failure.
 The preview may be announced only with fresh evidence for all of the following:
 
 1. A narrow Vue/Nuxt demo starts from a pinned source revision and produces a
-   readable report plus a bounded companion-workflow recommendation.
+   readable preflight report plus a bounded companion-workflow recommendation
+   that a later generator can consume.
 2. A new user can follow one documented public installation and analysis path
    without workspace links or unpublished dependencies.
 3. Documentation states supported, unsupported, manual and unknown work in the

@@ -50,6 +50,53 @@ describe('compileVueTarget', () => {
     expect(output.code).not.toContain('data-testid')
   })
 
+  it('maps the presentational text and container elements to their primitives', () => {
+    const output = compileVueTarget(`
+      <template><aside><ol><li><b>Bold</b></li></ol><figure><figcaption>Caption</figcaption></figure></aside></template>
+    `)
+
+    expect(output.report.findings).toEqual([])
+    expect(output.code).toContain(
+      '<view><view><view><text>Bold</text></view></view><view><text>Caption</text></view></view>',
+    )
+  })
+
+  it('still refuses an unmapped element and text directly inside a non-text primitive', () => {
+    const unmapped = compileVueTarget('<template><marquee>Hi</marquee></template>')
+
+    expect(unmapped.code).toBeUndefined()
+    expect(unmapped.report.findings.map((finding) => finding.code)).toEqual(['unsupported-element'])
+
+    const bare = compileVueTarget('<template><button>Save</button></template>')
+
+    expect(bare.code).toBeUndefined()
+    expect(bare.report.findings.map((finding) => finding.code)).toEqual(['unsupported-text'])
+  })
+
+  it('accepts the directives the native renderer implements', () => {
+    const output = compileVueTarget(`
+      <template><main v-show="visible"><input v-model="name" /><button @press-in="go" @long-press="hold"><span>Go</span></button></main></template>
+    `)
+
+    expect(output.report.findings).toEqual([])
+    expect(output.code).toContain('v-show="visible"')
+    expect(output.code).toContain('<text-input v-model="name">')
+    expect(output.code).toContain('@press-in="go"')
+    expect(output.code).toContain('@long-press="hold"')
+  })
+
+  it('refuses v-model outside a text-input and an unimplemented directive', () => {
+    const model = compileVueTarget('<template><main v-model="x"><span>Hi</span></main></template>')
+
+    expect(model.code).toBeUndefined()
+    expect(model.report.findings.map((finding) => finding.code)).toEqual(['unsupported-directive'])
+
+    const html = compileVueTarget('<template><main v-html="x"><span>Hi</span></main></template>')
+
+    expect(html.code).toBeUndefined()
+    expect(html.report.findings.map((finding) => finding.code)).toEqual(['unsupported-directive'])
+  })
+
   it('refuses to emit a plausible native screen for unsupported navigation and CSS', () => {
     const output = compileVueTarget(`
       <template><RouterLink to="/products">Products</RouterLink></template>
@@ -112,7 +159,7 @@ describe('compileVueTarget', () => {
   })
 
   it('stays fail-closed for an unsupported directive', () => {
-    const output = compileVueTarget(`<template><main><input v-model="query" /></main></template>`)
+    const output = compileVueTarget(`<template><main><input v-html="query" /></main></template>`)
 
     expect(output.code).toBeUndefined()
     expect(output.report.findings.map((finding) => finding.code)).toContain('unsupported-directive')

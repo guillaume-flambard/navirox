@@ -45,7 +45,9 @@
     "@memolabs-apps/source-svelte": "workspace:*",
     "@memolabs-apps/source-sveltekit": "workspace:*",
     "@memolabs-apps/source-vanilla": "workspace:*",
-    "@memolabs-apps/source-vue": "workspace:*"
+    "@memolabs-apps/source-vue": "workspace:*",
+    "@memolabs-apps/target-angular": "workspace:*",
+    "@memolabs-apps/target-vue": "workspace:*"
   },
   "devDependencies": {
     "@types/node": "^26.6.1",

@@ -262,6 +262,141 @@ export async function runCli(
     }
   }
 
+  if (parsed.command === 'convert') {
+    try {
+      const { renderFailure, runInspection } = await import('@memolabs-apps/inspect')
+      const { loadSeedRegistry } = await import('@memolabs-apps/compat')
+      const { plan } = await import('@memolabs-apps/planner')
+      const { renderMigration, runMigration } = await import('@memolabs-apps/migrate')
+      const { createProjectFiles } = await import('@memolabs-apps/source')
+      const { runConversion } = await import('./convert.js')
+      const { readAngularTemplate, targetFor } = await import('./targets.js')
+      const registry = context.inspect?.registry ?? (await createAdapterRegistry())
+      const outcome = await runInspection({
+        rootDir: directory,
+        registry,
+        ...(parsed.framework === undefined ? {} : { framework: parsed.framework }),
+      })
+
+      if (!outcome.ok) {
+        io.err(renderFailure(outcome, parsed.json))
+        return 1
+      }
+
+      const graph = outcome.report.graph
+      const planned = plan(graph, { compatibility: loadSeedRegistry() })
+      const project = createProjectFiles(directory)
+      const outRoot = parsed.out === undefined ? directory : resolve(cwd, parsed.out)
+      const units = new Map(graph.units.map((unit) => [unit.id, unit]))
+      const screens = graph.screens.flatMap((screen) => {
+        const unit = units.get(screen.unitId)
+
+        return unit === undefined ? [] : [{ unit: unit.id, file: unit.source.file }]
+      })
+
+      // The target follows the source adapter: an Angular screen compiles
+      // through the Angular target, every other source through the Vue target.
+      const adapterId = outcome.report.source.adapterId
+      const target = await targetFor(adapterId)
+      const templates = new Map<string, string>()
+      const readSource = (path: string): string | undefined => {
+        if (adapterId !== 'angular') {
+          return project.readText(path)
+        }
+
+        // The Angular adapter records only whether a template is inline or
+        // external, so the template is read here and cached for the screen.
+        const cached = templates.get(path)
+
+        if (cached !== undefined) {
+          return cached
+        }
+
+        const template = readAngularTemplate(project.readText, path)
+
+        if (template !== undefined) {
+          templates.set(path, template)
+        }
+
+        return template
+      }
+
+      const conversion = runConversion({
+        screens,
+        outputRoot: outRoot,
+        write: parsed.write,
+        readText: readSource,
+        ...(adapterId === 'angular' ? { readScript: project.readText } : {}),
+        target,
+      })
+
+      // The units the plan approved move through the same engine migrate uses,
+      // so the safe subset is carried exactly as it is everywhere else.
+      const migration = runMigration({
+        graph,
+        plan: planned,
+        adapterId: outcome.report.source.adapterId,
+        sourceRoot: directory,
+        outputRoot: outRoot,
+        write: parsed.write,
+        readText: project.readText,
+      })
+
+      if (parsed.json) {
+        io.out(
+          JSON.stringify(
+            {
+              dryRun: conversion.dryRun,
+              target: target.id,
+              converted: conversion.converted.map((screen) => ({
+                unit: screen.unit,
+                from: screen.from,
+                to: screen.to,
+              })),
+              refused: conversion.refused,
+              moved: migration.moved,
+            },
+            null,
+            2,
+          ),
+        )
+      } else {
+        io.out(
+          conversion.dryRun
+            ? 'Dry run: nothing was written. Add --write to convert.'
+            : 'Converted: the screens below were written.',
+        )
+        io.out('')
+        io.out(`Screens converted (${conversion.converted.length})`)
+
+        for (const screen of conversion.converted) {
+          io.out(`  ${screen.from} -> ${screen.to}`)
+        }
+
+        io.out('')
+        io.out(`Screens refused (${conversion.refused.length})`)
+
+        for (const screen of conversion.refused) {
+          io.out(`  ${screen.from}`)
+
+          for (const finding of screen.findings) {
+            io.out(`      ${finding.code} at ${finding.line}:${finding.column}: ${finding.message}`)
+          }
+        }
+
+        io.out('')
+
+        for (const line of renderMigration(migration).split('\n')) {
+          io.out(line)
+        }
+      }
+
+      return 0
+    } catch (error) {
+      return reportFailure(error, io)
+    }
+  }
+
   if (parsed.command === 'doctor') {
     try {
       // Imported here rather than at the top so the report pays for nothing the

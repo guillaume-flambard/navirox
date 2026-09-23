@@ -23,10 +23,15 @@
 - [x] 3.2 Create `preview-public-distribution` after the CI baseline is green.
   Done: it took the contract's retained-limitation branch and named the five
   unpublished packages; archived as `2026-09-22-preview-public-distribution`.
-- [ ] 3.3 Create `preview-external-validation` after distribution is proven or
+- [x] 3.3 Create `preview-external-validation` after distribution is proven or
   its limitation is retained and checked, which satisfies this contract's
-  dependency-ordered change 3 either way.
-- [ ] 3.4 Create `deterministic-transform-validation` only with provenance,
-  rollback, behavioural validation and a clean build check.
-- [ ] 3.5 Create `optional-llm-assistance` only after the deterministic preview
+  dependency-ordered change 3 either way. Done: the report was read on public
+  repositories we do not own; archived as `2026-09-22-preview-external-validation`.
+- [x] 3.4 Create `deterministic-transform-validation` only with provenance,
+  rollback, behavioural validation and a clean build check. Done: the rewrite
+  transform records its rule, a failing run restores the directory, a
+  behavioural test drives the real planner and engine, and the build is clean.
+- [x] 3.5 Create `optional-llm-assistance` only after the deterministic preview
   is independently useful, with suggestions opt-in, labelled and validated.
+  Done: the change declares the `llm-assistance` capability over the existing
+  opt-in, labelled, deterministically validated suggestion path.

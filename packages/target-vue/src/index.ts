@@ -106,25 +106,49 @@ export function hashProvenanceManifest(manifest: TargetProvenanceManifest): stri
 
 const TAGS: Readonly<Record<string, NativePrimitive>> = {
   article: 'view',
+  aside: 'view',
   div: 'view',
+  dl: 'view',
+  figure: 'view',
   footer: 'view',
   header: 'view',
   li: 'view',
   main: 'view',
   nav: 'view',
+  ol: 'view',
   section: 'view',
   ul: 'view',
+  abbr: 'text',
+  b: 'text',
+  blockquote: 'text',
+  cite: 'text',
+  code: 'text',
+  dd: 'text',
+  dt: 'text',
+  em: 'text',
+  figcaption: 'text',
   h1: 'text',
   h2: 'text',
   h3: 'text',
   h4: 'text',
   h5: 'text',
   h6: 'text',
+  i: 'text',
   label: 'text',
+  legend: 'text',
+  mark: 'text',
   p: 'text',
+  pre: 'text',
+  q: 'text',
+  s: 'text',
+  small: 'text',
   span: 'text',
   strong: 'text',
-  em: 'text',
+  sub: 'text',
+  summary: 'text',
+  sup: 'text',
+  time: 'text',
+  u: 'text',
   button: 'pressable',
   img: 'image',
   input: 'text-input',
@@ -196,17 +220,29 @@ function properties(element: ElementNode, findings?: TargetFinding[]): string {
       }
       if (property.type === NodeTypes.DIRECTIVE) {
         if (property.name === 'on' && property.arg?.type === NodeTypes.SIMPLE_EXPRESSION) {
-          if (property.arg.content === 'click') return source.replace(/^@click\b/, '@press')
-          if (property.arg.content === 'press') return source
+          const event = property.arg.content
+          if (event === 'click') return source.replace(/^@click\b/, '@press')
+          if (
+            event === 'press' ||
+            event === 'press-in' ||
+            event === 'press-out' ||
+            event === 'long-press'
+          )
+            return source
         }
         if (
           property.name === 'bind' ||
           property.name === 'if' ||
           property.name === 'else-if' ||
           property.name === 'else' ||
-          property.name === 'for'
+          property.name === 'for' ||
+          property.name === 'show'
         )
           return source
+        // `v-model` is owned by the native adapter's vModelText, which stringifies
+        // for anything it does not read as a Switch, so it is honest only on the
+        // one input primitive this target has.
+        if (property.name === 'model' && TAGS[element.tag] === 'text-input') return source
         if (findings !== undefined) {
           findings.push(
             finding(

@@ -24,7 +24,11 @@ export function renderMigration(report: MigrationReport): string {
   } else {
     for (const file of report.files) {
       lines.push(`  ${file.from}`)
-      lines.push(`      to ${file.to} by ${file.transform}`)
+      lines.push(
+        file.rule === undefined
+          ? `      to ${file.to} by ${file.transform}`
+          : `      to ${file.to} by ${file.transform} (rule ${file.rule})`,
+      )
     }
   }
 

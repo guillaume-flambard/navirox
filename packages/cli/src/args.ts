@@ -13,7 +13,7 @@ export type TPlatform = 'ios' | 'android'
 const DEFAULT_PORT = 8081
 
 /** The commands this tool knows. Adding one is a change here and in the dispatch. */
-export type TCommand = 'analyze' | 'dev' | 'doctor' | 'inspect' | 'plan' | 'migrate'
+export type TCommand = 'analyze' | 'dev' | 'doctor' | 'inspect' | 'plan' | 'migrate' | 'convert'
 
 /** Thrown when the command line itself does not make sense. */
 export class UsageError extends Error {
@@ -57,6 +57,7 @@ Commands:
   inspect Read an existing project and report what moving it to native involves.
   plan    Read a project and report what each part of it can become.
   migrate Plan a migration, and with --write perform the part that is provably safe.
+  convert Convert the screens a target provider fully supports, and move the shared units.
 
 Options:
   -p, --platform <ios|android>  Platform to target. ios on macOS, android elsewhere.
@@ -68,12 +69,12 @@ dev only:
       --port <number>           Metro port. Defaults to ${DEFAULT_PORT}.
       --skip-preflight          Do not check the native toolchain first.
 
-analyze, inspect, plan and migrate only:
+analyze, inspect, plan, migrate and convert only:
       --framework <id>          Use a named source adapter instead of detecting one.
 
-migrate only:
+migrate and convert only:
       --out <path>              Where to write. Required by --write.
-      --write                   Perform the migration. Without it, nothing is written.
+      --write                   Perform the run. Without it, nothing is written.
 
 plan only:
       --semantic                Ask TypeSafe for a second opinion on the subjects the
@@ -163,10 +164,11 @@ export function parseArguments(
       argument !== 'analyze' &&
       argument !== 'inspect' &&
       argument !== 'plan' &&
-      argument !== 'migrate'
+      argument !== 'migrate' &&
+      argument !== 'convert'
     ) {
       throw new UsageError(
-        `Unknown command "${argument}". The commands are analyze, dev, doctor, inspect, plan and migrate.`,
+        `Unknown command "${argument}". The commands are analyze, dev, doctor, inspect, plan, migrate and convert.`,
       )
     } else {
       command = argument
@@ -175,26 +177,26 @@ export function parseArguments(
 
   // A flag that quietly does nothing is the failure this file exists to refuse,
   // so every command refuses the flags that belong to another one.
-  if (command === 'migrate') {
+  if (command === 'migrate' || command === 'convert') {
     if (writeGiven && !outGiven) {
       throw new UsageError(
-        'navirox migrate --write needs --out: this engine migrates into a separate directory and never in place.',
+        `navirox ${command} --write needs --out: this tool writes into a separate directory and never in place.`,
       )
     }
   }
 
-  if (outGiven && command !== 'migrate') {
+  if (outGiven && command !== 'migrate' && command !== 'convert') {
     throw new UsageError(
       command === undefined
-        ? '--out belongs to navirox migrate, and no command was given.'
+        ? '--out belongs to navirox migrate and convert, and no command was given.'
         : `navirox ${command} writes nothing, so --out does not apply to it.`,
     )
   }
 
-  if (writeGiven && command !== 'migrate') {
+  if (writeGiven && command !== 'migrate' && command !== 'convert') {
     throw new UsageError(
       command === undefined
-        ? '--write belongs to navirox migrate, and no command was given.'
+        ? '--write belongs to navirox migrate and convert, and no command was given.'
         : `navirox ${command} writes nothing, so --write does not apply to it.`,
     )
   }
@@ -212,7 +214,8 @@ export function parseArguments(
     command === 'analyze' ||
     command === 'inspect' ||
     command === 'plan' ||
-    command === 'migrate'
+    command === 'migrate' ||
+    command === 'convert'
   ) {
     const label = `navirox ${command}`
     if (command !== 'doctor' && platformGiven) {
@@ -235,18 +238,19 @@ export function parseArguments(
     command !== 'inspect' &&
     command !== 'plan' &&
     command !== 'migrate' &&
+    command !== 'convert' &&
     frameworkGiven
   ) {
     throw new UsageError(
       command === undefined
-        ? '--framework belongs to navirox analyze, inspect and plan, and no command was given.'
+        ? '--framework belongs to navirox analyze, inspect, plan and convert, and no command was given.'
         : `navirox ${command} reads no source project, so --framework does not apply to it.`,
     )
   }
 
   if (command === undefined && !help) {
     throw new UsageError(
-      'A command is required. The commands are analyze, dev, doctor, inspect, plan and migrate.',
+      'A command is required. The commands are analyze, dev, doctor, inspect, plan, migrate and convert.',
     )
   }
 

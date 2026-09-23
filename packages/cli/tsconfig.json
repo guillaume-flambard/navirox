@@ -43,6 +43,12 @@
     },
     {
       "path": "../source-react"
+    },
+    {
+      "path": "../target-angular"
+    },
+    {
+      "path": "../target-vue"
     }
   ]
 }

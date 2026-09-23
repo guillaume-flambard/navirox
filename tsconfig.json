@@ -60,6 +60,9 @@
       "path": "./packages/target-vue"
     },
     {
+      "path": "./packages/target-angular"
+    },
+    {
       "path": "./packages/source-svelte"
     },
     {

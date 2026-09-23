@@ -143,6 +143,39 @@ describe('suggesting for the undecided', () => {
     expect(suggestions[0]?.confidence).toBe('high')
     expect(suggestions[1]?.confidence).toBe('medium')
   })
+
+  it('submits names and kinds only, never a file body', async () => {
+    const fixture = undecidedGraph()
+    const planned = plan(fixture)
+    const batches: { subjects: readonly Record<string, unknown>[] }[] = []
+    const judge: SemanticJudge = {
+      judge: (state) => {
+        batches.push(state as unknown as { subjects: readonly Record<string, unknown>[] })
+        return Promise.resolve({})
+      },
+    }
+
+    await suggestForUndecided(fixture, planned, judge)
+
+    const allowed = new Set([
+      'kind',
+      'unitKind',
+      'capability',
+      'usage',
+      'capabilitiesInUnit',
+      'dependencyName',
+      'file',
+    ])
+    const subjects = batches[0]?.subjects ?? []
+
+    expect(subjects.length).toBeGreaterThan(0)
+
+    for (const subject of subjects) {
+      for (const key of Object.keys(subject)) {
+        expect(allowed.has(key)).toBe(true)
+      }
+    }
+  })
 })
 
 describe('creating the TypeSafe judge', () => {

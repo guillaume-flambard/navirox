@@ -8,10 +8,10 @@
 
 **The framework-agnostic Web to Native Mobile platform. Vue first.**
 
-Navirox analyses an existing web application, builds a framework-neutral model of
-the parts that matter for a mobile migration, classifies each part by the
-strategy that fits it, and helps produce a native mobile application that keeps
-as much of the original logic as the platform honestly allows.
+Navirox turns an existing supported web application into a faithful, runnable
+native mobile project. It discovers the repository, classifies what can move,
+lowers the covered workflow, generates the native workspace and records every
+generated, manual and refused part so the result can be verified and evolved.
 
 Said the short way, the way a person would say it: **turn existing web
 applications into native mobile applications.**
@@ -21,7 +21,7 @@ applications into native mobile applications.**
 **Pre-alpha. The product does not work end to end yet, and a public `npm
 install` is not demonstrated: publication is partial.**
 
-The native path is real: a generated Vue app installs from packed tarballs
+The native runtime path is real: a generated Vue app installs from packed tarballs
 outside the workspace, boots on both platforms, and drives a shared Detox journey
 that passes in CI. The source path, which is the part that makes Navirox
 framework-agnostic rather than a single-framework tool, is being built now.
@@ -51,11 +51,10 @@ between four bad options:
 | Capacitor    | A WebView, with the native-UI compromise that implies      |
 | NativeScript | Another ecosystem to learn and staff                       |
 
-None of them answers the question those teams actually have. It is not "can this
-framework render natively", it is: **what in this codebase can move, what has to
-adapt, and what should become native?** That question is answerable by analysis,
-before a line of mobile code is written, and the answer does not depend on which
-framework the web app happens to use.
+None of them gives a web team a faithful generated mobile project with a map of
+what was preserved and what still needs native work. Navirox's preflight answers
+**what can move, what has to adapt, and what should become native** precisely so
+the generator can produce that project rather than hide uncertainty in it.
 
 ## Architecture
 
@@ -208,11 +207,9 @@ Navirox, start with `docs/GETTING-STARTED.md`.
 ## Roadmap
 
 The repositioning happens in stages, and each stage has a gate rather than a
-date. Vue becomes the first adapter behind a generic contract; Svelte and
-SvelteKit are the architectural proof that the contract is genuinely
-framework-neutral; Nuxt adds migration depth on top of Vue; Angular, React and
-Astro come later, and only after the proof. `docs/repositioning/ROADMAP.md` has
-the stages and their exit criteria.
+date. The endpoint is a generated, runnable project, not an inspection report.
+`docs/PRODUCT-COMPLETION-SPECS.md` defines the golden conversion path, the
+framework gates and the evidence required to reach it.
 
 The renderer, the runtime seam, the Metro preset, the scaffolder, `navirox dev`
 and `navirox doctor` are done. The compatibility registry, the compatibility

@@ -1,14 +1,23 @@
 # ROADMAP — Navirox Repositioning
 
-This roadmap separates **product vision**, **platform architecture**, and **framework support** so the project does not explode in scope.
+This roadmap separates **product vision**, **platform architecture**, and
+**framework support** so the project does not explode in scope. The product
+destination is a faithful, runnable generated mobile project from a supported
+web repository. Analysis, inspection and planning are mandatory preflight stages
+of that conversion, not a finished product outcome.
+
+The authoritative long-horizon dependency graph, transformation gates and TODO
+backlog live in [`../PRODUCT-COMPLETION-SPECS.md`](../PRODUCT-COMPLETION-SPECS.md).
+This document retains the repositioning history and framework ordering.
 
 ## Current execution order
 
-Source-adapter completion is the active product path. The order is Vue, Angular,
-Nuxt, then Next. React remains covered by the public analyzer because it is the
-base adapter for Next.
+Source-adapter completion is an enabling path, not the product endpoint. The
+order is Vue, Angular, Nuxt, then Next. React remains covered by the public
+analyzer because it is the base adapter for Next. A framework advances only when
+its discovery, lowering, generation and device proof advance together.
 
-For an adapter, **complete source support** means all of the following hold
+For an adapter, **complete preflight support** means all of the following hold
 against its versioned fixture corpus and the installed public package:
 
 1. `npx navirox analyze . --json` identifies the adapter without relying on the
@@ -22,10 +31,11 @@ against its versioned fixture corpus and the installed public package:
 5. no framework-specific rule escapes its adapter into the neutral source,
    inspect, planner or migration modules.
 
-This is not a claim that every web view is converted automatically, nor that a
-native runtime exists for every source framework. Those are separate target
-provider and transform gates. The supported migration contract remains the
-safe subset that Navirox can prove.
+This is not a claim of transform support. A framework has transform support only
+after a versioned source profile lowers to the neutral Workflow IR, a target
+provider emits a runnable workspace, and the declared web/iOS/Android scenarios
+prove behavior and fidelity. The supported contract remains the bounded subset
+Navirox can prove.
 
 Visual fidelity is a separate commercial gate. Until a generated native view
 tree and reproducible visual evidence exist, no adapter may claim visual parity

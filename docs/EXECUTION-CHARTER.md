@@ -4,6 +4,11 @@ This is the operational entry point for agents. It turns the product direction
 into the current, deliberately narrow program. It does not replace the product
 definition or architectural boundaries.
 
+The proof journeys are enabling evidence for the product endpoint, not that
+endpoint: the long-horizon contract is a faithful, runnable native project
+generated from a supported web repository. Until a generator and its evidence
+exist, this charter authorizes only the bounded proofs it names.
+
 ## Authorized outcome
 
 Before public communication, Navirox must have two complete and reproducible
