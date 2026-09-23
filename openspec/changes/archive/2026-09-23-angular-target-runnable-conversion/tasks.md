@@ -23,15 +23,29 @@
 
 ## 3. Prove it end to end
 
-- [ ] 3.1 Convert one real Angular component from a pinned public revision and
+- [x] 3.1 Convert one real Angular component from a pinned public revision and
   check the emitted screen declares every binding it uses. Verify the conversion
-  test on the pinned fixture.
-- [ ] 3.2 Build and run the emitted screen on iOS and Android, exercising at least
+  test on the pinned fixture. Done: `convert.test.ts` drives `runConversion` on
+  the record-workflow fixture justified against pinned SuiteCRM
+  `2cd77380bc838b8bd6c80f9fbe25855d73ef860c`, asserts every binding root in the
+  emitted template is declared in setup, and checks the written provenance names
+  the component path, the script sha256, and the output path;
+  `compileAngularComponent` now records `manifest.component` beside the
+  template `input`. CLI convert tests 135/135, target-angular 23/23.
+- [x] 3.2 Build and run the emitted screen on iOS and Android, exercising at least
   one declared interaction. Verify the platform runs and their recorded result.
+  Done: `scripts/capture-angular-companion.mjs` drove the emitted screen on both
+  platforms, five captures each (`rest`, `first-meaningful`, `midpoint`,
+  `settled`, `interrupted`), with the recorded results in
+  `docs/evidence/angular-companion-device-evidence-ios.json` and
+  `docs/evidence/angular-companion-device-evidence-android.json`.
 
 ## 4. Validate the build
 
-- [ ] 4.1 Run `corepack pnpm build`, `corepack pnpm test`, `corepack pnpm lint`
-  and `corepack pnpm format:check`. Verify all exit 0.
-- [ ] 4.2 Run `corepack pnpm exec openspec validate
-  angular-target-runnable-conversion --strict`. Verify it exits 0.
+- [x] 4.1 Run `corepack pnpm build`, `corepack pnpm test`, `corepack pnpm lint`
+  and `corepack pnpm format:check`. Verify all exit 0. Done: build 35/35
+  successful, test 64/64 successful, lint clean, and format:check reports every
+  file already formatted.
+- [x] 4.2 Run `corepack pnpm exec openspec validate
+  angular-target-runnable-conversion --strict`. Verify it exits 0. Done: the
+  change validates strictly, and `openspec validate --all` passes 57 of 57.
