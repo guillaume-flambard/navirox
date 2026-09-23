@@ -11,6 +11,7 @@ import {
   importSpecifiers,
   isNeutralPackageDir,
   isSourceAdapterPackageDir,
+  isTargetProviderPackageDir,
 } from './index'
 
 /**
@@ -121,6 +122,39 @@ describe('the source framework import boundary', () => {
     }
 
     expect(violations, JSON.stringify(violations, null, 2)).toEqual([])
+  })
+
+  it('keeps the source side out of the target providers', () => {
+    // A target consumes the Workflow IR and emits native source. Naming the
+    // compiler of the framework it targets is its job; reaching back into a
+    // source adapter would weld shut the seam, because an adapter is the one
+    // package allowed to know a source framework, and a target is not.
+    const violations: IViolation[] = []
+
+    for (const directory of packageDirectories()) {
+      if (!isTargetProviderPackageDir(directory)) continue
+
+      for (const file of sourceFiles(join(packagesDir, directory, 'src'))) {
+        const crossed = forbiddenSpecifiers('target', importSpecifiers(readFileSync(file, 'utf8')))
+        for (const specifier of crossed) {
+          violations.push({ file: relative(packagesDir, file), specifier })
+        }
+      }
+    }
+
+    expect(violations, JSON.stringify(violations, null, 2)).toEqual([])
+  })
+
+  it('lets a target name its compiler but never a source adapter', () => {
+    expect(forbiddenSpecifiers('target', ['@vue/compiler-dom'])).toEqual([])
+    expect(forbiddenSpecifiers('target', ['@angular/compiler'])).toEqual([])
+
+    expect(forbiddenSpecifiers('target', ['@memolabs-apps/source-vue'])).toEqual([
+      '@memolabs-apps/source-vue',
+    ])
+    expect(forbiddenSpecifiers('target', ['@memolabs-apps/source'])).toEqual([
+      '@memolabs-apps/source',
+    ])
   })
 
   it('lets an adapter name its framework but never a target provider', () => {

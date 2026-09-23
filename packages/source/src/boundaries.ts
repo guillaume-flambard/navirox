@@ -53,6 +53,19 @@ export const TARGET_PROVIDER_PATTERNS: readonly RegExp[] = [
 ]
 
 /**
+ * The source-side packages a target provider may never reach for.
+ *
+ * A target consumes the Workflow IR and emits native source. Reaching back into a
+ * source adapter would weld the two seams this layout exists to keep apart. A
+ * target MAY import the compiler of the framework it targets, because compiling
+ * that syntax is its job.
+ */
+export const SOURCE_PROVIDER_PATTERNS: readonly RegExp[] = [
+  /^@memolabs-apps\/source(\/|$)/,
+  /^@memolabs-apps\/source-/,
+]
+
+/**
  * Package directories whose code must stay framework-neutral.
  *
  * `runtime`, `ui`, `native` and `router` are absent on purpose: they are the
@@ -77,12 +90,19 @@ export const NEUTRAL_PACKAGE_DIRS: readonly string[] = [
 /** Adapters are the one place a source framework name is allowed to appear. */
 export const ADAPTER_PACKAGE_PREFIX = 'source-'
 
+/** Targets are the one place the framework a target compiles is allowed to appear. */
+export const TARGET_PACKAGE_PREFIX = 'target-'
+
 export function isNeutralPackageDir(directory: string): boolean {
   return NEUTRAL_PACKAGE_DIRS.includes(directory)
 }
 
 export function isSourceAdapterPackageDir(directory: string): boolean {
   return directory.startsWith(ADAPTER_PACKAGE_PREFIX)
+}
+
+export function isTargetProviderPackageDir(directory: string): boolean {
+  return directory.startsWith(TARGET_PACKAGE_PREFIX)
 }
 
 export function matchesPattern(patterns: readonly RegExp[], specifier: string): boolean {
@@ -120,9 +140,15 @@ export function importSpecifiers(source: string): readonly string[] {
  * name a target.
  */
 export function forbiddenSpecifiers(
-  kind: 'neutral' | 'adapter',
+  kind: 'neutral' | 'adapter' | 'target',
   specifiers: readonly string[],
 ): readonly string[] {
-  const patterns = kind === 'neutral' ? SOURCE_FRAMEWORK_PATTERNS : TARGET_PROVIDER_PATTERNS
+  const patterns =
+    kind === 'neutral'
+      ? SOURCE_FRAMEWORK_PATTERNS
+      : kind === 'adapter'
+        ? TARGET_PROVIDER_PATTERNS
+        : SOURCE_PROVIDER_PATTERNS
+
   return specifiers.filter((specifier) => matchesPattern(patterns, specifier))
 }

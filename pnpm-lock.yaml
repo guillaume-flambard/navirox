@@ -342,6 +342,9 @@ importers:
       '@memolabs-apps/compat':
         specifier: workspace:*
         version: link:../compat
+      '@memolabs-apps/discovery':
+        specifier: workspace:*
+        version: link:../discovery
       '@memolabs-apps/doctor':
         specifier: workspace:*
         version: link:../doctor
@@ -399,6 +402,9 @@ importers:
       '@memolabs-apps/target-vue':
         specifier: workspace:*
         version: link:../target-vue
+      '@memolabs-apps/workflow':
+        specifier: workspace:*
+        version: link:../workflow
     devDependencies:
       '@types/node':
         specifier: ^26.6.1
@@ -676,6 +682,9 @@ importers:
       '@memolabs-apps/graph':
         specifier: workspace:*
         version: link:../graph
+      '@memolabs-apps/workflow':
+        specifier: workspace:*
+        version: link:../workflow
     devDependencies:
       '@types/node':
         specifier: ^26.6.1

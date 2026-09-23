@@ -25,7 +25,8 @@
     "clean": "rm -rf dist"
   },
   "dependencies": {
-    "@memolabs-apps/graph": "workspace:*"
+    "@memolabs-apps/graph": "workspace:*",
+    "@memolabs-apps/workflow": "workspace:*"
   },
   "devDependencies": {
     "@types/node": "^26.6.1",

@@ -59,11 +59,14 @@ export {
   ADAPTER_PACKAGE_PREFIX,
   NEUTRAL_PACKAGE_DIRS,
   SOURCE_FRAMEWORK_PATTERNS,
+  SOURCE_PROVIDER_PATTERNS,
+  TARGET_PACKAGE_PREFIX,
   TARGET_PROVIDER_PATTERNS,
   forbiddenSpecifiers,
   importSpecifiers,
   isNeutralPackageDir,
   isSourceAdapterPackageDir,
+  isTargetProviderPackageDir,
   matchesPattern,
 } from './boundaries.js'
 
@@ -85,3 +88,17 @@ export type {
   SourceMigrationProvider,
   SupportLevel,
 } from './types.js'
+
+export type {
+  EmissionResult,
+  EmittedFile,
+  LoweringCoverage,
+  LoweringFinding,
+  LoweringProfile,
+  LoweringResult,
+  LoweringSelection,
+  LoweringSnapshot,
+  SourceTransformProvider,
+  TargetProfile,
+  TargetProvider,
+} from './transform-seam.js'

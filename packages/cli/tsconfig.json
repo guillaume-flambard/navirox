@@ -9,6 +9,9 @@
   "exclude": ["src/**/*.test.ts"],
   "references": [
     {
+      "path": "../discovery"
+    },
+    {
       "path": "../doctor"
     },
     {
@@ -49,6 +52,9 @@
     },
     {
       "path": "../target-vue"
+    },
+    {
+      "path": "../workflow"
     }
   ]
 }

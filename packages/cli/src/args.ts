@@ -13,7 +13,8 @@ export type TPlatform = 'ios' | 'android'
 const DEFAULT_PORT = 8081
 
 /** The commands this tool knows. Adding one is a change here and in the dispatch. */
-export type TCommand = 'analyze' | 'dev' | 'doctor' | 'inspect' | 'plan' | 'migrate' | 'convert'
+export type TCommand =
+  'analyze' | 'dev' | 'doctor' | 'inspect' | 'plan' | 'migrate' | 'convert' | 'transform'
 
 /** Thrown when the command line itself does not make sense. */
 export class UsageError extends Error {
@@ -40,6 +41,10 @@ export interface IParsedArguments {
   readonly write: boolean
   /** Whether the plan asks TypeSafe for a second opinion on undecided subjects. */
   readonly semantic: boolean
+  /** The application path transform selects inside a multi-app repository. */
+  readonly app: string | undefined
+  /** The named transformation profile. Required by transform. */
+  readonly profile: string | undefined
 }
 
 export const HELP = `navirox
@@ -58,6 +63,7 @@ Commands:
   plan    Read a project and report what each part of it can become.
   migrate Plan a migration, and with --write perform the part that is provably safe.
   convert Convert the screens a target provider fully supports, and move the shared units.
+  transform Sequence discovery through scaffold into a mobile workspace. Dry-run by default.
 
 Options:
   -p, --platform <ios|android>  Platform to target. ios on macOS, android elsewhere.
@@ -69,12 +75,16 @@ dev only:
       --port <number>           Metro port. Defaults to ${DEFAULT_PORT}.
       --skip-preflight          Do not check the native toolchain first.
 
-analyze, inspect, plan, migrate and convert only:
+analyze, inspect, plan, migrate, convert and transform only:
       --framework <id>          Use a named source adapter instead of detecting one.
 
-migrate and convert only:
+migrate, convert and transform only:
       --out <path>              Where to write. Required by --write.
       --write                   Perform the run. Without it, nothing is written.
+
+transform only:
+      --app <path>              Application path to select inside the repository.
+      --profile <id>            Named transformation profile. Required by transform.
 
 plan only:
       --semantic                Ask TypeSafe for a second opinion on the subjects the
@@ -109,6 +119,10 @@ export function parseArguments(
   let writeGiven = false
   let semantic = false
   let semanticGiven = false
+  let app: string | undefined
+  let appGiven = false
+  let profile: string | undefined
+  let profileGiven = false
 
   for (let index = 0; index < argv.length; index += 1) {
     const argument = argv[index]
@@ -148,13 +162,21 @@ export function parseArguments(
       framework = valueFor(argv, index, argument)
       frameworkGiven = true
       index += 1
+    } else if (argument === '--app') {
+      app = valueFor(argv, index, argument)
+      appGiven = true
+      index += 1
+    } else if (argument === '--profile') {
+      profile = valueFor(argv, index, argument)
+      profileGiven = true
+      index += 1
     } else if (argument === '--port') {
       port = parsePort(valueFor(argv, index, argument))
       portGiven = true
       index += 1
     } else if (argument.startsWith('-')) {
       throw new UsageError(`Unknown option "${argument}".`)
-    } else if (command === 'analyze' && directory === undefined) {
+    } else if ((command === 'analyze' || command === 'transform') && directory === undefined) {
       directory = argument
     } else if (command !== undefined) {
       throw new UsageError(`Unexpected argument "${argument}". navirox takes one command.`)
@@ -165,10 +187,11 @@ export function parseArguments(
       argument !== 'inspect' &&
       argument !== 'plan' &&
       argument !== 'migrate' &&
-      argument !== 'convert'
+      argument !== 'convert' &&
+      argument !== 'transform'
     ) {
       throw new UsageError(
-        `Unknown command "${argument}". The commands are analyze, dev, doctor, inspect, plan, migrate and convert.`,
+        `Unknown command "${argument}". The commands are analyze, dev, doctor, inspect, plan, migrate, convert and transform.`,
       )
     } else {
       command = argument
@@ -177,7 +200,7 @@ export function parseArguments(
 
   // A flag that quietly does nothing is the failure this file exists to refuse,
   // so every command refuses the flags that belong to another one.
-  if (command === 'migrate' || command === 'convert') {
+  if (command === 'migrate' || command === 'convert' || command === 'transform') {
     if (writeGiven && !outGiven) {
       throw new UsageError(
         `navirox ${command} --write needs --out: this tool writes into a separate directory and never in place.`,
@@ -185,20 +208,50 @@ export function parseArguments(
     }
   }
 
-  if (outGiven && command !== 'migrate' && command !== 'convert') {
+  if (outGiven && command !== 'migrate' && command !== 'convert' && command !== 'transform') {
     throw new UsageError(
       command === undefined
-        ? '--out belongs to navirox migrate and convert, and no command was given.'
+        ? '--out belongs to navirox migrate, convert and transform, and no command was given.'
         : `navirox ${command} writes nothing, so --out does not apply to it.`,
     )
   }
 
-  if (writeGiven && command !== 'migrate' && command !== 'convert') {
+  if (writeGiven && command !== 'migrate' && command !== 'convert' && command !== 'transform') {
     throw new UsageError(
       command === undefined
-        ? '--write belongs to navirox migrate and convert, and no command was given.'
+        ? '--write belongs to navirox migrate, convert and transform, and no command was given.'
         : `navirox ${command} writes nothing, so --write does not apply to it.`,
     )
+  }
+
+  if (appGiven && command !== 'transform') {
+    throw new UsageError(
+      command === undefined
+        ? '--app belongs to navirox transform, and no command was given.'
+        : `navirox ${command} does not select an application, so --app does not apply to it.`,
+    )
+  }
+
+  if (profileGiven && command !== 'transform') {
+    throw new UsageError(
+      command === undefined
+        ? '--profile belongs to navirox transform, and no command was given.'
+        : `navirox ${command} takes no transformation profile, so --profile does not apply to it.`,
+    )
+  }
+
+  if (command === 'transform' && !help) {
+    if (directory === undefined) {
+      throw new UsageError('navirox transform needs a repository path as its first argument.')
+    }
+
+    if (!profileGiven || profile === undefined) {
+      throw new UsageError('navirox transform needs --profile: a named transformation profile.')
+    }
+
+    if (!outGiven) {
+      throw new UsageError('navirox transform needs --out: the mobile workspace directory.')
+    }
   }
 
   if (semanticGiven && command !== 'plan') {
@@ -215,7 +268,8 @@ export function parseArguments(
     command === 'inspect' ||
     command === 'plan' ||
     command === 'migrate' ||
-    command === 'convert'
+    command === 'convert' ||
+    command === 'transform'
   ) {
     const label = `navirox ${command}`
     if (command !== 'doctor' && platformGiven) {
@@ -239,18 +293,19 @@ export function parseArguments(
     command !== 'plan' &&
     command !== 'migrate' &&
     command !== 'convert' &&
+    command !== 'transform' &&
     frameworkGiven
   ) {
     throw new UsageError(
       command === undefined
-        ? '--framework belongs to navirox analyze, inspect, plan and convert, and no command was given.'
+        ? '--framework belongs to navirox analyze, inspect, plan, convert and transform, and no command was given.'
         : `navirox ${command} reads no source project, so --framework does not apply to it.`,
     )
   }
 
   if (command === undefined && !help) {
     throw new UsageError(
-      'A command is required. The commands are analyze, dev, doctor, inspect, plan, migrate and convert.',
+      'A command is required. The commands are analyze, dev, doctor, inspect, plan, migrate, convert and transform.',
     )
   }
 
@@ -266,6 +321,8 @@ export function parseArguments(
     out,
     write,
     semantic,
+    app,
+    profile,
   }
 }
 

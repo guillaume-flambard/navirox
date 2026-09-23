@@ -34,3 +34,18 @@ export {
   type IDevIo,
   type IRunner,
 } from './runner.js'
+export {
+  renderTransform,
+  transform,
+  transformToJson,
+  TRANSFORM_LAYOUT,
+  TRANSFORM_STAGES,
+  type TransformCoverageTotals,
+  type TransformDeps,
+  type TransformDelta,
+  type TransformFinding,
+  type TransformInput,
+  type TransformLayout,
+  type TransformResult,
+  type TransformStage,
+} from './transform.js'

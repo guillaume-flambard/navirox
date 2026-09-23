@@ -33,6 +33,8 @@ export interface ICliContext {
   readonly inspect?: { readonly registry: SourceAdapterRegistry }
   /** The semantic judge `plan --semantic` uses. Supplied by a test; otherwise built from the environment. */
   readonly planSemantic?: SemanticJudge
+  /** Injected transform stages for tests; production uses the default pipeline. */
+  readonly transform?: import('./transform.js').TransformDeps
 }
 
 /**
@@ -392,6 +394,43 @@ export async function runCli(
       }
 
       return 0
+    } catch (error) {
+      return reportFailure(error, io)
+    }
+  }
+
+  if (parsed.command === 'transform') {
+    try {
+      const { renderTransform, transform, transformToJson } = await import('./transform.js')
+      const outRoot = parsed.out === undefined ? directory : resolve(cwd, parsed.out)
+      const result = await transform({
+        root: directory,
+        ...(parsed.app === undefined ? {} : { app: parsed.app }),
+        profile: parsed.profile ?? '',
+        output: outRoot,
+        write: parsed.write,
+        ...(context.transform === undefined ? {} : { deps: context.transform }),
+      })
+
+      if (parsed.json) {
+        const text = transformToJson(result).trimEnd()
+
+        if (result.ok) {
+          io.out(text)
+        } else {
+          io.err(text)
+        }
+      } else {
+        for (const line of renderTransform(result)) {
+          if (result.ok) {
+            io.out(line)
+          } else {
+            io.err(line)
+          }
+        }
+      }
+
+      return result.ok ? 0 : 1
     } catch (error) {
       return reportFailure(error, io)
     }

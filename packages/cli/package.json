@@ -29,6 +29,7 @@
   },
   "dependencies": {
     "@memolabs-apps/compat": "workspace:*",
+    "@memolabs-apps/discovery": "workspace:*",
     "@memolabs-apps/doctor": "workspace:*",
     "@memolabs-apps/inspect": "workspace:*",
     "@memolabs-apps/migrate": "workspace:*",
@@ -47,7 +48,8 @@
     "@memolabs-apps/source-vanilla": "workspace:*",
     "@memolabs-apps/source-vue": "workspace:*",
     "@memolabs-apps/target-angular": "workspace:*",
-    "@memolabs-apps/target-vue": "workspace:*"
+    "@memolabs-apps/target-vue": "workspace:*",
+    "@memolabs-apps/workflow": "workspace:*"
   },
   "devDependencies": {
     "@types/node": "^26.6.1",
