@@ -42,11 +42,11 @@ every state renders (`record-workflow-screen`, `record-workflow-queue`,
 
 | Moment | File | Bytes | sha256 |
 | --- | --- | --- | --- |
-| rest | `rest.ios.png` | 79965 | `0aa2ebf3fa5bf243e415366a0764e6ab4b9d4f30f166b7c286a2d07fe76ba370` |
-| first meaningful | `first-meaningful.ios.png` | 103920 | `104a0cb08a3bc1eae91ccdb298a623dbfffdcbc65ac897552a833d9226ffada1` |
-| midpoint | `midpoint.ios.png` | 178189 | `d34c46c3e69589d5e3e0abee61a1df819f643806c4906fa927e55b5d13aff335` |
-| settled | `settled.ios.png` | 182221 | `651a7160e88e27c5a4372a0d1461406b033bbe291751333ba1f70483b42df63d` |
-| interrupted | `interrupted.ios.png` | 104715 | `763c81733c87a0ce66610d8a27ada5fdaa91e14b97f30712cd7df7c049ce7845` |
+| rest | `rest.ios.png` | 79680 | `0baf4f569929fb4ddb45f6b076e4834995a930a1b21ab39e68c7825cd1b817b7` |
+| first meaningful | `first-meaningful.ios.png` | 103922 | `4689430a7fb392be9e5fa94dda9b4fe863f8a5bd8e99520f8f859cde779ee2eb` |
+| midpoint | `midpoint.ios.png` | 178358 | `1f34ccb32717e2ef5d56e89fda1d174dd2ba988ba3b0fba75f67877de81fc14a` |
+| settled | `settled.ios.png` | 182409 | `36efb9c92107a3c76f8d5055a1b493eee9856b0be6a50ac7765c7825908fb51d` |
+| interrupted | `interrupted.ios.png` | 105210 | `db2859031ff5ae53362c617ad5a56d63afa7ed66fcdde9b47a1ff758a194ae80` |
 
 Every run starts a fresh instance from the fixed synthetic record set, so the
 `rest` capture is the same starting state each time.

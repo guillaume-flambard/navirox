@@ -24,7 +24,7 @@
   "consumed": {
     "path": "record-workflow.data.ts",
     "sourcePath": "packages/source-angular/fixtures/record-workflow/src/app/record-workflow.data.ts",
-    "sha256": "12e2933bdf871127f0d625614fe8bd65ae8f43fb54d620588739f18ca9c6a94d",
+    "sha256": "fac1ea93f0de270ebe82d129c99a4d932dca2f4a8d74fd03bfd4d7e2e0ac982d",
     "decision": "shared",
     "rule": "unit-shared-logic"
   },
@@ -39,16 +39,16 @@
       "key": "rest",
       "moment": "rest",
       "file": "rest.android.png",
-      "bytes": 67569,
-      "sha256": "b32ea4bc5cda5305d47066b39c3edb27bc3ca05163267ced01ba7ad7c05f2548",
+      "bytes": 67970,
+      "sha256": "0c607ba58bf3561d275fa1c581f166e7e8daa7c4e45f753e420f7882af1690c7",
       "actions": []
     },
     {
       "key": "first-meaningful",
       "moment": "first-meaningful",
       "file": "first-meaningful.android.png",
-      "bytes": 79000,
-      "sha256": "e0a23443432c27ab3a19f222afead01c17fafe9a55c6e595681503444ad11875",
+      "bytes": 79320,
+      "sha256": "97e4f5a7f82e16fd0a785c35dec4f0f49ced69399e2bac9ae5d5025c7fa16cc1",
       "actions": [
         {
           "press": "record-workflow-select"
@@ -59,8 +59,8 @@
       "key": "midpoint",
       "moment": "midpoint",
       "file": "midpoint.android.png",
-      "bytes": 136189,
-      "sha256": "8142f777de1a7e02e698f94a59de148276521215c6e735d2ccef2a95ab5aecf1",
+      "bytes": 135256,
+      "sha256": "52c71d672c493949df2e3f051615fb311ac63b972010a88783b452c31728629d",
       "actions": [
         {
           "press": "record-workflow-select"
@@ -80,8 +80,8 @@
       "key": "settled",
       "moment": "settled",
       "file": "settled.android.png",
-      "bytes": 137432,
-      "sha256": "0e43dc2d980d972b1b4729622337d4fc7f3da85281c628ca264736b647582407",
+      "bytes": 137481,
+      "sha256": "14c35fa1108cfb148e0dbee3d70fe51c408c1854ea7a4cb720521ce1766a09ad",
       "actions": [
         {
           "press": "record-workflow-select"
@@ -104,8 +104,8 @@
       "key": "interrupted",
       "moment": "interrupted",
       "file": "interrupted.android.png",
-      "bytes": 80312,
-      "sha256": "2c255dfba0af3518f5a9a8aaa2d42b9db651324a5e023d737df475e1570e419b",
+      "bytes": 79862,
+      "sha256": "a67e518b50eca9562ecf928d57014d96be56fcf0845f0666ddb19f28c1fc03fc",
       "actions": [
         {
           "press": "record-workflow-select"
