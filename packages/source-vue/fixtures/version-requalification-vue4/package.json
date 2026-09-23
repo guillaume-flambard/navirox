@@ -1,0 +1,9 @@
+{
+  "name": "fixture-vue-version-requalification-vue4",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "vue": "^4.0.0",
+    "vue-router": "^4.5.0"
+  }
+}

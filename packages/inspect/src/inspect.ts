@@ -1,7 +1,14 @@
 import type { AppGraph, FindingSeverity } from '@memolabs-apps/graph'
 import { APP_GRAPH_SCHEMA_VERSION } from '@memolabs-apps/graph'
+import { loadSeedVersionMatrix } from '@memolabs-apps/compat'
 import type { DetectedSource, InspectContext, SourceAdapterRegistry } from '@memolabs-apps/source'
-import { createProjectFiles, selectAdapter } from '@memolabs-apps/source'
+import {
+  checkVerifiedRange,
+  createProjectFiles,
+  declaredRange,
+  readManifest,
+  selectAdapter,
+} from '@memolabs-apps/source'
 import {
   INSPECT_REPORT_SCHEMA_VERSION,
   type InspectFailureReason,
@@ -83,6 +90,74 @@ function competingCandidates(
   )
 }
 
+/**
+ * The version governance gate.
+ *
+ * A declared npm range is never a compatibility claim on its own. After an
+ * adapter is selected, the matrix decides whether the declared framework
+ * version falls inside a verified range for that adapter. Outside it, the
+ * inspection stops here: the outcome names the fact, its location, the
+ * expected profile and a resumption path, and no inspection runs, so no graph
+ * is built and no application is generated.
+ *
+ * An adapter the matrix does not govern, an unreadable manifest, or a
+ * framework the manifest does not declare are not refusals: the adapter
+ * reports those itself as findings, and this gate stays out of its way.
+ */
+function checkVersionGovernance(
+  adapterId: string,
+  context: InspectContext,
+  registered: readonly string[],
+): InspectOutcome | undefined {
+  const rows = loadSeedVersionMatrix().rowsFor(adapterId)
+
+  if (rows.length === 0) {
+    return undefined
+  }
+
+  const manifest = readManifest(context, adapterId)
+
+  if (manifest === undefined) {
+    return undefined
+  }
+
+  const frameworks = [...new Set(rows.map((row) => row.framework))].sort()
+
+  for (const framework of frameworks) {
+    const declared = declaredRange(manifest, framework)
+
+    if (declared === undefined) {
+      continue
+    }
+
+    const governing = rows.filter((row) => row.framework === framework)
+    const profiles = [...new Set(governing.map((row) => row.profile))].sort()
+    const outcome = checkVerifiedRange({
+      adapterId,
+      profile: profiles[0] ?? adapterId,
+      framework,
+      verifiedVersions: governing.flatMap((row) => row.verifiedVersions),
+      declaredRange: declared.range,
+      location: manifest.source.file,
+    })
+
+    if (!outcome.ok) {
+      const refusal = outcome.refusal
+
+      return failure(
+        'outside-verified-range',
+        `Navirox cannot transform ${refusal.fact} declared in ${refusal.location}: ` +
+          `the ${refusal.expectedProfile} profile is verified for ` +
+          `${refusal.verifiedVersions.join(', ')} only. ` +
+          `${refusal.resumption} No application was generated.`,
+        registered,
+      )
+    }
+  }
+
+  return undefined
+}
+
 export async function runInspection(options: InspectOptions): Promise<InspectOutcome> {
   const project = createProjectFiles(options.rootDir)
   const context: InspectContext = {
@@ -136,6 +211,12 @@ export async function runInspection(options: InspectOptions): Promise<InspectOut
   }
 
   const adapter = options.registry.get(adapterId)
+
+  const governed = checkVersionGovernance(adapterId, context, registered)
+
+  if (governed !== undefined) {
+    return governed
+  }
 
   try {
     const inspection = await adapter.inspect(context)

@@ -1,0 +1,9 @@
+{
+  "name": "fixture-angular-version-positive",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "@angular/core": "^20.0.0",
+    "@angular/router": "^20.0.0"
+  }
+}

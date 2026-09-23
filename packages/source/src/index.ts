@@ -44,6 +44,14 @@ export { buildFragment } from './fragment.js'
 
 export { declaredMajor, testedMajors } from './versions.js'
 
+export { checkVerifiedRange, resolveAdapterVersions } from './version-gate.js'
+export type {
+  AdapterVersionSources,
+  VersionGateInput,
+  VersionGateOutcome,
+  VersionRefusal,
+} from './version-gate.js'
+
 export { MANIFEST_FILE, declaredRange, productionDependencies, readManifest } from './manifest.js'
 export type { DeclaredRange, Manifest, TextReader } from './manifest.js'
 

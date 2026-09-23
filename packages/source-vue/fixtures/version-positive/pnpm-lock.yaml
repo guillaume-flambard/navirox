@@ -1,0 +1,26 @@
+# Fixture lockfile for adapter-version-governance tests. Pinned resolutions
+# only; this fixture is never installed and no network is ever touched.
+lockfileVersion: '9.0'
+
+settings:
+  autoInstallPeers: true
+  excludeLinksFromLockfile: false
+
+importers:
+
+  .:
+    dependencies:
+      vue:
+        specifier: ^3.5.0
+        version: 3.5.13
+      vue-router:
+        specifier: ^4.5.0
+        version: 4.5.0
+
+packages:
+
+  vue@3.5.13:
+    resolution: {integrity: sha512-fixture-pinned-resolution-never-installed}
+
+  vue-router@4.5.0:
+    resolution: {integrity: sha512-fixture-pinned-resolution-never-installed}

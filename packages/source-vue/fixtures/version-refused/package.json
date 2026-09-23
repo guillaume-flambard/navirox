@@ -1,0 +1,9 @@
+{
+  "name": "fixture-vue-version-refused",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "vue": "^4.0.0",
+    "vue-router": "^4.5.0"
+  }
+}

@@ -34,7 +34,11 @@ export interface InspectReport {
 
 /** Why an inspection did not produce a report. */
 export type InspectFailureReason =
-  'no-adapter' | 'ambiguous-adapter' | 'unknown-adapter' | 'adapter-failed'
+  | 'no-adapter'
+  | 'ambiguous-adapter'
+  | 'unknown-adapter'
+  | 'adapter-failed'
+  | 'outside-verified-range'
 
 /**
  * The outcome, as data.

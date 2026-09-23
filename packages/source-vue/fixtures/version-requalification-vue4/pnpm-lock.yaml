@@ -1,0 +1,27 @@
+# Fixture lockfile for the Vue 4 requalification exercise. It pins the
+# unverified major so discovery, graph and diagnosis can be compared against
+# Vue 3 without claiming support. Never installed; no network is ever touched.
+lockfileVersion: '9.0'
+
+settings:
+  autoInstallPeers: true
+  excludeLinksFromLockfile: false
+
+importers:
+
+  .:
+    dependencies:
+      vue:
+        specifier: ^4.0.0
+        version: 4.0.0
+      vue-router:
+        specifier: ^4.5.0
+        version: 4.5.0
+
+packages:
+
+  vue@4.0.0:
+    resolution: {integrity: sha512-fixture-pinned-resolution-never-installed}
+
+  vue-router@4.5.0:
+    resolution: {integrity: sha512-fixture-pinned-resolution-never-installed}

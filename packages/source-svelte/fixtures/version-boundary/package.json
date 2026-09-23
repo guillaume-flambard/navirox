@@ -1,0 +1,8 @@
+{
+  "name": "fixture-svelte-version-boundary",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "svelte": "5.0.0"
+  }
+}
