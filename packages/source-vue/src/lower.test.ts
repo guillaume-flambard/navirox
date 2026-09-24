@@ -136,8 +136,16 @@ describe('lowering a covered Vue screen', () => {
 
     // A binding carries its expression, not only its name.
     const nodes = flatten(screen.nodes)
+    const literalText = nodes.find(
+      (node) => node.primitive === 'text' && node.bindings[0]?.expression === 'positive',
+    )
+    const expressionText = nodes.find(
+      (node) => node.primitive === 'text' && node.bindings[0]?.expression === 'label',
+    )
     const conditional = nodes.find((node) => node.bindings.some((b) => b.name === 'v-if'))
 
+    expect(literalText?.bindings[0]?.valueKind).toBe('literal')
+    expect(expressionText?.bindings[0]?.valueKind).toBe('expression')
     expect(conditional?.bindings[0]?.expression).toBe('count > 0')
 
     expect(nodes.every((node) => node.coverage.kind === 'generated')).toBe(true)

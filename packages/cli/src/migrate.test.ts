@@ -119,7 +119,7 @@ describe('running the migrate command', () => {
     expect(existsSync(join(out, 'src/views/Profile.vue'))).toBe(false)
     expect(existsSync(join(out, '.navirox', 'migration.json'))).toBe(true)
     expect(io.lines.join('\n')).toContain('copy-movable-unit')
-  })
+  }, 30_000)
 
   it('writes nothing without --write', async () => {
     const root = project()

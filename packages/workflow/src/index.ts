@@ -15,7 +15,12 @@ export const PACKAGE_ROLE =
   'The framework-neutral Workflow IR: the versioned contract between a source lowering and a target emission.'
 
 /** The schema version a reader must match. */
-export const WORKFLOW_IR_SCHEMA_VERSION = 1 as const
+export const WORKFLOW_IR_SCHEMA_VERSION = 2 as const
+
+/** How a binding value is interpreted by a target. */
+export const BINDING_VALUE_KINDS = ['literal', 'expression'] as const
+
+export type BindingValueKind = (typeof BINDING_VALUE_KINDS)[number]
 
 /** How a node is covered by the transformation. */
 export const COVERAGE_KINDS = ['generated', 'manual-required', 'excluded', 'refused'] as const
@@ -39,6 +44,7 @@ export interface Coverage {
 export interface Binding {
   readonly name: string
   readonly expression: string
+  readonly valueKind: BindingValueKind
 }
 
 export interface Action {
@@ -96,7 +102,7 @@ export interface Workflow {
   readonly screens: readonly Screen[]
 }
 
-export type WorkflowFindingCode = 'unknown-coverage' | 'missing-source'
+export type WorkflowFindingCode = 'unknown-coverage' | 'missing-source' | 'unknown-binding-kind'
 
 export interface WorkflowFinding {
   readonly code: WorkflowFindingCode
@@ -133,6 +139,7 @@ function nodeToJson(node: ViewNode): unknown {
     bindings: node.bindings.map((binding) => ({
       name: binding.name,
       expression: binding.expression,
+      valueKind: binding.valueKind,
     })),
     children: node.children.map(nodeToJson),
   }
@@ -188,6 +195,10 @@ function isCoverageKind(value: unknown): value is CoverageKind {
   return typeof value === 'string' && (COVERAGE_KINDS as readonly string[]).includes(value)
 }
 
+function isBindingValueKind(value: unknown): value is BindingValueKind {
+  return typeof value === 'string' && (BINDING_VALUE_KINDS as readonly string[]).includes(value)
+}
+
 function isSource(value: unknown): value is SourceRef {
   if (typeof value !== 'object' || value === null) return false
   const record = value as Record<string, unknown>
@@ -224,7 +235,24 @@ function checkViewNodes(
   for (const [index, node] of nodes.entries()) {
     const nodePath = `${path}.nodes[${index}]`
     checkNode(node, nodePath, findings)
-    checkViewNodes(node.children, nodePath, findings)
+
+    const bindings = Array.isArray(node.bindings) ? node.bindings : []
+    for (const [bindingIndex, binding] of bindings.entries()) {
+      if (
+        typeof binding !== 'object' ||
+        binding === null ||
+        !isBindingValueKind((binding as { readonly valueKind?: unknown }).valueKind)
+      ) {
+        findings.push({
+          code: 'unknown-binding-kind',
+          message: `${nodePath}.bindings[${bindingIndex}] has no value kind in ${BINDING_VALUE_KINDS.join(', ')}.`,
+          path: `${nodePath}.bindings[${bindingIndex}]`,
+        })
+      }
+    }
+
+    const children = Array.isArray(node.children) ? node.children : []
+    checkViewNodes(children, nodePath, findings)
   }
 }
 

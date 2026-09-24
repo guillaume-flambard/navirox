@@ -20,9 +20,9 @@ A generated workspace MUST contain a package manifest, a Vue entrypoint, a gener
 
 ### Requirement: Refused source remains absent from the workspace
 
-A screen with non-generated coverage MUST produce a finding and MUST NOT produce a generated screen file. A generated workspace MUST never require a hand-written replacement for a refused screen.
+A screen with non-generated coverage MUST produce a finding and MUST NOT produce a generated screen file. If any screen is not generated, the complete transform result MUST be `ok=false` and the output directory MUST remain unchanged; a generated workspace MUST never require a hand-written replacement for a refused screen.
 
-#### Scenario: A refused screen is not silently replaced
+#### Scenario: A refused screen blocks the complete workspace
 
 - **WHEN** lowering refuses one screen and generates another
-- **THEN** only the generated screen is present and the refusal is recorded in the transform result
+- **THEN** the result is `ok=false`, the refusal is recorded, and no generated file or manifest is written

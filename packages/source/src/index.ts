@@ -101,4 +101,7 @@ export type {
   SourceTransformProvider,
   TargetProfile,
   TargetProvider,
+  WorkspaceProvider,
+  WorkspaceScaffoldInput,
+  WorkspaceScaffoldResult,
 } from './transform-seam.js'

@@ -589,19 +589,23 @@ function directiveBinding(directive: Rec): Binding | undefined {
 
   switch (name) {
     case 'bind':
-      return { name: argText(directive['arg']) ?? 'v-bind', expression }
+      return { name: argText(directive['arg']) ?? 'v-bind', expression, valueKind: 'expression' }
     case 'if':
-      return { name: 'v-if', expression }
+      return { name: 'v-if', expression, valueKind: 'expression' }
     case 'else-if':
-      return { name: 'v-else-if', expression }
+      return { name: 'v-else-if', expression, valueKind: 'expression' }
     case 'else':
-      return { name: 'v-else', expression: '' }
+      return { name: 'v-else', expression: '', valueKind: 'expression' }
     case 'for':
-      return { name: 'v-for', expression }
+      return { name: 'v-for', expression, valueKind: 'expression' }
     case 'on':
-      return { name: `on-${argText(directive['arg']) ?? 'event'}`, expression }
+      return {
+        name: `on-${argText(directive['arg']) ?? 'event'}`,
+        expression,
+        valueKind: 'expression',
+      }
     case 'model':
-      return { name: 'v-model', expression }
+      return { name: 'v-model', expression, valueKind: 'expression' }
     default:
       return undefined
   }
@@ -643,7 +647,13 @@ function buildNode(
       primitive: 'text',
       source: sourceOf(file, child['loc']),
       coverage: { kind: 'generated' },
-      bindings: [{ name: 'text', expression: expText(child['content']) ?? '' }],
+      bindings: [
+        {
+          name: 'text',
+          expression: expText(child['content']) ?? '',
+          valueKind: 'expression',
+        },
+      ],
       children: [],
     }
   }
@@ -657,7 +667,7 @@ function buildNode(
       primitive: 'text',
       source: sourceOf(file, child['loc']),
       coverage: { kind: 'generated' },
-      bindings: [{ name: 'text', expression: content }],
+      bindings: [{ name: 'text', expression: content, valueKind: 'literal' }],
       children: [],
     }
   }

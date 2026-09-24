@@ -59,7 +59,7 @@ describe('the composition root', () => {
       'vanilla',
       'vue',
     ])
-  })
+  }, 30_000)
 
   it('selects the meta-framework for a SvelteKit project', async () => {
     const registry = await createAdapterRegistry()

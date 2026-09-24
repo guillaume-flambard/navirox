@@ -7,6 +7,7 @@ import type {
   LoweringSnapshot,
   SourceTransformProvider,
   TargetProvider,
+  WorkspaceProvider,
 } from './transform-seam.js'
 
 /**
@@ -63,6 +64,20 @@ const target: TargetProvider = {
   }),
 }
 
+const workspace: WorkspaceProvider = {
+  id: 'workspace:fixture',
+  scaffold: ({ lowering, emission }) => ({
+    files: [
+      {
+        path: 'workspace/entry',
+        content: `${lowering.workflow.id}:${emission.files.length}`,
+      },
+    ],
+    findings: [],
+    commands: ['pnpm test'],
+  }),
+}
+
 describe('the source transform provider seam', () => {
   it('lets a lowerer return an IR that validates', async () => {
     const result = await lowerer('lowerer:a').lower({ rootDir: '/app' }, snapshot(), { id: 'vue' })
@@ -76,6 +91,19 @@ describe('the source transform provider seam', () => {
 
     expect(result.files[0]?.path).toBe('App.native.vue')
     expect(result.files[0]?.content).toContain('lowerer:a:vue')
+  })
+
+  it('lets a workspace provider plan from the neutral workflow and emission', () => {
+    const result = workspace.scaffold({
+      lowering: {
+        workflow: workflow('lowerer:a:vue'),
+        coverage: { generated: 0, manualRequired: 0, excluded: 0, refused: 0 },
+        findings: [],
+      },
+      emission: { files: [{ path: 'App.native.vue', content: 'app' }], findings: [] },
+    })
+
+    expect(result.files[0]?.content).toBe('lowerer:a:vue:1')
   })
 
   it('keeps two contrasting lowerers on one interface', () => {
