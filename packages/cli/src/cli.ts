@@ -410,13 +410,15 @@ export async function runCli(
     try {
       const { renderTransform, transform, transformToJson } = await import('./transform.js')
       const outRoot = parsed.out === undefined ? directory : resolve(cwd, parsed.out)
+      const deps =
+        context.transform ?? (await import('./default-transform.js')).createDefaultTransformDeps()
       const result = await transform({
         root: directory,
         ...(parsed.app === undefined ? {} : { app: parsed.app }),
         profile: parsed.profile ?? '',
         output: outRoot,
         write: parsed.write,
-        ...(context.transform === undefined ? {} : { deps: context.transform }),
+        deps,
       })
 
       if (parsed.json) {

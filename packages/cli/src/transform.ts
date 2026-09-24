@@ -113,6 +113,17 @@ export interface TransformScaffoldOutcome {
   readonly findings?: readonly TransformFinding[]
 }
 
+export interface TransformScaffoldInput {
+  readonly root: string
+  readonly output: string
+  readonly profile: string
+  readonly manifest: RepositoryCapabilityManifest
+  readonly layout: TransformLayout
+  readonly write: boolean
+  readonly lowering: LoweringResult
+  readonly emission: EmissionResult
+}
+
 export interface TransformDeps {
   readonly discover?: (options: {
     readonly root: string
@@ -140,14 +151,9 @@ export interface TransformDeps {
     readonly emission: EmissionResult
     readonly write: boolean
   }) => TransformMigrateOutcome | Promise<TransformMigrateOutcome>
-  readonly scaffold?: (options: {
-    readonly root: string
-    readonly output: string
-    readonly profile: string
-    readonly manifest: RepositoryCapabilityManifest
-    readonly layout: TransformLayout
-    readonly write: boolean
-  }) => TransformScaffoldOutcome | Promise<TransformScaffoldOutcome>
+  readonly scaffold?: (
+    options: TransformScaffoldInput,
+  ) => TransformScaffoldOutcome | Promise<TransformScaffoldOutcome>
   /** Registered profile ids. Absent means any non-empty id is accepted. */
   readonly profiles?: readonly string[]
   readonly resolveProfile?: (
@@ -247,6 +253,7 @@ function defaultResolveProfile(
 
 function createFsReader(root: string): DiscoveryReader {
   const files: string[] = []
+  const symlinks: string[] = []
 
   const walk = (directory: string, prefix: string): void => {
     let entries
@@ -263,7 +270,9 @@ function createFsReader(root: string): DiscoveryReader {
 
       const relativePath = prefix === '' ? entry.name : `${prefix}/${entry.name}`
 
-      if (entry.isDirectory()) {
+      if (entry.isSymbolicLink()) {
+        symlinks.push(relativePath)
+      } else if (entry.isDirectory()) {
         walk(join(directory, entry.name), relativePath)
       } else {
         files.push(relativePath)
@@ -273,9 +282,11 @@ function createFsReader(root: string): DiscoveryReader {
 
   walk(root, '')
   files.sort((left, right) => left.localeCompare(right))
+  symlinks.sort((left, right) => left.localeCompare(right))
 
   return {
     files,
+    symlinks,
     readText: (path) => {
       try {
         return readFileSync(join(root, path), 'utf8')
@@ -357,6 +368,7 @@ export async function transform(input: TransformInput): Promise<TransformResult>
   const deps = input.deps ?? {}
   const stages: TransformStage[] = []
   const findings: TransformFinding[] = []
+  const refusals: TransformFinding[] = []
 
   if (
     hasTraversal(input.root) ||
@@ -560,6 +572,8 @@ export async function transform(input: TransformInput): Promise<TransformResult>
   }
 
   stages.push('lower')
+  findings.push(...lowering.findings)
+  refusals.push(...lowering.findings)
 
   let emission: EmissionResult
 
@@ -577,6 +591,8 @@ export async function transform(input: TransformInput): Promise<TransformResult>
   }
 
   stages.push('emit')
+  findings.push(...emission.findings)
+  refusals.push(...emission.findings)
 
   const coverage: TransformCoverageTotals = {
     generated: lowering.coverage.generated,
@@ -644,6 +660,8 @@ export async function transform(input: TransformInput): Promise<TransformResult>
         manifest,
         layout: TRANSFORM_LAYOUT,
         write,
+        lowering,
+        emission,
       })
       scaffoldFiles = scaffolded.files
       scaffoldFindings = scaffolded.findings ?? []
@@ -660,6 +678,7 @@ export async function transform(input: TransformInput): Promise<TransformResult>
   }
 
   findings.push(...scaffoldFindings)
+  refusals.push(...scaffoldFindings.filter((finding) => finding.code.startsWith('scaffold-')))
 
   const deltas: TransformDelta[] = manifest.deltas.map((delta) => ({
     id: delta.id,
@@ -719,8 +738,25 @@ export async function transform(input: TransformInput): Promise<TransformResult>
     commands,
   }
 
-  const refusals: TransformFinding[] = []
-  const ok = refusals.length === 0
+  if (refusals.length > 0) {
+    return {
+      ok: false,
+      dryRun,
+      stages,
+      findings,
+      refusals,
+      layout: TRANSFORM_LAYOUT,
+      coverage,
+      deltas,
+      plannedPaths,
+      commands,
+      snapshotHash: manifest.snapshotHash,
+      workflowHash,
+      manifest: manifestDocument,
+    }
+  }
+
+  const ok = true
 
   if (write) {
     for (const file of planned) {

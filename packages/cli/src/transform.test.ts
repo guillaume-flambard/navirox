@@ -413,6 +413,33 @@ describe('the transform deep module', () => {
     expect(migrate).not.toHaveBeenCalled()
     expect(listFiles(output)).toEqual([])
   })
+  it('passes lowering and emission results to the scaffold stage', async () => {
+    const { deps } = spyDeps(eligibleReader())
+    const scaffold = vi.fn(() => ({
+      files: [{ path: 'src/main.ts', content: 'export {}\n' }],
+    }))
+    const output = tempDir('navirox-transform-scaffold-')
+
+    const result = await transform({
+      root: tempDir('navirox-transform-scaffold-src-'),
+      profile: 'vue-field-workflow',
+      output,
+      write: true,
+      deps: { ...deps, scaffold },
+    })
+
+    expect(result.ok).toBe(true)
+    expect(scaffold).toHaveBeenCalledWith(
+      expect.objectContaining({
+        lowering: expect.objectContaining({ workflow: fakeWorkflow() }),
+        emission: expect.objectContaining({
+          files: [{ path: 'App.native.vue', content: '<view />\n' }],
+        }),
+      }),
+    )
+    expect(result.plannedPaths).toContain('src/main.ts')
+    expect(existsSync(join(output, 'src/main.ts'))).toBe(true)
+  })
 })
 
 describe('the transform CLI command', () => {

@@ -292,3 +292,37 @@ export function parseWorkflow(serialized: string): Workflow {
 
   return workflow
 }
+
+/** The target profile an emission serves. */
+export interface TargetProfile {
+  readonly id: string
+}
+
+export interface EmittedFile {
+  readonly path: string
+  readonly content: string
+}
+
+/** A finding a target reports. It is neutral: it names no source framework. */
+export interface EmissionFinding {
+  readonly code: string
+  readonly message: string
+}
+
+export interface EmissionResult {
+  readonly files: readonly EmittedFile[]
+  readonly findings: readonly EmissionFinding[]
+}
+
+/**
+ * A target's emission entry point.
+ *
+ * It receives the IR and a target profile, and knows no source framework. It
+ * lives in this neutral package rather than beside the lowering contract because
+ * a target package may never import the source-side seam package, so a target
+ * could not name a type declared there.
+ */
+export interface TargetProvider {
+  readonly id: string
+  emit(workflow: Workflow, profile: TargetProfile): EmissionResult | Promise<EmissionResult>
+}
