@@ -1,4 +1,4 @@
-import { readdirSync, readFileSync, statSync } from 'node:fs'
+import { existsSync, readdirSync, readFileSync, statSync } from 'node:fs'
 import { dirname, join, relative } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { describe, expect, it } from 'vitest'
@@ -95,6 +95,12 @@ describe('the source framework import boundary', () => {
     expect(violations, JSON.stringify(violations, null, 2)).toEqual([])
   })
 
+  it('keeps framework workspace construction out of the neutral CLI', () => {
+    const workspaceFile = join(packagesDir, 'cli', 'src', 'vue-workspace.ts')
+
+    expect(existsSync(workspaceFile)).toBe(false)
+  })
+
   it('scans the adapter packages, including the Angular proof path', () => {
     const scanned = packageDirectories()
       .filter((name) => isSourceAdapterPackageDir(name))
@@ -143,6 +149,31 @@ describe('the source framework import boundary', () => {
     }
 
     expect(violations, JSON.stringify(violations, null, 2)).toEqual([])
+  })
+
+  it('keeps source packages out of target package metadata and project references', () => {
+    const targetDir = join(packagesDir, 'target-native')
+    const manifest = JSON.parse(readFileSync(join(targetDir, 'package.json'), 'utf8')) as {
+      readonly dependencies?: Record<string, string>
+      readonly devDependencies?: Record<string, string>
+      readonly peerDependencies?: Record<string, string>
+      readonly optionalDependencies?: Record<string, string>
+    }
+    const tsconfig = JSON.parse(readFileSync(join(targetDir, 'tsconfig.json'), 'utf8')) as {
+      readonly references?: readonly { readonly path?: string }[]
+    }
+    const dependencyNames = [
+      ...Object.keys(manifest.dependencies ?? {}),
+      ...Object.keys(manifest.devDependencies ?? {}),
+      ...Object.keys(manifest.peerDependencies ?? {}),
+      ...Object.keys(manifest.optionalDependencies ?? {}),
+    ]
+    const referencePaths = (tsconfig.references ?? []).map((reference) => reference.path ?? '')
+
+    expect(
+      dependencyNames.filter((name) => forbiddenSpecifiers('target', [name]).length > 0),
+    ).toEqual([])
+    expect(referencePaths.filter((path) => path.includes('source'))).toEqual([])
   })
 
   it('lets a target name its compiler but never a source adapter', () => {

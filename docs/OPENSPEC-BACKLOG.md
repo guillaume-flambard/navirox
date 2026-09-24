@@ -8,22 +8,24 @@ capability. Do not archive a change until its task-level evidence exists and
 
 ## Status updated 2026-09-24
 
-The Vue T2 generation path is now implemented and evidenced, but the proof remains bounded:
+The Vue T2 generation path is implemented and evidenced, but the proof remains bounded:
 
-- `vue-workflow-lowering-core` and `vue-native-target-emission` are complete in their active changes and their package tests pass.
-- The delivered `navirox transform` path now composes the real Vue inspection, lowering and target providers when no test context injects dependencies. `transform()` remains injectable for unit tests.
+- `vue-workflow-lowering-core`, `vue-native-target-emission` and `vue-transform-workspace-run` are complete and archived, with package tests and strict OpenSpec validation passing.
+- The delivered `navirox transform` path composes the real Vue inspection, lowering and target providers when no test context injects dependencies. `transform()` remains injectable for unit tests.
 - `vue-transform-workspace-run` generates a Vue workspace with a compiler-backed verification command. The positive fixture passes `Verified 3 Vue SFCs.`; the refusal fixture exits 1 with `unsupported-watcher` and `uncovered-screen` and writes no replacement.
 - Evidence is recorded in `docs/evidence/vue-transform-workspace-run.md`. The exact fixture, hashes, commands and limitations are retained there.
+- `vue-transform-foundation-hardening` is implemented and evidenced on the feature branch. Its binding, provider-seam, atomicity, metadata and command hardening is complete; it still needs the normal commit/landing workflow.
+- Four later planning changes are present and remain unimplemented: `vue-action-state-execution`, `vue-router-workflow-lowering`, `vue-state-portability` and `vue-native-style-profile`.
+- The next implementation is action/state execution, then router lowering, state portability and the native style profile. T3 behavioral device journeys and T4 visual tolerances remain gated.
 - Still missing: a native iOS/Android shell, T3 behavioral device journeys, T4 visual tolerances, broad framework support, external repository qualification and public installation. No such claim is made.
 
-The next work is the remaining Vue T3/T4 profile work, not another provider-wiring increment.
+The next work is the five bounded Vue profile changes above. T3 behavioral device journeys and T4 visual tolerances remain gated.
 
-## Status reconciled 2026-09-23
+## Historical planning record: 2026-09-23
 
-Every item below is archived. A green `openspec validate --all` and an empty
-`openspec/changes/` are bookkeeping facts, not a product claim: the proofs are
-bounded, the golden path is not built, and the evidence each item names is what
-actually exists.
+The table and numbered items below are retained as historical planning context.
+They do not describe the current implementation. The current status and active
+sequence are the 2026-09-24 section above.
 
 | Item                                    | Archived change                                  | Stable spec                                           | Evidence that exists                                                                                                | Still missing                                                     |
 | --------------------------------------- | ------------------------------------------------ | ----------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------- |
@@ -40,29 +42,9 @@ The cross-cutting proposals are also archived with their specs: `workflow-value-
 `companion-operational-readiness`, `proof-artifact-governance`, and
 `angular-neutral-seam-proof`. Do not recreate them.
 
-### Implemented foundations (read from code, not inferred)
-
-- The Workflow IR exists: `packages/workflow` (`Workflow`, `Screen`, `ViewNode`,
-  `Coverage`, serialization, hashing, `validateWorkflow`, `parseWorkflow`).
-- The transformation seam exists: `packages/source/src/transform-seam.ts`
-  (`SourceTransformProvider.lower`, `TargetProvider.emit`, `LoweringResult`).
-- The neutral packages exist behind the source seam: `graph`, `planner`,
-  `compat`, `inspect`, `migrate`, `discovery`, `source`, `workflow`.
-- `source-vue` has detection, inspection and graph building, but **no lowering**:
-  `packages/source-vue/src/` has no `lower` and no `SourceTransformProvider`.
-
-### Missing evidence the programme still owes
-
-- No real Vue lowering and no real target consume the IR; `navirox transform`
-  is contracted against fake providers only.
-- No generated workspace has been produced by the delivered CLI; the two
-  companions are script-assembled.
-- Visual fidelity, broad framework support, and public installation remain
-  unproven and are out of scope until their own changes.
-
-The next unblocked work is Tranche 3 of
-[`docs/OPENCODE-TRANSFORMATION-PROGRAM.md`](OPENCODE-TRANSFORMATION-PROGRAM.md),
-starting with `vue-workflow-lowering-core`.
+The historical implementation notes that followed the archived table were
+removed because they contradicted the delivered Vue T2 path. Current facts are
+maintained only in the 2026-09-24 section and in the evidence document.
 
 ## 0. `proof-journey-execution-system` (this change)
 

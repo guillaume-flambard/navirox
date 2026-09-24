@@ -28,7 +28,7 @@ const positive: Workflow = {
           primitive: 'text',
           source: { ...source, line: 3, column: 5 },
           coverage: { kind: 'generated' },
-          bindings: [{ name: 'value', expression: 'title' }],
+          bindings: [{ name: 'value', expression: 'title', valueKind: 'expression' }],
           children: [],
         },
       ],
@@ -91,6 +91,31 @@ describe('the workflow IR', () => {
     expect(parsed.screens[0]?.nodes[0]?.source).toEqual({ ...source, line: 3, column: 5 })
   })
 
+  it('keeps literal and expression value kinds through a round trip', () => {
+    const workflow: Workflow = {
+      ...positive,
+      id: 'value-kinds',
+      screens: positive.screens.map((screen) => ({
+        ...screen,
+        nodes: screen.nodes.map((node) => ({
+          ...node,
+          bindings: [
+            { name: 'text', expression: 'Hello world', valueKind: 'literal' },
+            { name: 'text', expression: 'title', valueKind: 'expression' },
+          ],
+        })),
+      })),
+    }
+
+    const parsed = parseWorkflow(serializeWorkflow(workflow))
+    const bindings = parsed.screens[0]?.nodes[0]?.bindings
+
+    expect(bindings).toEqual([
+      { name: 'text', expression: 'Hello world', valueKind: 'literal' },
+      { name: 'text', expression: 'title', valueKind: 'expression' },
+    ])
+  })
+
   it('accepts the positive, boundary and refused classification fixtures', () => {
     expect(validateWorkflow(positive)).toEqual([])
     expect(validateWorkflow(boundary)).toEqual([])
@@ -109,6 +134,30 @@ describe('the workflow IR', () => {
     delete payload.screens[0]?.nodes[0]?.coverage
 
     expect(() => parseWorkflow(JSON.stringify(payload))).toThrow(WorkflowIrError)
+  })
+
+  it('refuses a binding without a declared value kind', () => {
+    const payload = JSON.parse(serializeWorkflow(positive)) as {
+      screens: { nodes: { bindings: { valueKind?: unknown }[] }[] }[]
+    }
+
+    delete payload.screens[0]?.nodes[0]?.bindings[0]?.valueKind
+
+    expect(() => parseWorkflow(JSON.stringify(payload))).toThrow(/binding/i)
+  })
+
+  it('refuses a binding with an unknown value kind', () => {
+    const payload = JSON.parse(serializeWorkflow(positive)) as {
+      screens: { nodes: { bindings: { valueKind?: unknown }[] }[] }[]
+    }
+
+    if (payload.screens[0]?.nodes[0]?.bindings[0] === undefined) {
+      throw new Error('The fixture has no binding to invalidate.')
+    }
+
+    payload.screens[0].nodes[0].bindings[0].valueKind = 'template'
+
+    expect(() => parseWorkflow(JSON.stringify(payload))).toThrow(/binding/i)
   })
 
   it('refuses a schema version it does not know, naming it', () => {

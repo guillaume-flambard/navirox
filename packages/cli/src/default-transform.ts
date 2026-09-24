@@ -1,9 +1,12 @@
 import { runInspection } from '@memolabs-apps/inspect'
 import { SourceAdapterRegistry } from '@memolabs-apps/source'
-import { createVueAdapter, createVueLowering } from '@memolabs-apps/source-vue'
+import {
+  createVueAdapter,
+  createVueLowering,
+  createVueWorkspaceProvider,
+} from '@memolabs-apps/source-vue'
 import { createNativeTarget } from '@memolabs-apps/target-native'
 import type { TransformDeps } from './transform.js'
-import { createVueWorkspaceScaffold } from './vue-workspace.js'
 
 export function createDefaultTransformDeps(): TransformDeps {
   const registry = new SourceAdapterRegistry()
@@ -25,6 +28,6 @@ export function createDefaultTransformDeps(): TransformDeps {
     },
     lower: createVueLowering(),
     emit: createNativeTarget(),
-    scaffold: createVueWorkspaceScaffold(),
+    workspace: createVueWorkspaceProvider(),
   }
 }

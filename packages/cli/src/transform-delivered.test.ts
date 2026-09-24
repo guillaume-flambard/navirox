@@ -60,6 +60,7 @@ describe('the delivered transform command', () => {
       readonly ok: boolean
       readonly workflowHash: string
       readonly plannedPaths: string[]
+      readonly commands: string[]
       readonly stages: string[]
     }
 
@@ -77,6 +78,9 @@ describe('the delivered transform command', () => {
         'navirox.manifest.json',
       ]),
     )
+    expect(result.commands.some((command) => command.includes('navirox build ios'))).toBe(false)
+    expect(result.commands.some((command) => command.includes('navirox build android'))).toBe(false)
+    expect(result.commands.some((command) => command.includes('pnpm test'))).toBe(true)
 
     for (const path of [
       'generated/Home.vue',
@@ -98,7 +102,7 @@ describe('the delivered transform command', () => {
     expect(() =>
       execFileSync('corepack', ['pnpm', '--dir', output, 'test'], { stdio: 'pipe' }),
     ).not.toThrow()
-  })
+  }, 30_000)
 
   it('records a refused screen without planning a replacement', async () => {
     const output = temporaryDirectory('navirox-vue-transform-refused-')

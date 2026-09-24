@@ -83,10 +83,23 @@ function renderAttributes(node: ViewNode): string {
     .join('')
 }
 
+function escapeLiteralText(value: string): string {
+  return value
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/\{\{/g, '&#123;&#123;')
+    .replace(/\}\}/g, '&#125;&#125;')
+}
+
 function renderText(node: ViewNode): string {
   return node.bindings
     .filter((binding) => binding.name === 'text')
-    .map((binding) => `{{ ${binding.expression} }}`)
+    .map((binding) =>
+      binding.valueKind === 'literal'
+        ? escapeLiteralText(binding.expression)
+        : `{{ ${binding.expression} }}`,
+    )
     .join('')
 }
 

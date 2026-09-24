@@ -1,17 +1,17 @@
 import type { Screen } from '@memolabs-apps/workflow'
 import type {
-  TransformDeps,
-  TransformScaffoldInput,
-  TransformScaffoldOutcome,
-} from './transform.js'
+  WorkspaceProvider,
+  WorkspaceScaffoldInput,
+  WorkspaceScaffoldResult,
+} from '@memolabs-apps/source'
 
 interface ScreenManifest {
   readonly screenId: string
   readonly outputPath: string
 }
 
-const VUE_PACKAGE = 'v' + 'ue'
-const VUE_COMPILER_PACKAGE = '@vue/' + 'compiler-sfc'
+const VUE_PACKAGE = 'vue'
+const VUE_COMPILER_PACKAGE = '@vue/compiler-sfc'
 
 const PACKAGE_JSON = `${JSON.stringify(
   {
@@ -178,8 +178,8 @@ function manifestFor(
 }
 
 function appFile(
-  lowering: TransformScaffoldInput['lowering'],
-  emission: TransformScaffoldInput['emission'],
+  lowering: WorkspaceScaffoldInput['lowering'],
+  emission: WorkspaceScaffoldInput['emission'],
 ): string | undefined {
   const screens = lowering.workflow.screens.filter((screen) => screen.coverage.kind === 'generated')
   const components: { readonly name: string; readonly path: string }[] = []
@@ -219,34 +219,38 @@ ${body}
 `
 }
 
-function createVueWorkspaceScaffold(): NonNullable<TransformDeps['scaffold']> {
-  return ({ lowering, emission }: TransformScaffoldInput): TransformScaffoldOutcome => {
-    const app = appFile(lowering, emission)
+export function createVueWorkspaceProvider(): WorkspaceProvider {
+  return {
+    id: 'workspace:vue',
+    scaffold: ({ lowering, emission }: WorkspaceScaffoldInput): WorkspaceScaffoldResult => {
+      const app = appFile(lowering, emission)
 
-    if (app === undefined) {
-      return {
-        files: [],
-        findings: [
-          {
-            code: 'scaffold-no-screens',
-            message:
-              'The workflow has no generated screen from which to create a runnable workspace.',
-          },
-        ],
+      if (app === undefined) {
+        return {
+          files: [],
+          findings: [
+            {
+              code: 'scaffold-no-screens',
+              message:
+                'The workflow has no generated screen from which to create a runnable workspace.',
+            },
+          ],
+          commands: [],
+        }
       }
-    }
 
-    return {
-      files: [
-        { path: 'package.json', content: PACKAGE_JSON },
-        { path: 'index.html', content: INDEX_HTML },
-        { path: 'src/main.ts', content: MAIN_TS },
-        { path: 'src/native.ts', content: NATIVE_TS },
-        { path: 'src/App.vue', content: app },
-        { path: 'scripts/verify-generated.mjs', content: VERIFY_GENERATED },
-      ],
-    }
+      return {
+        files: [
+          { path: 'package.json', content: PACKAGE_JSON },
+          { path: 'index.html', content: INDEX_HTML },
+          { path: 'src/main.ts', content: MAIN_TS },
+          { path: 'src/native.ts', content: NATIVE_TS },
+          { path: 'src/App.vue', content: app },
+          { path: 'scripts/verify-generated.mjs', content: VERIFY_GENERATED },
+        ],
+        findings: [],
+        commands: ['pnpm test'],
+      }
+    },
   }
 }
-
-export { createVueWorkspaceScaffold }

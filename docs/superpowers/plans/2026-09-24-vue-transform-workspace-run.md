@@ -1,5 +1,7 @@
 # Vue Transform Workspace Run Implementation Plan
 
+> Historical implementation plan. The refusal semantics and provider placement were later corrected by `vue-transform-foundation-hardening`; current requirements live in that change and the active OpenSpec specs.
+
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
 **Goal:** Wire the real Vue lowering and neutral target into the delivered `navirox transform` command, then prove that the command generates a Vue workspace whose generated screens pass a reproducible workspace test without fake providers or manual screen replacement.
@@ -77,12 +79,12 @@ A generated workspace MUST contain a package manifest, a Vue entrypoint, a gener
 
 ### Requirement: Refused source remains absent from the workspace
 
-A screen with non-generated coverage MUST produce a finding and MUST NOT produce a generated screen file. A generated workspace MUST never require a hand-written replacement for a refused screen.
+A screen with non-generated coverage MUST produce a finding and MUST NOT produce a generated screen file. If any screen is not generated, the complete transform result MUST be `ok=false` and the output directory MUST remain unchanged; a generated workspace MUST never require a hand-written replacement for a refused screen.
 
 #### Scenario: A refused screen is not silently replaced
 
 - **WHEN** lowering refuses one screen and generates another
-- **THEN** only the generated screen is present and the refusal is recorded in the transform result
+- **THEN** the result is `ok=false`, the refusal is recorded, and no generated file or manifest is written
 ```
 
 - [ ] **Step 3: Write the task checklist with verification commands**

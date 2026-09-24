@@ -14,6 +14,7 @@ import type {
   LoweringSnapshot,
   SourceTransformProvider,
   TargetProvider,
+  WorkspaceProvider,
 } from '@memolabs-apps/source'
 import { hashWorkflow } from '@memolabs-apps/workflow'
 
@@ -108,22 +109,6 @@ export interface TransformMigrateOutcome {
   readonly moved?: readonly string[]
 }
 
-export interface TransformScaffoldOutcome {
-  readonly files: readonly PlannedFile[]
-  readonly findings?: readonly TransformFinding[]
-}
-
-export interface TransformScaffoldInput {
-  readonly root: string
-  readonly output: string
-  readonly profile: string
-  readonly manifest: RepositoryCapabilityManifest
-  readonly layout: TransformLayout
-  readonly write: boolean
-  readonly lowering: LoweringResult
-  readonly emission: EmissionResult
-}
-
 export interface TransformDeps {
   readonly discover?: (options: {
     readonly root: string
@@ -151,9 +136,8 @@ export interface TransformDeps {
     readonly emission: EmissionResult
     readonly write: boolean
   }) => TransformMigrateOutcome | Promise<TransformMigrateOutcome>
-  readonly scaffold?: (
-    options: TransformScaffoldInput,
-  ) => TransformScaffoldOutcome | Promise<TransformScaffoldOutcome>
+  readonly workspace?: WorkspaceProvider
+
   /** Registered profile ids. Absent means any non-empty id is accepted. */
   readonly profiles?: readonly string[]
   readonly resolveProfile?: (
@@ -601,6 +585,16 @@ export async function transform(input: TransformInput): Promise<TransformResult>
     refused: lowering.coverage.refused,
   }
 
+  const incompleteWorkflowFindings: TransformFinding[] = lowering.workflow.screens
+    .filter((screen) => screen.coverage.kind !== 'generated')
+    .map((screen) => ({
+      code: 'incomplete-workflow',
+      message: `The screen "${screen.id}" has coverage "${screen.coverage.kind}" and blocks the generated workflow.`,
+    }))
+
+  findings.push(...incompleteWorkflowFindings)
+  refusals.push(...incompleteWorkflowFindings)
+
   const generatedFiles: PlannedFile[] = emission.files.map((file) => ({
     path: file.path.startsWith(TRANSFORM_LAYOUT.generated)
       ? file.path
@@ -611,7 +605,7 @@ export async function transform(input: TransformInput): Promise<TransformResult>
   let sharedFiles: readonly PlannedFile[] = []
   let migratedFindings: readonly TransformFinding[] = []
 
-  if (deps.migrate !== undefined) {
+  if (deps.migrate !== undefined && refusals.length === 0) {
     try {
       const migrated = await deps.migrate({
         root: input.root,
@@ -650,21 +644,14 @@ export async function transform(input: TransformInput): Promise<TransformResult>
 
   let scaffoldFiles: readonly PlannedFile[] = []
   let scaffoldFindings: readonly TransformFinding[] = []
+  let workspaceCommands: readonly string[] = []
 
-  if (deps.scaffold !== undefined) {
+  if (deps.workspace !== undefined && refusals.length === 0) {
     try {
-      const scaffolded = await deps.scaffold({
-        root: input.root,
-        output: input.output,
-        profile: profileId,
-        manifest,
-        layout: TRANSFORM_LAYOUT,
-        write,
-        lowering,
-        emission,
-      })
+      const scaffolded = await deps.workspace.scaffold({ lowering, emission })
       scaffoldFiles = scaffolded.files
-      scaffoldFindings = scaffolded.findings ?? []
+      scaffoldFindings = scaffolded.findings
+      workspaceCommands = scaffolded.commands
     } catch (error) {
       return refusal(
         dryRun,
@@ -704,9 +691,7 @@ export async function transform(input: TransformInput): Promise<TransformResult>
 
   const commands = [
     commandFor(input),
-    `cd ${input.output} && pnpm test`,
-    `navirox build ios`,
-    `navirox build android`,
+    ...workspaceCommands.map((command) => `cd ${input.output} && ${command}`),
   ]
 
   const planned = ensureLayoutCoverage([

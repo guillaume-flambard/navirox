@@ -978,9 +978,6 @@ importers:
 
   packages/target-native:
     dependencies:
-      '@memolabs-apps/source':
-        specifier: workspace:*
-        version: link:../source
       '@memolabs-apps/workflow':
         specifier: workspace:*
         version: link:../workflow

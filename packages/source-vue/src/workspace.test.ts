@@ -1,7 +1,7 @@
 import { WORKFLOW_IR_SCHEMA_VERSION, type Screen, type Workflow } from '@memolabs-apps/workflow'
 import { describe, expect, it } from 'vitest'
-import type { TransformScaffoldInput } from './transform.js'
-import { createVueWorkspaceScaffold } from './vue-workspace.js'
+import { createVueWorkspaceProvider } from './workspace.js'
+import type { WorkspaceScaffoldInput } from '@memolabs-apps/source'
 
 const screen: Screen = {
   id: 'vue:src/views/Home.vue:screen:default',
@@ -19,19 +19,8 @@ const screen: Screen = {
 function input(
   workflow: Workflow,
   files: { readonly path: string; readonly content: string }[],
-): TransformScaffoldInput {
+): WorkspaceScaffoldInput {
   return {
-    root: '/source',
-    output: '/output',
-    profile: 'vue-mobile',
-    manifest: {} as TransformScaffoldInput['manifest'],
-    layout: {
-      generated: 'generated/',
-      shared: 'shared/',
-      manual: 'manual/',
-      manifest: 'navirox.manifest.json',
-    },
-    write: true,
     lowering: {
       workflow,
       coverage: { generated: 1, manualRequired: 0, excluded: 0, refused: 0 },
@@ -41,9 +30,9 @@ function input(
   }
 }
 
-describe('the generated Vue workspace scaffold', () => {
+describe('the generated Vue workspace provider', () => {
   it('creates the package, entrypoint, runtime, app and verifier files', () => {
-    const result = createVueWorkspaceScaffold()(
+    const result = createVueWorkspaceProvider().scaffold(
       input({ schemaVersion: WORKFLOW_IR_SCHEMA_VERSION, id: 'fixture', screens: [screen] }, [
         { path: 'generated/Home.vue', content: '<template><view /></template>\n' },
         {
@@ -56,7 +45,8 @@ describe('the generated Vue workspace scaffold', () => {
       ]),
     )
 
-    expect(result.findings ?? []).toEqual([])
+    expect(result.findings).toEqual([])
+    expect(result.commands).toEqual(['pnpm test'])
     expect(result.files.map((file) => file.path)).toEqual([
       'package.json',
       'index.html',
@@ -74,7 +64,7 @@ describe('the generated Vue workspace scaffold', () => {
   })
 
   it('returns a finding and no files when no generated screen exists', () => {
-    const result = createVueWorkspaceScaffold()(
+    const result = createVueWorkspaceProvider().scaffold(
       input({ schemaVersion: WORKFLOW_IR_SCHEMA_VERSION, id: 'fixture', screens: [] }, []),
     )
 

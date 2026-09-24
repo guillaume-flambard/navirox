@@ -59,6 +59,27 @@ function fakeWorkflow(id = 'fake'): Workflow {
   return { schemaVersion: WORKFLOW_IR_SCHEMA_VERSION, id, screens: [] }
 }
 
+function manualWorkflow(): Workflow {
+  return {
+    schemaVersion: WORKFLOW_IR_SCHEMA_VERSION,
+    id: 'manual',
+    screens: [
+      {
+        id: 'screen:manual',
+        name: 'Manual',
+        source: { adapterId: 'fixture', file: 'src/Manual.vue' },
+        coverage: { kind: 'manual-required', reason: 'manual input' },
+        nodes: [],
+        state: [],
+        actions: [],
+        layout: [],
+        styles: [],
+        resources: [],
+      },
+    ],
+  }
+}
+
 interface SpyDeps {
   readonly deps: TransformDeps
   readonly lower: ReturnType<typeof vi.fn>
@@ -192,6 +213,38 @@ describe('the transform deep module', () => {
     expect(result.ok).toBe(true)
     expect(result.dryRun).toBe(true)
     expect(result.plannedPaths.length).toBeGreaterThan(0)
+    expect(listFiles(output)).toEqual([])
+  })
+
+  it('refuses a non-generated screen even when providers report no finding', async () => {
+    const lower = vi.fn(() => ({
+      workflow: manualWorkflow(),
+      coverage: { generated: 0, manualRequired: 1, excluded: 0, refused: 0 },
+      findings: [],
+    }))
+    const migrate = vi.fn(() => ({ files: [], findings: [] }))
+    const scaffold = vi.fn(() => ({ files: [], findings: [], commands: [] }))
+    const { deps } = spyDeps(eligibleReader(), {
+      lower: { id: 'fake-source', lower },
+      migrate,
+      workspace: { id: 'workspace:fixture', scaffold },
+    })
+    const output = tempDir('navirox-transform-coverage-')
+
+    const result = await transform({
+      root: tempDir('navirox-transform-src-'),
+      profile: 'vue-field-workflow',
+      output,
+      write: true,
+      deps,
+    })
+
+    expect(result.ok).toBe(false)
+    expect(result.refusals).toEqual(
+      expect.arrayContaining([expect.objectContaining({ code: 'incomplete-workflow' })]),
+    )
+    expect(migrate).not.toHaveBeenCalled()
+    expect(scaffold).not.toHaveBeenCalled()
     expect(listFiles(output)).toEqual([])
   })
 
@@ -413,11 +466,15 @@ describe('the transform deep module', () => {
     expect(migrate).not.toHaveBeenCalled()
     expect(listFiles(output)).toEqual([])
   })
-  it('passes lowering and emission results to the scaffold stage', async () => {
+  it('passes lowering and emission results to the workspace provider', async () => {
     const { deps } = spyDeps(eligibleReader())
     const scaffold = vi.fn(() => ({
       files: [{ path: 'src/main.ts', content: 'export {}\n' }],
+      findings: [],
+      commands: ['run-generated-check'],
     }))
+
+    const workspace = { id: 'workspace:fixture', scaffold }
     const output = tempDir('navirox-transform-scaffold-')
 
     const result = await transform({
@@ -425,7 +482,7 @@ describe('the transform deep module', () => {
       profile: 'vue-field-workflow',
       output,
       write: true,
-      deps: { ...deps, scaffold },
+      deps: { ...deps, workspace },
     })
 
     expect(result.ok).toBe(true)
@@ -438,6 +495,8 @@ describe('the transform deep module', () => {
       }),
     )
     expect(result.plannedPaths).toContain('src/main.ts')
+    expect(result.commands.some((command) => command.endsWith('run-generated-check'))).toBe(true)
+    expect(result.commands.some((command) => command.endsWith('pnpm test'))).toBe(false)
     expect(existsSync(join(output, 'src/main.ts'))).toBe(true)
   })
 })

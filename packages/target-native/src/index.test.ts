@@ -83,11 +83,17 @@ const generatedScreen = makeScreen({
     makeNode(
       'home/0',
       'view',
-      [{ name: 'testID', expression: 'home-screen' }],
+      [{ name: 'testID', expression: 'home-screen', valueKind: 'expression' }],
       [
-        makeNode('home/0/0', 'text', [{ name: 'text', expression: 'label' }]),
-        makeNode('home/0/1', 'pressable', [{ name: 'on-press', expression: 'onPersist' }]),
-        makeNode('home/0/2', 'text-input', [{ name: 'v-model', expression: 'name' }]),
+        makeNode('home/0/0', 'text', [
+          { name: 'text', expression: 'label', valueKind: 'expression' },
+        ]),
+        makeNode('home/0/1', 'pressable', [
+          { name: 'on-press', expression: 'onPersist', valueKind: 'expression' },
+        ]),
+        makeNode('home/0/2', 'text-input', [
+          { name: 'v-model', expression: 'name', valueKind: 'expression' },
+        ]),
       ],
     ),
   ],
@@ -256,6 +262,44 @@ describe('the emitted native component', () => {
     expect(component).toContain('v-model="name"')
     expect(component).not.toContain('on-press=')
     expect(component).not.toContain('text="label"')
+  })
+
+  it('emits literal text without expression delimiters', async () => {
+    const screen = makeScreen({
+      id: 'literal',
+      coverage: { kind: 'generated' },
+      nodes: [
+        makeNode('literal/0', 'text', [
+          { name: 'text', expression: 'Hello world', valueKind: 'literal' },
+        ]),
+      ],
+    })
+    const target = createNativeTarget()
+
+    const result = await target.emit(makeWorkflow([screen]), { id: 'native-mobile' })
+    const component = emittedFile(result.files, 'generated/literal.vue')
+
+    expect(component).toContain('<text>Hello world</text>')
+    expect(component).not.toContain('{{ Hello world }}')
+  })
+
+  it('escapes literal text that contains SFC or interpolation syntax', async () => {
+    const screen = makeScreen({
+      id: 'literal-special',
+      coverage: { kind: 'generated' },
+      nodes: [
+        makeNode('literal-special/0', 'text', [
+          { name: 'text', expression: '<Hello> & {{ label }}', valueKind: 'literal' },
+        ]),
+      ],
+    })
+    const target = createNativeTarget()
+
+    const result = await target.emit(makeWorkflow([screen]), { id: 'native-mobile' })
+    const component = emittedFile(result.files, 'generated/literal-special.vue')
+
+    expect(component).toContain('<text>&lt;Hello&gt; &amp; &#123;&#123; label &#125;&#125;</text>')
+    expect(component).not.toContain('{{ label }}')
   })
 
   it('derives import-safe stems from graph-style screen ids', async () => {

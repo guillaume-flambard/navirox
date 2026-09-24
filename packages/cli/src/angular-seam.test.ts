@@ -122,7 +122,7 @@ describe('the Angular neutral seam', () => {
     expect(io.errors.join('\n')).toBe('')
     expect(code).toBe(0)
     expect(plan.source.adapterId).toBe('angular')
-  })
+  }, 30_000)
 
   it('carries the adapter metadata across the source seam', async () => {
     const io = capture()

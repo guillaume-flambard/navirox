@@ -1,5 +1,10 @@
 import type { AppGraph } from '@memolabs-apps/graph'
-import type { Workflow } from '@memolabs-apps/workflow'
+import type {
+  EmissionFinding,
+  EmissionResult,
+  EmittedFile,
+  Workflow,
+} from '@memolabs-apps/workflow'
 
 /**
  * The transformation seam.
@@ -60,6 +65,33 @@ export interface SourceTransformProvider {
     snapshot: LoweringSnapshot,
     profile: LoweringProfile,
   ): LoweringResult | Promise<LoweringResult>
+}
+
+/** The neutral input a source-owned workspace provider receives. */
+export interface WorkspaceScaffoldInput {
+  readonly lowering: LoweringResult
+  readonly emission: EmissionResult
+}
+
+/** The files, findings and package-local commands a workspace provider returns before the CLI writes them. */
+export interface WorkspaceScaffoldResult {
+  readonly files: readonly EmittedFile[]
+  readonly findings: readonly EmissionFinding[]
+  readonly commands: readonly string[]
+}
+
+/**
+ * A source-owned workspace provider.
+ *
+ * The provider may own framework-specific project conventions, but it receives
+ * only the neutral workflow and emission and returns planned files; it never
+ * writes them.
+ */
+export interface WorkspaceProvider {
+  readonly id: string
+  scaffold(
+    input: WorkspaceScaffoldInput,
+  ): WorkspaceScaffoldResult | Promise<WorkspaceScaffoldResult>
 }
 
 // The target-side contract lives in the neutral IR package, not here: a target
