@@ -1,0 +1,38 @@
+{
+  "name": "@memolabs-apps/target-native",
+  "version": "0.1.1",
+  "description": "A neutral target that emits native source from the Workflow IR.",
+  "license": "MIT",
+  "type": "module",
+  "engines": {
+    "node": ">=22.13.0"
+  },
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc --build",
+    "typecheck": "tsc --build",
+    "test": "vitest run",
+    "clean": "rm -rf dist"
+  },
+  "dependencies": {
+    "@memolabs-apps/source": "workspace:*",
+    "@memolabs-apps/workflow": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/node": "^26.6.1",
+    "vitest": "^5.0.1"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}

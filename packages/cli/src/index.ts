@@ -47,6 +47,9 @@ export {
   type TransformInput,
   type TransformLayout,
   type TransformResult,
+  type TransformScaffoldInput,
   type TransformStage,
 } from './transform.js'
 export { readAngularInjectables, readAngularTemplate, targetFor } from './targets.js'
+export { createDefaultTransformDeps } from './default-transform.js'
+export { createVueWorkspaceScaffold } from './vue-workspace.js'

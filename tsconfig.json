@@ -66,6 +66,9 @@
       "path": "./packages/target-angular"
     },
     {
+      "path": "./packages/target-native"
+    },
+    {
       "path": "./packages/source-svelte"
     },
     {

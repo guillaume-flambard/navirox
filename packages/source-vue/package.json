@@ -27,6 +27,7 @@
   "dependencies": {
     "@memolabs-apps/graph": "workspace:*",
     "@memolabs-apps/source": "workspace:*",
+    "@memolabs-apps/workflow": "workspace:*",
     "@vue/compiler-sfc": "^3.5.43",
     "typescript": "~6.0.3"
   },

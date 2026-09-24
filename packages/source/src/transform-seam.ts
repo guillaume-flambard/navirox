@@ -62,27 +62,14 @@ export interface SourceTransformProvider {
   ): LoweringResult | Promise<LoweringResult>
 }
 
-/** The target profile an emission serves. */
-export interface TargetProfile {
-  readonly id: string
-}
-
-export interface EmittedFile {
-  readonly path: string
-  readonly content: string
-}
-
-export interface EmissionResult {
-  readonly files: readonly EmittedFile[]
-  readonly findings: readonly LoweringFinding[]
-}
-
-/**
- * A target's emission entry point.
- *
- * It receives the IR and a target profile, and knows no source framework.
- */
-export interface TargetProvider {
-  readonly id: string
-  emit(workflow: Workflow, profile: TargetProfile): EmissionResult | Promise<EmissionResult>
-}
+// The target-side contract lives in the neutral IR package, not here: a target
+// package may never import this one, so a target could not name a type declared
+// in this file. It is re-exported so callers that already import it from
+// `@memolabs-apps/source` keep working.
+export type {
+  EmissionFinding,
+  EmissionResult,
+  EmittedFile,
+  TargetProfile,
+  TargetProvider,
+} from '@memolabs-apps/workflow'

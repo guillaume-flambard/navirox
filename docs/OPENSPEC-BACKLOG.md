@@ -6,6 +6,64 @@ carry a proposal, design, tasks, and only the spec deltas that alter a stable
 capability. Do not archive a change until its task-level evidence exists and
 `openspec validate <change> --strict` passes.
 
+## Status updated 2026-09-24
+
+The Vue T2 generation path is now implemented and evidenced, but the proof remains bounded:
+
+- `vue-workflow-lowering-core` and `vue-native-target-emission` are complete in their active changes and their package tests pass.
+- The delivered `navirox transform` path now composes the real Vue inspection, lowering and target providers when no test context injects dependencies. `transform()` remains injectable for unit tests.
+- `vue-transform-workspace-run` generates a Vue workspace with a compiler-backed verification command. The positive fixture passes `Verified 3 Vue SFCs.`; the refusal fixture exits 1 with `unsupported-watcher` and `uncovered-screen` and writes no replacement.
+- Evidence is recorded in `docs/evidence/vue-transform-workspace-run.md`. The exact fixture, hashes, commands and limitations are retained there.
+- Still missing: a native iOS/Android shell, T3 behavioral device journeys, T4 visual tolerances, broad framework support, external repository qualification and public installation. No such claim is made.
+
+The next work is the remaining Vue T3/T4 profile work, not another provider-wiring increment.
+
+## Status reconciled 2026-09-23
+
+Every item below is archived. A green `openspec validate --all` and an empty
+`openspec/changes/` are bookkeeping facts, not a product claim: the proofs are
+bounded, the golden path is not built, and the evidence each item names is what
+actually exists.
+
+| Item                                    | Archived change                                  | Stable spec                                           | Evidence that exists                                                                                                | Still missing                                                     |
+| --------------------------------------- | ------------------------------------------------ | ----------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------- |
+| 0 `proof-journey-execution-system`      | `2026-09-22-proof-journey-execution-system`      | `proof-journey-governance`                            | `docs/EXECUTION-CHARTER.md`, `docs/PROOF-ROADMAP.md`, this backlog                                                  | none                                                              |
+| 1 `vue-benchmark-workflow-contract`     | `2026-09-22-vue-benchmark-workflow-contract`     | `workflow-value-evidence`                             | `docs/pilots/baserow.md`, `docs/evidence/vue-target-baserow-diagnostic.{md,json}`, `workflow-baserow-field-work.md` | none                                                              |
+| 2 `vue-companion-source-to-target`      | `2026-09-22-vue-companion-source-to-target`      | `vue-target-subset`, `vue-target-provenance`          | `docs/evidence/vue-companion-assembly.md`, `vue-companion-assembly.provenance.json`                                 | the Vue path is hand-assembled, not driven by `navirox transform` |
+| 3 `vue-companion-device-evidence`       | `2026-09-22-vue-companion-device-evidence`       | `companion-device-evidence`                           | `docs/evidence/vue-companion-device-evidence.md`, `native-capture-field-workflow-{ios,android}.json`                | captured from a hand-built companion, not a generated workspace   |
+| 4 `angular-benchmark-workflow-contract` | `2026-09-22-angular-benchmark-workflow-contract` | `suitecrm-benchmark`                                  | `docs/pilots/suitecrm.md`, `docs/evidence/angular-suitecrm-benchmark.md`, `workflow-suitecrm-record-workflow.md`    | none                                                              |
+| 5 `angular-companion-source-to-target`  | `2026-09-22-angular-companion-source-to-target`  | `angular-target-subset`, `angular-target-runnability` | `docs/evidence/angular-companion-assembly.md`, `angular-companion.provenance.json`                                  | assembled by scripts, not emitted through `navirox transform`     |
+| 6 `angular-companion-device-evidence`   | `2026-09-22-angular-companion-device-evidence`   | `companion-device-evidence`                           | `docs/evidence/angular-companion-device-evidence.md`, `angular-companion-device-evidence-{ios,android}.json`        | captured from a script-built companion                            |
+| 7 `proof-journeys-release-evidence`     | `2026-09-22-proof-journeys-release-evidence`     | `proof-release-evidence`                              | `docs/evidence/release-candidate-0.1.1.md`, `release-candidate-0.1.1-{commands,install}.txt`                        | public npm installation is still incomplete and is stated as such |
+
+The cross-cutting proposals are also archived with their specs: `workflow-value-evidence`,
+`companion-operational-readiness`, `proof-artifact-governance`, and
+`angular-neutral-seam-proof`. Do not recreate them.
+
+### Implemented foundations (read from code, not inferred)
+
+- The Workflow IR exists: `packages/workflow` (`Workflow`, `Screen`, `ViewNode`,
+  `Coverage`, serialization, hashing, `validateWorkflow`, `parseWorkflow`).
+- The transformation seam exists: `packages/source/src/transform-seam.ts`
+  (`SourceTransformProvider.lower`, `TargetProvider.emit`, `LoweringResult`).
+- The neutral packages exist behind the source seam: `graph`, `planner`,
+  `compat`, `inspect`, `migrate`, `discovery`, `source`, `workflow`.
+- `source-vue` has detection, inspection and graph building, but **no lowering**:
+  `packages/source-vue/src/` has no `lower` and no `SourceTransformProvider`.
+
+### Missing evidence the programme still owes
+
+- No real Vue lowering and no real target consume the IR; `navirox transform`
+  is contracted against fake providers only.
+- No generated workspace has been produced by the delivered CLI; the two
+  companions are script-assembled.
+- Visual fidelity, broad framework support, and public installation remain
+  unproven and are out of scope until their own changes.
+
+The next unblocked work is Tranche 3 of
+[`docs/OPENCODE-TRANSFORMATION-PROGRAM.md`](OPENCODE-TRANSFORMATION-PROGRAM.md),
+starting with `vue-workflow-lowering-core`.
+
 ## 0. `proof-journey-execution-system` (this change)
 
 **Depends on:** existing product, pilot, visual, release, and evidence docs.
