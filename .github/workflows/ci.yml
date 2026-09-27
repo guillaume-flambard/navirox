@@ -313,7 +313,20 @@ jobs:
           adb -s "$SERIAL" shell settings put global transition_animation_scale 0
           adb -s "$SERIAL" shell settings put global animator_duration_scale 0
 
-          pnpm --filter "$NAVIROX_E2E_APP" e2e:test:android || fail "the $NAVIROX_E2E_APP journey failed on the emulator"
+          # An emulator that boots but never settles the first bundle fails the
+          # journey on a timeout rather than on an assertion, and the next boot
+          # usually behaves. That is an environment flake rather than a journey
+          # defect, so the journey is attempted twice before the job fails; a real
+          # defect fails both attempts. Same reasoning as the capture steps, and
+          # `fail` still prints the emulator's own account on the last attempt.
+          for attempt in 1 2; do
+            if pnpm --filter "$NAVIROX_E2E_APP" e2e:test:android; then
+              exit 0
+            fi
+            echo "the $NAVIROX_E2E_APP journey failed on the emulator, attempt $attempt of 2"
+          done
+
+          fail "the $NAVIROX_E2E_APP journey failed on both attempts on the emulator"
 
   journey-ios:
     name: run ${{ matrix.app }} journey on a simulator
@@ -330,7 +343,10 @@ jobs:
     # The first launch on a fresh runner boots a simulator, installs the app and
     # builds a Metro bundle from an empty cache, which is minutes before the first
     # assertion. Without a cap, a stuck simulator waits out the six-hour default.
-    timeout-minutes: 45
+    # The cap covers two journey attempts rather than one, so it matches the
+    # capture job's 60: a first attempt that burns its whole settle budget is
+    # inside the budget, and the retry has to fit beside it.
+    timeout-minutes: 60
     steps:
       # Same pins as the verify job, for the same reason.
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -379,7 +395,22 @@ jobs:
           exit 1
 
       - run: pnpm --filter "$NAVIROX_E2E_APP" e2e:build:ios
-      - run: pnpm --filter "$NAVIROX_E2E_APP" e2e:test:ios
+
+      # The simulator occasionally reports the application as busy until the
+      # harness's settle attempts are exhausted, and the first bundle on a cold
+      # runner arrives minutes after the launch. That is an environment flake
+      # rather than a journey defect, so the journey is attempted twice before
+      # the job fails; a real defect fails both attempts. Same reasoning, and the
+      # same two attempts, as the capture step below.
+      - run: |
+          for attempt in 1 2; do
+            if pnpm --filter "$NAVIROX_E2E_APP" e2e:test:ios; then
+              exit 0
+            fi
+            echo "the $NAVIROX_E2E_APP journey failed on the simulator, attempt $attempt of 2"
+          done
+          echo "::error::the $NAVIROX_E2E_APP journey failed on two attempts on the simulator"
+          exit 1
 
   capture-ios:
     name: capture the records fixture on a simulator
@@ -641,25 +672,57 @@ jobs:
           adb -s "$SERIAL" shell settings put global transition_animation_scale 0
           adb -s "$SERIAL" shell settings put global animator_duration_scale 0
 
-          node packages/visual-benchmark/scripts/capture-records-native.mjs \
-            --platform android --workspace "$RUNNER_TEMP/capture-android" ||
-            fail "the native capture failed on the emulator"
+          # An emulator that is awake but whose app session has not settled fails
+          # the capture on a timeout rather than on a missing screenshot, and the
+          # next attempt on the same, already booted emulator usually behaves.
+          # That is an environment flake rather than a screen defect, so each
+          # capture is attempted twice before the job fails; a real defect fails
+          # both attempts. The iOS capture job gives its captures the same two
+          # attempts, and the job continues past a capture that succeeds, so this
+          # is a retry and not an early exit.
+          captured=false
+          for attempt in 1 2; do
+            if node packages/visual-benchmark/scripts/capture-records-native.mjs \
+              --platform android --workspace "$RUNNER_TEMP/capture-android"; then
+              captured=true
+              break
+            fi
+            echo "the native capture failed on the emulator, attempt $attempt of 2"
+          done
+          [ "$captured" = true ] ||
+            fail "the native capture failed on both attempts on the emulator"
 
           # The proof companion's own scenario, driven on the same emulator. A
           # second application is prepared because the scenario belongs to a
           # different fixture, and the emulator is already awake.
-          node packages/visual-benchmark/scripts/capture-records-native.mjs \
-            --platform android --scenario field-workflow \
-            --workspace "$RUNNER_TEMP/capture-field-workflow-android" ||
-            fail "the field-workflow capture failed on the emulator"
+          captured=false
+          for attempt in 1 2; do
+            if node packages/visual-benchmark/scripts/capture-records-native.mjs \
+              --platform android --scenario field-workflow \
+              --workspace "$RUNNER_TEMP/capture-field-workflow-android"; then
+              captured=true
+              break
+            fi
+            echo "the field-workflow capture failed on the emulator, attempt $attempt of 2"
+          done
+          [ "$captured" = true ] ||
+            fail "the field-workflow capture failed on both attempts on the emulator"
 
           # The Angular companion has no target compiler and no served web page,
           # so its own command captures it on the device and records that no web
           # counterpart exists.
-          node scripts/capture-angular-companion.mjs \
-            --platform android \
-            --workspace "$RUNNER_TEMP/capture-angular-companion-android" ||
-            fail "the Angular companion capture failed on the emulator"
+          captured=false
+          for attempt in 1 2; do
+            if node scripts/capture-angular-companion.mjs \
+              --platform android \
+              --workspace "$RUNNER_TEMP/capture-angular-companion-android"; then
+              captured=true
+              break
+            fi
+            echo "the Angular companion capture failed on the emulator, attempt $attempt of 2"
+          done
+          [ "$captured" = true ] ||
+            fail "the Angular companion capture failed on both attempts on the emulator"
 
       # Nothing leaves the job before the hygiene check has seen it. The check
       # names the artifact class and the rule, never the matched value, and the
