@@ -47,6 +47,7 @@ import {
   installIosPods,
   newWorkspace,
   pack,
+  prepareNamedWorkspace,
   publishablePackages,
   removeWorkspace,
   requireBuild,
@@ -207,14 +208,13 @@ function gridOf(decoders, path) {
  * Prepares a named workspace instead of a temporary one. Continuous integration
  * uploads the captures after the run, so the directory it uploads has to be the
  * one the run wrote, and it has to be known before the run starts.
+ *
+ * The clearing lives in the shared helper, because it is the thing that makes a
+ * retry possible: the previous attempt's `app` directory would otherwise still
+ * be there, and the scaffolder refuses a target that is not empty.
  */
 function namedWorkspace(path) {
-  const workspace = resolve(path)
-  const artifactsDir = join(workspace, 'artifacts')
-
-  mkdirSync(artifactsDir, { recursive: true })
-
-  return { workspace, artifactsDir }
+  return prepareNamedWorkspace(path)
 }
 
 function deviceName(platform) {

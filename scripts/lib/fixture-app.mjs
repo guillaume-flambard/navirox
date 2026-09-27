@@ -23,7 +23,7 @@ import {
   writeFileSync,
 } from 'node:fs'
 import { tmpdir } from 'node:os'
-import { dirname, join, sep } from 'node:path'
+import { dirname, join, resolve, sep } from 'node:path'
 import { pathToFileURL } from 'node:url'
 
 export const ROOT = new URL('../../', import.meta.url).pathname.replace(/\/$/, '')
@@ -295,12 +295,40 @@ export function newWorkspace(prefix) {
   return { workspace, artifactsDir }
 }
 
+/**
+ * Prepares a named workspace, clearing whatever a previous run left in it.
+ *
+ * A named workspace is deliberately not cleaned when a run ends, because
+ * continuous integration uploads what the run wrote. That leaves the previous
+ * attempt's `app` directory in the target, and `scaffold` refuses a directory
+ * that is not empty, so a second attempt on the same workspace could only ever
+ * fail. Clearing here, at the start, is what makes a retry possible at all.
+ * Nothing is lost: the upload runs in a later step, so it reads the last
+ * attempt's captures.
+ */
+export function prepareNamedWorkspace(path) {
+  const workspace = resolve(path)
+  const artifactsDir = join(workspace, 'artifacts')
+
+  removeWorkspace(workspace, artifactsDir)
+  mkdirSync(artifactsDir, { recursive: true })
+
+  return { workspace, artifactsDir }
+}
+
 /** Scaffolds the app and returns its directory. */
 export function scaffold(targetDir, appName = APP_NAME) {
   step(`Scaffolding "${appName}" into ${targetDir}`)
 
   const result = capture(process.execPath, [SCAFFOLDER, appName, '-d', targetDir, '--json'])
-  assert(result.status === 0, `The scaffolder exited ${result.status}.\n${result.stderr}`)
+  // `--json` puts a failure on stdout as `{"ok": false, "error": {...}}` and
+  // leaves stderr empty, so a report built from stderr alone printed
+  // "The scaffolder exited 1." and nothing else. Both streams are reported, and
+  // a run that already produced a report is not repeated.
+  assert(
+    result.status === 0,
+    `The scaffolder exited ${result.status}.\n${[result.stderr, result.stdout].filter((stream) => stream.trim() !== '').join('\n')}`,
+  )
 
   const report = JSON.parse(result.stdout.trim())
   assert(report.ok === true, `The scaffolder reported a failure: ${result.stdout}`)
