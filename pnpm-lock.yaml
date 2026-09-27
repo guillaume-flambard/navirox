@@ -943,6 +943,12 @@ importers:
       '@memolabs-apps/graph':
         specifier: workspace:*
         version: link:../graph
+      '@memolabs-apps/migrate':
+        specifier: workspace:*
+        version: link:../migrate
+      '@memolabs-apps/planner':
+        specifier: workspace:*
+        version: link:../planner
       '@memolabs-apps/source':
         specifier: workspace:*
         version: link:../source
