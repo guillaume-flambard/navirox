@@ -29,7 +29,9 @@
     "@memolabs-apps/source": "workspace:*",
     "@memolabs-apps/workflow": "workspace:*",
     "@vue/compiler-sfc": "^3.5.43",
-    "typescript": "~6.0.3"
+    "typescript": "~6.0.3",
+    "@memolabs-apps/migrate": "workspace:*",
+    "@memolabs-apps/planner": "workspace:*"
   },
   "devDependencies": {
     "@types/node": "^26.6.1",
