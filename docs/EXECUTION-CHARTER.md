@@ -60,13 +60,13 @@ expanding the task.
 
 ## Verified now, not inferred
 
-| Area            | Verified state                                                                                                   | Do not infer                                                                       |
-| --------------- | ---------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------- |
-| Source analysis | Vue, Nuxt, and Angular inspection and planning exist behind the source seam.                                     | That a source screen can be emitted as a native screen.                            |
-| Migration       | `navirox migrate` safely copies only explicitly shared or portable units.                                        | That it converts a web view or that moved code runs without adaptation.            |
-| Native proof    | Native runtime and device-capture infrastructure exist; the capture harness has evidence on the records fixture. | Measured visual fidelity, parity, or an external application's mobile conversion.  |
-| Benchmarks      | Baserow and SuiteCRM inputs are pinned public revisions with published bounded diagnostics.                      | A relationship, endorsement, client work, or permission to reuse branding or data. |
-| Distribution    | A packed-tarball install path is evidenced. Public npm installation is incomplete.                               | That `npx navirox` works for a fresh public consumer.                              |
+| Area            | Verified state                                                                                                                        | Do not infer                                                                       |
+| --------------- | ------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------- |
+| Source analysis | Twelve source adapters perform bounded detection, inspection, and neutral planning behind the source seam.                            | That every construct in those frameworks is understood or portable.                |
+| Migration       | `navirox migrate` copies explicitly shared or portable units, and a bounded Vue `transform` emits a tested workspace with provenance. | That the generated Vue workspace is a native iOS or Android application.           |
+| Native proof    | The separate Vue runtime example builds and has shared device-journey evidence on iOS and Android.                                    | Measured visual fidelity, parity, or an external application's mobile conversion.  |
+| Benchmarks      | Baserow and SuiteCRM inputs are pinned public revisions with published bounded diagnostics.                                           | A relationship, endorsement, client work, or permission to reuse branding or data. |
+| Distribution    | A packed-tarball install path is evidenced. Public npm installation is incomplete.                                                    | That `npx navirox` works for a fresh public consumer.                              |
 
 Read the linked evidence before repeating a number or a behavior: Baserow
 diagnostic, SuiteCRM diagnostic, native capture report, and release-candidate

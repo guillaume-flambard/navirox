@@ -5,7 +5,7 @@ npm registry, not inferred from source.
 
 ## What was tested
 
-After `pnpm install` in `/Users/memo/projects/active/apps/navirox`, each entry point
+After `pnpm install` in `<repo>`, each entry point
 was imported from a bare Node ESM context inside `packages/runtime-symbiote`:
 
 ```bash

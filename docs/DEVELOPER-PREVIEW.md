@@ -4,8 +4,9 @@
 
 The first public developer preview is a narrow, reproducible Vue/Nuxt conversion
 preflight. It identifies portable business logic, manual or native-replacement
-work, and unresolved risks before the future `navirox transform` journey writes
-a faithful native project.
+work, and unresolved risks. A bounded `navirox transform` now writes a
+compiler-checked Vue workspace for the repository fixture, but it does not yet
+write a faithful native iOS or Android project.
 
 It is not the product endpoint and not a self-serve full-application converter.
 The product endpoint is a generated, runnable mobile workspace; this preview
@@ -13,13 +14,13 @@ only proves the preflight inputs that must make that generator refuse safely.
 
 ## Verified boundary
 
-| Evidence                         | Safe statement                                                          | Not established                                        |
-| -------------------------------- | ----------------------------------------------------------------------- | ------------------------------------------------------ |
-| Vue/Nuxt inspection and planning | A repository receives a deterministic readiness report.                 | That every screen can become native.                   |
-| Migration engine                 | Explicitly shared or portable units can be copied with recorded limits. | That copied code works without adaptation.             |
-| Native/device evidence           | A bounded Vue journey and capture harness have evidence.                | General visual fidelity or an external-app conversion. |
-| Distribution                     | Packed tarballs have a verified path.                                   | A fresh public `npx navirox` installation.             |
-| External validation              | The report was read on public repositories we do not own.               | A support upgrade, customer demand or a partnership.   |
+| Evidence                         | Safe statement                                                                                                  | Not established                                                       |
+| -------------------------------- | --------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------- |
+| Vue/Nuxt inspection and planning | A repository receives a deterministic readiness report.                                                         | That every screen can become native.                                  |
+| Migration and transform          | Shared units can be copied, and one bounded Vue fixture generates a compiler-checked workspace with provenance. | That arbitrary Vue code works, or that the workspace is a native app. |
+| Native/device evidence           | A bounded Vue journey and capture harness have evidence.                                                        | General visual fidelity or an external-app conversion.                |
+| Distribution                     | Packed tarballs have a verified path.                                                                           | A fresh public `npx navirox` installation.                            |
+| External validation              | The report was read on public repositories we do not own.                                                       | A support upgrade, customer demand or a partnership.                  |
 
 The current Baserow diagnostic is source-analysis evidence, not a Baserow mobile
 application, partnership, or authority to reuse Baserow data, assets, or
@@ -27,19 +28,11 @@ credentials.
 
 ### Installation path
 
-The only verified consumer installation path is the packed tarballs of
+There is no supported public npm installation. The verified consumer-like path is the packed tarballs of
 `pnpm test:e2e`, which scaffold, install and build Navirox without the registry.
-The documented public path does not work today: `navirox` is not published, and
-five workspace packages are absent from the registry
-(`@memolabs-apps/cli`, `@memolabs-apps/source-lit`,
-`@memolabs-apps/source-solid`, `@memolabs-apps/target-vue` and
-`@memolabs-apps/visual-benchmark`). Because `navirox` depends on
-`@memolabs-apps/cli`, and `@memolabs-apps/cli` depends on
-`@memolabs-apps/source-lit` and `@memolabs-apps/source-solid`, the public path
-fails at two links. `npx navirox doctor` reports `404 Not Found` for `navirox`,
-and `npx @memolabs-apps/cli --help` reports `404 Not Found` for
-`@memolabs-apps/cli`. No sentence here claims a working public `npx navirox`
-installation while those five packages remain unpublished.
+The documented public path does not work today because the launcher and part of
+its dependency graph are absent from the registry. No sentence here claims a
+working public `npx navirox` installation while that package set is incomplete.
 `node scripts/check-public-distribution.mjs` resolves each documented package
 against the registry and fails when this stated limitation and the registry
 disagree, so the gap cannot drift out of date without a failure.
@@ -81,8 +74,9 @@ core preview works without an LLM or source upload.
    verified tarball limitation.
 4. `preview-external-validation`: test audit usefulness on external
    repositories without upgrading support from anecdotal feedback.
-5. `deterministic-transform-validation`: add only provenance-linked,
-   reversible transforms with behavioural and build validation.
+5. `deterministic-transform-validation`: extend the existing bounded Vue
+   transform only with provenance-linked, reversible behavior and build
+   validation.
 6. `optional-llm-assistance`: add opt-in suggestions after the deterministic
    preview is useful on its own.
 

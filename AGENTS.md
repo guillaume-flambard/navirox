@@ -115,7 +115,7 @@ tell drift from breakage.
 This project wraps a fast-moving upstream that is younger than the plan. Do not
 state how Symbiote behaves from memory. Read `PLAN.md` section 2, which records
 where the blueprint's assumptions were corrected against the real upstream, and
-check the upstream source at `~/projects/upstream/symbiote-native` before
+check the [official upstream source](https://github.com/OneEyed1366/symbiote-native) before
 asserting behavior. Machine-specific build facts discovered during G0 are
 recorded in `docs/evidence/` and are load-bearing, especially the Android
 single-ABI rule.

@@ -1,6 +1,6 @@
 {
   "scenario": "records-list",
-  "artifactDir": "/Users/memo/projects/active/apps/mobile/navirox/packages/visual-benchmark/scenario-artifacts/records-list",
+  "artifactDir": "<repo>/packages/visual-benchmark/scenario-artifacts/records-list",
   "cases": [
     {
       "name": "two renders of one screen under the same conditions",
@@ -48,7 +48,7 @@
         "width": 19,
         "height": 13
       },
-      "review": "/Users/memo/projects/active/apps/mobile/navirox/packages/visual-benchmark/scenario-artifacts/records-list/review-undeclared/index.html"
+      "review": "<repo>/packages/visual-benchmark/scenario-artifacts/records-list/review-undeclared/index.html"
     },
     {
       "name": "the same difference inside a declared mask",
@@ -72,15 +72,15 @@
       "maskedDifferingPixels": 247,
       "unmaskedDifferingPixels": 0,
       "boundingBox": null,
-      "review": "/Users/memo/projects/active/apps/mobile/navirox/packages/visual-benchmark/scenario-artifacts/records-list/review-masked/index.html"
+      "review": "<repo>/packages/visual-benchmark/scenario-artifacts/records-list/review-masked/index.html"
     }
   ],
   "strict": true,
   "chrome": {
-    "oneX": "/Users/memo/projects/active/apps/mobile/navirox/packages/visual-benchmark/scenario-artifacts/records-list/rest.1x.png",
-    "repeatX": "/Users/memo/projects/active/apps/mobile/navirox/packages/visual-benchmark/scenario-artifacts/records-list/rest.1x.repeat.png",
-    "twoX": "/Users/memo/projects/active/apps/mobile/navirox/packages/visual-benchmark/scenario-artifacts/records-list/rest.2x.png",
-    "variant": "/Users/memo/projects/active/apps/mobile/navirox/packages/visual-benchmark/scenario-artifacts/records-list/rest.variant.png"
+    "oneX": "<repo>/packages/visual-benchmark/scenario-artifacts/records-list/rest.1x.png",
+    "repeatX": "<repo>/packages/visual-benchmark/scenario-artifacts/records-list/rest.1x.repeat.png",
+    "twoX": "<repo>/packages/visual-benchmark/scenario-artifacts/records-list/rest.2x.png",
+    "variant": "<repo>/packages/visual-benchmark/scenario-artifacts/records-list/rest.variant.png"
   },
   "commands": [
     "node packages/visual-benchmark/scripts/run-records-scenario.mjs",

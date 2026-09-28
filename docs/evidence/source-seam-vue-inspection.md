@@ -18,7 +18,7 @@ node packages/cli/dist/bin.js inspect -C examples/vue-basic
 
 ```
 Navirox inspection
-  project   /Users/memo/projects/active/apps/navirox/examples/vue-basic
+  project   <repo>/examples/vue-basic
   adapter   Vue (experimental)
   framework vue ^3.5.43
 

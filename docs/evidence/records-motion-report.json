@@ -1,6 +1,6 @@
 {
   "scenario": "records-motion",
-  "artifactDir": "/Users/memo/projects/active/apps/mobile/navirox/packages/visual-benchmark/scenario-artifacts/records-motion",
+  "artifactDir": "<repo>/packages/visual-benchmark/scenario-artifacts/records-motion",
   "motion": {
     "declared": true,
     "interruptible": true,

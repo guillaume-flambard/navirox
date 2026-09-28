@@ -1,115 +1,115 @@
 # Contributing to Navirox
 
-Navirox is pre-alpha. `PLAN.md` is the plan of record for what gets built and in
-what order, so start there when you want to know where a contribution fits. If
-your change and `PLAN.md` disagree, say so in the pull request instead of quietly
-diverging.
+Navirox is pre-alpha. Contributions are welcome, but a small, evidenced change
+is more useful than a broad promise. If your idea changes product direction or
+introduces a new external dependency, open an issue or discussion before doing
+the implementation work.
 
-## Prerequisites
+## Find a useful change
 
-- **Node 22.13 or newer.** The floor matches upstream, and CI runs 22.x.
-- **pnpm 11.x.** It is pinned through `packageManager` in the root
-  `package.json`, so `corepack enable` is all you need. Do not move the project
-  onto another major line to make a local problem go away.
-- **Watchman** is optional, but Metro starts faster with it.
+Start with the [documentation index](docs/README.md) and the current
+[execution charter](docs/EXECUTION-CHARTER.md). The source-of-truth order is:
+
+1. Repository rules in `AGENTS.md` and the task or issue being implemented.
+2. The execution charter and an active OpenSpec change.
+3. Current product and architecture documents in `docs/repositioning/`.
+4. Working code, tests, and fresh CI for claims about current behavior.
+5. Dated evidence and historical documents for the event they record.
+
+Browse [`good first issue`](https://github.com/guillaume-flambard/navirox/labels/good%20first%20issue)
+or [`help wanted`](https://github.com/guillaume-flambard/navirox/labels/help%20wanted).
+Those lists may be empty. In that case, propose one focused problem in
+[Issues](https://github.com/guillaume-flambard/navirox/issues) or ask in
+[Discussions](https://github.com/guillaume-flambard/navirox/discussions).
 
 ## Set up
 
+You need Node.js 22.13 or newer and Corepack.
+
 ```bash
+git clone https://github.com/guillaume-flambard/navirox.git
+cd navirox
 corepack enable
-pnpm install
+pnpm install --frozen-lockfile
 pnpm build
 pnpm test
 ```
 
-## The gate suite
+For a fork, clone your fork and add this repository as `upstream`. Keep feature
+branches focused on one concern.
 
-Every one of these has to pass before a pull request is merged:
+## Verify a change
+
+During development, run the closest package test first:
 
 ```bash
-pnpm build         # turbo, honours the TypeScript project references
+pnpm --filter @memolabs-apps/source-vue test
+```
+
+Before requesting review, run the repository gates:
+
+```bash
+pnpm docs:check
+pnpm build
 pnpm typecheck
 pnpm test
 pnpm lint
-pnpm format:check  # pnpm format writes the fix
-pnpm deps:check    # syncpack, the version drift guard
+pnpm --filter vue-basic lint
+pnpm format:check
+pnpm deps:check
 ```
 
-`pnpm build && pnpm test` green is the baseline. Do not leave the workspace red.
+Native behavior needs the matching platform proof. Say exactly what you ran in
+the pull request. A package test, an Android build, and an iOS simulator journey
+are different evidence.
 
-`pnpm install` installs a git hook that runs that same list on every commit, so
-a slip is caught at the commit instead of on the runners. It is the same list
-rather than a similar one, and it scans the whole repository the way CI does, so
-an unrelated dirty file can block a commit. The platform builds are deliberately
-not in it: they need a native toolchain and several minutes, so a green hook is
-not a promise that CI is green.
+## Architectural boundaries
 
-## The architectural rules
+`AGENTS.md` is the complete contract. The boundaries most often relevant to a
+contribution are:
 
-`AGENTS.md` is the full contract. Two of its rules account for most review
-comments:
+- Only `@memolabs-apps/runtime-symbiote` may import the current renderer or
+  React Native.
+- Applications import only `@memolabs-apps/*` packages.
+- Public packages must not re-export renderer types, classes, components, or
+  prop names.
+- Source-framework behavior belongs in `source-*`; neutral planning and
+  evidence belong in neutral packages; rendering belongs at the target or
+  provider edge.
+- Unsupported behavior is reported or refused. It is never replaced by a
+  plausible but unproved implementation.
 
-1. **`@memolabs-apps/runtime-symbiote` is the only package allowed to import
-   `@symbiote-native/*`**, `react-native`, or anything else from the Fabric
-   host. Every other package depends on the seam in `@memolabs-apps/runtime`.
-2. **Applications import only `@memolabs-apps/*`.** Zero `@symbiote-native/*` imports
-   in application code.
+Tests enforce the import boundary. Do not weaken the test to make a dependency
+violation pass.
 
-Both are enforced by an import-boundary test rather than by convention. If your
-change makes that test fail, the change is wrong, not the test.
+## Tests, evidence, and documentation
 
-A third rule is easy to break by accident: **never re-export a Symbiote type,
-class, component or prop name** from a public `@memolabs-apps/*` package. Our public
-API is ours. If a Symbiote concept leaks into our types, the engine stops being
-swappable.
+New behavior needs a test. A bug fix needs a test that fails without the fix.
+If a public claim changes, update the evidence or limitation that justifies it.
+Do not upgrade `experimental`, `preview`, or `supported` from intuition alone.
 
-## Commits
-
-`type(scope): imperative summary (NX-nnn)` is the convention, for example
-`feat(metro-preset): compose the Vue SFC transforms (NX-005)`. Reference the
-plan task your change serves when there is one.
+Repository paths in committed evidence must be portable. Use placeholders such
+as `<repo>` or a path relative to the repository instead of a contributor's
+home directory.
 
 ## Changesets
 
-A change that affects what a user sees needs a changeset. A change to a package
-in `packages/` affects a user: those packages are what get installed. A change
-to the docs, to a workflow or to `PLAN.md` does not, and neither does a change
-to `examples/vue-basic`, which exists to exercise the packages rather than to
-ship with them.
+A user-visible change to a publishable package needs a changeset. Documentation,
+workflow, and test-fixture-only changes normally do not.
 
 ```bash
-pnpm changeset                       # write one, and commit it with the change
-pnpm changeset status --since=main   # see what is missing before you push
+pnpm changeset
+pnpm changeset status --since=main
 ```
 
-`pnpm changeset status --since=<ref>` compares the packages against the given
-ref and exits non-zero when one of them changed without a changeset, naming the
-remedy in its output (`pnpm changeset add`, or `pnpm changeset add --empty` when
-the change genuinely needs no release). CI runs exactly that on a pull request,
-against the commit the branch forked from, so a pull request that changes a
-package without a changeset fails there rather than at the next release.
-
-The release itself is a maintainer's job:
-
-```bash
-pnpm version-packages          # apply the changesets: bump, then write changelogs
-pnpm exec changeset git-tag    # tag the release commit, one tag per package
-pnpm release                   # build, then publish to npm, which needs credentials
-```
-
-## Running the example
-
-`examples/vue-basic` is the acceptance render for the runtime and the Metro
-preset. It is a workspace member, so it resolves `@memolabs-apps/*` through
-`workspace:*` and exercises the code in this repository rather than a registry
-that has nothing to publish yet.
+Publishing, tagging, and registry credentials remain maintainer actions.
 
 ## Pull requests
 
-- Keep the change focused. One concern per pull request.
-- Say what you verified. "Tests pass" is weaker than "`pnpm test` in
-  `packages/metro-preset`, plus a render on the iOS simulator".
-- Do not add a dependency without recording its exact version and the reason it
-  exists. Upstream moves fast, and that record is what lets us tell drift from
-  breakage.
-- New behavior needs a test. A bug fix needs a test that fails before it.
+- Explain the problem and the smallest chosen solution.
+- Link the issue, OpenSpec change, or evidence the work serves.
+- List exact verification commands and any check you could not run.
+- Record new dependencies with their exact version and reason.
+- Keep generated artifacts, credentials, customer data, and machine-specific
+  paths out of the diff.
+- Follow the [Code of conduct](CODE_OF_CONDUCT.md).

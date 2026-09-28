@@ -18,7 +18,7 @@ Progress: resolved 453, reused 407, downloaded 25, added 0
 Packages: +700
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 Packages are cloned from the content-addressable store to the virtual store.
-  Content-addressable store is at: /Users/memo/Library/pnpm/store/v11
+  Content-addressable store is at: <pnpm-store>
   Virtual store is at:             node_modules/.pnpm
 Progress: resolved 721, reused 675, downloaded 25, added 279
 Progress: resolved 721, reused 675, downloaded 25, added 699

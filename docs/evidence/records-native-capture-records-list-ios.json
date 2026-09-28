@@ -1,7 +1,7 @@
 {
   "scenario": "records-list",
   "platform": "ios",
-  "artifactDirectory": "/Users/runner/work/_temp/capture-ios/app/scenario-artifacts/records-list",
+  "artifactDirectory": "<ci-workspace>/scenario-artifacts/records-list",
   "device": {
     "platform": "ios",
     "deviceName": "iPhone 17"
@@ -71,14 +71,14 @@
   ],
   "report": {
     "scenario": "records-list",
-    "artifactDir": "/Users/runner/work/_temp/capture-ios/app/scenario-artifacts/records-list",
+    "artifactDir": "<ci-workspace>/scenario-artifacts/records-list",
     "outcomes": [
       {
         "capture": "rest",
         "moment": "rest",
-        "web": "/Users/runner/work/_temp/capture-ios/app/scenario-artifacts/records-list/rest.web.png",
+        "web": "<ci-workspace>/scenario-artifacts/records-list/rest.web.png",
         "native": {
-          "ios": "/Users/runner/work/_temp/capture-ios/app/scenario-artifacts/records-list/rest.ios.png"
+          "ios": "<ci-workspace>/scenario-artifacts/records-list/rest.ios.png"
         },
         "devices": {
           "ios": {

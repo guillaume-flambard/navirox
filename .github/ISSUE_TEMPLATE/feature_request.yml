@@ -5,10 +5,9 @@ body:
   - type: markdown
     attributes:
       value: |
-        `PLAN.md` is the plan of record, and much of what you might want is
-        already in its task list with a dependency order. Worth checking before
-        you write this up, because the useful question is usually not "should we
-        build this" but "where does this belong in the order".
+        Start with the documentation index and current execution charter. Older
+        plans remain useful history, but code, tests, active specifications and
+        current proof contracts decide what the project does now.
   - type: textarea
     id: problem
     attributes:

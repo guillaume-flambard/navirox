@@ -20,13 +20,15 @@ mostly about how that stays true.
 | `@memolabs-apps/native`           | The native API façade: haptics, secure storage, and the modules 0.2 adds.          | `@memolabs-apps/runtime`                                            |
 | `@memolabs-apps/router`           | File-based routing and a generated, typed route manifest (surface declared).       | `@memolabs-apps/runtime`                                            |
 | `@memolabs-apps/metro-preset`     | The Vue SFC transform and the CSS parser, composed into one Metro preset.          | Nothing renderer-shaped                                             |
-| `@memolabs-apps/cli`              | `navirox dev` and `navirox doctor`.                                                | `@memolabs-apps/doctor`                                             |
+| `@memolabs-apps/cli`              | Analysis, planning, migration, bounded transform, development, and diagnostics.    | Neutral source, planning, migration, target, and doctor packages    |
 | `@memolabs-apps/doctor`           | The environment, runtime and compatibility report.                                 | Nothing renderer-shaped, and nothing from the adapter               |
 | `create-navirox`                  | The scaffolder behind `npm create navirox`.                                        | Nothing renderer-shaped                                             |
 
-`@memolabs-apps/compat`, `@memolabs-apps/inspect`, `@memolabs-apps/migrate` and `@memolabs-apps/build`
-are declared surfaces with no implementation in 0.1. Their manifests exist so the
-layout is settled; they ship with their milestones.
+`@memolabs-apps/compat`, `@memolabs-apps/inspect`, and
+`@memolabs-apps/migrate` are implemented behind neutral contracts.
+`@memolabs-apps/build` remains a declared orchestration surface. The source and
+target package families extend this original runtime-oriented diagram; the
+current package inventory is best read in the repository itself.
 
 ## The dependency direction is one way
 

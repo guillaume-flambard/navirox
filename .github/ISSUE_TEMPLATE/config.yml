@@ -3,9 +3,9 @@ contact_links:
   - name: Security report
     url: https://github.com/guillaume-flambard/navirox/security/advisories/new
     about: Report a vulnerability privately. Please do not open a public issue for it.
-  - name: The plan of record
-    url: https://github.com/guillaume-flambard/navirox/blob/main/PLAN.md
-    about: What gets built and in what order. Most "why is this missing" answers are here.
+  - name: Documentation map
+    url: https://github.com/guillaume-flambard/navirox/blob/main/docs/README.md
+    about: Current contracts, evidence, and historical documents in the right order.
   - name: How to work on this repository
     url: https://github.com/guillaume-flambard/navirox/blob/main/CONTRIBUTING.md
     about: Setup, the gate suite, and the architectural rules the tests enforce.

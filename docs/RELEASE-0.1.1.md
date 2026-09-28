@@ -1,5 +1,8 @@
 # Navirox 0.1.1 release candidate
 
+> Historical candidate record. Version 0.1.1 was not published from this note,
+> and this file does not describe the current public installation state.
+
 Candidate tag: `candidates/0.1.1`. This note describes what was verified on
 that commit and what still has to happen by hand. It does not move any
 existing tag; the `0.1.0` tags stay where they are (see "Known gaps" below).

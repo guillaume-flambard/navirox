@@ -1367,9 +1367,9 @@ NX-001 … NX-012, NX-016, NX-017, NX-018; §5.2–§5.11; §6–§8; §16–§2
 
 **Upstream non-goals (docs):** forking RN native sources; hiding `react-native` as a transitive dep; making third-party RN JS components framework-agnostic; replacing Yoga/Fabric. Roadmap goal: **full Expo SDK parity**, with **Reanimated last** and **Tailwind an open seam**.
 
-**Local toolchain (checked):** node **24.21.0** · pnpm **12.4.1** (docs want **11.x**) · npm 11.19.0 · bun 1.4.0 · Xcode **27.0** (27A266a) · Ruby 4.0.6 · CocoaPods 1.17.0 · Java 17.0.20.1 · `ANDROID_HOME=/Users/memo/Library/Android/sdk` · **watchman MISSING** · **adb MISSING from PATH** · iPhone 17 / 17 Pro / 17 Pro Max / 17e / Air simulators available.
+**Local toolchain (checked):** node **24.21.0** · pnpm **12.4.1** (docs want **11.x**) · npm 11.19.0 · bun 1.4.0 · Xcode **27.0** (27A266a) · Ruby 4.0.6 · CocoaPods 1.17.0 · Java 17.0.20.1 · `ANDROID_HOME=<android-sdk>` · **watchman MISSING** · **adb MISSING from PATH** · iPhone 17 / 17 Pro / 17 Pro Max / 17e / Air simulators available.
 
-**Workspace:** `/Users/memo/projects/active/apps/navirox` contains **only `blueprint.md`** (22,549 bytes); **no git repository yet**.
+**Workspace at the time:** `<repo>` contained **only `blueprint.md`** (22,549 bytes); **no git repository yet**.
 
 ---
 
@@ -1382,4 +1382,3 @@ If you approve this plan, the first three things to do, in order:
 3. **NX-003 + NX-004** — land the seam and the Symbiote adapter, then Day 1's iOS render.
 
 **The plan is deliberately gated so that the first irreversible spend happens only after G1 (iOS render) and G3 (seam holds). Those two gates are where this product is won or lost.**
-

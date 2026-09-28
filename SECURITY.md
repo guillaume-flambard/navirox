@@ -2,37 +2,37 @@
 
 ## Supported versions
 
-Navirox is pre-alpha and nothing is published yet, so there is no released
-version to support. Security fixes land on `main`.
+Navirox is pre-alpha and has no stable supported release. A partial set of
+historical `0.1.0` packages exists on npm, but the public package set is
+incomplete and is not a supported installation path. Security fixes currently
+land on `main`.
 
-## Reporting a vulnerability
+## Report a vulnerability
 
-Please do not open a public issue for a security problem.
+Please do not open a public issue for a security problem. Use
+[GitHub private vulnerability reporting](https://github.com/guillaume-flambard/navirox/security/advisories/new).
 
-Use GitHub's private vulnerability reporting on this repository:
+Include:
 
-https://github.com/guillaume-flambard/navirox/security/advisories/new
+- the affected package, file, revision, or version;
+- what an attacker can do and what access they need;
+- the smallest reproduction you can safely share;
+- whether you want public credit if a fix is disclosed.
 
-That channel is private between you and the maintainer, and it gives us a place
-to agree on a fix and a disclosure date before anything becomes public.
+This is a small project. Expect an acknowledgement within a few days. If a week
+passes without a reply, add a message to the private advisory.
 
-Please include:
+## Current security boundary
 
-- what the problem is, and where it lives (package, file, or version)
-- what an attacker can do with it, and what they need in order to try
-- the smallest reproduction you have, if you have one
+The repository runs dependency, secret, and code scanning, but a completed or
+green workflow means the analysis ran. It does not mean there are no open
+findings. Security alerts are triaged separately and are not hidden to improve a
+public badge.
 
-## What to expect
+Reports about Navirox code and generated output are in scope. Reports about an
+upstream dependency, the current renderer, React Native, Xcode, Gradle, or an
+operating system should usually go to the upstream project. If Navirox exposes
+or amplifies the issue, include that integration impact in the private report.
 
-- An acknowledgement within a few days. This is a small project, so if a week
-  passes without a reply, please ping the advisory thread.
-- An honest assessment. If we decide the report is not a vulnerability, we will
-  say why rather than leave it open.
-- Credit in the advisory when a fix ships, unless you would rather stay
-  anonymous.
-
-## Scope
-
-Reports about Navirox's own code are in scope. Reports about upstream
-dependencies, `@symbiote-native/*`, React Native, or the native toolchains
-belong with those projects, though we are happy to help route one.
+Please never include real credentials, private customer data, or an exploit
+against a system you do not own in a report.

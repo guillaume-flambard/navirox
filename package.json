@@ -16,6 +16,7 @@
     "test": "turbo run test",
     "test:e2e": "node scripts/e2e-scaffold.mjs --bundle",
     "test:benchmarks": "node scripts/benchmark-projects.mjs",
+    "docs:check": "node scripts/check-public-surface.mjs",
     "lint": "eslint \"packages/*/src/**/*.ts\"",
     "format": "prettier --write .",
     "format:check": "prettier --check .",

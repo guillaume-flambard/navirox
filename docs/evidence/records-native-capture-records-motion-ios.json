@@ -1,7 +1,7 @@
 {
   "scenario": "records-motion",
   "platform": "ios",
-  "artifactDirectory": "/Users/runner/work/_temp/capture-ios/app/scenario-artifacts/records-motion",
+  "artifactDirectory": "<ci-workspace>/scenario-artifacts/records-motion",
   "device": {
     "platform": "ios",
     "deviceName": "iPhone 17"
@@ -135,14 +135,14 @@
   ],
   "report": {
     "scenario": "records-motion",
-    "artifactDir": "/Users/runner/work/_temp/capture-ios/app/scenario-artifacts/records-motion",
+    "artifactDir": "<ci-workspace>/scenario-artifacts/records-motion",
     "outcomes": [
       {
         "capture": "rest",
         "moment": "rest",
-        "web": "/Users/runner/work/_temp/capture-ios/app/scenario-artifacts/records-motion/rest.web.png",
+        "web": "<ci-workspace>/scenario-artifacts/records-motion/rest.web.png",
         "native": {
-          "ios": "/Users/runner/work/_temp/capture-ios/app/scenario-artifacts/records-motion/rest.ios.png"
+          "ios": "<ci-workspace>/scenario-artifacts/records-motion/rest.ios.png"
         },
         "devices": {
           "ios": {
@@ -160,9 +160,9 @@
       {
         "capture": "first-meaningful",
         "moment": "first-meaningful",
-        "web": "/Users/runner/work/_temp/capture-ios/app/scenario-artifacts/records-motion/first-meaningful.web.png",
+        "web": "<ci-workspace>/scenario-artifacts/records-motion/first-meaningful.web.png",
         "native": {
-          "ios": "/Users/runner/work/_temp/capture-ios/app/scenario-artifacts/records-motion/first-meaningful.ios.png"
+          "ios": "<ci-workspace>/scenario-artifacts/records-motion/first-meaningful.ios.png"
         },
         "devices": {
           "ios": {
@@ -180,9 +180,9 @@
       {
         "capture": "midpoint",
         "moment": "midpoint",
-        "web": "/Users/runner/work/_temp/capture-ios/app/scenario-artifacts/records-motion/midpoint.web.png",
+        "web": "<ci-workspace>/scenario-artifacts/records-motion/midpoint.web.png",
         "native": {
-          "ios": "/Users/runner/work/_temp/capture-ios/app/scenario-artifacts/records-motion/midpoint.ios.png"
+          "ios": "<ci-workspace>/scenario-artifacts/records-motion/midpoint.ios.png"
         },
         "devices": {
           "ios": {
@@ -200,9 +200,9 @@
       {
         "capture": "settled",
         "moment": "settled",
-        "web": "/Users/runner/work/_temp/capture-ios/app/scenario-artifacts/records-motion/settled.web.png",
+        "web": "<ci-workspace>/scenario-artifacts/records-motion/settled.web.png",
         "native": {
-          "ios": "/Users/runner/work/_temp/capture-ios/app/scenario-artifacts/records-motion/settled.ios.png"
+          "ios": "<ci-workspace>/scenario-artifacts/records-motion/settled.ios.png"
         },
         "devices": {
           "ios": {
@@ -220,9 +220,9 @@
       {
         "capture": "interrupted",
         "moment": "interrupted",
-        "web": "/Users/runner/work/_temp/capture-ios/app/scenario-artifacts/records-motion/interrupted.web.png",
+        "web": "<ci-workspace>/scenario-artifacts/records-motion/interrupted.web.png",
         "native": {
-          "ios": "/Users/runner/work/_temp/capture-ios/app/scenario-artifacts/records-motion/interrupted.ios.png"
+          "ios": "<ci-workspace>/scenario-artifacts/records-motion/interrupted.ios.png"
         },
         "devices": {
           "ios": {

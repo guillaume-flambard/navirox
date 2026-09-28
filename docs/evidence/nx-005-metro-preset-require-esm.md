@@ -36,7 +36,7 @@ Observed, verbatim:
 ```
 exports: NAVIROX_SOURCE_EXTENSIONS, PACKAGE_NAME, PACKAGE_ROLE, createNaviroxConfig, withNavirox
 sourceExts: js,ts,vue,css,scss,sass,less,styl
-transformer: /Users/memo/projects/active/apps/navirox/node_modules/.pnpm/@symbiote-native+vue@2.0.0_.../node_modules/@symbiote-native/vue/metro-vue-transformer.cjs
+transformer: <repo>/node_modules/.pnpm/@symbiote-native+vue@2.0.0_.../node_modules/@symbiote-native/vue/metro-vue-transformer.cjs
 transformer exists: true
 ```
 

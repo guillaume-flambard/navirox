@@ -1,11 +1,11 @@
 {
   "scenario": "records-list",
-  "artifactDir": "/Users/memo/projects/active/apps/mobile/navirox/packages/visual-benchmark/scenario-artifacts/records-list",
+  "artifactDir": "<repo>/packages/visual-benchmark/scenario-artifacts/records-list",
   "outcomes": [
     {
       "capture": "rest",
       "moment": "rest",
-      "web": "/Users/memo/projects/active/apps/mobile/navirox/packages/visual-benchmark/scenario-artifacts/records-list/rest.web.png",
+      "web": "<repo>/packages/visual-benchmark/scenario-artifacts/records-list/rest.web.png",
       "native": {},
       "devices": {},
       "unavailable": [

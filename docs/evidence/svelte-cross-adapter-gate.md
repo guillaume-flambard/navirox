@@ -115,7 +115,7 @@ the fix. This is the reason the evidence rests on a project nobody here wrote.
 
 ```
 Navirox inspection
-  project   /Users/memo/projects/upstream/symbiote-native/examples/svelte
+  project   <upstream-checkout>/examples/svelte
   adapter   Svelte (experimental)
   framework svelte ^5.56.0
 
@@ -137,7 +137,7 @@ Findings (4)
 
 ```
 Navirox inspection
-  project   /Users/memo/projects/upstream/symbiote-native/examples/vue-sfc
+  project   <upstream-checkout>/examples/vue-sfc
   adapter   Vue (experimental)
   framework vue ^3.5.38
 

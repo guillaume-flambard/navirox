@@ -64,6 +64,7 @@ jobs:
           BASE_SHA: ${{ github.event.pull_request.base.sha }}
         run: pnpm changeset status --since="$BASE_SHA"
 
+      - run: pnpm docs:check
       - run: pnpm build
       - run: pnpm typecheck
       - run: pnpm test
