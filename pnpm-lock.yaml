@@ -17,8 +17,8 @@ importers:
         specifier: ^3.0.3
         version: 3.0.3
       '@types/node':
-        specifier: ^26.6.1
-        version: 26.6.1
+        specifier: ^26.6.2
+        version: 26.6.2
       eslint:
         specifier: ^10.10.0
         version: 10.10.0(supports-color@8.1.1)
@@ -42,7 +42,7 @@ importers:
         version: 8.70.0(eslint@10.10.0(supports-color@8.1.1))(supports-color@8.1.1)(typescript@6.0.3)
       vitest:
         specifier: ^5.0.1
-        version: 5.0.1(@types/node@26.6.1)(vite@8.3.0(@types/node@26.6.1)(less@4.9.1(supports-color@8.1.1))(sass@1.104.1)(stylus@0.64.0(supports-color@8.1.1))(terser@5.51.2)(yaml@2.9.1))
+        version: 5.0.1(@types/node@26.6.2)(vite@8.3.0(@types/node@26.6.2)(less@4.9.1(supports-color@8.1.1))(sass@1.104.1)(stylus@0.64.0(supports-color@8.1.1))(terser@5.51.2)(yaml@2.9.1))
 
   examples/vue-basic:
     dependencies:
@@ -126,8 +126,8 @@ importers:
         specifier: ^30.0.0
         version: 30.0.0
       '@types/node':
-        specifier: ^26.6.1
-        version: 26.6.1
+        specifier: ^26.6.2
+        version: 26.6.2
       '@types/react':
         specifier: ^19.2.0
         version: 19.3.0
@@ -136,7 +136,7 @@ importers:
         version: 8.70.0(eslint@10.10.0(supports-color@8.1.1))(supports-color@8.1.1)(typescript@6.0.3)
       detox:
         specifier: ^20.51.4
-        version: 20.51.4(@jest/environment@30.5.1)(@jest/types@30.5.1)(expect@29.7.0)(jest-environment-node@30.5.1)(jest@30.5.1(@types/node@26.6.1)(supports-color@8.1.1))
+        version: 20.51.4(@jest/environment@30.5.1)(@jest/types@30.5.1)(expect@29.7.0)(jest-environment-node@30.5.1)(jest@30.5.1(@types/node@26.6.2)(supports-color@8.1.1))
       eslint:
         specifier: ^10.10.0
         version: 10.10.0(supports-color@8.1.1)
@@ -148,7 +148,7 @@ importers:
         version: 10.11.0(@typescript-eslint/parser@8.70.0(eslint@10.10.0(supports-color@8.1.1))(supports-color@8.1.1)(typescript@6.0.3))(eslint@10.10.0(supports-color@8.1.1))(vue-eslint-parser@10.4.1(eslint@10.10.0(supports-color@8.1.1))(supports-color@8.1.1))
       jest:
         specifier: ^30.5.1
-        version: 30.5.1(@types/node@26.6.1)(supports-color@8.1.1)
+        version: 30.5.1(@types/node@26.6.2)(supports-color@8.1.1)
       jest-circus:
         specifier: ^30.5.1
         version: 30.5.1(supports-color@8.1.1)
@@ -166,7 +166,7 @@ importers:
         version: 0.64.0(supports-color@8.1.1)
       ts-jest:
         specifier: ^29.4.12
-        version: 29.4.12(@babel/core@7.29.7(supports-color@8.1.1))(@jest/transform@30.5.1(supports-color@8.1.1))(@jest/types@30.5.1)(babel-jest@30.5.1(@babel/core@7.29.7(supports-color@8.1.1))(supports-color@8.1.1))(jest-util@30.5.1)(jest@30.5.1(@types/node@26.6.1)(supports-color@8.1.1))(typescript@6.0.3)
+        version: 29.4.12(@babel/core@7.29.7(supports-color@8.1.1))(@jest/transform@30.5.1(supports-color@8.1.1))(@jest/types@30.5.1)(babel-jest@30.5.1(@babel/core@7.29.7(supports-color@8.1.1))(supports-color@8.1.1))(jest-util@30.5.1)(jest@30.5.1(@types/node@26.6.2)(supports-color@8.1.1))(typescript@6.0.3)
       typescript:
         specifier: ~6.0.3
         version: 6.0.3
@@ -268,8 +268,8 @@ importers:
         specifier: ^30.0.0
         version: 30.0.0
       '@types/node':
-        specifier: ^26.6.1
-        version: 26.6.1
+        specifier: ^26.6.2
+        version: 26.6.2
       '@types/react':
         specifier: ^19.2.0
         version: 19.3.0
@@ -278,7 +278,7 @@ importers:
         version: 8.70.0(eslint@10.10.0(supports-color@8.1.1))(supports-color@8.1.1)(typescript@6.0.3)
       detox:
         specifier: ^20.51.4
-        version: 20.51.4(@jest/environment@30.5.1)(@jest/types@30.5.1)(expect@29.7.0)(jest-environment-node@30.5.1)(jest@30.5.1(@types/node@26.6.1)(supports-color@8.1.1))
+        version: 20.51.4(@jest/environment@30.5.1)(@jest/types@30.5.1)(expect@29.7.0)(jest-environment-node@30.5.1)(jest@30.5.1(@types/node@26.6.2)(supports-color@8.1.1))
       eslint:
         specifier: ^10.10.0
         version: 10.10.0(supports-color@8.1.1)
@@ -290,7 +290,7 @@ importers:
         version: 10.11.0(@typescript-eslint/parser@8.70.0(eslint@10.10.0(supports-color@8.1.1))(supports-color@8.1.1)(typescript@6.0.3))(eslint@10.10.0(supports-color@8.1.1))(vue-eslint-parser@10.4.1(eslint@10.10.0(supports-color@8.1.1))(supports-color@8.1.1))
       jest:
         specifier: ^30.5.1
-        version: 30.5.1(@types/node@26.6.1)(supports-color@8.1.1)
+        version: 30.5.1(@types/node@26.6.2)(supports-color@8.1.1)
       jest-circus:
         specifier: ^30.5.1
         version: 30.5.1(supports-color@8.1.1)
@@ -308,7 +308,7 @@ importers:
         version: 0.64.0(supports-color@8.1.1)
       ts-jest:
         specifier: ^29.4.12
-        version: 29.4.12(@babel/core@7.29.7(supports-color@8.1.1))(@jest/transform@30.5.1(supports-color@8.1.1))(@jest/types@30.5.1)(babel-jest@30.5.1(@babel/core@7.29.7(supports-color@8.1.1))(supports-color@8.1.1))(jest-util@30.5.1)(jest@30.5.1(@types/node@26.6.1)(supports-color@8.1.1))(typescript@6.0.3)
+        version: 29.4.12(@babel/core@7.29.7(supports-color@8.1.1))(@jest/transform@30.5.1(supports-color@8.1.1))(@jest/types@30.5.1)(babel-jest@30.5.1(@babel/core@7.29.7(supports-color@8.1.1))(supports-color@8.1.1))(jest-util@30.5.1)(jest@30.5.1(@types/node@26.6.2)(supports-color@8.1.1))(typescript@6.0.3)
       typescript:
         specifier: ~6.0.3
         version: 6.0.3
@@ -328,14 +328,14 @@ importers:
   packages/build:
     devDependencies:
       '@types/node':
-        specifier: ^26.6.1
-        version: 26.6.1
+        specifier: ^26.6.2
+        version: 26.6.2
       typescript:
         specifier: ~6.0.3
         version: 6.0.3
       vitest:
         specifier: ^5.0.1
-        version: 5.0.1(@types/node@26.6.1)(vite@8.3.0(@types/node@26.6.1)(less@4.9.1(supports-color@8.1.1))(sass@1.104.1)(stylus@0.64.0(supports-color@8.1.1))(terser@5.51.2)(yaml@2.9.1))
+        version: 5.0.1(@types/node@26.6.2)(vite@8.3.0(@types/node@26.6.2)(less@4.9.1(supports-color@8.1.1))(sass@1.104.1)(stylus@0.64.0(supports-color@8.1.1))(terser@5.51.2)(yaml@2.9.1))
 
   packages/cli:
     dependencies:
@@ -410,86 +410,86 @@ importers:
         version: link:../workflow
     devDependencies:
       '@types/node':
-        specifier: ^26.6.1
-        version: 26.6.1
+        specifier: ^26.6.2
+        version: 26.6.2
       typescript:
         specifier: ~6.0.3
         version: 6.0.3
       vitest:
         specifier: ^5.0.1
-        version: 5.0.1(@types/node@26.6.1)(vite@8.3.0(@types/node@26.6.1)(less@4.9.1(supports-color@8.1.1))(sass@1.104.1)(stylus@0.64.0(supports-color@8.1.1))(terser@5.51.2)(yaml@2.9.1))
+        version: 5.0.1(@types/node@26.6.2)(vite@8.3.0(@types/node@26.6.2)(less@4.9.1(supports-color@8.1.1))(sass@1.104.1)(stylus@0.64.0(supports-color@8.1.1))(terser@5.51.2)(yaml@2.9.1))
 
   packages/compat:
     devDependencies:
       '@types/node':
-        specifier: ^26.6.1
-        version: 26.6.1
+        specifier: ^26.6.2
+        version: 26.6.2
       typescript:
         specifier: ~6.0.3
         version: 6.0.3
       vitest:
         specifier: ^5.0.1
-        version: 5.0.1(@types/node@26.6.1)(vite@8.3.0(@types/node@26.6.1)(less@4.9.1(supports-color@8.1.1))(sass@1.104.1)(stylus@0.64.0(supports-color@8.1.1))(terser@5.51.2)(yaml@2.9.1))
+        version: 5.0.1(@types/node@26.6.2)(vite@8.3.0(@types/node@26.6.2)(less@4.9.1(supports-color@8.1.1))(sass@1.104.1)(stylus@0.64.0(supports-color@8.1.1))(terser@5.51.2)(yaml@2.9.1))
 
   packages/config:
     devDependencies:
       '@types/node':
-        specifier: ^26.6.1
-        version: 26.6.1
+        specifier: ^26.6.2
+        version: 26.6.2
       typescript:
         specifier: ~6.0.3
         version: 6.0.3
       vitest:
         specifier: ^5.0.1
-        version: 5.0.1(@types/node@26.6.1)(vite@8.3.0(@types/node@26.6.1)(less@4.9.1(supports-color@8.1.1))(sass@1.104.1)(stylus@0.64.0(supports-color@8.1.1))(terser@5.51.2)(yaml@2.9.1))
+        version: 5.0.1(@types/node@26.6.2)(vite@8.3.0(@types/node@26.6.2)(less@4.9.1(supports-color@8.1.1))(sass@1.104.1)(stylus@0.64.0(supports-color@8.1.1))(terser@5.51.2)(yaml@2.9.1))
 
   packages/create-navirox:
     devDependencies:
       '@types/node':
-        specifier: ^26.6.1
-        version: 26.6.1
+        specifier: ^26.6.2
+        version: 26.6.2
       typescript:
         specifier: ~6.0.3
         version: 6.0.3
       vitest:
         specifier: ^5.0.1
-        version: 5.0.1(@types/node@26.6.1)(vite@8.3.0(@types/node@26.6.1)(less@4.9.1(supports-color@8.1.1))(sass@1.104.1)(stylus@0.64.0(supports-color@8.1.1))(terser@5.51.2)(yaml@2.9.1))
+        version: 5.0.1(@types/node@26.6.2)(vite@8.3.0(@types/node@26.6.2)(less@4.9.1(supports-color@8.1.1))(sass@1.104.1)(stylus@0.64.0(supports-color@8.1.1))(terser@5.51.2)(yaml@2.9.1))
 
   packages/discovery:
     devDependencies:
       '@types/node':
-        specifier: ^26.6.1
-        version: 26.6.1
+        specifier: ^26.6.2
+        version: 26.6.2
       typescript:
         specifier: ~6.0.3
         version: 6.0.3
       vitest:
         specifier: ^5.0.1
-        version: 5.0.1(@types/node@26.6.1)(vite@8.3.0(@types/node@26.6.1)(less@4.9.1(supports-color@8.1.1))(sass@1.104.1)(stylus@0.64.0(supports-color@8.1.1))(terser@5.51.2)(yaml@2.9.1))
+        version: 5.0.1(@types/node@26.6.2)(vite@8.3.0(@types/node@26.6.2)(less@4.9.1(supports-color@8.1.1))(sass@1.104.1)(stylus@0.64.0(supports-color@8.1.1))(terser@5.51.2)(yaml@2.9.1))
 
   packages/doctor:
     devDependencies:
       '@types/node':
-        specifier: ^26.6.1
-        version: 26.6.1
+        specifier: ^26.6.2
+        version: 26.6.2
       typescript:
         specifier: ~6.0.3
         version: 6.0.3
       vitest:
         specifier: ^5.0.1
-        version: 5.0.1(@types/node@26.6.1)(vite@8.3.0(@types/node@26.6.1)(less@4.9.1(supports-color@8.1.1))(sass@1.104.1)(stylus@0.64.0(supports-color@8.1.1))(terser@5.51.2)(yaml@2.9.1))
+        version: 5.0.1(@types/node@26.6.2)(vite@8.3.0(@types/node@26.6.2)(less@4.9.1(supports-color@8.1.1))(sass@1.104.1)(stylus@0.64.0(supports-color@8.1.1))(terser@5.51.2)(yaml@2.9.1))
 
   packages/graph:
     devDependencies:
       '@types/node':
-        specifier: ^26.6.1
-        version: 26.6.1
+        specifier: ^26.6.2
+        version: 26.6.2
       typescript:
         specifier: ~6.0.3
         version: 6.0.3
       vitest:
         specifier: ^5.0.1
-        version: 5.0.1(@types/node@26.6.1)(vite@8.3.0(@types/node@26.6.1)(less@4.9.1(supports-color@8.1.1))(sass@1.104.1)(stylus@0.64.0(supports-color@8.1.1))(terser@5.51.2)(yaml@2.9.1))
+        version: 5.0.1(@types/node@26.6.2)(vite@8.3.0(@types/node@26.6.2)(less@4.9.1(supports-color@8.1.1))(sass@1.104.1)(stylus@0.64.0(supports-color@8.1.1))(terser@5.51.2)(yaml@2.9.1))
 
   packages/inspect:
     dependencies:
@@ -504,14 +504,14 @@ importers:
         version: link:../source
     devDependencies:
       '@types/node':
-        specifier: ^26.6.1
-        version: 26.6.1
+        specifier: ^26.6.2
+        version: 26.6.2
       typescript:
         specifier: ~6.0.3
         version: 6.0.3
       vitest:
         specifier: ^5.0.1
-        version: 5.0.1(@types/node@26.6.1)(vite@8.3.0(@types/node@26.6.1)(less@4.9.1(supports-color@8.1.1))(sass@1.104.1)(stylus@0.64.0(supports-color@8.1.1))(terser@5.51.2)(yaml@2.9.1))
+        version: 5.0.1(@types/node@26.6.2)(vite@8.3.0(@types/node@26.6.2)(less@4.9.1(supports-color@8.1.1))(sass@1.104.1)(stylus@0.64.0(supports-color@8.1.1))(terser@5.51.2)(yaml@2.9.1))
 
   packages/metro-preset:
     dependencies:
@@ -523,14 +523,14 @@ importers:
         specifier: ^7.25.2
         version: 7.29.7(supports-color@8.1.1)
       '@types/node':
-        specifier: ^26.6.1
-        version: 26.6.1
+        specifier: ^26.6.2
+        version: 26.6.2
       typescript:
         specifier: ~6.0.3
         version: 6.0.3
       vitest:
         specifier: ^5.0.1
-        version: 5.0.1(@types/node@26.6.1)(vite@8.3.0(@types/node@26.6.1)(less@4.9.1(supports-color@8.1.1))(sass@1.104.1)(stylus@0.64.0(supports-color@8.1.1))(terser@5.51.2)(yaml@2.9.1))
+        version: 5.0.1(@types/node@26.6.2)(vite@8.3.0(@types/node@26.6.2)(less@4.9.1(supports-color@8.1.1))(sass@1.104.1)(stylus@0.64.0(supports-color@8.1.1))(terser@5.51.2)(yaml@2.9.1))
 
   packages/migrate:
     dependencies:
@@ -542,14 +542,14 @@ importers:
         version: link:../planner
     devDependencies:
       '@types/node':
-        specifier: ^26.6.1
-        version: 26.6.1
+        specifier: ^26.6.2
+        version: 26.6.2
       typescript:
         specifier: ~6.0.3
         version: 6.0.3
       vitest:
         specifier: ^5.0.1
-        version: 5.0.1(@types/node@26.6.1)(vite@8.3.0(@types/node@26.6.1)(less@4.9.1(supports-color@8.1.1))(sass@1.104.1)(stylus@0.64.0(supports-color@8.1.1))(terser@5.51.2)(yaml@2.9.1))
+        version: 5.0.1(@types/node@26.6.2)(vite@8.3.0(@types/node@26.6.2)(less@4.9.1(supports-color@8.1.1))(sass@1.104.1)(stylus@0.64.0(supports-color@8.1.1))(terser@5.51.2)(yaml@2.9.1))
 
   packages/native:
     dependencies:
@@ -558,14 +558,14 @@ importers:
         version: link:../runtime
     devDependencies:
       '@types/node':
-        specifier: ^26.6.1
-        version: 26.6.1
+        specifier: ^26.6.2
+        version: 26.6.2
       typescript:
         specifier: ~6.0.3
         version: 6.0.3
       vitest:
         specifier: ^5.0.1
-        version: 5.0.1(@types/node@26.6.1)(vite@8.3.0(@types/node@26.6.1)(less@4.9.1(supports-color@8.1.1))(sass@1.104.1)(stylus@0.64.0(supports-color@8.1.1))(terser@5.51.2)(yaml@2.9.1))
+        version: 5.0.1(@types/node@26.6.2)(vite@8.3.0(@types/node@26.6.2)(less@4.9.1(supports-color@8.1.1))(sass@1.104.1)(stylus@0.64.0(supports-color@8.1.1))(terser@5.51.2)(yaml@2.9.1))
       vue:
         specifier: ^3.5.43
         version: 3.5.43(typescript@6.0.3)
@@ -577,14 +577,14 @@ importers:
         version: link:../cli
     devDependencies:
       '@types/node':
-        specifier: ^26.6.1
-        version: 26.6.1
+        specifier: ^26.6.2
+        version: 26.6.2
       typescript:
         specifier: ~6.0.3
         version: 6.0.3
       vitest:
         specifier: ^5.0.1
-        version: 5.0.1(@types/node@26.6.1)(vite@8.3.0(@types/node@26.6.1)(less@4.9.1(supports-color@8.1.1))(sass@1.104.1)(stylus@0.64.0(supports-color@8.1.1))(terser@5.51.2)(yaml@2.9.1))
+        version: 5.0.1(@types/node@26.6.2)(vite@8.3.0(@types/node@26.6.2)(less@4.9.1(supports-color@8.1.1))(sass@1.104.1)(stylus@0.64.0(supports-color@8.1.1))(terser@5.51.2)(yaml@2.9.1))
 
   packages/planner:
     dependencies:
@@ -599,14 +599,14 @@ importers:
         version: 0.6.0
     devDependencies:
       '@types/node':
-        specifier: ^26.6.1
-        version: 26.6.1
+        specifier: ^26.6.2
+        version: 26.6.2
       typescript:
         specifier: ~6.0.3
         version: 6.0.3
       vitest:
         specifier: ^5.0.1
-        version: 5.0.1(@types/node@26.6.1)(vite@8.3.0(@types/node@26.6.1)(less@4.9.1(supports-color@8.1.1))(sass@1.104.1)(stylus@0.64.0(supports-color@8.1.1))(terser@5.51.2)(yaml@2.9.1))
+        version: 5.0.1(@types/node@26.6.2)(vite@8.3.0(@types/node@26.6.2)(less@4.9.1(supports-color@8.1.1))(sass@1.104.1)(stylus@0.64.0(supports-color@8.1.1))(terser@5.51.2)(yaml@2.9.1))
 
   packages/router:
     dependencies:
@@ -615,14 +615,14 @@ importers:
         version: link:../runtime
     devDependencies:
       '@types/node':
-        specifier: ^26.6.1
-        version: 26.6.1
+        specifier: ^26.6.2
+        version: 26.6.2
       typescript:
         specifier: ~6.0.3
         version: 6.0.3
       vitest:
         specifier: ^5.0.1
-        version: 5.0.1(@types/node@26.6.1)(vite@8.3.0(@types/node@26.6.1)(less@4.9.1(supports-color@8.1.1))(sass@1.104.1)(stylus@0.64.0(supports-color@8.1.1))(terser@5.51.2)(yaml@2.9.1))
+        version: 5.0.1(@types/node@26.6.2)(vite@8.3.0(@types/node@26.6.2)(less@4.9.1(supports-color@8.1.1))(sass@1.104.1)(stylus@0.64.0(supports-color@8.1.1))(terser@5.51.2)(yaml@2.9.1))
 
   packages/runtime:
     dependencies:
@@ -631,14 +631,14 @@ importers:
         version: 3.5.43(typescript@6.0.3)
     devDependencies:
       '@types/node':
-        specifier: ^26.6.1
-        version: 26.6.1
+        specifier: ^26.6.2
+        version: 26.6.2
       typescript:
         specifier: ~6.0.3
         version: 6.0.3
       vitest:
         specifier: ^5.0.1
-        version: 5.0.1(@types/node@26.6.1)(vite@8.3.0(@types/node@26.6.1)(less@4.9.1(supports-color@8.1.1))(sass@1.104.1)(stylus@0.64.0(supports-color@8.1.1))(terser@5.51.2)(yaml@2.9.1))
+        version: 5.0.1(@types/node@26.6.2)(vite@8.3.0(@types/node@26.6.2)(less@4.9.1(supports-color@8.1.1))(sass@1.104.1)(stylus@0.64.0(supports-color@8.1.1))(terser@5.51.2)(yaml@2.9.1))
 
   packages/runtime-symbiote:
     dependencies:
@@ -671,14 +671,14 @@ importers:
         version: 3.5.43(typescript@6.0.3)
     devDependencies:
       '@types/node':
-        specifier: ^26.6.1
-        version: 26.6.1
+        specifier: ^26.6.2
+        version: 26.6.2
       typescript:
         specifier: ~6.0.3
         version: 6.0.3
       vitest:
         specifier: ^5.0.1
-        version: 5.0.1(@types/node@26.6.1)(vite@8.3.0(@types/node@26.6.1)(less@4.9.1(supports-color@8.1.1))(sass@1.104.1)(stylus@0.64.0(supports-color@8.1.1))(terser@5.51.2)(yaml@2.9.1))
+        version: 5.0.1(@types/node@26.6.2)(vite@8.3.0(@types/node@26.6.2)(less@4.9.1(supports-color@8.1.1))(sass@1.104.1)(stylus@0.64.0(supports-color@8.1.1))(terser@5.51.2)(yaml@2.9.1))
 
   packages/source:
     dependencies:
@@ -690,14 +690,14 @@ importers:
         version: link:../workflow
     devDependencies:
       '@types/node':
-        specifier: ^26.6.1
-        version: 26.6.1
+        specifier: ^26.6.2
+        version: 26.6.2
       typescript:
         specifier: ~6.0.3
         version: 6.0.3
       vitest:
         specifier: ^5.0.1
-        version: 5.0.1(@types/node@26.6.1)(vite@8.3.0(@types/node@26.6.1)(less@4.9.1(supports-color@8.1.1))(sass@1.104.1)(stylus@0.64.0(supports-color@8.1.1))(terser@5.51.2)(yaml@2.9.1))
+        version: 5.0.1(@types/node@26.6.2)(vite@8.3.0(@types/node@26.6.2)(less@4.9.1(supports-color@8.1.1))(sass@1.104.1)(stylus@0.64.0(supports-color@8.1.1))(terser@5.51.2)(yaml@2.9.1))
 
   packages/source-angular:
     dependencies:
@@ -712,11 +712,11 @@ importers:
         version: 6.0.3
     devDependencies:
       '@types/node':
-        specifier: ^26.6.1
-        version: 26.6.1
+        specifier: ^26.6.2
+        version: 26.6.2
       vitest:
         specifier: ^5.0.1
-        version: 5.0.1(@types/node@26.6.1)(vite@8.3.0(@types/node@26.6.1)(less@4.9.1(supports-color@8.1.1))(sass@1.104.1)(stylus@0.64.0(supports-color@8.1.1))(terser@5.51.2)(yaml@2.9.1))
+        version: 5.0.1(@types/node@26.6.2)(vite@8.3.0(@types/node@26.6.2)(less@4.9.1(supports-color@8.1.1))(sass@1.104.1)(stylus@0.64.0(supports-color@8.1.1))(terser@5.51.2)(yaml@2.9.1))
 
   packages/source-astro:
     dependencies:
@@ -737,14 +737,14 @@ importers:
         version: link:../source-vue
     devDependencies:
       '@types/node':
-        specifier: ^26.6.1
-        version: 26.6.1
+        specifier: ^26.6.2
+        version: 26.6.2
       typescript:
         specifier: ~6.0.3
         version: 6.0.3
       vitest:
         specifier: ^5.0.1
-        version: 5.0.1(@types/node@26.6.1)(vite@8.3.0(@types/node@26.6.1)(less@4.9.1(supports-color@8.1.1))(sass@1.104.1)(stylus@0.64.0(supports-color@8.1.1))(terser@5.51.2)(yaml@2.9.1))
+        version: 5.0.1(@types/node@26.6.2)(vite@8.3.0(@types/node@26.6.2)(less@4.9.1(supports-color@8.1.1))(sass@1.104.1)(stylus@0.64.0(supports-color@8.1.1))(terser@5.51.2)(yaml@2.9.1))
 
   packages/source-lit:
     dependencies:
@@ -759,14 +759,14 @@ importers:
         version: link:../source-react
     devDependencies:
       '@types/node':
-        specifier: ^26.6.1
-        version: 26.6.1
+        specifier: ^26.6.2
+        version: 26.6.2
       typescript:
         specifier: ~6.0.3
         version: 6.0.3
       vitest:
         specifier: ^5.0.1
-        version: 5.0.1(@types/node@26.6.1)(vite@8.3.0(@types/node@26.6.1)(less@4.9.1(supports-color@8.1.1))(sass@1.104.1)(stylus@0.64.0(supports-color@8.1.1))(terser@5.51.2)(yaml@2.9.1))
+        version: 5.0.1(@types/node@26.6.2)(vite@8.3.0(@types/node@26.6.2)(less@4.9.1(supports-color@8.1.1))(sass@1.104.1)(stylus@0.64.0(supports-color@8.1.1))(terser@5.51.2)(yaml@2.9.1))
 
   packages/source-next:
     dependencies:
@@ -781,14 +781,14 @@ importers:
         version: link:../source-react
     devDependencies:
       '@types/node':
-        specifier: ^26.6.1
-        version: 26.6.1
+        specifier: ^26.6.2
+        version: 26.6.2
       typescript:
         specifier: ~6.0.3
         version: 6.0.3
       vitest:
         specifier: ^5.0.1
-        version: 5.0.1(@types/node@26.6.1)(vite@8.3.0(@types/node@26.6.1)(less@4.9.1(supports-color@8.1.1))(sass@1.104.1)(stylus@0.64.0(supports-color@8.1.1))(terser@5.51.2)(yaml@2.9.1))
+        version: 5.0.1(@types/node@26.6.2)(vite@8.3.0(@types/node@26.6.2)(less@4.9.1(supports-color@8.1.1))(sass@1.104.1)(stylus@0.64.0(supports-color@8.1.1))(terser@5.51.2)(yaml@2.9.1))
 
   packages/source-nuxt:
     dependencies:
@@ -806,11 +806,11 @@ importers:
         version: 6.0.3
     devDependencies:
       '@types/node':
-        specifier: ^26.6.1
-        version: 26.6.1
+        specifier: ^26.6.2
+        version: 26.6.2
       vitest:
         specifier: ^5.0.1
-        version: 5.0.1(@types/node@26.6.1)(vite@8.3.0(@types/node@26.6.1)(less@4.9.1(supports-color@8.1.1))(sass@1.104.1)(stylus@0.64.0(supports-color@8.1.1))(terser@5.51.2)(yaml@2.9.1))
+        version: 5.0.1(@types/node@26.6.2)(vite@8.3.0(@types/node@26.6.2)(less@4.9.1(supports-color@8.1.1))(sass@1.104.1)(stylus@0.64.0(supports-color@8.1.1))(terser@5.51.2)(yaml@2.9.1))
 
   packages/source-qwik:
     dependencies:
@@ -825,14 +825,14 @@ importers:
         version: link:../source-react
     devDependencies:
       '@types/node':
-        specifier: ^26.6.1
-        version: 26.6.1
+        specifier: ^26.6.2
+        version: 26.6.2
       typescript:
         specifier: ~6.0.3
         version: 6.0.3
       vitest:
         specifier: ^5.0.1
-        version: 5.0.1(@types/node@26.6.1)(vite@8.3.0(@types/node@26.6.1)(less@4.9.1(supports-color@8.1.1))(sass@1.104.1)(stylus@0.64.0(supports-color@8.1.1))(terser@5.51.2)(yaml@2.9.1))
+        version: 5.0.1(@types/node@26.6.2)(vite@8.3.0(@types/node@26.6.2)(less@4.9.1(supports-color@8.1.1))(sass@1.104.1)(stylus@0.64.0(supports-color@8.1.1))(terser@5.51.2)(yaml@2.9.1))
 
   packages/source-react:
     dependencies:
@@ -844,14 +844,14 @@ importers:
         version: link:../source
     devDependencies:
       '@types/node':
-        specifier: ^26.6.1
-        version: 26.6.1
+        specifier: ^26.6.2
+        version: 26.6.2
       typescript:
         specifier: ~6.0.3
         version: 6.0.3
       vitest:
         specifier: ^5.0.1
-        version: 5.0.1(@types/node@26.6.1)(vite@8.3.0(@types/node@26.6.1)(less@4.9.1(supports-color@8.1.1))(sass@1.104.1)(stylus@0.64.0(supports-color@8.1.1))(terser@5.51.2)(yaml@2.9.1))
+        version: 5.0.1(@types/node@26.6.2)(vite@8.3.0(@types/node@26.6.2)(less@4.9.1(supports-color@8.1.1))(sass@1.104.1)(stylus@0.64.0(supports-color@8.1.1))(terser@5.51.2)(yaml@2.9.1))
 
   packages/source-solid:
     dependencies:
@@ -866,14 +866,14 @@ importers:
         version: link:../source-react
     devDependencies:
       '@types/node':
-        specifier: ^26.6.1
-        version: 26.6.1
+        specifier: ^26.6.2
+        version: 26.6.2
       typescript:
         specifier: ~6.0.3
         version: 6.0.3
       vitest:
         specifier: ^5.0.1
-        version: 5.0.1(@types/node@26.6.1)(vite@8.3.0(@types/node@26.6.1)(less@4.9.1(supports-color@8.1.1))(sass@1.104.1)(stylus@0.64.0(supports-color@8.1.1))(terser@5.51.2)(yaml@2.9.1))
+        version: 5.0.1(@types/node@26.6.2)(vite@8.3.0(@types/node@26.6.2)(less@4.9.1(supports-color@8.1.1))(sass@1.104.1)(stylus@0.64.0(supports-color@8.1.1))(terser@5.51.2)(yaml@2.9.1))
 
   packages/source-svelte:
     dependencies:
@@ -885,14 +885,14 @@ importers:
         version: link:../source
     devDependencies:
       '@types/node':
-        specifier: ^26.6.1
-        version: 26.6.1
+        specifier: ^26.6.2
+        version: 26.6.2
       typescript:
         specifier: ~6.0.3
         version: 6.0.3
       vitest:
         specifier: ^5.0.1
-        version: 5.0.1(@types/node@26.6.1)(vite@8.3.0(@types/node@26.6.1)(less@4.9.1(supports-color@8.1.1))(sass@1.104.1)(stylus@0.64.0(supports-color@8.1.1))(terser@5.51.2)(yaml@2.9.1))
+        version: 5.0.1(@types/node@26.6.2)(vite@8.3.0(@types/node@26.6.2)(less@4.9.1(supports-color@8.1.1))(sass@1.104.1)(stylus@0.64.0(supports-color@8.1.1))(terser@5.51.2)(yaml@2.9.1))
 
   packages/source-sveltekit:
     dependencies:
@@ -907,14 +907,14 @@ importers:
         version: link:../source-svelte
     devDependencies:
       '@types/node':
-        specifier: ^26.6.1
-        version: 26.6.1
+        specifier: ^26.6.2
+        version: 26.6.2
       typescript:
         specifier: ~6.0.3
         version: 6.0.3
       vitest:
         specifier: ^5.0.1
-        version: 5.0.1(@types/node@26.6.1)(vite@8.3.0(@types/node@26.6.1)(less@4.9.1(supports-color@8.1.1))(sass@1.104.1)(stylus@0.64.0(supports-color@8.1.1))(terser@5.51.2)(yaml@2.9.1))
+        version: 5.0.1(@types/node@26.6.2)(vite@8.3.0(@types/node@26.6.2)(less@4.9.1(supports-color@8.1.1))(sass@1.104.1)(stylus@0.64.0(supports-color@8.1.1))(terser@5.51.2)(yaml@2.9.1))
 
   packages/source-vanilla:
     dependencies:
@@ -929,14 +929,14 @@ importers:
         version: link:../source-react
     devDependencies:
       '@types/node':
-        specifier: ^26.6.1
-        version: 26.6.1
+        specifier: ^26.6.2
+        version: 26.6.2
       typescript:
         specifier: ~6.0.3
         version: 6.0.3
       vitest:
         specifier: ^5.0.1
-        version: 5.0.1(@types/node@26.6.1)(vite@8.3.0(@types/node@26.6.1)(less@4.9.1(supports-color@8.1.1))(sass@1.104.1)(stylus@0.64.0(supports-color@8.1.1))(terser@5.51.2)(yaml@2.9.1))
+        version: 5.0.1(@types/node@26.6.2)(vite@8.3.0(@types/node@26.6.2)(less@4.9.1(supports-color@8.1.1))(sass@1.104.1)(stylus@0.64.0(supports-color@8.1.1))(terser@5.51.2)(yaml@2.9.1))
 
   packages/source-vue:
     dependencies:
@@ -963,11 +963,11 @@ importers:
         version: 6.0.3
     devDependencies:
       '@types/node':
-        specifier: ^26.6.1
-        version: 26.6.1
+        specifier: ^26.6.2
+        version: 26.6.2
       vitest:
         specifier: ^5.0.1
-        version: 5.0.1(@types/node@26.6.1)(vite@8.3.0(@types/node@26.6.1)(less@4.9.1(supports-color@8.1.1))(sass@1.104.1)(stylus@0.64.0(supports-color@8.1.1))(terser@5.51.2)(yaml@2.9.1))
+        version: 5.0.1(@types/node@26.6.2)(vite@8.3.0(@types/node@26.6.2)(less@4.9.1(supports-color@8.1.1))(sass@1.104.1)(stylus@0.64.0(supports-color@8.1.1))(terser@5.51.2)(yaml@2.9.1))
 
   packages/target-angular:
     dependencies:
@@ -976,11 +976,11 @@ importers:
         version: 3.5.43
     devDependencies:
       '@types/node':
-        specifier: ^26.6.1
-        version: 26.6.1
+        specifier: ^26.6.2
+        version: 26.6.2
       vitest:
         specifier: ^5.0.1
-        version: 5.0.1(@types/node@26.6.1)(vite@8.3.0(@types/node@26.6.1)(less@4.9.1(supports-color@8.1.1))(sass@1.104.1)(stylus@0.64.0(supports-color@8.1.1))(terser@5.51.2)(yaml@2.9.1))
+        version: 5.0.1(@types/node@26.6.2)(vite@8.3.0(@types/node@26.6.2)(less@4.9.1(supports-color@8.1.1))(sass@1.104.1)(stylus@0.64.0(supports-color@8.1.1))(terser@5.51.2)(yaml@2.9.1))
 
   packages/target-native:
     dependencies:
@@ -989,11 +989,11 @@ importers:
         version: link:../workflow
     devDependencies:
       '@types/node':
-        specifier: ^26.6.1
-        version: 26.6.1
+        specifier: ^26.6.2
+        version: 26.6.2
       vitest:
         specifier: ^5.0.1
-        version: 5.0.1(@types/node@26.6.1)(vite@8.3.0(@types/node@26.6.1)(less@4.9.1(supports-color@8.1.1))(sass@1.104.1)(stylus@0.64.0(supports-color@8.1.1))(terser@5.51.2)(yaml@2.9.1))
+        version: 5.0.1(@types/node@26.6.2)(vite@8.3.0(@types/node@26.6.2)(less@4.9.1(supports-color@8.1.1))(sass@1.104.1)(stylus@0.64.0(supports-color@8.1.1))(terser@5.51.2)(yaml@2.9.1))
 
   packages/target-vue:
     dependencies:
@@ -1005,11 +1005,11 @@ importers:
         version: 3.5.43
     devDependencies:
       '@types/node':
-        specifier: ^26.6.1
-        version: 26.6.1
+        specifier: ^26.6.2
+        version: 26.6.2
       vitest:
         specifier: ^5.0.1
-        version: 5.0.1(@types/node@26.6.1)(vite@8.3.0(@types/node@26.6.1)(less@4.9.1(supports-color@8.1.1))(sass@1.104.1)(stylus@0.64.0(supports-color@8.1.1))(terser@5.51.2)(yaml@2.9.1))
+        version: 5.0.1(@types/node@26.6.2)(vite@8.3.0(@types/node@26.6.2)(less@4.9.1(supports-color@8.1.1))(sass@1.104.1)(stylus@0.64.0(supports-color@8.1.1))(terser@5.51.2)(yaml@2.9.1))
 
   packages/ui:
     dependencies:
@@ -1018,14 +1018,14 @@ importers:
         version: link:../runtime
     devDependencies:
       '@types/node':
-        specifier: ^26.6.1
-        version: 26.6.1
+        specifier: ^26.6.2
+        version: 26.6.2
       typescript:
         specifier: ~6.0.3
         version: 6.0.3
       vitest:
         specifier: ^5.0.1
-        version: 5.0.1(@types/node@26.6.1)(vite@8.3.0(@types/node@26.6.1)(less@4.9.1(supports-color@8.1.1))(sass@1.104.1)(stylus@0.64.0(supports-color@8.1.1))(terser@5.51.2)(yaml@2.9.1))
+        version: 5.0.1(@types/node@26.6.2)(vite@8.3.0(@types/node@26.6.2)(less@4.9.1(supports-color@8.1.1))(sass@1.104.1)(stylus@0.64.0(supports-color@8.1.1))(terser@5.51.2)(yaml@2.9.1))
       vue:
         specifier: ^3.5.43
         version: 3.5.43(typescript@6.0.3)
@@ -1033,17 +1033,17 @@ importers:
   packages/visual-benchmark:
     devDependencies:
       '@types/node':
-        specifier: ^26.6.1
-        version: 26.6.1
+        specifier: ^26.6.2
+        version: 26.6.2
       '@vitejs/plugin-vue':
         specifier: ^6.0.9
-        version: 6.0.9(vite@8.3.0(@types/node@26.6.1)(less@4.9.1(supports-color@8.1.1))(sass@1.104.1)(stylus@0.64.0(supports-color@8.1.1))(terser@5.51.2)(yaml@2.9.1))(vue@3.5.43(typescript@6.0.3))
+        version: 6.0.9(vite@8.3.0(@types/node@26.6.2)(less@4.9.1(supports-color@8.1.1))(sass@1.104.1)(stylus@0.64.0(supports-color@8.1.1))(terser@5.51.2)(yaml@2.9.1))(vue@3.5.43(typescript@6.0.3))
       vite:
         specifier: ^8.3.0
-        version: 8.3.0(@types/node@26.6.1)(less@4.9.1(supports-color@8.1.1))(sass@1.104.1)(stylus@0.64.0(supports-color@8.1.1))(terser@5.51.2)(yaml@2.9.1)
+        version: 8.3.0(@types/node@26.6.2)(less@4.9.1(supports-color@8.1.1))(sass@1.104.1)(stylus@0.64.0(supports-color@8.1.1))(terser@5.51.2)(yaml@2.9.1)
       vitest:
         specifier: ^5.0.1
-        version: 5.0.1(@types/node@26.6.1)(vite@8.3.0(@types/node@26.6.1)(less@4.9.1(supports-color@8.1.1))(sass@1.104.1)(stylus@0.64.0(supports-color@8.1.1))(terser@5.51.2)(yaml@2.9.1))
+        version: 5.0.1(@types/node@26.6.2)(vite@8.3.0(@types/node@26.6.2)(less@4.9.1(supports-color@8.1.1))(sass@1.104.1)(stylus@0.64.0(supports-color@8.1.1))(terser@5.51.2)(yaml@2.9.1))
       vue:
         specifier: ^3.5.43
         version: 3.5.43(typescript@6.0.3)
@@ -1051,11 +1051,11 @@ importers:
   packages/workflow:
     devDependencies:
       '@types/node':
-        specifier: ^26.6.1
-        version: 26.6.1
+        specifier: ^26.6.2
+        version: 26.6.2
       vitest:
         specifier: ^5.0.1
-        version: 5.0.1(@types/node@26.6.1)(vite@8.3.0(@types/node@26.6.1)(less@4.9.1(supports-color@8.1.1))(sass@1.104.1)(stylus@0.64.0(supports-color@8.1.1))(terser@5.51.2)(yaml@2.9.1))
+        version: 5.0.1(@types/node@26.6.2)(vite@8.3.0(@types/node@26.6.2)(less@4.9.1(supports-color@8.1.1))(sass@1.104.1)(stylus@0.64.0(supports-color@8.1.1))(terser@5.51.2)(yaml@2.9.1))
 
 packages:
 
@@ -2521,8 +2521,8 @@ packages:
   '@types/json-schema@7.0.15':
     resolution: {integrity: sha512-5+fP8P8MFNC+AyZCDxrB2pkZFPGzqQWUzpSeuuVLvm8VMcorNYavBqoFcxK8bQz4Qsbn4oUEEem4wDLfcysGHA==}
 
-  '@types/node@26.6.1':
-    resolution: {integrity: sha512-VqGJBMCtdhqkBUCcBLvywI0NJ+KLuVzgNnlBUNFOQjqVxzo2lxLUNg1DSey8+u2u6ktswSAxg+s68QLzWHNOuA==}
+  '@types/node@26.6.2':
+    resolution: {integrity: sha512-X1P21scMv4zGKLYqjdGjaKa7COa0RKVYYZZN/NfvLQ1JegxFhdhpZG/Lyn8AXx6CDUavKAd11v6BvfpkDByK8g==}
 
   '@types/react@19.3.0':
     resolution: {integrity: sha512-N0rFCuH9YoxG9/m61l9MfpJKfmLOVU0em7ipIz6TRgSSkvReLB9vL85GB+yr8Bs5leqpvg96JSwF4ZS1s4viQg==}
@@ -6807,7 +6807,7 @@ snapshots:
   '@jest/console@30.5.1':
     dependencies:
       '@jest/types': 30.5.1
-      '@types/node': 26.6.1
+      '@types/node': 26.6.2
       chalk: 4.1.2
       jest-message-util: 30.5.1
       jest-util: 30.5.1
@@ -6821,7 +6821,7 @@ snapshots:
       '@jest/test-result': 30.5.1
       '@jest/transform': 30.5.1(supports-color@8.1.1)
       '@jest/types': 30.5.1
-      '@types/node': 26.6.1
+      '@types/node': 26.6.2
       ansi-escapes: 4.3.2
       chalk: 4.1.2
       ci-info: 4.4.0
@@ -6829,7 +6829,7 @@ snapshots:
       fast-json-stable-stringify: 2.1.0
       graceful-fs: 4.2.11
       jest-changed-files: 30.5.1
-      jest-config: 30.5.1(@types/node@26.6.1)(supports-color@8.1.1)
+      jest-config: 30.5.1(@types/node@26.6.2)(supports-color@8.1.1)
       jest-haste-map: 30.5.1
       jest-message-util: 30.5.1
       jest-regex-util: 30.5.0
@@ -6855,7 +6855,7 @@ snapshots:
     dependencies:
       '@jest/fake-timers': 30.5.1
       '@jest/types': 30.5.1
-      '@types/node': 26.6.1
+      '@types/node': 26.6.2
       jest-mock: 30.5.1
 
   '@jest/expect-utils@29.7.0':
@@ -6877,7 +6877,7 @@ snapshots:
     dependencies:
       '@jest/types': 30.5.1
       '@sinonjs/fake-timers': 15.4.0
-      '@types/node': 26.6.1
+      '@types/node': 26.6.2
       jest-message-util: 30.5.1
       jest-mock: 30.5.1
       jest-util: 30.5.1
@@ -6895,7 +6895,7 @@ snapshots:
 
   '@jest/pattern@30.5.0':
     dependencies:
-      '@types/node': 26.6.1
+      '@types/node': 26.6.2
       jest-regex-util: 30.5.0
 
   '@jest/reporters@30.5.1(supports-color@8.1.1)':
@@ -6906,7 +6906,7 @@ snapshots:
       '@jest/transform': 30.5.1(supports-color@8.1.1)
       '@jest/types': 30.5.1
       '@jridgewell/trace-mapping': 0.3.31
-      '@types/node': 26.6.1
+      '@types/node': 26.6.2
       chalk: 4.1.2
       collect-v8-coverage: 1.0.3
       exit-x: 0.2.2
@@ -6986,7 +6986,7 @@ snapshots:
       '@jest/schemas': 29.6.3
       '@types/istanbul-lib-coverage': 2.0.6
       '@types/istanbul-reports': 3.0.4
-      '@types/node': 26.6.1
+      '@types/node': 26.6.2
       '@types/yargs': 17.0.35
       chalk: 4.1.2
 
@@ -6996,7 +6996,7 @@ snapshots:
       '@jest/schemas': 30.5.0
       '@types/istanbul-lib-coverage': 2.0.6
       '@types/istanbul-reports': 3.0.4
-      '@types/node': 26.6.1
+      '@types/node': 26.6.2
       '@types/yargs': 17.0.35
       chalk: 4.1.2
 
@@ -7595,7 +7595,7 @@ snapshots:
 
   '@types/json-schema@7.0.15': {}
 
-  '@types/node@26.6.1':
+  '@types/node@26.6.2':
     dependencies:
       undici-types: 8.9.0
 
@@ -7778,20 +7778,20 @@ snapshots:
   '@unrs/resolver-binding-win32-x64-msvc@1.12.2':
     optional: true
 
-  '@vitejs/plugin-vue@6.0.9(vite@8.3.0(@types/node@26.6.1)(less@4.9.1(supports-color@8.1.1))(sass@1.104.1)(stylus@0.64.0(supports-color@8.1.1))(terser@5.51.2)(yaml@2.9.1))(vue@3.5.43(typescript@6.0.3))':
+  '@vitejs/plugin-vue@6.0.9(vite@8.3.0(@types/node@26.6.2)(less@4.9.1(supports-color@8.1.1))(sass@1.104.1)(stylus@0.64.0(supports-color@8.1.1))(terser@5.51.2)(yaml@2.9.1))(vue@3.5.43(typescript@6.0.3))':
     dependencies:
       '@rolldown/pluginutils': 1.0.1
-      vite: 8.3.0(@types/node@26.6.1)(less@4.9.1(supports-color@8.1.1))(sass@1.104.1)(stylus@0.64.0(supports-color@8.1.1))(terser@5.51.2)(yaml@2.9.1)
+      vite: 8.3.0(@types/node@26.6.2)(less@4.9.1(supports-color@8.1.1))(sass@1.104.1)(stylus@0.64.0(supports-color@8.1.1))(terser@5.51.2)(yaml@2.9.1)
       vue: 3.5.43(typescript@6.0.3)
 
-  '@vitest/mocker@5.0.1(vite@8.3.0(@types/node@26.6.1)(less@4.9.1(supports-color@8.1.1))(sass@1.104.1)(stylus@0.64.0(supports-color@8.1.1))(terser@5.51.2)(yaml@2.9.1))':
+  '@vitest/mocker@5.0.1(vite@8.3.0(@types/node@26.6.2)(less@4.9.1(supports-color@8.1.1))(sass@1.104.1)(stylus@0.64.0(supports-color@8.1.1))(terser@5.51.2)(yaml@2.9.1))':
     dependencies:
       '@jridgewell/trace-mapping': 0.3.31
       '@vitest/spy': 5.0.1
       estree-walker: 3.0.3
       magic-string: 1.4.1
     optionalDependencies:
-      vite: 8.3.0(@types/node@26.6.1)(less@4.9.1(supports-color@8.1.1))(sass@1.104.1)(stylus@0.64.0(supports-color@8.1.1))(terser@5.51.2)(yaml@2.9.1)
+      vite: 8.3.0(@types/node@26.6.2)(less@4.9.1(supports-color@8.1.1))(sass@1.104.1)(stylus@0.64.0(supports-color@8.1.1))(terser@5.51.2)(yaml@2.9.1)
 
   '@vitest/spy@5.0.1': {}
 
@@ -7925,10 +7925,10 @@ snapshots:
     optionalDependencies:
       expect: 29.7.0
 
-  '@wix-pilot/detox@1.0.13(@wix-pilot/core@3.4.2(expect@29.7.0))(detox@20.51.4(@jest/environment@30.5.1)(@jest/types@30.5.1)(expect@29.7.0)(jest-environment-node@30.5.1)(jest@30.5.1(@types/node@26.6.1)(supports-color@8.1.1)))(expect@29.7.0)':
+  '@wix-pilot/detox@1.0.13(@wix-pilot/core@3.4.2(expect@29.7.0))(detox@20.51.4(@jest/environment@30.5.1)(@jest/types@30.5.1)(expect@29.7.0)(jest-environment-node@30.5.1)(jest@30.5.1(@types/node@26.6.2)(supports-color@8.1.1)))(expect@29.7.0)':
     dependencies:
       '@wix-pilot/core': 3.4.2(expect@29.7.0)
-      detox: 20.51.4(@jest/environment@30.5.1)(@jest/types@30.5.1)(expect@29.7.0)(jest-environment-node@30.5.1)(jest@30.5.1(@types/node@26.6.1)(supports-color@8.1.1))
+      detox: 20.51.4(@jest/environment@30.5.1)(@jest/types@30.5.1)(expect@29.7.0)(jest-environment-node@30.5.1)(jest@30.5.1(@types/node@26.6.2)(supports-color@8.1.1))
       expect: 29.7.0
 
   abort-controller@3.0.0:
@@ -8282,7 +8282,7 @@ snapshots:
 
   chrome-launcher@0.15.2(supports-color@8.1.1):
     dependencies:
-      '@types/node': 26.6.1
+      '@types/node': 26.6.2
       escape-string-regexp: 4.0.0
       is-wsl: 2.2.0
       lighthouse-logger: 1.4.2(supports-color@8.1.1)
@@ -8291,7 +8291,7 @@ snapshots:
 
   chromium-edge-launcher@0.3.0(supports-color@8.1.1):
     dependencies:
-      '@types/node': 26.6.1
+      '@types/node': 26.6.2
       escape-string-regexp: 4.0.0
       is-wsl: 2.2.0
       lighthouse-logger: 1.4.2(supports-color@8.1.1)
@@ -8475,10 +8475,10 @@ snapshots:
 
   detect-newline@3.1.0: {}
 
-  detox@20.51.4(@jest/environment@30.5.1)(@jest/types@30.5.1)(expect@29.7.0)(jest-environment-node@30.5.1)(jest@30.5.1(@types/node@26.6.1)(supports-color@8.1.1)):
+  detox@20.51.4(@jest/environment@30.5.1)(@jest/types@30.5.1)(expect@29.7.0)(jest-environment-node@30.5.1)(jest@30.5.1(@types/node@26.6.2)(supports-color@8.1.1)):
     dependencies:
       '@wix-pilot/core': 3.4.2(expect@29.7.0)
-      '@wix-pilot/detox': 1.0.13(@wix-pilot/core@3.4.2(expect@29.7.0))(detox@20.51.4(@jest/environment@30.5.1)(@jest/types@30.5.1)(expect@29.7.0)(jest-environment-node@30.5.1)(jest@30.5.1(@types/node@26.6.1)(supports-color@8.1.1)))(expect@29.7.0)
+      '@wix-pilot/detox': 1.0.13(@wix-pilot/core@3.4.2(expect@29.7.0))(detox@20.51.4(@jest/environment@30.5.1)(@jest/types@30.5.1)(expect@29.7.0)(jest-environment-node@30.5.1)(jest@30.5.1(@types/node@26.6.2)(supports-color@8.1.1)))(expect@29.7.0)
       ajv: 8.20.0
       bunyan: 1.8.15
       bunyan-debug-stream: 3.1.1(bunyan@1.8.15)
@@ -8490,7 +8490,7 @@ snapshots:
       funpermaproxy: 1.1.0
       glob: 8.1.0
       ini: 1.3.8
-      jest-environment-emit: 1.2.0(@jest/environment@30.5.1)(@jest/types@30.5.1)(jest-environment-node@30.5.1)(jest@30.5.1(@types/node@26.6.1)(supports-color@8.1.1))
+      jest-environment-emit: 1.2.0(@jest/environment@30.5.1)(@jest/types@30.5.1)(jest-environment-node@30.5.1)(jest@30.5.1(@types/node@26.6.2)(supports-color@8.1.1))
       json-cycle: 1.5.0
       lodash: 4.18.1
       multi-sort-stream: 1.0.4
@@ -8515,7 +8515,7 @@ snapshots:
       yargs-parser: 21.1.1
       yargs-unparser: 2.0.0
     optionalDependencies:
-      jest: 30.5.1(@types/node@26.6.1)(supports-color@8.1.1)
+      jest: 30.5.1(@types/node@26.6.2)(supports-color@8.1.1)
     transitivePeerDependencies:
       - '@jest/environment'
       - '@jest/types'
@@ -9136,7 +9136,7 @@ snapshots:
       '@jest/expect': 30.5.1(supports-color@8.1.1)
       '@jest/test-result': 30.5.1
       '@jest/types': 30.5.1
-      '@types/node': 26.6.1
+      '@types/node': 26.6.2
       chalk: 4.1.2
       co: 4.6.0
       dedent: 1.7.2
@@ -9156,7 +9156,7 @@ snapshots:
       - babel-plugin-macros
       - supports-color
 
-  jest-cli@30.5.1(@types/node@26.6.1)(supports-color@8.1.1):
+  jest-cli@30.5.1(@types/node@26.6.2)(supports-color@8.1.1):
     dependencies:
       '@jest/core': 30.5.1(supports-color@8.1.1)
       '@jest/test-result': 30.5.1
@@ -9164,7 +9164,7 @@ snapshots:
       chalk: 4.1.2
       exit-x: 0.2.2
       import-local: 3.2.0
-      jest-config: 30.5.1(@types/node@26.6.1)(supports-color@8.1.1)
+      jest-config: 30.5.1(@types/node@26.6.2)(supports-color@8.1.1)
       jest-util: 30.5.1
       jest-validate: 30.5.1
       yargs: 17.7.3
@@ -9175,7 +9175,7 @@ snapshots:
       - supports-color
       - ts-node
 
-  jest-config@30.5.1(@types/node@26.6.1)(supports-color@8.1.1):
+  jest-config@30.5.1(@types/node@26.6.2)(supports-color@8.1.1):
     dependencies:
       '@babel/core': 7.29.7(supports-color@8.1.1)
       '@jest/get-type': 30.5.0
@@ -9201,7 +9201,7 @@ snapshots:
       slash: 3.0.0
       strip-json-comments: 3.1.1
     optionalDependencies:
-      '@types/node': 26.6.1
+      '@types/node': 26.6.2
     transitivePeerDependencies:
       - babel-plugin-macros
       - supports-color
@@ -9232,7 +9232,7 @@ snapshots:
       jest-util: 30.5.1
       pretty-format: 30.5.1
 
-  jest-environment-emit@1.2.0(@jest/environment@30.5.1)(@jest/types@30.5.1)(jest-environment-node@30.5.1)(jest@30.5.1(@types/node@26.6.1)(supports-color@8.1.1)):
+  jest-environment-emit@1.2.0(@jest/environment@30.5.1)(@jest/types@30.5.1)(jest-environment-node@30.5.1)(jest@30.5.1(@types/node@26.6.2)(supports-color@8.1.1)):
     dependencies:
       bunyamin: 1.6.3(bunyan@2.0.5)
       bunyan: 2.0.5
@@ -9245,7 +9245,7 @@ snapshots:
     optionalDependencies:
       '@jest/environment': 30.5.1
       '@jest/types': 30.5.1
-      jest: 30.5.1(@types/node@26.6.1)(supports-color@8.1.1)
+      jest: 30.5.1(@types/node@26.6.2)(supports-color@8.1.1)
       jest-environment-node: 30.5.1
     transitivePeerDependencies:
       - '@types/bunyan'
@@ -9255,7 +9255,7 @@ snapshots:
       '@jest/environment': 30.5.1
       '@jest/fake-timers': 30.5.1
       '@jest/types': 30.5.1
-      '@types/node': 26.6.1
+      '@types/node': 26.6.2
       jest-mock: 30.5.1
       jest-util: 30.5.1
       jest-validate: 30.5.1
@@ -9266,7 +9266,7 @@ snapshots:
     dependencies:
       '@jest/types': 30.5.1
       '@parcel/watcher': 2.6.0
-      '@types/node': 26.6.1
+      '@types/node': 26.6.2
       anymatch: 3.1.3
       fb-watchman: 2.0.2
       fdir: 6.5.0(picomatch@4.0.7)
@@ -9324,7 +9324,7 @@ snapshots:
     dependencies:
       '@jest/expect-utils': 30.5.1
       '@jest/types': 30.5.1
-      '@types/node': 26.6.1
+      '@types/node': 26.6.2
       jest-util: 30.5.1
 
   jest-regex-util@30.5.0: {}
@@ -9354,7 +9354,7 @@ snapshots:
       '@jest/test-result': 30.5.1
       '@jest/transform': 30.5.1(supports-color@8.1.1)
       '@jest/types': 30.5.1
-      '@types/node': 26.6.1
+      '@types/node': 26.6.2
       chalk: 4.1.2
       emittery: 0.13.1
       exit-x: 0.2.2
@@ -9382,7 +9382,7 @@ snapshots:
       '@jest/test-result': 30.5.1
       '@jest/transform': 30.5.1(supports-color@8.1.1)
       '@jest/types': 30.5.1
-      '@types/node': 26.6.1
+      '@types/node': 26.6.2
       chalk: 4.1.2
       cjs-module-lexer: 2.2.1
       collect-v8-coverage: 1.0.3
@@ -9430,7 +9430,7 @@ snapshots:
   jest-util@29.7.0:
     dependencies:
       '@jest/types': 29.6.3
-      '@types/node': 26.6.1
+      '@types/node': 26.6.2
       chalk: 4.1.2
       ci-info: 3.9.0
       graceful-fs: 4.2.11
@@ -9439,7 +9439,7 @@ snapshots:
   jest-util@30.5.1:
     dependencies:
       '@jest/types': 30.5.1
-      '@types/node': 26.6.1
+      '@types/node': 26.6.2
       chalk: 4.1.2
       ci-info: 4.4.0
       graceful-fs: 4.2.11
@@ -9467,7 +9467,7 @@ snapshots:
     dependencies:
       '@jest/test-result': 30.5.1
       '@jest/types': 30.5.1
-      '@types/node': 26.6.1
+      '@types/node': 26.6.2
       ansi-escapes: 4.3.2
       chalk: 4.1.2
       emittery: 0.13.1
@@ -9476,25 +9476,25 @@ snapshots:
 
   jest-worker@29.7.0:
     dependencies:
-      '@types/node': 26.6.1
+      '@types/node': 26.6.2
       jest-util: 29.7.0
       merge-stream: 2.0.0
       supports-color: 8.1.1
 
   jest-worker@30.5.1:
     dependencies:
-      '@types/node': 26.6.1
+      '@types/node': 26.6.2
       '@ungap/structured-clone': 1.4.0
       jest-util: 30.5.1
       merge-stream: 2.0.0
       supports-color: 8.1.1
 
-  jest@30.5.1(@types/node@26.6.1)(supports-color@8.1.1):
+  jest@30.5.1(@types/node@26.6.2)(supports-color@8.1.1):
     dependencies:
       '@jest/core': 30.5.1(supports-color@8.1.1)
       '@jest/types': 30.5.1
       import-local: 3.2.0
-      jest-cli: 30.5.1(@types/node@26.6.1)(supports-color@8.1.1)
+      jest-cli: 30.5.1(@types/node@26.6.2)(supports-color@8.1.1)
     transitivePeerDependencies:
       - '@types/node'
       - babel-plugin-macros
@@ -10790,12 +10790,12 @@ snapshots:
     dependencies:
       typescript: 6.0.3
 
-  ts-jest@29.4.12(@babel/core@7.29.7(supports-color@8.1.1))(@jest/transform@30.5.1(supports-color@8.1.1))(@jest/types@30.5.1)(babel-jest@30.5.1(@babel/core@7.29.7(supports-color@8.1.1))(supports-color@8.1.1))(jest-util@30.5.1)(jest@30.5.1(@types/node@26.6.1)(supports-color@8.1.1))(typescript@6.0.3):
+  ts-jest@29.4.12(@babel/core@7.29.7(supports-color@8.1.1))(@jest/transform@30.5.1(supports-color@8.1.1))(@jest/types@30.5.1)(babel-jest@30.5.1(@babel/core@7.29.7(supports-color@8.1.1))(supports-color@8.1.1))(jest-util@30.5.1)(jest@30.5.1(@types/node@26.6.2)(supports-color@8.1.1))(typescript@6.0.3):
     dependencies:
       bs-logger: 0.2.6
       fast-json-stable-stringify: 2.1.0
       handlebars: 4.7.9
-      jest: 30.5.1(@types/node@26.6.1)(supports-color@8.1.1)
+      jest: 30.5.1(@types/node@26.6.2)(supports-color@8.1.1)
       json5: 2.2.3
       lodash.memoize: 4.1.2
       make-error: 1.3.6
@@ -10926,7 +10926,7 @@ snapshots:
 
   vary@1.1.2: {}
 
-  vite@8.3.0(@types/node@26.6.1)(less@4.9.1(supports-color@8.1.1))(sass@1.104.1)(stylus@0.64.0(supports-color@8.1.1))(terser@5.51.2)(yaml@2.9.1):
+  vite@8.3.0(@types/node@26.6.2)(less@4.9.1(supports-color@8.1.1))(sass@1.104.1)(stylus@0.64.0(supports-color@8.1.1))(terser@5.51.2)(yaml@2.9.1):
     dependencies:
       lightningcss: 1.33.0
       picomatch: 4.0.7
@@ -10934,7 +10934,7 @@ snapshots:
       rolldown: 1.2.8
       tinyglobby: 0.2.17
     optionalDependencies:
-      '@types/node': 26.6.1
+      '@types/node': 26.6.2
       fsevents: 2.3.3
       less: 4.9.1(supports-color@8.1.1)
       sass: 1.104.1
@@ -10942,10 +10942,10 @@ snapshots:
       terser: 5.51.2
       yaml: 2.9.1
 
-  vitest@5.0.1(@types/node@26.6.1)(vite@8.3.0(@types/node@26.6.1)(less@4.9.1(supports-color@8.1.1))(sass@1.104.1)(stylus@0.64.0(supports-color@8.1.1))(terser@5.51.2)(yaml@2.9.1)):
+  vitest@5.0.1(@types/node@26.6.2)(vite@8.3.0(@types/node@26.6.2)(less@4.9.1(supports-color@8.1.1))(sass@1.104.1)(stylus@0.64.0(supports-color@8.1.1))(terser@5.51.2)(yaml@2.9.1)):
     dependencies:
       '@types/chai': 5.2.3
-      '@vitest/mocker': 5.0.1(vite@8.3.0(@types/node@26.6.1)(less@4.9.1(supports-color@8.1.1))(sass@1.104.1)(stylus@0.64.0(supports-color@8.1.1))(terser@5.51.2)(yaml@2.9.1))
+      '@vitest/mocker': 5.0.1(vite@8.3.0(@types/node@26.6.2)(less@4.9.1(supports-color@8.1.1))(sass@1.104.1)(stylus@0.64.0(supports-color@8.1.1))(terser@5.51.2)(yaml@2.9.1))
       chai: 6.2.2
       es-module-lexer: 2.3.2
       expect-type: 1.4.0
@@ -10956,10 +10956,10 @@ snapshots:
       tinybench: 6.1.4
       tinyexec: 1.3.0
       tinyglobby: 0.2.17
-      vite: 8.3.0(@types/node@26.6.1)(less@4.9.1(supports-color@8.1.1))(sass@1.104.1)(stylus@0.64.0(supports-color@8.1.1))(terser@5.51.2)(yaml@2.9.1)
+      vite: 8.3.0(@types/node@26.6.2)(less@4.9.1(supports-color@8.1.1))(sass@1.104.1)(stylus@0.64.0(supports-color@8.1.1))(terser@5.51.2)(yaml@2.9.1)
       why-is-node-running: 2.3.0
     optionalDependencies:
-      '@types/node': 26.6.1
+      '@types/node': 26.6.2
     transitivePeerDependencies:
       - msw
 
