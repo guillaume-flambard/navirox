@@ -26,13 +26,16 @@ outside the workspace, boots on both platforms, and drives a shared Detox journe
 that passes in CI. The source path, which is the part that makes Navirox
 framework-agnostic rather than a single-framework tool, is being built now.
 
-Publication is not finished. The scaffolder and 26 of the 28 scoped packages
-resolve at `0.1.0`; `@memolabs-apps/cli`, `@memolabs-apps/source-lit` and
-`@memolabs-apps/source-solid` are not on the registry yet, so `npx navirox`
-against the public registry does not resolve. The validated pre-publication path
-is the tarball install that `scripts/e2e-scaffold.mjs` performs, which CI runs on
-every push. `docs/evidence/release-candidate-2026-09-19.md` records the exact
-registry state and the verification behind it.
+Publication is not finished. Measured against the public registry on 2026-09-29,
+`create-navirox` and 25 of the 34 `@memolabs-apps/*` packages resolve at `0.1.0`.
+The `navirox` launcher and nine scoped packages return 404: `cli`, `discovery`,
+`source-lit`, `source-solid`, `target-angular`, `target-native`, `target-vue`,
+`visual-benchmark` and `workflow`. So `npm create navirox` resolves and
+`npx navirox` against the public registry does not. The validated pre-publication
+path is the tarball install that `scripts/e2e-scaffold.mjs` performs, which CI
+runs on every push. `docs/RELEASE-0.1.1.md` records the publication sequence and
+`docs/evidence/release-candidate-0.1.1.md` the verification behind the `0.1.1`
+candidate.
 
 Two documents split the truth deliberately. `docs/repositioning/` defines where
 the product is going. `PLAN.md` remains the implementation evidence for the Vue
@@ -152,9 +155,13 @@ back into the renderer is the failure mode this layout exists to prevent.
 | `@memolabs-apps/runtime`          | The runtime seam. The single interface every public Navirox package depends on.                                                      | Implemented                                                      |
 | `@memolabs-apps/runtime-symbiote` | The Symbiote-backed implementation of the seam. The only package allowed to import `@symbiote-native/*`.                             | Implemented                                                      |
 | `@memolabs-apps/graph`            | The framework-neutral App Graph schema and its deterministic node identifiers.                                                       | Implemented                                                      |
+| `@memolabs-apps/workflow`         | The framework-neutral Workflow IR: the versioned contract between a source lowering and a target emission.                           | Implemented                                                      |
+| `@memolabs-apps/discovery`        | The deterministic repository capability manifest, produced before any graph or generated output.                                     | Implemented                                                      |
 | `@memolabs-apps/source`           | The source adapter contract, the adapter registry, and the framework import boundary that keeps the core neutral.                    | Implemented                                                      |
 | `@memolabs-apps/source-vue`       | The Vue source adapter: detection, single file component inspection, and App Graph construction.                                     | Implemented, experimental                                        |
 | `@memolabs-apps/target-vue`       | The narrow Vue template compiler: safe primitives emit native source; unsupported constructs are reported and block emission.        | Implemented, pre-visual-fidelity proof                           |
+| `@memolabs-apps/target-angular`   | The narrow Angular template to native-view compiler.                                                                                 | Implemented, experimental                                        |
+| `@memolabs-apps/target-native`    | The neutral target: it emits native source from the Workflow IR.                                                                     | Implemented, experimental                                        |
 | `@memolabs-apps/source-nuxt`      | The Nuxt source adapter: the Nuxt 4 application directory, filesystem routes, the page macro, and the two halves of a component.     | Implemented, experimental                                        |
 | `@memolabs-apps/source-svelte`    | The Svelte source adapter: detection, component inspection, and App Graph construction.                                              | Implemented, experimental                                        |
 | `@memolabs-apps/source-sveltekit` | The SvelteKit source adapter: filesystem route extraction on top of the Svelte adapter.                                              | Implemented, experimental                                        |
@@ -180,6 +187,7 @@ back into the renderer is the failure mode this layout exists to prevent.
 | `@memolabs-apps/migrate`          | The migration engine: a versioned state file, a transform pipeline, a dry run by default and a rollback.                             | Implemented, copies shared logic                                 |
 | `@memolabs-apps/compat`           | Compatibility records: what Navirox knows works on a native target, and the evidence behind each claim.                              | Implemented, seeded                                              |
 | `@memolabs-apps/build`            | Build, update and submit orchestration through a replaceable provider.                                                               | Declared                                                         |
+| `@memolabs-apps/visual-benchmark` | Reproducible web/native capture scenarios and their normalized comparison.                                                           | Implemented, internal, not published                             |
 
 `examples/vue-basic` is the acceptance app: a Vue SFC application that imports
 only `@memolabs-apps/*` and one line of Metro config. It is judged against the renderer
@@ -230,8 +238,8 @@ store keeps its state across that update. The boundary is the component, so a
 store-module edit, or a style-block-only change, still reloads the app whole.
 The release process also exists: `0.1.0` is tagged and the packages carry a
 changeset-generated changelog. Publication itself is partial, as the top of this
-file says, and `docs/evidence/release-candidate-2026-09-19.md` records what the
-release did and did not do.
+file says, and `docs/RELEASE-0.1.1.md` records what the release did and what is
+still manual.
 
 The ship backend deserves its own line, because it is where this plan knowingly
 departs from the blueprint. `navirox submit` will drive the raw Xcode and Gradle
