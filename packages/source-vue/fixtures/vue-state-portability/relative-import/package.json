@@ -1,0 +1,9 @@
+{
+  "name": "fixture-vue-state-portability-relative-import",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "pinia": "^4.0.3",
+    "vue": "^3.5.43"
+  }
+}

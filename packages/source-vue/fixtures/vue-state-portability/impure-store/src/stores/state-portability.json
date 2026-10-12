@@ -1,0 +1,4 @@
+{
+  "id": "impure-remote-store",
+  "assertions": [{ "expression": "response", "expected": "response" }]
+}

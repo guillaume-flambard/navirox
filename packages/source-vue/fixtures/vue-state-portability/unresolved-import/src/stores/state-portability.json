@@ -1,0 +1,4 @@
+{
+  "id": "unresolved-missing-store",
+  "assertions": [{ "expression": "missing", "expected": "unknown" }]
+}

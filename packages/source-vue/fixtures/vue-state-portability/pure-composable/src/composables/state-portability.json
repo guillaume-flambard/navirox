@@ -1,0 +1,7 @@
+{
+  "id": "pure-use-counter-composable",
+  "assertions": [
+    { "expression": "count", "expected": "0" },
+    { "expression": "doubled", "expected": "0" }
+  ]
+}

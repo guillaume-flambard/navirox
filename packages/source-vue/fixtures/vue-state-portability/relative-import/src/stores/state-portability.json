@@ -1,0 +1,4 @@
+{
+  "id": "relative-store",
+  "assertions": [{ "expression": "helper", "expected": "helper" }]
+}

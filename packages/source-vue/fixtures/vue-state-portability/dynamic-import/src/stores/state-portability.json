@@ -1,0 +1,4 @@
+{
+  "id": "dynamic-lazy-store",
+  "assertions": [{ "expression": "loadRemote", "expected": "function" }]
+}

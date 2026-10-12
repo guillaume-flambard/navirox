@@ -1,0 +1,7 @@
+{
+  "id": "pure-store-counter",
+  "assertions": [
+    { "expression": "count", "expected": "0" },
+    { "expression": "increment()", "expected": "1" }
+  ]
+}
