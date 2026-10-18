@@ -16,9 +16,9 @@ shared:
     - label != hold-merge
     - label != needs-human-review
     - "-files ~= ^(\\.github/|\\.mergify\\.yml$|CODEOWNERS$|AGENTS\\.md$|\\.env)"
-    - "#check-failure = 0"
-    - "#check-pending = 0"
-    - "check-success ~= ^(?!Label sensitive paths$)(?!Mergify)(?!Configuration ).+"
+    - '#check-failure = 0'
+    - '#check-pending = 0'
+    - 'check-success ~= ^(?!Label sensitive paths$)(?!Mergify)(?!Configuration ).+'
 
 merge_queue:
   max_parallel_checks: 1
