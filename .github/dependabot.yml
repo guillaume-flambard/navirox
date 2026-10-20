@@ -84,7 +84,11 @@ updates:
       - dependency-name: solid-js
       - dependency-name: '@solidjs/*'
       - dependency-name: '@builder.io/qwik'
+        update-types:
+          - security-update
       - dependency-name: '@builder.io/qwik-city'
+        update-types:
+          - security-update
       - dependency-name: lit
       - dependency-name: '@lit-labs/*'
       - dependency-name: zustand
