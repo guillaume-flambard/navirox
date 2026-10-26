@@ -9,6 +9,9 @@ overrides:
   react-native: 0.86.0
   fast-xml-parser: ^5.7.0
 
+patchedDependencies:
+  detox@20.51.4: 058de4a57030a514b43d704ec2dfff9f93194fbd21603bdfe4c24084af7ff7f8
+
 importers:
 
   .:
@@ -136,7 +139,7 @@ importers:
         version: 8.70.0(eslint@10.13.0(supports-color@8.1.1))(supports-color@8.1.1)(typescript@6.0.3)
       detox:
         specifier: ^20.51.4
-        version: 20.51.4(@jest/environment@30.5.2)(@jest/types@30.5.1)(expect@29.7.0)(jest-environment-node@30.5.2)(jest@30.5.2(@types/node@26.6.3)(supports-color@8.1.1))
+        version: 20.51.4(patch_hash=058de4a57030a514b43d704ec2dfff9f93194fbd21603bdfe4c24084af7ff7f8)(@jest/environment@30.5.2)(@jest/types@30.5.1)(expect@29.7.0)(jest-environment-node@30.5.2)(jest@30.5.2(@types/node@26.6.3)(supports-color@8.1.1))
       eslint:
         specifier: ^10.12.0
         version: 10.13.0(supports-color@8.1.1)
@@ -278,7 +281,7 @@ importers:
         version: 8.70.0(eslint@10.13.0(supports-color@8.1.1))(supports-color@8.1.1)(typescript@6.0.3)
       detox:
         specifier: ^20.51.4
-        version: 20.51.4(@jest/environment@30.5.2)(@jest/types@30.5.1)(expect@29.7.0)(jest-environment-node@30.5.2)(jest@30.5.2(@types/node@26.6.3)(supports-color@8.1.1))
+        version: 20.51.4(patch_hash=058de4a57030a514b43d704ec2dfff9f93194fbd21603bdfe4c24084af7ff7f8)(@jest/environment@30.5.2)(@jest/types@30.5.1)(expect@29.7.0)(jest-environment-node@30.5.2)(jest@30.5.2(@types/node@26.6.3)(supports-color@8.1.1))
       eslint:
         specifier: ^10.12.0
         version: 10.13.0(supports-color@8.1.1)
@@ -8054,10 +8057,10 @@ snapshots:
     optionalDependencies:
       expect: 29.7.0
 
-  '@wix-pilot/detox@1.0.13(@wix-pilot/core@3.4.2(expect@29.7.0))(detox@20.51.4(@jest/environment@30.5.2)(@jest/types@30.5.1)(expect@29.7.0)(jest-environment-node@30.5.2)(jest@30.5.2(@types/node@26.6.3)(supports-color@8.1.1)))(expect@29.7.0)':
+  '@wix-pilot/detox@1.0.13(@wix-pilot/core@3.4.2(expect@29.7.0))(detox@20.51.4(patch_hash=058de4a57030a514b43d704ec2dfff9f93194fbd21603bdfe4c24084af7ff7f8)(@jest/environment@30.5.2)(@jest/types@30.5.1)(expect@29.7.0)(jest-environment-node@30.5.2)(jest@30.5.2(@types/node@26.6.3)(supports-color@8.1.1)))(expect@29.7.0)':
     dependencies:
       '@wix-pilot/core': 3.4.2(expect@29.7.0)
-      detox: 20.51.4(@jest/environment@30.5.2)(@jest/types@30.5.1)(expect@29.7.0)(jest-environment-node@30.5.2)(jest@30.5.2(@types/node@26.6.3)(supports-color@8.1.1))
+      detox: 20.51.4(patch_hash=058de4a57030a514b43d704ec2dfff9f93194fbd21603bdfe4c24084af7ff7f8)(@jest/environment@30.5.2)(@jest/types@30.5.1)(expect@29.7.0)(jest-environment-node@30.5.2)(jest@30.5.2(@types/node@26.6.3)(supports-color@8.1.1))
       expect: 29.7.0
 
   abort-controller@3.0.0:
@@ -8604,10 +8607,10 @@ snapshots:
 
   detect-newline@3.1.0: {}
 
-  detox@20.51.4(@jest/environment@30.5.2)(@jest/types@30.5.1)(expect@29.7.0)(jest-environment-node@30.5.2)(jest@30.5.2(@types/node@26.6.3)(supports-color@8.1.1)):
+  detox@20.51.4(patch_hash=058de4a57030a514b43d704ec2dfff9f93194fbd21603bdfe4c24084af7ff7f8)(@jest/environment@30.5.2)(@jest/types@30.5.1)(expect@29.7.0)(jest-environment-node@30.5.2)(jest@30.5.2(@types/node@26.6.3)(supports-color@8.1.1)):
     dependencies:
       '@wix-pilot/core': 3.4.2(expect@29.7.0)
-      '@wix-pilot/detox': 1.0.13(@wix-pilot/core@3.4.2(expect@29.7.0))(detox@20.51.4(@jest/environment@30.5.2)(@jest/types@30.5.1)(expect@29.7.0)(jest-environment-node@30.5.2)(jest@30.5.2(@types/node@26.6.3)(supports-color@8.1.1)))(expect@29.7.0)
+      '@wix-pilot/detox': 1.0.13(@wix-pilot/core@3.4.2(expect@29.7.0))(detox@20.51.4(patch_hash=058de4a57030a514b43d704ec2dfff9f93194fbd21603bdfe4c24084af7ff7f8)(@jest/environment@30.5.2)(@jest/types@30.5.1)(expect@29.7.0)(jest-environment-node@30.5.2)(jest@30.5.2(@types/node@26.6.3)(supports-color@8.1.1)))(expect@29.7.0)
       ajv: 8.20.0
       bunyan: 1.8.15
       bunyan-debug-stream: 3.1.1(bunyan@1.8.15)
