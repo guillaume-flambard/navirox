@@ -1,0 +1,6 @@
+# Standalone Vue pilot lockfile: security pins intentionally local to this pilot.
+packages:
+  - '.'
+overrides:
+  shell-quote: 1.11.0
+  source-map-js: 1.2.2
