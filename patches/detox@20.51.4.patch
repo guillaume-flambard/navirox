@@ -1,0 +1,18 @@
+diff --git a/src/devices/common/drivers/android/exec/ADB.js b/src/devices/common/drivers/android/exec/ADB.js
+index bde116c69467a8f16f1d420a8fdbac89443099f0..e69df3f7da3c5951a5c0a9aab631a12ada102b2a 100644
+--- a/src/devices/common/drivers/android/exec/ADB.js
++++ b/src/devices/common/drivers/android/exec/ADB.js
+@@ -383 +383,12 @@ class ADB {
+-    return this.adbCmd(deviceId, `reverse --remove tcp:${port}`);
++    try {
++      return await this.adbCmd(deviceId, `reverse --remove tcp:${port}`);
++    } catch (error) {
++      // Termination can race with itself: the same listener may already have
++      // been removed. Only that exact idempotent teardown result is harmless.
++      // An ADB failure for another listener, device, or command stays fatal.
++      const alreadyAbsent = `adb: error: listener 'tcp:${port}' not found`;
++      if (typeof error?.message === 'string' && error.message.includes(alreadyAbsent)) {
++        return;
++      }
++      throw error;
++    }
