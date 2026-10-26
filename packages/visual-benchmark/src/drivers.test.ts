@@ -250,7 +250,7 @@ function webOptions(browser: FakeBrowser, dom: string): Parameters<typeof captur
 
     browser.calls.push(dumping ? '--dump-dom' : '--screenshot')
 
-    if (!dumping) {
+    if (args.some((arg) => arg.startsWith('--screenshot='))) {
       writeFileSync(browser.outPath, 'png')
     }
 
@@ -279,10 +279,10 @@ describe('the web capture driver', () => {
       identifiers: ['records-screen'],
     })
 
-    expect(browser.calls).toEqual(['--screenshot', '--dump-dom'])
+    expect(browser.calls).toEqual(['--dump-dom'])
   })
 
-  it('uses the same bounded headless Chrome launch for screenshots and DOM checks', () => {
+  it('captures screenshot and checks DOM in the same bounded sandboxed Chrome run', () => {
     const browser = fakeBrowser('lean-launch')
     const options = webOptions(browser, '<main data-testid="records-screen"></main>')
     const invocations: string[][] = []
@@ -298,7 +298,7 @@ describe('the web capture driver', () => {
       },
     })
 
-    expect(invocations).toHaveLength(2)
+    expect(invocations).toHaveLength(1)
     for (const args of invocations) {
       expect(args).toContain('--headless=new')
       expect(args).toContain('--disable-background-networking')
@@ -308,8 +308,23 @@ describe('the web capture driver', () => {
       expect(args).not.toContain('--no-sandbox')
     }
     expect(invocations[0].some((arg) => arg.startsWith('--screenshot='))).toBe(true)
-    expect(invocations[1]).toContain('--dump-dom')
-    expect(browser.calls).toEqual(['--screenshot', '--dump-dom'])
+    expect(invocations[0]).toContain('--dump-dom')
+    expect(browser.calls).toEqual(['--dump-dom'])
+  })
+
+  it('requires a real screenshot even when the combined Chrome process returns valid DOM', () => {
+    const browser = fakeBrowser('dom-only')
+    expect(() =>
+      captureWebChrome(scenario(), capture, browser.outPath, {
+        ...webOptions(browser, '<main data-testid="records-screen"></main>'),
+        identifiers: ['records-screen'],
+        run: () => ({
+          status: 0,
+          stdout: '<main data-testid="records-screen"></main>',
+          stderr: '',
+        }),
+      }),
+    ).toThrow(/wrote no screenshot/)
   })
 
   it('fails the capture when the served page lacks a declared identifier', () => {
