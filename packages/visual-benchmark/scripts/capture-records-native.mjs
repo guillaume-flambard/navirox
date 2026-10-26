@@ -295,6 +295,11 @@ async function startPackager(appDirectory, platform) {
     ['start', '--port', String(PACKAGER_PORT)],
     {
       cwd: appDirectory,
+      // The native capture is an unattended CI measurement, not an interactive
+      // debugger session. Keep Metro/Inspector active but avoid prefetching the
+      // standalone Chromium DevTools shell on the resource-limited emulator
+      // runner. The pinned CLI package patch reads this only for this process.
+      env: { ...process.env, NAVIROX_NATIVE_CAPTURE: '1' },
       stdio: ['ignore', 'pipe', 'pipe'],
     },
   )

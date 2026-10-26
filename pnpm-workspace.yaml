@@ -66,3 +66,6 @@ allowBuilds:
   dtrace-provider: false
   # The resolver's postinstall only wires up the prebuilt platform binding.
   unrs-resolver: true
+
+patchedDependencies:
+  '@react-native/community-cli-plugin@0.86.0': patches/@react-native__community-cli-plugin@0.86.0.patch
