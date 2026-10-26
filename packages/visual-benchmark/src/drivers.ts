@@ -56,6 +56,23 @@ export interface WebDriverOptions {
   run?: WebProcessRunner
 }
 
+/**
+ * Use the same lean, deterministic Chrome launch for screenshots and DOM checks.
+ * GitHub-hosted macOS and Linux capture jobs previously timed out at Chrome
+ * startup, even after the native app itself passed its device journey.
+ * These flags reduce unrelated background/browser startup work. They never
+ * disable the screenshot, identifier checks or native capture gate.
+ */
+const CHROME_CI_ARGS = [
+  '--headless=new',
+  '--no-first-run',
+  '--no-default-browser-check',
+  '--disable-background-networking',
+  '--disable-extensions',
+  '--disable-gpu',
+  '--disable-dev-shm-usage',
+] as const
+
 /** Runs one web command. Tests inject a fake so no browser is needed. */
 export type WebProcessRunner = (
   command: string,
@@ -92,7 +109,7 @@ function checkWebIdentifiers(
   options: WebDriverOptions,
   run: WebProcessRunner,
 ): void {
-  const result = run(options.chromePath, ['--headless', '--dump-dom', url], {
+  const result = run(options.chromePath, [...CHROME_CI_ARGS, '--dump-dom', url], {
     timeoutMs: options.timeoutMs ?? 60_000,
   })
 
@@ -151,7 +168,7 @@ export function captureWebChrome(
   const result = run(
     options.chromePath,
     [
-      '--headless',
+      ...CHROME_CI_ARGS,
       `--screenshot=${outPath}`,
       `--window-size=${scenario.viewportWidth},${scenario.viewportHeight}`,
       `--force-device-scale-factor=${scaleFactor}`,

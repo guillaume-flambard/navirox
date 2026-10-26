@@ -282,6 +282,36 @@ describe('the web capture driver', () => {
     expect(browser.calls).toEqual(['--screenshot', '--dump-dom'])
   })
 
+  it('uses the same bounded headless Chrome launch for screenshots and DOM checks', () => {
+    const browser = fakeBrowser('lean-launch')
+    const options = webOptions(browser, '<main data-testid="records-screen"></main>')
+    const invocations: string[][] = []
+    const underlyingRun = options.run
+    expect(underlyingRun).toBeDefined()
+
+    captureWebChrome(scenario(), capture, browser.outPath, {
+      ...options,
+      identifiers: ['records-screen'],
+      run: (command, args, settings) => {
+        invocations.push([...args])
+        return underlyingRun!(command, args, settings)
+      },
+    })
+
+    expect(invocations).toHaveLength(2)
+    for (const args of invocations) {
+      expect(args).toContain('--headless=new')
+      expect(args).toContain('--disable-background-networking')
+      expect(args).toContain('--disable-extensions')
+      expect(args).toContain('--disable-gpu')
+      expect(args).toContain('--disable-dev-shm-usage')
+      expect(args).not.toContain('--no-sandbox')
+    }
+    expect(invocations[0].some((arg) => arg.startsWith('--screenshot='))).toBe(true)
+    expect(invocations[1]).toContain('--dump-dom')
+    expect(browser.calls).toEqual(['--screenshot', '--dump-dom'])
+  })
+
   it('fails the capture when the served page lacks a declared identifier', () => {
     const browser = fakeBrowser('missing')
     const options = webOptions(browser, '<main data-testid="records-screen"></main>')
