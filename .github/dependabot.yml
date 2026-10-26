@@ -69,6 +69,10 @@ updates:
       # an advisory happens to cover today, because the next advisory picks the
       # name the scanner finds rather than the one that was reported last time.
       #
+      # Dependabot's supported update-types are version-update:semver-*.
+      # security-update is NOT valid, so a fixture-only dependency must be
+      # ignored by name (version and security updates). Remove the ignore
+      # immediately if it becomes a real workspace dependency.
       # If one of these names ever becomes a real dependency, remove it from
       # this list rather than leaving a security update switched off.
       - dependency-name: astro
@@ -84,11 +88,7 @@ updates:
       - dependency-name: solid-js
       - dependency-name: '@solidjs/*'
       - dependency-name: '@builder.io/qwik'
-        update-types:
-          - security-update
       - dependency-name: '@builder.io/qwik-city'
-        update-types:
-          - security-update
       - dependency-name: lit
       - dependency-name: '@lit-labs/*'
       - dependency-name: zustand
