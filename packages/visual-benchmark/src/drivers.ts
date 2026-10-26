@@ -96,44 +96,22 @@ function runWebProcess(
 }
 
 /**
- * A declared identifier is checked where it exists rather than inferred from an
- * image: the served page is rendered again and its DOM read, so a missing label
- * fails the capture instead of reaching the comparison. The query string is the
- * one the screenshot used, so the actions that produced the capture are the
- * actions that produced this DOM.
+ * Verify the DOM from the same browser invocation that created the screenshot.
+ * The previous two-process approach raced under load on Android runners.
  */
 function checkWebIdentifiers(
   captureKey: string,
-  url: string,
+  dom: string,
   identifiers: readonly string[],
-  options: WebDriverOptions,
-  run: WebProcessRunner,
 ): void {
-  const result = run(options.chromePath, [...CHROME_CI_ARGS, '--dump-dom', url], {
-    timeoutMs: options.timeoutMs ?? 60_000,
-  })
-
-  if (result.error) {
-    throw new CaptureMissingError(
-      captureKey,
-      `chrome failed to render the page for an identifier check: ${result.error.message}`,
-    )
-  }
-  if (result.status !== 0) {
-    throw new CaptureMissingError(
-      captureKey,
-      `chrome exited with status ${result.status} while checking the declared identifiers: ${result.stderr.trim()}`,
-    )
-  }
-
   const missing = identifiers.filter(
-    (identifier) => !result.stdout.includes(`data-testid="${identifier}"`),
+    (identifier) => !dom.includes('data-testid="' + identifier + '"'),
   )
 
   if (missing.length > 0) {
     throw new CaptureMissingError(
       captureKey,
-      `the served page does not render ${missing.join(', ')}`,
+      'the served page does not render ' + missing.join(', '),
     )
   }
 }
@@ -164,11 +142,13 @@ export function captureWebChrome(
   }
   const url = `${options.baseUrl}${scenario.route}?${query.toString()}`
   const scaleFactor = options.deviceScaleFactor ?? 1
+  const identifiers = options.identifiers ?? []
   const run = options.run ?? runWebProcess
   const result = run(
     options.chromePath,
     [
       ...CHROME_CI_ARGS,
+      ...(identifiers.length > 0 ? ['--dump-dom'] : []),
       `--screenshot=${outPath}`,
       `--window-size=${scenario.viewportWidth},${scenario.viewportHeight}`,
       `--force-device-scale-factor=${scaleFactor}`,
@@ -190,9 +170,8 @@ export function captureWebChrome(
     throw new CaptureMissingError(capture.key, 'chrome exited 0 but wrote no screenshot')
   }
 
-  const identifiers = options.identifiers ?? []
   if (identifiers.length > 0) {
-    checkWebIdentifiers(capture.key, url, identifiers, options, run)
+    checkWebIdentifiers(capture.key, result.stdout, identifiers)
   }
 }
 
