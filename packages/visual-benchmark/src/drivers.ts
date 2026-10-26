@@ -320,6 +320,10 @@ function deviceEnvironment(
     NAVIROX_ARTIFACTS: options.artifactDirectory,
     NAVIROX_CAPTURE: capture.key,
     NAVIROX_CAPTURE_TEST: options.captureTest ?? DEFAULT_CAPTURE_TEST,
+    // Detox may spawn Metro itself. Keep its unattended capture subprocesses
+    // isolated from the optional React Native standalone DevTools Chromium
+    // shell, without changing normal app development or native proof checks.
+    NAVIROX_NATIVE_CAPTURE: '1',
     // Detox runs the application's start command through a shell, and that
     // command is the package manager script (`react-native start`). The
     // application's own binaries are only on PATH when the caller happens to be
