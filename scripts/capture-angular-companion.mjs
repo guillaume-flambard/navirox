@@ -203,7 +203,13 @@ async function startPackager(appDirectory, platform) {
   const packager = spawn(
     join(appDirectory, 'node_modules', '.bin', 'react-native'),
     ['start', '--port', String(PACKAGER_PORT)],
-    { cwd: appDirectory, stdio: ['ignore', 'pipe', 'pipe'] },
+    {
+      cwd: appDirectory,
+      // Use the same unattended-CI Metro setting as the records capture:
+      // the React Native DevTools Chromium shell is not part of native proof.
+      env: { ...process.env, NAVIROX_NATIVE_CAPTURE: '1' },
+      stdio: ['ignore', 'pipe', 'pipe'],
+    },
   )
 
   packager.stdout.on('data', (chunk) => process.stdout.write(`[metro] ${chunk}`))

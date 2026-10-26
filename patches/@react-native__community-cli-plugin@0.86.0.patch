@@ -1,0 +1,14 @@
+diff --git a/dist/commands/start/runServer.js b/dist/commands/start/runServer.js
+index 8a2260fe7d3f2d5224239b041a33fd4bb0783d9a..7a5fd888923f7488efd05da8f7e1c71f7ae4fc52 100644
+--- a/dist/commands/start/runServer.js
++++ b/dist/commands/start/runServer.js
+@@ -123,6 +123,9 @@ async function runServer(_argv, cliConfig, args) {
+   _devMiddleware.createDevMiddleware)({
+     serverBaseUrl: devServerUrl,
+     logger: (0, _createDevMiddlewareLogger.default)(terminalReporter),
++    unstable_experiments: {
++      enableStandaloneFuseboxShell: process.env.NAVIROX_NATIVE_CAPTURE !== "1",
++    },
+   });
+   metroConfig.reporter = {
+     update(event) {

@@ -92,6 +92,21 @@ describe('the native capture driver', () => {
     expect(device.commands).toEqual(['build', 'test'])
   })
 
+  it('does not start the standalone debugger shell in Detox capture subprocesses', () => {
+    const device = fakeDevice('ci-debugger')
+    const observed: string[] = []
+    const runner: DeviceProcessRunner = (_command, args, options) => {
+      expect(options.env?.NAVIROX_NATIVE_CAPTURE).toBe('1')
+      observed.push(args[0] ?? '')
+      if (args[0] === 'build') writeFileSync(device.binaryPath, 'apk')
+      if (args[0] === 'test') writeFileSync(device.outPath, 'png')
+      return { status: 0, stdout: '', stderr: '' }
+    }
+
+    captureNativeDevice(scenario(), capture, device.outPath, optionsFor(device, runner))
+    expect(observed).toEqual(['build', 'test'])
+  })
+
   it('skips the build when the application binary already exists', () => {
     const device = fakeDevice('already-built')
     writeFileSync(device.binaryPath, 'apk')
