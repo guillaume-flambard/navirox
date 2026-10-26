@@ -570,6 +570,17 @@ jobs:
       - run: pnpm install --frozen-lockfile
       - run: pnpm build
 
+      # The SDK emulator may require libpulse.so.0 even with -noaudio.
+      # Install only when missing, and fail before running Detox if unavailable.
+      # This preserves the real Android emulator and its screenshot assertions.
+      - name: Verify Android emulator shared libraries
+        run: |
+          if ! ldconfig -p | grep -Fq 'libpulse.so.0'; then
+            sudo apt-get update
+            sudo apt-get install -y --no-install-recommends libpulse0
+          fi
+          ldconfig -p | grep -F 'libpulse.so.0'
+
       # The setup below is the journey job's setup, repeated rather than shared.
       # It cannot be a composite action: the teardown trap has to live in the
       # shell that owns the emulator, because that trap is what ends the step
@@ -715,7 +726,7 @@ jobs:
           for attempt in 1 2; do
             if node scripts/capture-angular-companion.mjs \
               --platform android \
-              --workspace "$RUNNER_TEMP/capture-angular-companion-android"; then
+              --workspace "$RUNNER_TEMP/capture-angular-companion-android-attempt-$attempt"; then
               captured=true
               break
             fi
@@ -742,7 +753,7 @@ jobs:
           path: |
             ${{ runner.temp }}/capture-android/app/scenario-artifacts
             ${{ runner.temp }}/capture-field-workflow-android/app/scenario-artifacts
-            ${{ runner.temp }}/capture-angular-companion-android/app/scenario-artifacts
+            ${{ runner.temp }}/capture-angular-companion-android-attempt-*/app/scenario-artifacts
             docs/evidence/records-native-capture-*.json
             docs/evidence/native-capture-*.json
             docs/evidence/angular-companion-device-evidence-*.json
